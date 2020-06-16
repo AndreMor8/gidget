@@ -1,0 +1,67 @@
+{
+  "bot-interact": {
+    "name": "Bot Interaction commands",
+    "guildonly": false,
+    "secret": false
+  },
+  "custom-responses": {
+    "name": "Custom responses commands",
+    "guildonly": false,
+    "secret": false
+  },
+  "fun": {
+    "name": "Funny commands",
+    "guildonly": false,
+    "secret": false
+  },
+  "image": {
+    "name":"Image commands",
+    "guildonly": false,
+    "secret": false
+  },
+  "level": {
+    "name": "Level commands",
+    "guildonly": false,
+    "secret": false
+  },
+  "mod": {
+    "name": "Moderation commmands",
+    "guildonly": false,
+    "secret": false
+  },
+  "music": {
+    "name": "Music commands",
+    "guildonly": false,
+    "secret": false
+  },
+  "my-first-time": {
+    "name": "WWD commands",
+    "guildonly": true,
+    "secret": false 
+  },
+  "owner":{
+    "name": "Owner commmands",
+    "guildonly": false,
+    "secret": true
+  },
+  "roles": {
+    "name": "Commands for role interaction",
+    "guildonly": false,
+    "secret": false
+  },
+  "ticket": {
+    "name": "Ticket commands",
+    "guildonly": false,
+    "secret": false
+  },
+  "utility": {
+    "name": "Useful commands",
+    "guildonly": false,
+    "secret": false 
+  },
+  "wiki": {
+    "name": "Wiki commands",
+    "guildonly": true,
+    "secret": false
+  }
+}
