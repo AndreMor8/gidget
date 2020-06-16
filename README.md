@@ -1,0 +1,2 @@
+# gidget
+A Discord bot
