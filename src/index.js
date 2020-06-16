@@ -1,4 +1,3 @@
-require("./webserver.js");
 // index.js
 // where your node app starts
 
