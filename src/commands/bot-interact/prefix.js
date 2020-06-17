@@ -9,13 +9,21 @@ module.exports = {
       if(!args[1]) return message.channel.send('Tell me a prefix!')
       if(args[2]) return message.channel.send('I\'m not compatible with spaces, sorry.')
 
-      new MessageModel({
-        guildId: message.guild.id,
-        prefix: args[1]
-      }).save().then(() => {
-        bot.guildprefix.delete(message.guild.id);
-        message.channel.send('I\'ve changed the prefix of this server to: ' + args[1])
-    }).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
+      const msgDocument = await MessageModel.findOne({ guildId: message.guild.id })
+      if(msgDocument) {
+        msgDocument.updateOne({ prefix: args[1] }).then(() => {
+          bot.guildprefix.delete(message.guild.id);
+          message.channel.send('I\'ve changed the prefix of this server to: ' + args[1])
+        }).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
+      } else {
+        new MessageModel({
+          guildId: message.guild.id,
+          prefix: args[1]
+        }).save().then(() => {
+          bot.guildprefix.delete(message.guild.id);
+          message.channel.send('I\'ve changed the prefix of this server to: ' + args[1])
+        }).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
+      }
 
     },
     aliases: [],
