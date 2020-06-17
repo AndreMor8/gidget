@@ -11,7 +11,7 @@ app.get("/", (request, response) => {
 
 setInterval(() => {
   http.get(`http://${process.env.PROJECT_DOMAIN}/`);
-}, 180000);
+}, 900000);
 
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);

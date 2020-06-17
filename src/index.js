@@ -1,3 +1,4 @@
+require("dotenv").config();
 // index.js
 // where your node app starts
 
@@ -6,7 +7,7 @@ const Discord = require("discord.js");
 const bot = new Discord.Client({ partials: ['MESSAGE', 'REACTION', 'CHANNEL', 'GUILD_MEMBER', 'USER'], ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL }});
 const { registerCommands, registerEvents } = require('./utils/registry');
 const database = require("./database/database");
-let version = "0.42 Beta";
+let version = "0.50 Beta";
 
 process.on("unhandledRejection", error => {
   console.error("Unhandled promise rejection:", error);
@@ -21,6 +22,7 @@ process.on("unhandledRejection", error => {
   bot.autoresponsecache = new Discord.Collection();
   bot.level = new Discord.Collection();
   bot.rrcache = new Discord.Collection();
+  bot.guildprefix = new Discord.Collection();
   await registerEvents(bot, "../events");
   await registerCommands(bot, "../commands");
   await bot.login(process.env.DISCORD_TOKEN);

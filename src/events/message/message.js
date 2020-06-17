@@ -2,9 +2,10 @@ const Discord = require("discord.js");
 const fs = require("fs");
 const MessageModel = require("../../database/models/customresponses");
 const MessageModel2 = require("../../database/models/levelconfig");
+const MessageModel3 = require("../../database/models/prefix");
 const Levels = require("../../utils/discord-xp");
+const prefix = require("../../database/models/prefix");
 const timer = new Discord.Collection();
-let i = 0;
 //Start message event
 module.exports = async (bot, message, nolevel = false) => {
   if (message.author.bot) return;
@@ -63,13 +64,19 @@ module.exports = async (bot, message, nolevel = false) => {
 
   let PREFIX;
   if (message.guild) {
-    let prefixes = JSON.parse(fs.readFileSync("./prefixes.json", "utf8"));
-    if (!prefixes[message.guild.id]) {
-      prefixes[message.guild.id] = {
-        prefixes: "g%"
-      };
+    let prefixes = bot.guildprefix.get(message.guild.id);
+    if(!prefixes) {
+      let pr = await MessageModel3.findOne({ guildId: message.guild.id })
+      if(!pr) {
+        PREFIX = "g%";
+        bot.guildprefix.set(message.guild.id, "g%");
+      } else {
+        PREFIX = pr.prefix;
+        bot.guildprefix.set(message.guild.id, pr.prefix);
+      }
+    } else {
+      PREFIX = prefixes;
     }
-    PREFIX = prefixes[message.guild.id].prefixes;
   } else {
     console.log(message.author.tag + ' "' + message.content + '"');
     PREFIX = "g%";
