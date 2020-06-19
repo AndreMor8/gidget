@@ -253,6 +253,7 @@ async function play(guild, song, seek = 0) {
   const musicVariables = guild.client.musicVariables1.get(guild.id);
 
   if (!song) {
+    console.log("Huh")
     if(serverQueue) {
       if (serverQueue.textChannel) {
       serverQueue.textChannel.stopTyping();
@@ -288,22 +289,17 @@ async function play(guild, song, seek = 0) {
     });
     dispatcher.on("close", async () => {
       if (serverQueue.inseek) return;
-      if(guild.me.voice.channel) {
-        musicVariables.memberVoted = [];
-      if (!serverQueue.loop) serverQueue.songs.shift();
-      if (!serverQueue.playing) serverQueue.playing = true;
-      await play(guild, serverQueue.songs[0]);
-      } else {
+      if(!guild.me.voice.channel) {
         clearTimeout(musicVariables.time);
         if (serverQueue.textChannel) {
-      serverQueue.textChannel.stopTyping();
-    }
-    if (serverQueue.voiceChannel) {
-      serverQueue.voiceChannel.leave();
-    }
-    guild.client.queue.delete(guild.id);
-    guild.client.musicVariables1.delete(guild.id);
-    return;
+          serverQueue.textChannel.stopTyping();
+        }
+        if (serverQueue.voiceChannel) {
+          serverQueue.voiceChannel.leave();
+        }
+        guild.client.queue.delete(guild.id);
+        guild.client.musicVariables1.delete(guild.id);
+        return;
       }
     });
     dispatcher.on("error", async err => {
