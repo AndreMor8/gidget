@@ -19,6 +19,7 @@ module.exports = {
 
         if(reconverted < 0) return message.channel.send("Huh?");
         serverQueue.inseek = true;
+        serverQueue.songs[0].seektime = reconverted;
         serverQueue.connection.dispatcher.end();
         await bot.commands.get("play").run(bot, message, ["play", "seek"], reconverted);
 

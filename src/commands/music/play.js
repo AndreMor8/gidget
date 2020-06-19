@@ -1,7 +1,6 @@
 const ytdl = require("ytdl-core");
 const ytsr = require("ytsr");
 const ytpl = require("ytpl");
-const { compareHashes } = require("jimp");
 let ytlink = "";
 const moment = require("moment");
 const momentDurationFormatSetup = require("moment-duration-format");
@@ -184,7 +183,8 @@ async function handleVideo(message, voiceChannel, playlist = false) {
     const song = {
       title: songInfo.title,
       url: songInfo.video_url,
-      duration: songInfo.length_seconds
+      duration: songInfo.length_seconds,
+      seektime: 0,
     };
 
     if (!serverQueue) {

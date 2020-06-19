@@ -11,6 +11,7 @@ module.exports = {
       options = { mode: "pcm" }
     } else if(args[1] !== "play") return message.channel.send("`dm` to send the file to your direct messages, `play` to play it on the voice channel, `server` to send the file to this channel.");
     const serverQueue = bot.queue.get(message.guild.id);
+    if (serverQueue && serverQueue.inseek) return;
     let musicVariables = bot.musicVariables1.get(message.guild.id);
     if (!message.member.voice.channel)
       return message.channel.send(
