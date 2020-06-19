@@ -168,8 +168,12 @@ async function handleVideo(message, voiceChannel, playlist = false) {
   const musicVariables = message.client.musicVariables1.get(message.guild.id);
   const songInfo = await ytdl
     .getInfo(ytlink)
-    .catch(err => (musicVariables.merror = 1));
+    .catch(err => {
+      console.log(err);
+      musicVariables.merror = 1;
+    });
   if (musicVariables.merror == 1) {
+    message.channel.stopTyping(true);
     musicVariables.merror = 0;
     if (playlist && musicVariables.perror == 0) {
       musicVariables.perror = 1;
