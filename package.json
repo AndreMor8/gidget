@@ -13,6 +13,7 @@
   "author": "AndreMor",
   "license": "ISC",
   "dependencies": {
+    "ytdl-core": "^2.1.7",
     "@discordjs/opus": "^0.3.2",
     "@jimp/custom": "^0.13.0",
     "@jimp/plugin-circle": "^0.13.0",
