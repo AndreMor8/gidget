@@ -1,10 +1,12 @@
-const ytdl = require("ytdl-core-discord");
+const ytdl = require("ytdl-core");
 const ytsr = require("ytsr");
 const ytpl = require("ytpl");
+const { compareHashes } = require("jimp");
 let ytlink = "";
-
+const moment = require("moment");
+const momentDurationFormatSetup = require("moment-duration-format");
 module.exports = {
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, seek) => {
     if (!message.guild)
       return message.channel.send("This command only works on servers.");
     if (!args[1])
@@ -51,10 +53,11 @@ module.exports = {
       bot.musicVariables1.set(message.guild.id, something);
       musicVariables = bot.musicVariables1.get(message.guild.id);
     }
-    if (musicVariables.inp == 1)
-      return message.channel.send("I'm catching your playlist. Hang on!");
+    if (musicVariables.inp == 1) return message.channel.send("I'm catching your playlist. Hang on!");
 
-    if (ytdl.validateURL(args[1])) {
+    if(typeof seek === "number") {
+      return await play(message.guild, serverQueue.songs[0], seek)
+    } else if (ytdl.validateURL(args[1])) {
       ytlink = args[1];
       if (serverQueue) {
         if (serverQueue.loop) {
@@ -192,7 +195,8 @@ async function handleVideo(message, voiceChannel, playlist = false) {
         songs: [],
         volume: 5,
         playing: true,
-        loop: false
+        loop: false,
+        inseek: false,
       };
       message.client.queue.set(message.guild.id, queueConstruct);
 
@@ -239,7 +243,8 @@ async function handleVideo(message, voiceChannel, playlist = false) {
     return;
   }
 }
-async function play(guild, song) {
+async function play(guild, song, seek = 0) {
+  console.log(seek, typeof seek)
   const serverQueue = guild.client.queue.get(guild.id);
 
   const musicVariables = guild.client.musicVariables1.get(guild.id);
@@ -258,11 +263,12 @@ async function play(guild, song) {
     return;
   }
   try {
-    const dispatcher = serverQueue.connection.play(
-      await ytdl(song.url, { type: "audioonly", highWaterMark: 1 << 25 }),
-      { type: "opus" }
-    );
+    const dispatcher = serverQueue.connection.play(ytdl(song.url, { type: "audioonly", highWaterMark: 1 << 25 }), { seek: seek });
     dispatcher.on("start", async () => {
+      if (serverQueue.inseek) {
+        serverQueue.inseek = false
+        return serverQueue.textChannel.send("Position moved to " + moment.duration(seek, "seconds").format());
+      };
       dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
       if (!serverQueue.loop)
         serverQueue.textChannel.send(
@@ -271,12 +277,14 @@ async function play(guild, song) {
       serverQueue.textChannel.stopTyping();
     });
     dispatcher.on("finish", async () => {
+      if(serverQueue.inseek) return;
       musicVariables.memberVoted = [];
       if (!serverQueue.loop) serverQueue.songs.shift();
       if (!serverQueue.playing) serverQueue.playing = true;
       await play(guild, serverQueue.songs[0]);
     });
     dispatcher.on("close", async () => {
+      if (serverQueue.inseek) return;
       if(guild.me.voice.channel) {
         musicVariables.memberVoted = [];
       if (!serverQueue.loop) serverQueue.songs.shift();

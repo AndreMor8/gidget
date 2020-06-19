@@ -2,6 +2,7 @@ module.exports = {
   run: async (bot, message, args) => {
     if (!message.guild) return message.channel.send("This command only works on servers.");
     const serverQueue = bot.queue.get(message.guild.id);
+    if (serverQueue && serverQueue.inseek) return;
     const musicVariables = bot.musicVariables1.get(message.guild.id);
     if (!message.member.voice.channel) return message.channel.send("You need to be in a voice channel to stop music!");
     if (serverQueue) {

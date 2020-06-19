@@ -3,6 +3,7 @@ module.exports = {
     if (message.channel.type === "dm")
       return message.channel.send("This command only works on servers.");
     const serverQueue = bot.queue.get(message.guild.id);
+    if (serverQueue && serverQueue.inseek) return;
     const musicVariables = bot.musicVariables1.get(message.guild.id);
     if (!message.member.voice.channel)
       return message.channel.send(

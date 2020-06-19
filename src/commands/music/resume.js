@@ -4,6 +4,7 @@ module.exports = {
       return message.channel.send("This command only works on servers.");
     const serverQueue = bot.queue.get(message.guild.id);
     if (!serverQueue) return message.channel.send("There is nothing playing.");
+    if (serverQueue && serverQueue.inseek) return;
     const musicVariables = bot.musicVariables1.get(message.guild.id);
     if (!musicVariables)
       return message.channel.send("There is nothing playing.");
