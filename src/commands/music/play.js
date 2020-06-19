@@ -244,7 +244,6 @@ async function handleVideo(message, voiceChannel, playlist = false) {
   }
 }
 async function play(guild, song, seek = 0) {
-  console.log(seek, typeof seek)
   const serverQueue = guild.client.queue.get(guild.id);
 
   const musicVariables = guild.client.musicVariables1.get(guild.id);
