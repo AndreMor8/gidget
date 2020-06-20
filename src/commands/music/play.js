@@ -1,11 +1,11 @@
 const ytdl = require("ytdl-core");
 const ytsr = require("ytsr");
 const ytpl = require("ytpl");
-let ytlink = "";
 const moment = require("moment");
 const momentDurationFormatSetup = require("moment-duration-format");
 module.exports = {
   run: async (bot, message, args, seek) => {
+    let ytlink = "";
     if (!message.guild)
       return message.channel.send("This command only works on servers.");
     if (!args[1])
@@ -253,7 +253,6 @@ async function play(guild, song, seek = 0) {
   const musicVariables = guild.client.musicVariables1.get(guild.id);
 
   if (!song) {
-    console.log("Huh")
     if(serverQueue) {
       if (serverQueue.textChannel) {
       serverQueue.textChannel.stopTyping();
@@ -271,6 +270,7 @@ async function play(guild, song, seek = 0) {
     dispatcher.on("start", async () => {
       if (serverQueue.inseek) {
         serverQueue.inseek = false
+        serverQueue.textChannel.stopTyping();
         return serverQueue.textChannel.send("Position moved to " + moment.duration(seek, "seconds").format());
       };
       dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);

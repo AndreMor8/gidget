@@ -11,7 +11,7 @@ module.exports = {
         const min = exp[exp.length - 2] || "0"
         const hrs = exp[exp.length - 3] || "0"
         const reconverted = (ms(hrs + "h") / 1000) + (ms(min + "m") / 1000) + (ms(sec + "s") / 1000);
-        if(isNaN(reconverted)) return message.channel.send("Invalid value!");
+        if(isNaN(reconverted) || (typeof reconverted !== "number")) return message.channel.send("Invalid value!");
 
         if(!serverQueue || !serverQueue.songs[0] || !serverQueue.songs[0].duration) return;
 
@@ -20,9 +20,9 @@ module.exports = {
         if(reconverted < 0) return message.channel.send("Huh?");
         serverQueue.inseek = true;
         serverQueue.songs[0].seektime = reconverted;
+        message.channel.send("This may take a bit...").then(() => message.channel.startTyping())
         serverQueue.connection.dispatcher.end();
         await bot.commands.get("play").run(bot, message, ["play", "seek"], reconverted);
-
     },
     aliases: [],
     description: "Change the position of the stream"
