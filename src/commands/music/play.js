@@ -5,7 +5,6 @@ const moment = require("moment");
 const momentDurationFormatSetup = require("moment-duration-format");
 module.exports = {
   run: async (bot, message, args, seek) => {
-    let ytlink = "";
     if (!message.guild)
       return message.channel.send("This command only works on servers.");
     if (!args[1])
@@ -57,7 +56,6 @@ module.exports = {
     if(typeof seek === "number") {
       return await play(message.guild, serverQueue.songs[0], seek)
     } else if (ytdl.validateURL(args[1])) {
-      ytlink = args[1];
       if (serverQueue) {
         if (serverQueue.loop) {
           serverQueue.loop = false;
@@ -65,7 +63,7 @@ module.exports = {
         }
       }
       message.channel.startTyping();
-      return handleVideo(message, voiceChannel);
+      return handleVideo(message, voiceChannel, args[1]);
     } else if (ytdl.validateID(args[1])) {
       if (serverQueue) {
         if (serverQueue.loop) {
@@ -73,9 +71,8 @@ module.exports = {
           message.channel.send("🔁 The song repeat has been disabled.");
         }
       }
-      ytlink = "https://www.youtube.com/watch?v=" + args[1];
       message.channel.startTyping();
-      return handleVideo(message, voiceChannel);
+      return handleVideo(message, voiceChannel, "https://www.youtube.com/watch?v=" + args[1]);
     } else if (ytpl.validateURL(args[1])) {
       let form1 = await message.channel.send(
         "Hang on! <:WaldenRead:665434370022178837>"
@@ -93,8 +90,7 @@ module.exports = {
           }
         }
         for (const video of Object.values(videos)) {
-          ytlink = video.url_simple;
-          await handleVideo(message, voiceChannel, true).catch(error =>
+          await handleVideo(message, voiceChannel, video.url_simple, true).catch(error =>
             console.log(error)
           );
         }
@@ -149,8 +145,7 @@ module.exports = {
             `I didn't find any video. Check your term and try again.`
           );
         }
-        ytlink = searchResults.items[0].link;
-        return handleVideo(message, voiceChannel);
+        return handleVideo(message, voiceChannel, searchResults.items[0].link);
       } catch (err) {
         if (!serverQueue) bot.musicVariables1.delete(message.guild.id);
         message.channel.stopTyping(true);
@@ -162,7 +157,7 @@ module.exports = {
   description: "Play music from YouTube"
 };
 
-async function handleVideo(message, voiceChannel, playlist = false) {
+async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
   const serverQueue = message.client.queue.get(message.guild.id);
 
   const musicVariables = message.client.musicVariables1.get(message.guild.id);
