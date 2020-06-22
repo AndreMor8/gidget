@@ -22,5 +22,5 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "If a server member leaves, return the roles to them."
+  description: "If a server member leaves, save the roles and when they come back, put them back."
 }

@@ -9,5 +9,6 @@ module.exports = {
     message.member.voice.channel.join().then(() => message.channel.send("Joined!")).catch(err => message.channel.send("I couldn't join the voice channel. Here's a debug: " + err));
   },
   aliases: [],
-  description: "Pause the music"
+  description: "Join a voice channel",
+  secret: true,
 };

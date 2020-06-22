@@ -5,9 +5,9 @@ require("dotenv").config();
 // init project
 const Discord = require("discord.js");
 const bot = new Discord.Client({ partials: ['MESSAGE', 'REACTION', 'CHANNEL', 'GUILD_MEMBER', 'USER'], ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL }});
-const { registerCommands, registerEvents } = require('./utils/registry');
+const reg = require('./utils/registry');
 const database = require("./database/database");
-let version = "0.50 Beta";
+let version = "0.72 Beta";
 
 process.on("unhandledRejection", error => {
   console.error("Unhandled promise rejection:", error);
@@ -23,8 +23,8 @@ process.on("unhandledRejection", error => {
   bot.level = new Discord.Collection();
   bot.rrcache = new Discord.Collection();
   bot.guildprefix = new Discord.Collection();
-  await registerEvents(bot, "../events");
-  await registerCommands(bot, "../commands");
+  await reg.registerEvents(bot, "../events");
+  await reg.registerCommands(bot, "../commands");
   await bot.login(process.env.DISCORD_TOKEN);
   bot.user.setPresence({
     activity: { name: "Ready event (Loading...)", type: "LISTENING" },

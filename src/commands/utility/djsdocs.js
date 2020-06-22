@@ -15,6 +15,8 @@ module.exports = {
     fetch(`https://djsdocs.sorta.moe/v2/embed?src=${src}&q=${cont}`)
       .then(r => r.json())
       .then(res => {
+        if (!res) return message.channel.send(new MessageEmbed().setTitle("Error").setDescription("No results found"))
+        if(res.error) return message.channel.send(new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message))
       message.channel.send(new MessageEmbed(res));
     }).catch(err => message.channel.send("Error: " + err));
   },

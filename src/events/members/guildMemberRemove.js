@@ -1,22 +1,35 @@
 const MessageModel = require("../../database/models/roles");
-const MessageModel2 = require("../../database/models/retreiveconfig")
+const MessageModel2 = require("../../database/models/retreiveconfig");
+const MessageModel3 = require("../../database/models/mutedmembers");
 module.exports = async (bot, member) => {
   const date = new Date();
+
+  /* Temp-mute function - Delete the member if they left the server */
+  let s = await MessageModel3.findOne({ guildId: member.guild.id, memberId: member.id });
+  if (s) {
+    MessageModel3.deleteOne();
+  }
+
+  /* Retrieving-roles function */
+  //I don't want errors..
   if (!member.partial) {
+    //A cache system
     let verify = bot.rrcache.get(member.guild.id)
-    if(!verify) {
+    if (!verify) {
       verify = await MessageModel2.findOne({ guildId: member.guild.id })
     }
-    if(verify && verify.enabled) {
+    if (verify && verify.enabled) {
       let msgDocument = await MessageModel.findOne({
         guildid: member.guild.id,
         memberid: member.user.id
       });
 
+      //List roles
       let roles = member.roles.cache
         .filter(r => !r.deleted && !r.managed && r.id !== member.guild.id)
         .map(r => r.id);
 
+        //Save to the DB
       if (roles.length >= 1) {
         if (msgDocument) {
           msgDocument.updateOne({ roles: roles }).catch(console.error);
@@ -29,13 +42,16 @@ module.exports = async (bot, member) => {
           dbMsgModel.save().catch(console.error);
         }
       } else {
+        //They have no roles, and are still in the DB in previous sessions.
         if (msgDocument) {
           msgDocument.deleteOne();
         }
       }
     }
-      
-    }
+
+  }
+
+  //Things for Wow Wow Discord
   if (member.guild.id !== "402555684849451028") return;
   const channel = member.guild.channels.cache.get("402555684849451030");
   if (!channel) return;
@@ -81,20 +97,20 @@ async function sendMessage(bot, member, channel, date, realmember, user = false)
       if (date.getMinutes() === auditlog.createdAt.getMinutes()) {
         channel.send(
           `${user ? member.tag : member.user.tag} (${member}) was kicked or banned from the server.`
-        ).catch(err => {});
+        ).catch(err => { });
       } else {
         channel.send(
           `We're sorry to see you leaving, ${user ? member.tag : member.user.tag}! (${member}) <:WubbzySad:608139268413587477>`
-        ).catch(err => {});
+        ).catch(err => { });
       }
     } else {
       channel.send(
         `We're sorry to see you leaving, ${user ? member.tag : member.user.tag}! (${member}) <:WubbzySad:608139268413587477>`
-      ).catch(err => {});
+      ).catch(err => { });
     }
   } else {
     channel.send(
       `We're sorry to see you leaving, ${user ? member.tag : member.user.tag}! (${member}) <:WubbzySad:608139268413587477>`
-    ).catch(err => {});
+    ).catch(err => { });
   }
 }

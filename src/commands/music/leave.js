@@ -26,5 +26,6 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "Stop a song"
+  description: "Leave the voice channel",
+  secret: true,
 };

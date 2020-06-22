@@ -32,7 +32,7 @@ module.exports = async (reupdate = false) => {
           let guild = bot.guilds.cache.get(msgDocument[i].guildId);
           if (guild) {
             let role = guild.roles.cache.get(another.muteroleid);
-            let member = guild.members.cache.get(msgDocument[i].memberId);
+            let member = guild.members.cache.get(msgDocument[i].memberId) || msgDocument[i].memberId ? await guild.members.fetch(msgDocument[i].memberId) : undefined;
             if (role && member) {
               member.roles.remove(role, "Temprestrict - Time over.");
             }

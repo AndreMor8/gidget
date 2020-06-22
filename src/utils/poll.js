@@ -4,7 +4,7 @@ let i = 0;
 let cache;
 
 module.exports = async (reupdate = false) => {
-  if(i === 1 && reupdate) {
+  if (i === 1 && reupdate) {
     i = 0;
     clearInterval(interval);
   }
@@ -24,13 +24,13 @@ module.exports = async (reupdate = false) => {
         for (let i in msgDocument) {
           let date = msgDocument[i].date.getTime();
           if (new Date().getTime() >= date) {
-            let channel = await bot.channels.cache.get(
+            let channel = bot.channels.cache.get(
               msgDocument[i].channelId
             );
             if (channel) {
               let message = await channel.messages
                 .fetch(msgDocument[i].messageId)
-                .catch(err => {});
+                .catch(err => { });
               if (message) {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
@@ -44,7 +44,7 @@ module.exports = async (reupdate = false) => {
                             (r.count - 1) +
                             " votes\n";
                         })
-                        .catch(err => {});
+                        .catch(err => { });
                     } else {
                       text +=
                         r.emoji.toString() +
@@ -56,7 +56,7 @@ module.exports = async (reupdate = false) => {
                   let embed = message.embeds[0];
                   embed.setDescription(text).setTitle("Poll completed");
                   await message.edit(embed);
-                  if(message.guild.me.hasPermission("MANAGE_MESSAGES")) {
+                  if (message.guild.me.hasPermission("MANAGE_MESSAGES")) {
                     message.reactions.removeAll()
                   }
                 }

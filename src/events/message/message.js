@@ -1,10 +1,8 @@
 const Discord = require("discord.js");
-const fs = require("fs");
 const MessageModel = require("../../database/models/customresponses");
 const MessageModel2 = require("../../database/models/levelconfig");
 const MessageModel3 = require("../../database/models/prefix");
 const Levels = require("../../utils/discord-xp");
-const prefix = require("../../database/models/prefix");
 const timer = new Discord.Collection();
 //Start message event
 module.exports = async (bot, message, nolevel = false) => {
