@@ -25,7 +25,7 @@ process.on("unhandledRejection", error => {
   bot.guildprefix = new Discord.Collection();
   await reg.registerEvents(bot, "../events");
   await reg.registerCommands(bot, "../commands");
-  await bot.login(process.env.DISCORD_TOKEN);
+  await bot.login();
   bot.user.setPresence({
     activity: { name: "Ready event (Loading...)", type: "LISTENING" },
     status: "dnd"
