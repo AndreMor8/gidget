@@ -133,7 +133,7 @@ module.exports = {
             let newMessage = new MessageModel({
               messageId: poll.id,
               channelId: poll.channel.id,
-              date: new Date(new Date().getTime() + time),
+              date: new Date(Date.now() + time),
             })
             newMessage.save().then(() => interval(true)).catch(err => msg.channel.send("Could not save the message and the time in database."));
           },
