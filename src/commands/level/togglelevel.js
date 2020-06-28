@@ -15,6 +15,7 @@ module.exports = {
         guildId: message.guild.id,
         levelsystem: false,
         levelnotif: false,
+        roles: {}
       })
       real = await tosave.save()
       bot.level.delete(message.guild.id);

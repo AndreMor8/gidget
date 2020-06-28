@@ -5,7 +5,7 @@ const MessageModel3 = require("../../database/models/prefix");
 const Levels = require("../../utils/discord-xp");
 const timer = new Discord.Collection();
 //Start message event
-module.exports = async (bot, message, nolevel = false) => {
+module.exports = async (bot, message = new Discord.Message(), nolevel = false) => {
   if (message.author.bot) return;
   // Autoresponses
   if (message.guild) {
@@ -47,8 +47,15 @@ module.exports = async (bot, message, nolevel = false) => {
           message.guild.id,
           randomAmountOfXp
         );
+        const user = await Levels.fetch(message.author.id, message.guild.id);
+        if (hasLeveledUp) {
+          let {roles} = msgDocument2;
+          if (roles[user.level - 1]) {
+            let toadd = roles[user.level - 1].filter(e => message.guild.roles.cache.has(e) && message.guild.roles.cache.get(e).editable && !message.guild.roles.cache.get(e).managed)
+            message.member.roles.add(toadd);
+          }
+        }
         if (hasLeveledUp && msgDocument2.levelnotif) {
-          const user = await Levels.fetch(message.author.id, message.guild.id);
           message.channel.send(
             `${message.author}, congratulations! You have leveled up to **${user.level}**. :tada:`
           ).catch(err => {});
