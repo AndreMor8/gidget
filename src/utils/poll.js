@@ -35,7 +35,7 @@ module.exports = async (reupdate = false) => {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
                   message.reactions.cache.each(async r => {
-                    if(!msgDocument.reactions.includes(r.id)) return;
+                    if(!msgDocument[i].reactions.includes(r.id)) return;
                     if (r.partial) {
                       await r.fetch().then(r => {
                         text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
