@@ -35,8 +35,7 @@ module.exports = async (reupdate = false) => {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
                   message.reactions.cache.each(r => {
-                    let tosee = r.id || r.name;
-                    console.log(msgDocument[i].reactions)
+                    let tosee = r.emoji.id || r.emoji.name;
                     if(!msgDocument[i].reactions.includes(tosee)) return;
                     if (r.partial) {
                       r.fetch().then(r => {

@@ -123,7 +123,6 @@ module.exports = {
               reactions.forEach(function(entry) {
                 poll.react(entry).catch(error => {
                   console.log(error);
-                  poll.react("error");
                 });
               });
             } else {
