@@ -34,10 +34,12 @@ module.exports = async (reupdate = false) => {
               if (message) {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
-                  message.reactions.cache.each(async r => {
-                    if(!msgDocument[i].reactions.includes(r.id)) return;
+                  message.reactions.cache.each(r => {
+                    let tosee = r.id || r.name;
+                    console.log(msgDocument[i].reactions)
+                    if(!msgDocument[i].reactions.includes(tosee)) return;
                     if (r.partial) {
-                      await r.fetch().then(r => {
+                      r.fetch().then(r => {
                         text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
                       }).catch(err => { });
                     } else {
