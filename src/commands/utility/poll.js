@@ -134,6 +134,7 @@ module.exports = {
               messageId: poll.id,
               channelId: poll.channel.id,
               date: new Date(Date.now() + time),
+              reactions: reactions.length ? reactions : ["460279003673001985", "612137351166033950"]
             })
             newMessage.save().then(() => interval(true)).catch(err => msg.channel.send("Could not save the message and the time in database."));
           },

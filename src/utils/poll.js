@@ -15,7 +15,8 @@ module.exports = async (reupdate = false) => {
       if (cache && !reupdate) {
         msgDocument = cache;
       } else {
-        msgDocument = await MessageModel.find();
+        let all = await MessageModel.find();
+        msgDocument = all.filter(e => bot.channels.cache.has(e.channelId));
         cache = msgDocument;
         reupdate = false;
       }
@@ -24,9 +25,7 @@ module.exports = async (reupdate = false) => {
         for (let i in msgDocument) {
           let date = msgDocument[i].date.getTime();
           if (new Date().getTime() >= date) {
-            let channel = bot.channels.cache.get(
-              msgDocument[i].channelId
-            );
+            let channel = bot.channels.cache.get(msgDocument[i].channelId);
             if (channel) {
               let message = await channel.messages
                 .fetch(msgDocument[i].messageId)
@@ -34,23 +33,14 @@ module.exports = async (reupdate = false) => {
               if (message) {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
-                  let reactions = message.reactions.cache.each(r => {
+                  message.reactions.cache.each(r => {
+                    if(!msgDocument.reactions.includes(r.id)) return;
                     if (r.partial) {
-                      r.fetch()
-                        .then(r => {
-                          text +=
-                            r.emoji.toString() +
-                            " -> " +
-                            (r.count - 1) +
-                            " votes\n";
-                        })
-                        .catch(err => { });
+                      await r.fetch().then(r => {
+                        text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
+                      }).catch(err => { });
                     } else {
-                      text +=
-                        r.emoji.toString() +
-                        " -> " +
-                        (r.count - 1) +
-                        " votes\n";
+                      text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
                     }
                   });
                   let embed = message.embeds[0];

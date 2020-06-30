@@ -1,18 +1,15 @@
 const Discord = require("discord.js");
 const MessageModel = require("../../database/models/ticket");
 const MessageModel2 = require("../../database/models/message");
+const MessageModel3 = require("../../database/models/poll");
 module.exports = async (bot, message) => {
-  const msgDocument = await MessageModel.findOne({ messageId: message.id });
-  if (msgDocument) {
-    await msgDocument.deleteOne();
-  }
+  await MessageModel.findOneAndDelete({ messageId: message.id });
+  
+  await MessageModel2.findOneAndDelete({ messageId: message.id });
 
-  let s = await MessageModel2.findOne({ messageId: message.id });
-  if (s) {
-    await msgDocument.deleteOne();
-  }
+  await MessageModel3.findOneAndDelete({ messageId: message.id });
 
-
+  //Things for Wow Wow Discord
   if (message.partial) return;
   if (message.channel.type === "dm") return;
   if (message.guild.id != "402555684849451028") return;

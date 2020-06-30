@@ -14,8 +14,6 @@ module.exports = {
 
 async function image(message) {
   var options = {
-    url:
-      "http://results.dogpile.com/serp?qc=images&q=" + "wow wow wubbzy walden",
     method: "GET",
     headers: {
       Accept: "text/html",
@@ -24,7 +22,7 @@ async function image(message) {
   };
 
   const response = await fetch(
-    "http://results.dogpile.com/serp?qc=images&q=" + "wow wow wubbzy walden",
+    "http://results.dogpile.com/serp?qc=images&q=" + "wow wow wubbzy daizy",
     options
   );
   const responseBody = await response.text();
