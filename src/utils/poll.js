@@ -1,5 +1,6 @@
 const { bot } = require("../index.js");
 const MessageModel = require("../database/models/poll.js");
+const { Util } = require("discord.js");
 let i = 0;
 let cache;
 
@@ -33,7 +34,7 @@ module.exports = async (reupdate = false) => {
               if (message) {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
-                  message.reactions.cache.each(r => {
+                  message.reactions.cache.each(async r => {
                     if(!msgDocument.reactions.includes(r.id)) return;
                     if (r.partial) {
                       await r.fetch().then(r => {
@@ -43,6 +44,7 @@ module.exports = async (reupdate = false) => {
                       text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
                     }
                   });
+                  await Util.delayFor(1000)
                   let embed = message.embeds[0];
                   embed.setDescription(text).setTitle("Poll completed");
                   await message.edit(embed);
