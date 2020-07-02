@@ -1,17 +1,17 @@
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 const { checkCommandModule, checkProperties } = require('./validate');
 
 module.exports = {
-    registerCommands: async function (bot, dir) {
+    registerCommands: function (bot, dir) {
         const noarr = dir.split("/");
         const rpath = path.join(__dirname, dir);
         const arr = rpath.split("/");
         const category = arr[arr.indexOf(noarr[noarr.length - 1])];
-        let files = await fs.readdir(path.join(__dirname, dir));
+        let files = fs.readdirSync(path.join(__dirname, dir));
         // Loop through each file.
         for (let file of files) {
-            let stat = await fs.lstat(path.join(__dirname, dir, file));
+            let stat = fs.lstatSync(path.join(__dirname, dir, file));
             if (stat.isDirectory()) // If file is a directory, recursive call recurDir
                 this.registerCommands(bot, path.join(dir, file));
             else {
@@ -42,11 +42,11 @@ module.exports = {
             }
         }
     },
-    registerEvents: async function (bot, dir) {
-        let files = await fs.readdir(path.join(__dirname, dir));
+    registerEvents: function (bot, dir) {
+        let files = fs.readdirSync(path.join(__dirname, dir));
         // Loop through each file.
         for (let file of files) {
-            let stat = await fs.lstat(path.join(__dirname, dir, file));
+            let stat = fs.lstatSync(path.join(__dirname, dir, file));
             if (stat.isDirectory()) // If file is a directory, recursive call recurDir
                 this.registerEvents(bot, path.join(dir, file));
             else {

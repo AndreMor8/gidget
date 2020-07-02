@@ -23,8 +23,8 @@ process.on("unhandledRejection", error => {
   bot.level = new Discord.Collection();
   bot.rrcache = new Discord.Collection();
   bot.guildprefix = new Discord.Collection();
-  await reg.registerEvents(bot, "../events");
-  await reg.registerCommands(bot, "../commands");
+  reg.registerEvents(bot, "../events");
+  reg.registerCommands(bot, "../commands");
   await bot.login();
   bot.user.setPresence({
     activity: { name: "Ready event (Loading...)", type: "LISTENING" },
