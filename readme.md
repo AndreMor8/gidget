@@ -1,4 +1,4 @@
-Pull request of the repository [AndreMor955/gidget](https://github.com/AndreMor955/gidget) #2
+Pull request of the repository [AndreMor955/gidget](https://github.com/AndreMor955/gidget) [Pull request #2](https://github.com/AndreMor955/gidget/pull/2)
 --
 # Super Solar-Powered Robot 3000 a.k.a Gidget
 
