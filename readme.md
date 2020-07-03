@@ -1,3 +1,5 @@
+Pull request of the repository [AndreMor955/gidget](https://github.com/AndreMor955/gidget) #2
+--
 # Super Solar-Powered Robot 3000 a.k.a Gidget
 
 Gidget here is a customized Discord bot, the name comes from the _Wow! Wow! Wubbzy!_ show with the robot of the same name.
