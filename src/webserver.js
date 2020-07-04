@@ -12,7 +12,7 @@ app.get("/", async (req, res) => {
   res.status(200).send("Good");
 });
 
-const listener = app.listen(8080, function () {
+const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
