@@ -7,6 +7,7 @@ const MessageModel2 = require('../../database/models/mutedmembers.js');
 const MessageModel3 = require('../../database/models/poll.js');
 var psi = setInterval(presence, 1800000);
 module.exports = async bot => {
+  require("../../webserver");
   presence();
   let doc = await MessageModel2.findOne();
   if (doc) {
@@ -19,4 +20,5 @@ module.exports = async bot => {
   console.log(`Gidget is alive! Version ` + version);
 };
 
+//For clean the interval with a command
 module.exports.psi = psi;

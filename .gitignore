@@ -4,4 +4,4 @@ package-lock.json
 prefixes.json
 notes.json
 .glitch-assets
-src/webserver.js
+watch.json
