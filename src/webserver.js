@@ -1,4 +1,4 @@
-const { bot } = require('index.js');
+const { bot } = require('./index.js');
 const express = require("express");
 const app = express();
 
@@ -9,6 +9,7 @@ app.get("/", async (req, res) => {
   if(req.query && req.query.delete) {
     console.log(req.query);
   }
+  res.status(200).send("Good");
 });
 
 const listener = app.listen(8080, function () {
