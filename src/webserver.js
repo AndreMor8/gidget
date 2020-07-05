@@ -16,6 +16,14 @@ async function roles(guildID, memberID) {
   })
 }
 
+function guilds(memberId) {
+  if(memberId) {
+    return bot.guilds.cache.filter(e => e.members.cache.has(memberId)).map(e => e.id);
+  } else {
+    return bot.guilds.cache.map(e => e.id);
+  }
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.get("/", async (req, res) => {
@@ -26,8 +34,8 @@ app.get("/", async (req, res) => {
   }
   if(req.query && req.query.guild && req.query.member) {
     const tosend = await roles(req.query.guild, req.query.member);
-    if(!tosend) return res.status(400).send({
-      status: 400,
+    if(!tosend) return res.status(404).send({
+      status: 404,
       error: "The selected server or member was not found"
     })
     else return res.status(200).send({
@@ -35,6 +43,23 @@ app.get("/", async (req, res) => {
       memberID: req.query.member,
       roles: tosend
     })
+  }
+  if(req.query && req.query.guilds) {
+    let tosend
+    if(req.query.member) {
+      tosend = guilds(req.query.member);
+    } else {
+      tosend = guilds();
+    }
+    if (!tosend) return res.status(404).send({
+      status: 404,
+      error: "The selected server was not found"
+    });
+    return res.status(200).send({
+      memberID: req.query.member || null,
+      guilds: tosend
+    })
+
   }
   res.status(200).send("Good");
 });
