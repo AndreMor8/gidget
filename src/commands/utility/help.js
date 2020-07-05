@@ -17,7 +17,7 @@ module.exports = {
         const g = arr.find(d => d.catname === args[1]);
         const embed = new Discord.MessageEmbed()
         .setColor("#FF8000")
-        .addField('Links', `[AndreMor's page](https://andremor955.github.io) | [Discord.js documentation](https://discord.js.org/#/docs/)`)
+        .addField('Links', `[Bot's page (in progress)](https://wind-tasty-zinc.glitch.me/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://andremor955.github.io) | [Discord.js documentation](https://discord.js.org/#/docs/)`)
         .setTitle(g.cat + " (" + g.commands.length + " commands)")
         .setDescription(Discord.Util.splitMessage(g.commands.filter(s => {
           if(s.secret) return false
