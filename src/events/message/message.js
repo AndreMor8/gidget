@@ -19,6 +19,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
     }
     if (msgDocument) {
       const { responses } = msgDocument;
+      if(!responses) return;
       const arr = Object.entries(responses);
       for (let i in arr) {
         const regex = new RegExp(arr[i][0], "gmi");
