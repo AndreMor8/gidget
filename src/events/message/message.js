@@ -19,12 +19,13 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
     }
     if (msgDocument) {
       const { responses } = msgDocument;
-      if(!responses) return;
-      const arr = Object.entries(responses);
-      for (let i in arr) {
-        const regex = new RegExp(arr[i][0], "gmi");
-        if (regex.test(message.content)) {
-          await message.channel.send(arr[i][1]).catch(err => {});
+      if(responses) {
+        const arr = Object.entries(responses);
+        for (let i in arr) {
+          const regex = new RegExp(arr[i][0], "gmi");
+          if (regex.test(message.content)) {
+            await message.channel.send(arr[i][1]).catch(err => { });
+          }
         }
       }
     }
