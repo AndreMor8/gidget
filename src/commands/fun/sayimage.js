@@ -6,7 +6,7 @@ module.exports = {
     run: async (bot, message, args) => {
         const miembro = message.mentions.members.first()
         if (!miembro) return message.channel.send("Mention someone")
-        const msg = Discord.Util.removeMentions(Discord.Util.escapeMarkdown(args.slice(2).join(" "))).replace(/^<a?:/g, "");
+        const mensaje = Discord.Util.removeMentions(Discord.Util.escapeMarkdown(args.slice(2).join(" "))).replace(/^<a?:/g, "");
         if (!mensaje) return message.channel.send("Put some message")
 
         const canvas = Canvas.createCanvas(400, 69)
