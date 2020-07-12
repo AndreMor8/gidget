@@ -6,10 +6,10 @@ module.exports = {
     run: async (bot, message, args) => {
         const miembro = message.mentions.members.first()
         if (!miembro) return message.channel.send("Mention someone")
-        const mensaje = args.slice(2).join(" ")
+        const msg = Discord.Util.removeMentions(Discord.Util.escapeMarkdown(args.slice(2).join(" "))).replace(/^<a?:/g, "");
         if (!mensaje) return message.channel.send("Put some message")
 
-        const canvas = Canvas.createCanvas(400, 69)//nice
+        const canvas = Canvas.createCanvas(400, 69)
         const ctx = canvas.getContext('2d')
 
         ctx.fillStyle = "#36393f"
