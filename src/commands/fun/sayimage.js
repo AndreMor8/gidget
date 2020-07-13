@@ -4,6 +4,7 @@ const Discord = require("discord.js")
 
 module.exports = {
     run: async (bot, message, args) => {
+        if (!message.guild) return message.channel.send("This command only works on Wow Wow Discord");
         if (message.guild.id !== "402555684849451028") return message.channel.send("This command only works on Wow Wow Discord");
         const miembro = message.mentions.members.first()
         if (!miembro) return message.channel.send("Mention someone")
