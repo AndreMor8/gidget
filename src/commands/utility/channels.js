@@ -8,14 +8,16 @@ module.exports = {
       message.guild.members.cache.get(args[1]) ||
       message.guild.members.cache.find(m => m.nickname === args.slice(1).join(" ")) ||
       message.guild.members.cache.find(m => m.user ? (m.user.tag === args.slice(1).join(" ")) : false) ||
-      message.guild.members.cache.find(m => m.user ? (m.user.tag === args.slice(1).join(" ")) : false) || (args[1] ? await message.guild.members.fetch(args[1]).catch(err => {}) : undefined)
+      message.guild.members.cache.find(m => m.user ? (m.user.tag === args.slice(1).join(" ")) : false) ||
+      (args[1] ? await message.guild.members.fetch(args[1]).catch(err => {}) : undefined) ||
+      message.mentions.roles.first() ||
+      message.guild.roles.cache.get(args[1]) ||
+      message.guild.roles.cache.find(e => e.name === args.slice(1).join(" "))
     let col;
     if(member) {
       col = message.guild.channels.cache.filter(c => c.type === "category" ? (c.children.some(r => r.permissionsFor(member).has("VIEW_CHANNEL")) || (c.permissionsFor(member).has("MANAGE_CHANNELS"))) : (c.permissionsFor(member).has("VIEW_CHANNEL")));
     } else {
-      if(args[1]) member = await message.guild.members.fetch(args[1]).catch(err => {});
-      if(member) col = message.guild.channels.cache.filter(c => c.type === "category" ? (c.children.some(r => r.permissionsFor(member).has("VIEW_CHANNEL")) || (c.permissionsFor(member).has("MANAGE_CHANNELS"))) : (c.permissionsFor(member).has("VIEW_CHANNEL")));
-      else col = message.guild.channels.cache;
+      col = message.guild.channels.cache;
     }
     const wocat = Util.discordSort(col.filter(c => !c.parent && c.type !== "category"))
     const textnp = wocat.filter(c => ['text', 'store', 'news'].includes(c.type));
@@ -35,7 +37,7 @@ module.exports = {
     })
     const split = Util.splitMessage(text)
     for (let i in split) {
-      await message.channel.send("\nChannel structure of " + message.guild.name + (member ? (" for " + member.user.tag) : ""), { code: split[i] })
+      await message.channel.send("Channel structure of " + message.guild.name + (member ? (" for " + (member.user ? member.user.tag : member.name)) : "") + "\n\n" + split[i], { code: "js" })
     }
   },
   aliases: [],
