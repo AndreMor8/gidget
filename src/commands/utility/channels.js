@@ -37,7 +37,7 @@ module.exports = {
     })
     const split = Util.splitMessage(text)
     for (let i in split) {
-      await message.channel.send("Channel structure of " + message.guild.name + (member ? (" for " + (member.user ? member.user.tag : member.name)) : "") + "\n\n" + split[i], { code: "js" })
+      await message.channel.send("Channel structure of " + message.guild.name + (member ? (" for " + (member.user ? member.user.tag : member.name)) : "") + "\n\n" + split[i], { code: true })
     }
   },
   aliases: [],
