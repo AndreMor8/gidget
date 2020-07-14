@@ -52,8 +52,10 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
         if (hasLeveledUp) {
           const user = await Levels.fetch(message.author.id, message.guild.id);
           let {roles} = msgDocument2;
+          console.log(roles);
           if (roles[user.level - 1]) {
             let toadd = roles[user.level - 1].filter(e => message.guild.roles.cache.has(e) && message.guild.roles.cache.get(e).editable && !message.guild.roles.cache.get(e).managed)
+            console.log(toadd);
             message.member.roles.add(toadd);
           }
         }
