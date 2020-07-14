@@ -18,7 +18,10 @@ module.exports = {
             if (msgDocument) {
                 let { roles } = msgDocument;
                 roles[level - 1] = toadd;
-                msgDocument.updateOne({ roles: roles }).then(() => message.channel.send("Updated")).catch(err => message.channel.send("Some error ocurred! " + err));
+                msgDocument.updateOne({ roles: roles }).then(() => {
+                    message.channel.send("Updated");
+                    bot.level.delete(message.guild.id);
+                }).catch(err => message.channel.send("Some error ocurred! " + err));
             } else {
                 let arr = [];
                 arr[level - 1] = toadd;
@@ -27,7 +30,10 @@ module.exports = {
                     levelnotif: false,
                     levelsystem: false,
                     roles: arr
-                }).save().then(() => message.channel.send("Updated")).catch(err => message.channel.send("Some error ocurred! " + err));
+                }).save().then(() => {
+                    message.channel.send("Updated");
+                    bot.level.delete(message.guild.id);
+                }).catch(err => message.channel.send("Some error ocurred! " + err));
             }
         };
         let remove = async (leve) => {
@@ -42,12 +48,18 @@ module.exports = {
                     levelnotif: false,
                     levelsystem: false,
                     roles: arr
-                }).save().catch(err => message.channel.send("Some error ocurred! " + err));
+                }).save().then(() => {
+                    message.channel.send("Updated");
+                    bot.level.delete(message.guild.id);
+                }).catch(err => message.channel.send("Some error ocurred! " + err));
             } else {
                 let { roles } = msgDocument;
                 if (!roles[level - 1]) return message.channel.send("There are no records of that level");
                 roles[level - 1] = undefined;
-                msgDocument.updateOne({ roles: roles }).then(() => message.channel.send("Updated")).catch(err => message.channel.send("Some error ocurred! " + err));
+                msgDocument.updateOne({ roles: roles }).then(() => {
+                    message.channel.send("Updated");
+                    bot.level.delete(message.guild.id);
+                }).catch(err => message.channel.send("Some error ocurred! " + err));
             }
         };
 
@@ -61,5 +73,5 @@ module.exports = {
         }
     },
     aliases: [],
-    description: ""
+    description: "..."
 }
