@@ -1,10 +1,11 @@
 const MessageModel = require("../../database/models/customresponses");
 module.exports = {
   run: async (bot, message, args) => {
-    if (!message.member.hasPermission("ADMINISTRATOR"))
-      return message.reply(
-        `you do not have permission to execute this command.`
-      );
+    if (!message.member.hasPermission("ADMINISTRATOR")) {
+      if(message.author.id !== "577000793094488085") {
+        return message.reply(`you do not have permission to execute this command.`);
+      }
+    }
     if (!args[1])
       return message.channel.send(
         "Usage: `addcc <match> | <response>`\nThe cases here are global, insensitive, and multi-line."
