@@ -7,13 +7,8 @@ module.exports = {
         return message.reply(`you do not have permission to execute this command.`);
       }
     }
-    if (!args[1])
-      return message.channel.send(
-        "Usage: `delcc <id>`\nUse `listcc` for a ID."
-      );
-    const msgDocument = await MessageModel.findOne({
-      guildId: message.guild.id
-    });
+    if (!args[1]) return message.channel.send("Usage: `delcc <id>`\nUse `listcc` for a ID.");
+    const msgDocument = await MessageModel.findOne({ guildId: message.guild.id });
     if (msgDocument) {
       const { responses } = msgDocument;
       const id = parseInt(args[1]);
@@ -24,17 +19,10 @@ module.exports = {
           delete responses[word];
           const a = Object.keys(responses);
           if (a.length < 1) {
-            msgDocument
-              .deleteOne()
-              .then(() => {
+            msgDocument.deleteOne().then(() => {
                 bot.autoresponsecache.delete(message.guild.id);
                 message.channel.send("Custom response deleted correctly.");
-              })
-              .catch(err =>
-                message.channel.send(
-                  "Some error ocurred. Here's a debug: " + err
-                )
-              );
+              }).catch(err => message.channel.send("Some error ocurred. Here's a debug: " + err));
           } else {
             msgDocument
               .updateOne({ responses: responses })
@@ -42,18 +30,11 @@ module.exports = {
                 bot.autoresponsecache.delete(message.guild.id);
                 message.channel.send("Custom response set correctly.");
               })
-              .catch(err =>
-                message.channel.send(
-                  "Some error ocurred. Here's a debug: " + err
-                )
-              );
+              .catch(err => message.channel.send("Some error ocurred. Here's a debug: " + err));
           }
-        } else message.channel.send("?");
-      }
-    } else
-      return message.channel.send(
-        "There are no custom responses on this server..."
-      );
+        } else message.channel.send("Something happened. Possibly a bug");
+      } else message.channel.send("Invalid ID.");
+    } else return message.channel.send("There are no custom responses on this server...");
   },
   aliases: [],
   description: "Delete a custom response from the database"
