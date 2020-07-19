@@ -28,7 +28,7 @@ module.exports = {
               .deleteOne()
               .then(() => {
                 bot.autoresponsecache.delete(message.guild.id);
-                message.channel.send("Custom response set correctly.");
+                message.channel.send("Custom response deleted correctly.");
               })
               .catch(err =>
                 message.channel.send(
