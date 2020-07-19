@@ -4,7 +4,7 @@ require("dotenv").config();
 
 // init project
 const Discord = require("discord.js");
-const bot = new Discord.Client({ partials: ['MESSAGE', 'REACTION', 'CHANNEL', 'GUILD_MEMBER', 'USER'], ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL, allowedMentions: { parse: [] } }});
+const bot = new Discord.Client({ partials: ['MESSAGE', 'REACTION', 'CHANNEL', 'GUILD_MEMBER', 'USER'], ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL }, allowedMentions: { parse: [] }});
 const reg = require('./utils/registry');
 const database = require("./database/database");
 let version = "0.72 Beta";
