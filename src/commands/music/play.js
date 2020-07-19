@@ -180,9 +180,9 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
     }
   } else {
     const song = {
-      title: songInfo.title,
-      url: songInfo.video_url,
-      duration: songInfo.length_seconds,
+      title: songInfo.videoDetails.title,
+      url: songInfo.videoDetails.video_url,
+      duration: songInfo.videoDetails.video_url,
       seektime: 0,
     };
 
