@@ -16,6 +16,7 @@
     "@discordjs/opus": "^0.3.2",
     "@jimp/custom": "^0.14.0",
     "@jimp/plugin-circle": "^0.14.0",
+    "badwords.js": "^0.1.7-alpha",
     "bluebird": "^3.7.2",
     "canvas": "^2.6.1",
     "cheerio": "^1.0.0-rc.3",
