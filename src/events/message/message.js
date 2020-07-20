@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
-const badwords = require("badwords.js");
-const towork = new badwords();
+const b = require("../../utils/badwords");
+const badwords = new b();
 const MessageModel = require("../../database/models/customresponses");
 const MessageModel2 = require("../../database/models/levelconfig");
 const MessageModel3 = require("../../database/models/prefix");
@@ -73,7 +73,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
 
   //Things for Wow Wow Discord
   if (message.guild.id === process.env.GUILDID) {
-    if (towork.isProfane(message.content)) {
+    if (badwords.isProfane(message.content)) {
       await message.delete()
       await message.reply("swearing is not allowed in this server!", { allowedMentions: { parse: ["users"] } });
     }
