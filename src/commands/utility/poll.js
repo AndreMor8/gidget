@@ -113,7 +113,7 @@ module.exports = {
         .send({
           content: mentions,
           embed: embed,
-          disableEveryone: !msg.member.hasPermission("MENTION_EVERYONE"),
+          allowedMentions: { parse: (msg.member.hasPermission("MENTION_EVERYONE") ? ["users", "everyone", "roles"] : []) },
           files: imgs
         })
         .then(
