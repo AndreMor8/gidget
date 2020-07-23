@@ -40,7 +40,7 @@
     "tabletojson": "^2.0.4",
     "translate-google": "^1.4.0",
     "ytdl-core": "^3.1.2",
-    "ytpl": "https://github.com/N5E713/node-ytpl.git",
+    "ytpl": "^0.2.0",
     "ytsr": "^0.1.15"
   }
 }
