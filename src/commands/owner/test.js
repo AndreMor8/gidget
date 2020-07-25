@@ -3,7 +3,6 @@ const fs = require("fs");
 const Canvas = require("canvas");
 module.exports = {
     run: async (bot = new Discord.Client(), message = new Discord.Message(), args = []) => {
-      if (message.author.id !== '577000793094488085') return message.channel.send('Only AndreMor can use this command.')
       if(!message.mentions.users.first()) return message.channel.send("Menciona a alguien"); 
     const user1 = message.mentions.users.first(2)[1] ? message.mentions.users.first().displayAvatarURL({ format: "png", size: 1024 }) : message.author.displayAvatarURL({ format: "png", size: 1024 });
     const user2 = message.mentions.users.first(2)[1] ? message.mentions.users.first(2)[1].displayAvatarURL({ format: "png", size: 1024 }) : message.mentions.users.first().displayAvatarURL({ format: "png", size: 1024 });
