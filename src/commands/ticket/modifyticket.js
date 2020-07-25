@@ -81,5 +81,5 @@ module.exports = {
     }
   },
   aliases: [],
-  description: ""
+  description: "Modify the ticket system"
 }

@@ -4,10 +4,8 @@ const { checkCommandModule, checkProperties } = require('./validate');
 
 module.exports = {
     registerCommands: function (bot, dir) {
-        const noarr = dir.split("/");
-        const rpath = path.join(__dirname, dir);
-        const arr = rpath.split("/");
-        const category = arr[arr.indexOf(noarr[noarr.length - 1])];
+        const arr = dir.split("/");
+        const category = arr[arr.length - 1];
         let files = fs.readdirSync(path.join(__dirname, dir));
         // Loop through each file.
         for (let file of files) {

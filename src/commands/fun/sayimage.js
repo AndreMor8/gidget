@@ -64,4 +64,5 @@ module.exports = {
     },
     aliases: [],
     description: ":)",
+    secret: true
 }

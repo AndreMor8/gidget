@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const MeowDB = require("meowdb");
 const notes = new MeowDB({
-    dir: "/app",
+    dir: __dirname,
     name: "notes"
 });
 module.exports = {

@@ -100,8 +100,11 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
     console.log(message.author.tag + ' "' + message.content + '"');
     PREFIX = "g%";
   }
+  //Mention check.
   if (message.mentions.users.get(bot.user.id) && message.content.startsWith("<@")) message.channel.send("My prefix in this server is " + PREFIX);
+  //Command structure
   if (!message.content.startsWith(PREFIX)) return;
+  //Arguments with spaces
   let args = message.content.substring(PREFIX.length).split(/ +/g);
   //let args = message.content.slice(PREFIX.length).trim().split(/ +/g);
   if (!args[0]) return;

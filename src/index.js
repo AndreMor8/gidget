@@ -14,17 +14,24 @@ process.on("unhandledRejection", error => {
 });
 
 (async () => {
+  //Pre-login
+  //Database
   await database.then(() => console.log("Connected to the database."));
+  //Music collections
   bot.musicVariables1 = new Discord.Collection();
   bot.queue = new Discord.Collection();
+  //Command collection
   bot.commands = new Discord.Collection();
+  //Cache system
   bot.cachedMessageReactions = new Discord.Collection();
   bot.autoresponsecache = new Discord.Collection();
   bot.level = new Discord.Collection();
   bot.rrcache = new Discord.Collection();
   bot.guildprefix = new Discord.Collection();
+  //Registers
   reg.registerEvents(bot, "../events");
   reg.registerCommands(bot, "../commands");
+  //Login and post-login
   await bot.login();
   bot.user.setPresence({
     activity: { name: "Ready event (Loading...)", type: "LISTENING" },
