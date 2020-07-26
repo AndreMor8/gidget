@@ -261,7 +261,7 @@ async function play(guild, song, seek = 0) {
     return;
   }
   try {
-    const dispatcher = serverQueue.connection.play(ytdl(song.url, { type: "audioonly", highWaterMark: 1 << 25 }), { seek: seek });
+    const dispatcher = serverQueue.connection.play(ytdl(song.url, { filter: "audioonly", highWaterMark: 1 << 25 }), { seek: seek });
     dispatcher.on("start", async () => {
       if (serverQueue.inseek) {
         serverQueue.inseek = false
