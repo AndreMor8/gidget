@@ -182,7 +182,7 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
     const song = {
       title: songInfo.videoDetails.title,
       url: songInfo.videoDetails.video_url,
-      duration: songInfo.videoDetails.video_url,
+      duration: songInfo.videoDetails.lengthSeconds,
       seektime: 0,
     };
 
