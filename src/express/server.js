@@ -1,9 +1,4 @@
-// server.js
-// where your node app starts
-
-// we've started you off with Express (https://expressjs.com/)
-// but feel free to use whatever libraries or frameworks you'd like through `package.json`.
-const { bot } = require('../index.js');
+const { bot, version } = require('../index.js');
 const express = require("express");
 const passport = require("passport");
 const app = express();
@@ -48,6 +43,10 @@ app.get("/", (req, res) => {
     });
   }
 });
+
+app.get("/ping", (req, res) => {
+  res.status(200).send("Gidget is alive, version " + version)
+})
 
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {

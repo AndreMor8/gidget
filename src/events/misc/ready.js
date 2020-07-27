@@ -1,3 +1,4 @@
+const https = require("https");
 const { version } = require("../../index.js")
 const presence = require("../../utils/presences");
 const tempmute = require("../../utils/tempmute");
@@ -17,6 +18,11 @@ module.exports = async bot => {
   if (doc2) {
     poll();
   }
+
+  setInterval(() => {
+    https.get(process.env.PROJECT_DOMAIN + "ping/")
+  }, 900000);
+
   console.log(`Gidget is alive! Version ` + version);
 };
 
