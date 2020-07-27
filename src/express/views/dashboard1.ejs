@@ -1,0 +1,27 @@
+<%- include('partials/header') -%>
+<body>
+<%- include('partials/nav') -%>
+<aside style="float: left; padding: 1.4em" class="menu">
+  <p class="menu-label">
+    Administration
+  </p>
+  <ul class="menu-list">
+    <li><a href="/dashboard/<%= focus %>/prefix">Prefix</a></li>
+    <li><a href="/dashboard/<%= focus %>/levels">Level config</a></li>
+    <li><a href="/dashboard/<%= focus %>/cp">Custom responses</a></li>
+  </ul>
+</aside>
+<aside style="text-align: center; display: flow-root; padding: 2em">
+  <% if(option === "levels") { %>
+  <%- include("partials/levelconfig") %>
+  <% } else if(option === "prefix") { %>
+  <%- include("partials/prefix") %>
+  <% } else if(option === "cp") { %>
+  <%- include("partials/cp") %>
+  <% } else { %>
+  <h1 class="title">
+    Select an option from the menu
+  </h1>
+  <% } %>
+  </aside>
+<%- include('partials/footer') -%>

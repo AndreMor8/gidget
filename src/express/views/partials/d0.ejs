@@ -1,0 +1,24 @@
+<a href="/dashboard/<%= guild.id %>">
+<div class="box">
+  <article class="media">
+    <div class="media-left">
+      <figure class="image is-64x64">
+        <% if(guild.icon) { %>
+        <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.png" alt="Image">
+        <% } else { %>
+        <img src="https://glitch.com/edit/images/logos/glitch/logo-day.svg" alt="Image">
+        <% } %>
+      </figure>
+    </div>
+    <div class="media-content">
+      <div class="columns is-gapless">
+        <div class="content column">
+          <p>
+            <strong><%= guild.name %></strong> <small><%= guild.id %></small>
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+</div>
+</a>

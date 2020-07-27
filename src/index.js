@@ -1,4 +1,5 @@
 require("dotenv").config();
+process.env.PORT = 8000
 // index.js
 // where your node app starts
 

@@ -1,0 +1,29 @@
+<h1 class="title">
+  Custom responses
+</h1>
+<a id="tomodify" onclick="display()"><button class="button is-link is-light" style="float: right">Add custom response</button></a><br><br>
+<div id="toappear" class="myClass" style="display: none">
+<form action="/dashboard/<%= focus %>/cp" method="post">
+<div class="field" style="margin-top: 20px; margin-left: 1.3em; margin-right: 6em">
+  <div class="control">
+    <input id="match" name="match" class="input is-medium" type="text" placeholder="Match" required>
+  </div>
+</div>
+<div class="field" style="margin-top: 20px; margin-left: 1.3em; margin-right: 6em">
+  <div class="control">
+    <textarea class="textarea" id="response" name="response" class="input is-large" type="text" placeholder="Response" required></textarea>
+  </div>
+</div>
+  <div class="field" style="margin-top: 20px; margin-left: 1.3em; margin-right: 6em">
+  <div class="control">
+    <input id="link" name="link" class="input is-medium" type="url" placeholder="File link">
+  </div>
+</div>
+  <input class="button" type="submit" value="Add">
+  </form>
+</div>
+ <br> 
+<% if(Object.entries(data.responses)[0]) { %>
+<% Object.entries(data.responses).forEach( (v, i) => { %>
+<%- include("cpr", { match: v[0], response: v[1], i }) %>
+<% })} %>
