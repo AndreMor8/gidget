@@ -153,7 +153,7 @@ module.exports = {
       }
     }
   },
-  aliases: [],
+  aliases: ["join"],
   description: "Play music from YouTube"
 };
 

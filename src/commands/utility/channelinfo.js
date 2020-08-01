@@ -11,7 +11,7 @@ module.exports = {
       store: "Store channel",
       unknown: "Guild channel"
     }
-    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || message.channel;
+    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name.replace("#", "") === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || message.channel;
     const embed = new MessageEmbed()
     .setTitle("Channel information for " + channel.name)
     .setColor("RANDOM")
@@ -33,8 +33,10 @@ module.exports = {
         .addField("Pinned messages", channel.permissionsFor(bot.user).has("VIEW_CHANNEL") ? (await channel.messages.fetchPinned(false)).size : "*Without permissions for see that*", true)
         .addField("Last pin at", channel.lastPinAt ? channel.lastPinAt.toLocaleString() : "None", true)
         .addField("NSFW?", channel.nsfw ? "Yes" : "No", true)
-        .addField("Slowmode", channel.rateLimitPerUser + " seconds", true)
-        .addField("Topic", channel.topic ? channel.topic : "None")
+        if(channel.type !== "news") {
+          embed.addField("Slowmode", channel.rateLimitPerUser + " seconds", true);
+        }
+        embed.addField("Topic", channel.topic || "None");
         break;
       case 'voice':
         embed.addField("Bitrate", channel.bitrate + " bps", true)

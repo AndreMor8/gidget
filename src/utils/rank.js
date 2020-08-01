@@ -13,13 +13,13 @@ module.exports = async ({username, discrim, level, rank, neededXP, currentXP, av
         if(!currentXP) throw new Error("No currentXP was provided!");
         if(!avatarURL) throw new Error("No avatarURL was provided!");
 
-        Canvas.registerFont("bold-font.ttf", { family: 'Manrope', weight: "regular", style: "normal" });
-        Canvas.registerFont("regular-font.ttf", { family: 'Manrope', weight: "bold", style: "normal" });
+        Canvas.registerFont(__dirname + "/bold-font.ttf", { family: 'Manrope', weight: "regular", style: "normal" });
+        Canvas.registerFont(__dirname + "/regular-font.ttf", { family: 'Manrope', weight: "bold", style: "normal" });
 
         const canvas = Canvas.createCanvas(934, 282);
         const ctx = canvas.getContext("2d");
 
-        const rankCard = await Canvas.loadImage("https://cdn.glitch.com/85bc8a75-b909-4b62-9f3f-2dc9acb6ab14%2Frankcard.png?v=1592028910785");
+        const rankCard = await Canvas.loadImage(__dirname + "/rankcard.png");
         ctx.drawImage(rankCard, 0, 0, canvas.width, canvas.height);
 
         const font = "Manrope";

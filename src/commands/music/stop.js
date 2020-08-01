@@ -39,6 +39,6 @@ module.exports = {
     serverQueue.songs = [];
     serverQueue.connection.dispatcher.end();
   },
-  aliases: [],
-  description: "Stop a song"
+  aliases: ["leave"],
+  description: "Stop the queue"
 };

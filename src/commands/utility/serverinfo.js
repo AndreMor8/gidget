@@ -32,8 +32,8 @@ module.exports = {
       embedenabled = message.guild.embedEnabled || message.guild.widgetEnabled
       embedchannel = message.guild.embedChannel || message.guild.widgetChannel
     }
-    
-    
+
+
     let invitenum = "";
     let bannumber = "";
     if (message.guild.id === "402555684849451028") {
@@ -69,6 +69,10 @@ module.exports = {
       links.push(
         `[Widget](https://discord.com/widget?id=${message.guild.id}), [Widget Image](https://discord.com/api/v7/guilds/${message.guild.id}/widget.png)`
       );
+    }
+    const vanity = await message.guild.fetchVanityCode().catch(err => {});
+    if (vanity) {
+      links.push("[Vanity invite URL](https://discord.gg/" + vanity + ")");
     }
 
     const bots = message.guild.members.cache.filter(m => m.user.bot === true)
@@ -108,69 +112,45 @@ module.exports = {
     const embed = new Discord.MessageEmbed()
       .setTitle("Server info")
       .setAuthor(message.guild.name, servericon)
-      .addField(
-        "Name",
-        `${message.guild.name} (${message.guild.nameAcronym})`,
-        true
-      )
+      .addField("Name", `${message.guild.name} (${message.guild.nameAcronym})`, true)
       .addField("ID", message.guild.id, true)
-      .addField("Server Owner", message.guild.owner.user.tag, true)
+    if (message.guild.description) {
+      embed.addField("Description", message.guild.description);
+    }
+    embed.addField("Server Owner", message.guild.owner.user.tag, true)
       .addField("Server Create Date", message.guild.createdAt, true)
       .addField("Server Region", message.guild.region, true)
       .addField("Verification Level", message.guild.verificationLevel, true)
-      .addField(
-        "Member Count",
-        `${message.guild.memberCount}\nHumans: ${rmembers}\n Bots: ${bots}`,
-        true
-      )
-      .addField(
-        "Channel Count",
-        `${
-          message.guild.channels.cache.filter(
-            c => c.type === "text" || c.type === "voice"
-          ).size
-        } (${cat} ${catname})\nText = ${
-          message.guild.channels.cache.filter(c => c.type === "text").size
-        }\nVoice = ${
-          message.guild.channels.cache.filter(c => c.type === "voice").size
-        }`,
-        true
-      )
-      .addField(
-        "Emojis",
-        `${message.guild.emojis.cache.size}\nNormal = ${emojis}\nAnimated = ${ae}`,
-        true
-      )
-      .addField(
-        "Roles",
-        `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`,
-        true
-      )
+    if (message.guild.rulesChannel) {
+      embed.addField("Rules channel", message.guild.rulesChannel.toString());
+    }
+    if (message.guild.publicUpdatesChannel) {
+      embed.addField("Discord private updates", message.guild.publicUpdatesChannel.toString());
+    }
+    embed.addField("Member Count", `${message.guild.memberCount}\nHumans: ${rmembers}\n Bots: ${bots}`, true)
+      .addField("Channel Count", `${message.guild.channels.cache.filter(c => c.type === "text" || c.type === "voice").size} (${cat} ${catname})\nText = ${message.guild.channels.cache.filter(c => c.type === "text").size}\nVoice = ${message.guild.channels.cache.filter(c => c.type === "voice").size}`, true)
+      .addField("Emojis", `${message.guild.emojis.cache.size}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
+      .addField("Roles", `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, true)
       .addField("Server Boost Level", message.guild.premiumTier, true)
       .addField("Boosts", message.guild.premiumSubscriptionCount, true)
       .addField("Features", features2, true)
-      .addField("System Channel", message.guild.systemChannel, true)
-      .addField("Widget Enabled?", embedenabled ? "Yes" + (embedchannel ? ", in " + embedchannel.toString() : "") : "No", true);
+    if (message.guild.systemChannel) {
+      embed.addField("System Channel", message.guild.systemChannel.toString(), true);
+    }
+    embed.addField("Widget Enabled?", embedenabled ? "Yes" + (embedchannel ? ", in " + embedchannel.toString() : "") : "No", true);
     if (message.guild.id === "402555684849451028") {
-      embed
-        .addField("Ban count", bannumber, true)
+      embed.addField("Ban count", bannumber, true)
         .addField("Invite count", invitenum, true);
     }
     embed
-      .addField(
-        "Presence Count (" + active + " active on this server)",
-        `**Online:** ${online}\n**Idle**: ${idle}\n**Do Not Disturb:** ${dnd}\n**Offline:** ${offline}`,
-        true
-      )
+      .addField("Presence Count (" + active + " active on this server)", `**Online:** ${online}\n**Idle**: ${idle}\n**Do Not Disturb:** ${dnd}\n**Offline:** ${offline}`, true)
       .addField("Links", links.join(", "))
       .setThumbnail(message.guild.bannerURL({ format: "png", size: 128 }))
       .setImage(message.guild.splashURL({ format: "png", size: 128 }))
       .setColor("#FF00FF")
       .setTimestamp();
     if (message.guild.id === "402555684849451028") {
-      let fetch = message.guild.roles.cache
-        .get("402559343540568084")
-        .members.map(m => m.user);
+      let fetch = message.guild.roles.cache.get("402559343540568084").members.map(m => m.user);
       let admins = fetch.join("\n");
       embed.addField("Admin List", admins);
       message.channel.send(embed);
@@ -178,6 +158,6 @@ module.exports = {
       message.channel.send(embed);
     }
   },
-  aliases: [],
+  aliases: ["server"],
   description: "Server info"
 };
