@@ -6,7 +6,9 @@ module.exports = {
         let limit = 1005;
         let code = args.slice(1).join(' ');
         try {
-            let evalued = await safeEval(code);
+            let evalued = await safeEval(code, {
+                "JSON": JSON
+            });
             if (typeof evalued !== "string")
                 evalued = require("util").inspect(evalued, { depth: 0 });
             let txt = "" + evalued;
