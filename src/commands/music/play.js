@@ -2,7 +2,7 @@ const ytdl = require("ytdl-core");
 const ytsr = require("ytsr");
 const ytpl = require("ytpl");
 const moment = require("moment");
-const momentDurationFormatSetup = require("moment-duration-format");
+require("moment-duration-format");
 module.exports = {
   run: async (bot, message, args, seek) => {
     if (!message.guild)

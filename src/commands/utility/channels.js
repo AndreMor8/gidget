@@ -48,6 +48,8 @@ function advancedmap(c) {
         let r = "";
         switch(c.type) {
           case "news":
+            r += "[📢] " + c.name;
+            break;
           case "text":
             r += "[📃] " + c.name;
             break;

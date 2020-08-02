@@ -2,7 +2,7 @@ const Discord = require("discord.js")
 const os = require('os')
 const cpuStat = require("cpu-stat");
 const moment = require("moment")
-const momentDurationFormatSetup = require("moment-duration-format");
+require("moment-duration-format");
 const { version } = require("../../index.js")
 const { promisify } = require("util");
 const p = promisify(cpuStat.usagePercent);

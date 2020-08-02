@@ -1,5 +1,5 @@
 const moment = require("moment");
-const momentDurationFormatSetup = require("moment-duration-format");
+require("moment-duration-format");
 module.exports = {
   run: async (bot, message, args) => {
     if (!message.guild)
