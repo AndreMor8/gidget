@@ -8,8 +8,8 @@ module.exports = {
         let code = args.slice(1).join(' ');
         try {
             let evalued = await safeEval(code, {
-                "JSON": new Object(JSON),
-                "Math": new Object(Math),
+                "JSON": Object.create(JSON),
+                "Math": Object.create(Math),
                 send: function (obj1, obj2) {
                     if(algo > 2) throw new Error("Only 3 messages per instance")
                     algo++;
