@@ -19,6 +19,7 @@
     "@discordjs/opus": "^0.3.2",
     "@jimp/custom": "^0.14.0",
     "@jimp/plugin-circle": "^0.14.0",
+    "@vipulbhj/clean-url": "^1.1.1",
     "badwords.js": "^0.1.7-alpha",
     "bluebird": "^3.7.2",
     "canvas": "^2.6.1",

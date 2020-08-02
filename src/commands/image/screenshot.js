@@ -1,7 +1,6 @@
 const Discord = require("discord.js");
-
+const checkCleanUrl = require('@vipulbhj/clean-url');
 const puppeteer = require("puppeteer");
-
 const timer = new Map();
 module.exports = {
   run: async (bot, message, args) => {
@@ -10,7 +9,7 @@ module.exports = {
       timer.set(message.author.id, true)
       setTimeout(() => {
         timer.delete(message.author.id);
-      }, 90000);
+      }, 25000); //Hm
     } else {
       return message.channel.send("Don't overload this command!");
     }
@@ -53,6 +52,8 @@ module.exports = {
 };
 
 async function pup(message, url, options) {
+  const result = checkCleanUrl(url);
+  if (checkCleanUrl) return message.channel.send("To view inappropriate pages use an NSFW channel");
   try {
     var form = await message.channel.send(
       "Hang on! <:WaldenRead:665434370022178837>"
