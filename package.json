@@ -46,6 +46,7 @@
     "os": "0.1.1",
     "passport": "^0.4.1",
     "passport-discord": "^0.1.4",
+    "puppeteer": "^5.2.1",
     "stream": "^0.0.2",
     "tabletojson": "^2.0.4",
     "wikijs": "^6.0.1",
