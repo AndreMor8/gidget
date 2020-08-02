@@ -8,6 +8,7 @@ module.exports = {
     let code = args.slice(1).join(' ');
     try {
       let evalued = await eval(code);
+      console.log(evalued);
       if (typeof evalued !== "string")
         evalued = require("util").inspect(evalued, { depth: 0 });
       let txt = "" + evalued;

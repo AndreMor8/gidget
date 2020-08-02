@@ -4,10 +4,21 @@ module.exports = {
     run: async (bot, message, args) => {
         if (!args[1]) return message.channel.send("Put something to evaluate.");
         let limit = 1005;
+        let algo = 0;
         let code = args.slice(1).join(' ');
         try {
             let evalued = await safeEval(code, {
-                "JSON": JSON
+                "JSON": JSON,
+                send: function (obj1, obj2) {
+                    if(algo > 2) throw new Error("Only 3 messages per instance")
+                    algo++;
+                    if(!obj1) throw new Error("You have not entered anything.");
+                    if(obj1 instanceof Object && obj1.hasOwnProperty("allowedMentions")) throw new Error("You cannot modify that value");
+                    if(obj2 instanceof Object && obj2.hasOwnProperty("allowedMentions")) throw new Error("You cannot modify that value");
+                    message.channel.send(obj1, obj2);
+                    return true;
+                },
+                "MessageEmbed": Discord.MessageEmbed,
             });
             if (typeof evalued !== "string")
                 evalued = require("util").inspect(evalued, { depth: 0 });
@@ -40,6 +51,5 @@ module.exports = {
         }
     },
     aliases: [],
-    secret: true,
     description: "Evaluate JavaScript code. The bot is not at risk."
 }

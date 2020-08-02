@@ -1,4 +1,5 @@
-const gtranslate = require('translate-google');
+const gtranslate = require('google-translate-open-api').default;
+const { parseMultiple } = require('google-translate-open-api')
 const { MessageEmbed } = require("discord.js")
 
 module.exports = {
@@ -24,7 +25,9 @@ module.exports = {
         let ptext = text;
         text = text.split(/(?=[?!.])/gi);
         text.push(" ");
-        gtranslate(text, { to: lang }).then(res => {
+        gtranslate(text, { to: lang }).then(result => {
+            const translated = result.data[0];
+            const res = parseMultiple(translated);
             let embed = new MessageEmbed()
                 .setTitle("Translate")
                 .setColor("RANDOM")
@@ -34,7 +37,7 @@ module.exports = {
                 .setTimestamp()
             message.channel.send(embed)
         }).catch(err => {
-            message.channel.send(`Could not find that language! Visit this page for avaliable languages: https://github.com/shikar/NODE_GOOGLE_TRANSLATE/blob/master/languages.js`).then(m => m.delete({ timeout: 9000 }))
+            console.log(err);
         })
     },
     aliases: [],

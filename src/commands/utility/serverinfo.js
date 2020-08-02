@@ -115,17 +115,17 @@ module.exports = {
       .addField("Name", `${message.guild.name} (${message.guild.nameAcronym})`, true)
       .addField("ID", message.guild.id, true)
     if (message.guild.description) {
-      embed.addField("Description", message.guild.description);
+      embed.addField("Description", message.guild.description, true);
     }
     embed.addField("Server Owner", message.guild.owner.user.tag, true)
       .addField("Server Create Date", message.guild.createdAt, true)
       .addField("Server Region", message.guild.region, true)
       .addField("Verification Level", message.guild.verificationLevel, true)
     if (message.guild.rulesChannel) {
-      embed.addField("Rules channel", message.guild.rulesChannel.toString());
+      embed.addField("Rules channel", message.guild.rulesChannel.toString(), true);
     }
     if (message.guild.publicUpdatesChannel) {
-      embed.addField("Discord private updates", message.guild.publicUpdatesChannel.toString());
+      embed.addField("Discord private updates", message.guild.publicUpdatesChannel.toString(), true);
     }
     embed.addField("Member Count", `${message.guild.memberCount}\nHumans: ${rmembers}\n Bots: ${bots}`, true)
       .addField("Channel Count", `${message.guild.channels.cache.filter(c => c.type === "text" || c.type === "voice").size} (${cat} ${catname})\nText = ${message.guild.channels.cache.filter(c => c.type === "text").size}\nVoice = ${message.guild.channels.cache.filter(c => c.type === "voice").size}`, true)

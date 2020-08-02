@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 module.exports = {
   run: async (bot, message, args) => {
     if (message.channel.type === 'dm') return message.channel.send(`This command only works in Wow Wow Discord`);
-    if (message.guild.name !== "Wow Wow Discord")
+    if (message.guild.id !== "")
       return message.channel.send(`This command only works in Wow Wow Discord`);
     var fetch = message.guild.roles.cache
       .get("402559343540568084")
