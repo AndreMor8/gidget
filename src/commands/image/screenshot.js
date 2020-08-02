@@ -53,7 +53,7 @@ module.exports = {
 
 async function pup(message, url, options) {
   const result = checkCleanUrl(url);
-  if (checkCleanUrl) return message.channel.send("To view inappropriate pages use an NSFW channel");
+  if (result && !message.channel.nsfw) return message.channel.send("To view inappropriate pages use an NSFW channel");
   try {
     var form = await message.channel.send(
       "Hang on! <:WaldenRead:665434370022178837>"
