@@ -8,7 +8,8 @@ const MessageModel2 = require('../../database/models/mutedmembers.js');
 const MessageModel3 = require('../../database/models/poll.js');
 var psi = setInterval(presence, 1800000);
 module.exports = async bot => {
-  require("../../express/server");
+  //Some things changed
+  //require("../../express/server");
   presence();
   let doc = await MessageModel2.findOne();
   if (doc) {
