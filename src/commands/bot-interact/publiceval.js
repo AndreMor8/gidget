@@ -8,8 +8,8 @@ module.exports = {
         let code = args.slice(1).join(' ');
         try {
             let evalued = await safeEval(code, {
-                "JSON": JSON,
-                "Math": Math,
+                "JSON": new Object(JSON),
+                "Math": new Object(Math),
                 send: function (obj1, obj2) {
                     if(algo > 2) throw new Error("Only 3 messages per instance")
                     algo++;
@@ -19,7 +19,6 @@ module.exports = {
                     message.channel.send(obj1, obj2);
                     return true;
                 },
-                "MessageEmbed": Discord.MessageEmbed,
             });
             if (typeof evalued !== "string")
                 evalued = require("util").inspect(evalued, { depth: 0 });
