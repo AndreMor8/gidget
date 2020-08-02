@@ -45,7 +45,7 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
         .setColor("#BDBDBD")
         .setTitle("Help command")
-        .addField('Links', `[Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://andremor955.github.io) | [Discord.js documentation](https://discord.js.org/#/docs/)`)
+        .addField('Links', `[Bot's page (in progress)](https://gidgetbot.herokuapp.com/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://andremor955.github.io) | [Discord.js documentation](https://discord.js.org/#/docs/)`)
         let text = "Use `help <category>` to obtain the category's commands\n\n" + Discord.Util.splitMessage(arr.filter(s => {
           if(s.secret) return false
           if(s.guildonly && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false
