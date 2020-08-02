@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.get("/", async (req, res) => {
   if (!req.headers) return res.status(403).send("You don't have authorization");
-  if (req.headers.pass !== process.env.SECRET) return res.status(403).send("You don't have authorization");
+  if (req.headers.pass !== process.env.ACCESS) return res.status(403).send("You don't have authorization");
   if(req.query && req.query.delete) {
     deleteCache(req.query.delete);
   }
