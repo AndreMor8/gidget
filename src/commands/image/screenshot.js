@@ -1,6 +1,5 @@
 const Discord = require("discord.js");
 const checkCleanUrl = require('@vipulbhj/clean-url');
-const puppeteer = require("puppeteer");
 const timer = new Map();
 module.exports = {
   run: async (bot, message, args) => {
@@ -62,8 +61,7 @@ async function pup(message, url, options) {
   } catch (err) {
   }
   try {
-    var browser = await puppeteer.launch({ args: ["--no-sandbox"] });
-    let page = await browser.newPage();
+    var page = await message.client.browser.newPage();
     page.on("error", error => {
       message.channel
         .send(
@@ -71,7 +69,6 @@ async function pup(message, url, options) {
         )
         .then(m => form.delete());
     });
-    await page.setViewport({ width: 1440, height: 900 });
     await page.goto(url, { waitUntil: "networkidle2" });
     let screenshot;
     if (options && !isNaN(options.x) && !isNaN(options.y)) {
@@ -98,7 +95,9 @@ async function pup(message, url, options) {
     message.channel.stopTyping(true);
   } finally {
     try {
-      await browser.close();
+      if(page && page.close && page.close instanceof Function) {
+        await page.close();
+      }
     } catch (error) {
       console.log(error);
     }
