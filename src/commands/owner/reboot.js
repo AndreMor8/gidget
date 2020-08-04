@@ -2,13 +2,11 @@ const Discord = require('discord.js');
 
 module.exports = {
     run: async (bot, message, args) => {
-        if (message.author.id !== '577000793094488085') {
-            return message.channel.send('Only AndreMor can use this command.')
+        if (message.author.id === '577000793094488085') {
+            await message.channel.send('I\'m rebooting. Check the log to see if I\'m active.');
+            process.exit(0);
         } else {
-            message.channel.send('I\'m rebooting. Check the log to see if I\'m active.');
-            setTimeout(() => {
-              process.exit();
-            }, 250);
+            return message.channel.send('Only AndreMor can use this command.')
         }
     },
     aliases: ['restart'],
