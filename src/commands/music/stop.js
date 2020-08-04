@@ -1,7 +1,6 @@
 module.exports = {
   run: async (bot, message, args) => {
-    if (message.channel.type === "dm")
-      return message.channel.send("This command only works on servers.");
+    if (!message.guild) return message.channel.send("This command only works on servers.");
     const serverQueue = bot.queue.get(message.guild.id);
     if (serverQueue && serverQueue.inseek) return;
     const musicVariables = bot.musicVariables1.get(message.guild.id);
@@ -10,7 +9,7 @@ module.exports = {
         "You need to be in a voice channel to stop music!"
       );
     if (!musicVariables)
-      return message.channel.send("There is nothing playing.");
+      return message.channel.send("There is nothing playing that I could stop.");
     if (musicVariables && musicVariables.other) {
       if (!message.member.hasPermission("MANAGE_CHANNELS")) {
         if (message.member.voice.channel.members.size > 2) {
@@ -27,7 +26,7 @@ module.exports = {
         "There is nothing playing that I could stop."
       );
 
-    if (serverQueue.voiceChannel.id !== message.member.voice.channel.id)
+    if (serverQueue.voiceChannel.id !== message.member.voice.channelID)
       return message.channel.send("I'm on another voice channel!");
     if (!message.member.hasPermission("MANAGE_CHANNELS")) {
       if (message.member.voice.channel.members.size > 2) {

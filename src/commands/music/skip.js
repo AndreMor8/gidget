@@ -1,6 +1,6 @@
 module.exports = {
   run: async (bot, message, args) => {
-    if (message.channel.type === "dm")
+    if (!message.guild)
       return message.channel.send("This command only works on servers.");
     const serverQueue = bot.queue.get(message.guild.id);
     if (serverQueue && serverQueue.inseek) return;

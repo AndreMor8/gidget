@@ -4,7 +4,7 @@ const MessageModel = require("../../database/models/warn2");
 
 module.exports = {
     run: async (bot, message, args) => {
-      if (message.channel.type === "dm")
+      if (!message.guild)
       return message.channel.send("This command only works on servers.");
     if (!message.member.hasPermission("BAN_MEMBERS"))
       return message.reply(

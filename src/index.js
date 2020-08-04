@@ -8,7 +8,7 @@ const bot = new Discord.Client({ partials: ['MESSAGE', 'REACTION', 'CHANNEL', 'G
 const reg = require('./utils/registry');
 const puppeteer = require("puppeteer");
 const database = require("./database/database");
-let version = "0.72 Beta";
+let version = "0.88 Beta";
 
 process.on("unhandledRejection", error => {
   console.error("Unhandled promise rejection:", error);
