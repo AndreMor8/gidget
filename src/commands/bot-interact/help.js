@@ -16,6 +16,7 @@ module.exports = {
       if (args[1] && arr.find(d => d.catname === args[1])) {
         const g = arr.find(d => d.catname === args[1]);
         const embed = new Discord.MessageEmbed()
+        .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
         .setColor("#FF8000")
         .addField('Links', `[Bot's page (in progress)](https://gidgetbot.herokuapp.com/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://andremor955.github.io) | [Discord.js documentation](https://discord.js.org/#/docs/)`)
         .setTitle(g.cat + " (" + g.commands.length + " commands)")
@@ -34,6 +35,7 @@ module.exports = {
           alias = command.aliases.join(", ");
         }
         const embed = new Discord.MessageEmbed()
+        .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
         .setTitle("Gidget help - " + args[1])
         .addField("Description" , command.description ? command.description : "Without description")
         .addField("Alias", alias)
@@ -43,6 +45,7 @@ module.exports = {
         return message.channel.send(embed);
       } else {
         const embed = new Discord.MessageEmbed()
+        .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
         .setColor("#BDBDBD")
         .setTitle("Help command")
         .addField('Links', `[Bot's page (in progress)](https://gidgetbot.herokuapp.com/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://andremor955.github.io) | [Discord.js documentation](https://discord.js.org/#/docs/)`)

@@ -2,22 +2,6 @@ const Discord = require('discord.js');
 
 module.exports = {
     run: async (bot, message, args) => {
-      if (args[1]) {
-        const command = bot.commands.get(args[1].toLowerCase()) || bot.commands.find(c => c.aliases.includes(args[1].toLowerCase()))
-        if(!command) return message.channel.send('That command doesn\'t exist or isn\'t loaded.');
-        let alias = "Without alias";
-        if(command.aliases.length !== 0){
-          alias = command.aliases.join(", ");
-        }
-        const embed = new Discord.MessageEmbed()
-        .setTitle("Gidget help - " + args[1])
-        .addField("Description" , command.description ? command.description : "Without description")
-        .addField("Alias", alias)
-        .setColor('#FFFFFF')
-        .setFooter('Requested by: ' + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
-        .setTimestamp();
-        return message.channel.send(embed);
-      }
         let text = '';
         if (message.channel.type === 'dm') {
           text += 'I\'m here';

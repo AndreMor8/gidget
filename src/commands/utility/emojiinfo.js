@@ -15,10 +15,7 @@ module.exports = {
     }
 
     let auth;
-    if (
-      message.guild.me.hasPermission("MANAGE_EMOJIS") &&
-      emoji.guild.id === message.guild.id
-    ) {
+    if (message.guild.me.hasPermission("MANAGE_EMOJIS") && emoji.guild.id === message.guild.id) {
       auth = await emoji.fetchAuthor();
     } else {
       auth = "*Without perms to see that*";
@@ -33,19 +30,13 @@ module.exports = {
       .addField("Animated?", emoji.animated ? "Yes" : "No", true)
       .addField("Managed?", emoji.managed ? "Yes" : "No", true)
       .addField("Requires colons?", emoji.requiresColons ? "Yes" : "No", true)
+      .addField("Available", emoji.available ? "Yes" : "No", true)
       .setFooter("Created at")
       .setTimestamp(emoji.createdAt);
     if (emoji.guild.id === message.guild.id) {
-      embed
-        .addField("Author", auth)
-        .addField(
-          "Roles that can use the emoji",
-          emoji.roles.cache.first()
-            ? emoji.roles.cache.map(e => `${e}`).join(", ")
-            : "@everyone"
-        );
+      embed.addField("Author", auth, true)
+      .addField("Roles that can use the emoji", emoji.roles.cache.first() ? emoji.roles.cache.map(e => `${e}`).join(", ") : "@everyone");
     }
-
     message.channel.send(embed);
   },
   aliases: ["emoji"],
