@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const checkCleanUrl = require('@vipulbhj/clean-url');
+const checkCleanUrl = require('../../utils/clean-url/index');
 const timer = new Map();
 module.exports = {
   run: async (bot, message, args) => {
