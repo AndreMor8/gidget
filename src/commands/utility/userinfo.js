@@ -2,7 +2,7 @@
 const Discord = require("discord.js");
 
 module.exports = {
-  run: async (bot, message, args) => {
+  run: async (bot = new Discord.Client(), message, args) => {
     const status = {
       online: "Online",
       idle: "Idle",
@@ -168,29 +168,14 @@ module.exports = {
           .addField(
             "Boosting?",
             member.premiumSince
-              ? `Yes, since ${member.premiumSince.toLocaleString("en-US", {
-                  dateStyle: "short",
-                  timeStyle: "medium",
-                  hour12: true
-                })}`
+              ? `Yes, since ${bot.intl.format(member.premiumSince)}`
               : "No"
           )
           .addField(
             `Joined ${message.guild.name} at`,
-            member.joinedAt.toLocaleString("en-US", {
-              dateStyle: "short",
-              timeStyle: "medium",
-              hour12: true
-            })
+            bot.intl.format(member.joinedAt)
           )
-          .addField(
-            "Joined Discord At",
-            user.createdAt.toLocaleString("en-US", {
-              dateStyle: "short",
-              timeStyle: "medium",
-              hour12: true
-            })
-          )
+          .addField("Joined Discord At", bot.intl.format(user.createdAt))
           .addField(
             "Roles",
             `${member.roles.cache
@@ -205,7 +190,7 @@ module.exports = {
           .addField("ID", user.id, true)
           .addField("Bot?", user.bot ? "Yes" : "No", true)
           .addField("Status", status2, true)
-          .addField("Presence", ptext, true)
+          .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)
           .addField("Flags", `\`${flagtext}\``, true)
           .addField(
             "Last Message",
@@ -213,11 +198,7 @@ module.exports = {
           )
           .addField(
             "Joined Discord At",
-            user.createdAt.toLocaleString("en-US", {
-              dateStyle: "short",
-              timeStyle: "medium",
-              hour12: true
-            })
+            bot.intl.format(user.createdAt)
           );
         message.channel.send(embed);
       }
@@ -235,11 +216,7 @@ module.exports = {
         )
         .addField(
           "Joined Discord At",
-          user.createdAt.toLocaleString("en-US", {
-            dateStyle: "short",
-            timeStyle: "medium",
-            hour12: true
-          })
+          bot.intl.format(user.createdAt)
         );
       message.channel.send(embed);
     }

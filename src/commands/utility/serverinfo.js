@@ -118,7 +118,7 @@ module.exports = {
       embed.addField("Description", message.guild.description, true);
     }
     embed.addField("Server Owner", message.guild.owner.user.tag, true)
-      .addField("Server Create Date", message.guild.createdAt, true)
+      .addField("Server Create Date", bot.intl.format(message.guild.createdAt), true)
       .addField("Server Region", message.guild.region, true)
       .addField("Verification Level", message.guild.verificationLevel, true)
     if (message.guild.rulesChannel) {
