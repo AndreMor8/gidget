@@ -17,7 +17,7 @@ module.exports = {
       .addField("• Uptime ", `${moment.duration(Date.now() - bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, true)
       .addField("• Discord.js", `v${Discord.version}`, true)
       .addField("• Node.js", `${process.version}`, true)
-      .addField("• Hosting service", 'Heroku', true)
+      .addField("• Hosting service", 'Azure', true)
       .addField("• CPU", `\`\`\`md\n${os.cpus().map(i => `${i.model}`)[0]}\`\`\``)
       .addField("• CPU usage", `\`${percent.toFixed(2)}%\``, true)
       .addField("• Arch", `\`${os.arch()}\``, true)
