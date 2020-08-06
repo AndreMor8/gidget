@@ -1,0 +1,22 @@
+<%- include('partials/header') -%>
+<body class="background1">
+<%- include('partials/nav') -%>
+  <% if(admin) { %>
+    <a href="/wwd/wm/add"><button class="button is-link is-light" style="float: right; margin-top: 1em; text-align: center; margin-bottom: 1em; margin-right: 1em">Add media</button></a>
+    <% } %>
+  <div>
+    <h1 class="title" style="margin-top: 15px; text-align: center; margin-bottom: 15px;">Wubbzy Media :)</h1>
+    
+  </div>
+  <div style="margin-left: 20px; margin-right: 20px">
+<% if(media.length) { %>
+    <% media.forEach((m, i) => { %>
+    <%- include('partials/media', { m, i }) -%>
+<% }) %>
+    <% } else { %>
+    <h2 style="text-align: center;">
+      Ok, that's rare...
+    </h2>
+    <% } %>
+  </div>
+<%- include('partials/footer') -%>

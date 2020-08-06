@@ -1,0 +1,14 @@
+<%- include('partials/header') -%>
+<body class="background1">
+<%- include('partials/nav') -%>
+<center>
+
+<h1 class="title" style="margin-top: 15px;">Your roles in Wow Wow Discord</h1>
+  <span style="padding: 3px ;margin-top: 10px; background-color: rgb(243,247,129); font-size: 20px; margin-left: 20px; margin-bottom: 20px">
+  <% if(roles.length) { %>
+    <%- roles.map(e => e.name).join(", ") %>
+  <% } else { %>
+  <% } %>
+  </span>
+</center>
+<%- include('partials/footer') -%>

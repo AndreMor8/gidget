@@ -1,0 +1,9 @@
+<%- include('partials/header') -%>
+<body>
+<%- include('partials/nav') -%>
+<div>
+  <% guilds.forEach(guild => { %>
+    <%- include('partials/guild', { guild, permissions }) -%>
+  <% }) %>
+</div>
+<%- include('partials/footer') -%>

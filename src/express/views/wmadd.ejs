@@ -1,0 +1,52 @@
+<%- include('partials/header') -%>
+<body class="background1">
+<%- include('partials/nav') -%>
+<center>
+<h1 style="margin-top: 10px; font-size: 3em">
+  <% if(admin) { %>
+  Add new Wubbzy media
+  <% } else { %>
+  Submit new Wubbzy multimedia
+  <% } %>
+</h1>
+<% if(status === 403) { %>
+  <h2 style="margin-top: 10px; font-size: 2em">
+  It seems that you have already sent your idea. Wait for it to be processed/approved or published and come back here.
+</h2>
+  <% } else { %>
+  <form action="/wwd/wm/add" method="post">
+<div class="field" style="margin-top: 20px; max-width: 50em">
+  <div class="control">
+    <input id="title" name="title" class="input is-medium" type="text" placeholder="Title" required>
+  </div>
+</div>
+<div class="field" style="margin-top: 20px; max-width: 50em">
+  <div class="control">
+    <input id="link" name="link" class="input is-medium" type="url" placeholder="Link" required>
+  </div>
+</div>
+<div class="field" style="margin-top: 20px; max-width: 50em">
+  <div class="control">
+    <textarea class="textarea" id="desc" name="desc" class="input is-large" type="text" placeholder="Description (optional)"></textarea>
+  </div>
+</div>
+  <% if(status !== 200) { %>
+  <% if(status === 400) { %>
+  <span style="padding: 3px; margin-top: 10px; background-color: #FA5858; font-size: 20px; color: #fff">
+    Error. Make sure that the title does not exceed 250 characters and the description is not greater than 2000 characters.
+  </span><br><br>
+  <% } else if (status === 500) { %>
+  <span style="padding: 3px; margin-top: 10px; background-color: #FA5858; font-size: 20px; color: #fff">
+    Error. A problem on the webserver, contact a WWD administrator.
+  </span><br><br>
+  <% } else if (status === 201) { %>
+  <span style="padding: 3px; margin-top: 10px; background-color: #81F7F3; font-size: 20px">
+    Your topic has been sent correctly :)
+  </span><br><br>
+  <% } %>
+  <% } %>
+  <input class="button" type="submit" value="Submit">
+  </form>
+  <% } %>
+  </center>
+<%- include('partials/footer') -%>

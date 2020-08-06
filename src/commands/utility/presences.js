@@ -1,11 +1,14 @@
 const Discord = require("discord.js");
 const moment = require("moment");
-require("moment-duration-format")
+require("moment-duration-format");
 module.exports = {
-    run: async (bot = new Discord.Client(), message = new Discord.Message(), args = []) => {
-        let number = !isNaN(args[2]) ? parseInt(args[2]) : 0;
-        let user = message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === (!isNaN(args[2]) ? args[1] : args.slice(1).join(" "))) || bot.users.cache.find(e => e.tag === (!isNaN(args[2]) ? args[1] : args.slice(1).join(" "))) || (message.guild ? (message.guild.members.cache.find(e => e.displayName === (!isNaN(args[2]) ? args[1] : args.slice(1).join(" "))) ? message.guild.members.cache.find(e => e.displayName === (!isNaN(args[2]) ? args[1] : args.slice(1).join(" "))).user : undefined) : undefined)
-        if (!user) return message.channel.send("That user is not cached or may not have contact with him.");
+    run: async (bot, message, args) => {
+        let number = !isNaN(args[args.length - 1]) ? parseInt(args[args.length - 1]) : 0;
+        if (!isNaN(args[args.length - 1]) && args.length > 1) args.pop();
+        let user = message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ")) || bot.users.cache.find(e => e.tag === args.slice(1).join(" ")) || (message.guild ? (message.guild.members.cache.find(e => e.displayName === args.slice(1).join(" ")) ? message.guild.members.cache.find(e => e.displayName === args.slice(1).join(" ")).user : undefined) : undefined);
+        if (!user) {
+            user = message.author;
+        }
         const presence = user.presence.activities[number];
         if (!user.presence.activities.length) return message.channel.send("There are no activities in that user");
         if (!presence) return message.channel.send("I can't find anything.");
@@ -14,8 +17,10 @@ module.exports = {
             .setTimestamp()
             .setColor("RANDOM")
             .addField("Name", presence.name, true)
-            .addField("Created At", bot.intl.format(presence.createdAt), true)
             .addField("Type", presence.type, true);
+            if(!isNaN(presence.createdTimestamp) && presence.createdAt) {
+                embed.addField("Created At", bot.intl.format(presence.createdAt), true)
+            }
         if (presence.applicationID) {
             embed.addField("Application ID", presence.applicationID, true)
         }
@@ -41,10 +46,10 @@ module.exports = {
         }
         if (presence.timestamps) {
             if (presence.timestamps.start) {
-                embed.addField("Start", moment.format(Date.now() - presence.timestamps.start.getTime()), true)
+                embed.addField("Start", moment.duration(Date.now() - presence.timestamps.start.getTime()).format(), true)
             }
             if (presence.timestamps.end) {
-                embed.addField("End", moment.format(Date.now() - presence.timestamps.end.getTime()), true)
+                embed.addField("End", moment.duration(Date.now() - presence.timestamps.end.getTime()).format(), true)
             }
         }
         if (presence.url) {

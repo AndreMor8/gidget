@@ -1,0 +1,18 @@
+<%- include('partials/header') -%>
+<body class="background1">
+<%- include('partials/nav') -%>
+  <div>
+    <h1 class="title" style="margin-top: 15px; text-align: center; margin-bottom: 15px">Ideas submitted for Wubbzy Wednesday</h1>
+  </div>
+  <div style="margin-left: 20px; margin-right: 20px">
+<% if(ideas.length) { %>
+    <% ideas.forEach((idea, i) => { %>
+    <%- include('partials/ideas', { idea, i, authors }) -%>
+<% }) %>
+    <% } else { %>
+    <h2 style="text-align: center;">
+      There are no ideas saved in the DB.
+    </h2>
+    <% } %>
+  </div>
+<%- include('partials/footer') -%>

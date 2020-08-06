@@ -1,0 +1,37 @@
+<h1 class="title">Level config</h1>
+  <form action="/dashboard/<%= focus %>/levels" method="post">
+  <h2 class="subtitle" style="text-align: left">Level system</h2>
+    <div class="control">
+  <label class="radio">
+    <input type="radio" name="system" value="true" <% if(data.levelsystem) { %> checked <% } %>>
+    Enabled
+    </input>
+  </label>
+  <label class="radio">
+    <input type="radio" name="system" value="false" <% if(!data.levelsystem) { %> checked <% } %>>
+    Disabled
+    </input>
+  </label>
+</div>
+  </label><br>
+  <h2 class="subtitle" style="text-align: left">Level notifications</h2>
+    <div class="control">
+  <label class="radio">
+    <input type="radio" name="notif" value="true" <% if(data.levelnotif) { %> checked <% } %>>
+    Enabled
+    </input>
+  </label>
+  <label class="radio">
+    <input type="radio" name="notif" value="false" <% if(!data.levelnotif) { %> checked <% } %>>
+    Disabled
+    </input>
+  </label>
+  </div><br>
+  <div>
+    <h2 class="subtitle" style="text-align: left">Roles for leveling-up</h2>
+    <p style="text-align: left">
+      Use <code>g%setlevelroles add [level] [roles]</code> or <code>g%setlevelroles remove [level]</code> for that config
+    </p>
+  </div><br>
+<input class="button" style="float: left" type="submit" value="Save">
+  </form>

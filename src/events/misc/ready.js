@@ -8,7 +8,7 @@ const MessageModel3 = require('../../database/models/poll.js');
 var psi = setInterval(presence, 1800000);
 module.exports = async bot => {
   //Some things changed
-  require("../../webserver");
+  require("../../express/server");
   presence();
   let doc = await MessageModel2.findOne();
   if (doc) {
