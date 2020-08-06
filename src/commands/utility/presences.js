@@ -28,7 +28,7 @@ module.exports = {
             embed.addField("Details", presence.details, true)
         }
         if (presence.emoji) {
-            embed.addField("Emoji", presence.emoji.toString() + (emoji.id ? " [(URL)](" + presence.emoji.url + ")" : ""), true)
+            embed.addField("Emoji", presence.emoji.toString() + (presence.emoji.id ? " [(URL)](" + presence.emoji.url + ")" : ""), true)
         }
         if (presence.flags && presence.flags.toArray && presence.flags.toArray()[0]) {
             embed.addField("Flags", presence.flags.toArray().join("\n"), true)
