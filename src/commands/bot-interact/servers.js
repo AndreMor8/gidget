@@ -1,7 +1,7 @@
 module.exports = {
     run: async (bot, message, args) => {
-        let servers = client.guilds.cache.size
-        let users = client.users.cache.size
+        let servers = bot.guilds.cache.size
+        let users = bot.users.cache.size
 
         let serverEmbed = new Discord.MessageEmbed()
             .setDescription("At the moment I'm in **" + servers + "** servers and with **" + users + "** online users.", true)
