@@ -38,7 +38,7 @@ module.exports = {
                 embed.addField("Party ID", presence.party.id, true)
             }
             if (presence.party.size) {
-                embed.addField("Party size", presence.party.size.join("/"))
+                embed.addField("Party size", presence.party.size.join("/"), true)
             }
         }
         if (presence.state) {
