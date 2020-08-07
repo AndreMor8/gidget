@@ -1,6 +1,7 @@
 const ytdl = require("ytdl-core");
 const ytsr = require("ytsr");
 const ytpl = require("ytpl");
+ytpl.do_warn_deprecate = false
 const moment = require("moment");
 require("moment-duration-format");
 module.exports = {
@@ -73,7 +74,7 @@ module.exports = {
       }
       message.channel.startTyping();
       return handleVideo(message, voiceChannel, "https://www.youtube.com/watch?v=" + args[1]);
-    } else if (ytpl.validateID(args[1])) {
+    } else if (ytpl.validateURL(args[1])) {
       let form1 = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>");
       message.channel.startTyping();
       try {
