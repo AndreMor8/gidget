@@ -6,18 +6,9 @@ const MessageModel2 = require("../../database/models/levelconfig");
 const MessageModel3 = require("../../database/models/prefix");
 const Levels = require("../../utils/discord-xp");
 const timer = new Discord.Collection();
-const littlething = new Map();
 //Start message event
 module.exports = async (bot, message = new Discord.Message(), nolevel = false) => {
   if (message.author.bot) return;
-  //No embed repeats, also a little cooldown
-  if(littlething.get(message.author.id) && littlething.get(message.author.id) === message.content) return;
-  else {
-    littlething.set(message.author.id, message.content)
-    setTimeout(() => {
-      littlething.delete(message.author.id);
-    }, 2000);
-  }
   //Guild-only things
   if (message.guild) {
     // Autoresponses
