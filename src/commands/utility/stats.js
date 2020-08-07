@@ -19,7 +19,7 @@ module.exports = {
       .addField("• Discord.js", `v${Discord.version}`, true)
       .addField("• Node.js", `${process.version}`, true)
       .addField("• Hosting service", 'Azure', true)
-      .addField("• Operating system", `\`\`\`md\n${os.type()}\n${os.release()}\`\`\``)
+      .addField("• Operating system", `\`\`\`md\n${os.version()}\n${os.release()}\`\`\``)
       .addField("• CPU", `\`\`\`md\n${os.cpus().map(i => `${i.model}`)[0]}\`\`\``)
       .addField("• CPU usage", `\`${percent.toFixed(2)}%\``, true)
       .addField("• Arch", `\`${os.arch()}\``, true)
