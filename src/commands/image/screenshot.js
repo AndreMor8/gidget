@@ -4,7 +4,7 @@ const timer = new Map();
 module.exports = {
   run: async (bot, message, args) => {
     if (!args[1]) return message.channel.send("Put some URL");
-    if(!timer.get(message.author.id) && message.author.id !== "577000793094488085") {
+    if((!timer.get(message.author.id)) && message.author.id !== "577000793094488085") {
       timer.set(message.author.id, true)
       setTimeout(() => {
         timer.delete(message.author.id);
