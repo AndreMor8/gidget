@@ -104,7 +104,7 @@ async function unban(guildID, userID) {
   const guild = bot.guilds.cache.get(guildID);
   if(!guild) return false;
   const algo = await bans();
-  if(bans.find(e => e.id === userID)) {
+  if(bans.find((e) => e.userID === userID)) {
     await guild.members.unban(userID);
     return true;
   } else {
