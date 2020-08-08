@@ -80,6 +80,7 @@ app.get("/", async (req, res) => {
 
   res.status(200).send("Good");
   } catch (err) {
+    console.log(err);
     res.status(500).send("Something happened! " + err);
   }
 });
