@@ -80,7 +80,7 @@ async function pup(message, url, options) {
     } else {
       screenshot = await page.screenshot({ type: "png" });
     }
-    const attachment = await new Discord.MessageAttachment(screenshot, "file.png");
+    const attachment = new Discord.MessageAttachment(screenshot, "file.png");
     await message.channel
       .send(
         "Time: " + (Date.now() - message.createdTimestamp) / 1000 + "s",
