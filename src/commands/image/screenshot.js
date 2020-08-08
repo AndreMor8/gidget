@@ -4,13 +4,15 @@ const timer = new Map();
 module.exports = {
   run: async (bot, message, args) => {
     if (!args[1]) return message.channel.send("Put some URL");
-    if(message.author.id !== "577000793094488085" && (!timer.get(message.author.id))) {
-      timer.set(message.author.id, true)
-      setTimeout(() => {
-        timer.delete(message.author.id);
-      }, 25000); //Hm
-    } else {
-      return message.channel.send("Don't overload this command! (25 sec cooldown)");
+    if(message.author.id !== "577000793094488085") {
+      if(!timer.get(message.author.id)) {
+        timer.set(message.author.id, true)
+        setTimeout(() => {
+          timer.delete(message.author.id);
+        }, 25000); //Hm
+      } else {
+        return message.channel.send("Don't overload this command! (25 sec cooldown)");
+      }
     }
     if (args[3]) {
       let options = {
