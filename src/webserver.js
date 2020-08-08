@@ -102,7 +102,7 @@ async function bans(guildID) {
 
 async function unban(guildID, userID) {
   const algo = await bans(guildID);
-  if(bans.find((e) => e.userID === userID)) {
+  if(algo.find((e) => e.userID === userID)) {
     await guild.members.unban(userID);
     return true;
   } else {
