@@ -29,6 +29,11 @@ app.use("/dashboard", require("./routes/dashboard"));
 app.use("/wwd", require("./routes/wwd"));
 
 app.get("/", (req, res) => {
+  if (req.query && req.query.delete) {
+    if (req.headers && (req.headers.pass === process.env.ACCESS)) {
+      deleteCache(req.query.delete);
+    }
+  }
   if (req.user) {
     res.render("home", {
       username: req.user.username,
