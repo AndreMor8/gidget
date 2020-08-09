@@ -29,6 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", async (req, res) => {
   if (!req.headers) return res.status(403).send("You don't have authorization");
   if (req.headers.pass !== process.env.ACCESS) return res.status(403).send("You don't have authorization");
+  try {
   if(req.query && req.query.delete) {
     deleteCache(req.query.delete);
   }
@@ -61,12 +62,56 @@ app.get("/", async (req, res) => {
     })
 
   }
+
+  if(req.query && req.query.bans) {
+    const info = await bans(req.query.bans);
+    if(!info) return res.status(404).send("No se encontró el servidor");
+    return res.status(200).send({
+      guildID: req.query.bans,
+      bans: info
+    });
+  }
+
+  if(req.query && req.query.guild && req.query.unban) {
+    const info = await unban(req.query.guild, req.query.unban);
+    if(!info) return res.status(404).send("Servidor no encontrado o miembro no está baneado");
+    return res.status(202).send("Desbaneado");
+  }
+
   res.status(200).send("Good");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Something happened! " + err);
+  }
 });
 
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
+async function bans(guildID) {
+  const guild = bot.guilds.cache.get(guildID);
+  if(!guild) return false;
+  const bans = await guild.fetchBans();
+  return bans.map((b, i) => {
+    return {
+      userID: i,
+      reason: b.reason
+    }
+  })
+}
+
+async function unban(guildID, userID) {
+  const guild = bot.guilds.cache.get(guildID);
+  if(!guild) return false;
+  const algo = await bans(guildID);
+  if(algo.find((e) => e.userID === userID)) {
+    await guild.members.unban(userID);
+    return true;
+  } else {
+    return false;
+  }
+}
 
 function deleteCache(guildID) {
   bot.cachedMessageReactions.delete(guildID);

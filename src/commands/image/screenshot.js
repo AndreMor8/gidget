@@ -4,13 +4,15 @@ const timer = new Map();
 module.exports = {
   run: async (bot, message, args) => {
     if (!args[1]) return message.channel.send("Put some URL");
-    if(!timer.get(message.author.id)) {
-      timer.set(message.author.id, true)
-      setTimeout(() => {
-        timer.delete(message.author.id);
-      }, 25000); //Hm
-    } else {
-      return message.channel.send("Don't overload this command!");
+    if(message.author.id !== "577000793094488085") {
+      if(!timer.get(message.author.id)) {
+        timer.set(message.author.id, true)
+        setTimeout(() => {
+          timer.delete(message.author.id);
+        }, 25000); //Hm
+      } else {
+        return message.channel.send("Don't overload this command! (25 sec cooldown)");
+      }
     }
     if (args[3]) {
       let options = {
@@ -78,7 +80,7 @@ async function pup(message, url, options) {
     } else {
       screenshot = await page.screenshot({ type: "png" });
     }
-    const attachment = await new Discord.MessageAttachment(screenshot);
+    const attachment = new Discord.MessageAttachment(screenshot, "file.png");
     await message.channel
       .send(
         "Time: " + (Date.now() - message.createdTimestamp) / 1000 + "s",
