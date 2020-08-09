@@ -1,0 +1,26 @@
+<div class="box">
+  <article class="media">
+    <div class="media-content">
+      <div class="content">
+        <p>
+          <strong><%- m.title %></strong> <small><%- authors.get(m.author) %></small> <small><%- m.date.toDateString() %></small>
+          <br>
+          <%- m.description %>
+        </p>
+      </div>
+      <nav class="level is-mobile">
+        <div class="level-left">
+          <a class="level-item" aria-label="delete">
+            <a href="<%- m.link %>" class="button">Watch or download media</a>
+          </a>
+          <a class="level-item" aria-label="delete">
+            <a href="?accept=<%- i %>" class="button">Accept</a>
+          </a>
+          <a class="level-item" aria-label="delete">
+            <a href="?delete=<%- i %>" class="button">Delete</a>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </article>
+</div>

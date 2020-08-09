@@ -1,0 +1,13 @@
+<%- include('partials/header') -%>
+<body>
+<%- include('partials/nav') -%>
+  <h1 style="text-align: center; font-size: 3em">
+    <strong>Select a server</strong>
+  </h1>
+  <% toshow.forEach(guild => { %>
+  <div style="display: inline-block; width: 18em; padding: 0.5em">
+    <%- include('partials/d0', { guild }) -%>
+  </div>
+  <% }) %>
+
+<%- include('partials/footer') -%>

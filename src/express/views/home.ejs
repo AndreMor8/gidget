@@ -1,0 +1,23 @@
+<%- include('partials/header') -%>
+<body>
+<%- include('partials/nav') -%>
+  <% if(user) { %>
+<div class="my-button">
+  <a href="/dashboard/guilds">
+      <button class="button is-primary is-rounded is-large custom-button">Go to your guilds</button>
+    </a>
+  </div>
+  <div class="my-button2">
+    <form action="/auth/logout">
+      <button class="button is-primary is-rounded is-large custom-button" type="submit">Logout</button>
+    </form>
+  </div>
+  <% } else { %>
+  <div class="my-button-common">
+<form action="/auth">
+      <button class="button is-primary is-rounded is-large custom-button" type="submit">Login with Discord</button>
+    </form>
+  </div>
+</div>
+<% } %>
+<%- include('partials/footer') -%>

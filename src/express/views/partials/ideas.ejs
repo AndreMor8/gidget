@@ -1,0 +1,20 @@
+<div class="box">
+  <article class="media">
+    <div class="media-content">
+      <div class="content">
+        <p>
+          <strong><%- idea.title %></strong>  <small><%- authors.get(idea.author) %></small>  <small><%- idea.date.toDateString() %></small>
+          <br>
+          <%- idea.description %>
+        </p>
+      </div>
+      <nav class="level is-mobile">
+        <div class="level-left">
+          <a class="level-item" aria-label="delete">
+            <a href="?delete=<%- i %>" class="button">Delete</a>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </article>
+</div>

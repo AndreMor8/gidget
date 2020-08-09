@@ -1,0 +1,46 @@
+<nav class="navbar is-link" role="navigation" aria-label="main navigation">
+
+  <div class="navbar-brand">
+    <div class="navbar-item">
+      <h1>Welcome, <%= username %></h1>
+    </div>
+    <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+  <span aria-hidden="true"></span>
+  <span aria-hidden="true"></span>
+  <span aria-hidden="true"></span>
+</a>
+</div>
+  <div class="navbar-menu" id="navMenu">
+      <div class="navbar-start">
+      <a href="/" class="navbar-item">
+        Home
+      </a>
+      <% if(logged) { %>
+        <a href="/dashboard" class="navbar-item">
+        Dashboard
+        </a>
+      <% } %>
+      <a href="https://github.com/AndreMor955/gidget" class="navbar-item">
+        Gidget's GitHub repository
+      </a>
+      <a href="/wwd" class="navbar-item">
+        Wow Wow Discord
+      </a>
+    </div>
+    </div>
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          <% if(logged) { %>
+          <form action="/auth/logout">
+            <button class="button is-primary is-rounded  my-custom-button" type="submit">Logout</button>
+          </form>
+          <% } else { %>
+          <form action="/auth/">
+            <button class="button is-primary is-rounded  my-custom-button" type="submit">Login</button>
+          </form>
+          <% } %>
+        </div>
+      </div>
+    </div>
+</nav>

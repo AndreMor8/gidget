@@ -1,0 +1,45 @@
+html {
+  background: none;
+}
+
+.my-button-common {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.my-button {
+  position: absolute;
+  top: 43%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.my-button2 {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.custom-button {
+  width: 350px;
+}
+
+.dropdown-menu {
+  min-width: 14rem;
+}
+
+.background1 {
+  background-image: url("https://cdn.glitch.com/37ff47f3-383f-47ea-98be-cf24f46a9763%2FC199993F-3451-4BE3-9CD8-DC59E3F30008.jpg?v=1593058072433");
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.myClass {
+  padding: 8px;
+  border-radius: 2em;
+  background-color: #F5F6CE;
+}

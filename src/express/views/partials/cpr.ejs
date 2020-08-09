@@ -1,0 +1,23 @@
+<div class="box">
+  <article class="media">
+    <div class="media-content">
+      <div class="content">
+        <p>
+          <strong><%- match %></strong>
+          <% if(response.files[0]) { %>
+          <a href="<%= response.files[0] %>"><strong><small>File link</small></strong></a>
+          <% } %>
+          <br>
+          <%- response.content %>
+        </p>
+      </div>
+      <nav class="level is-mobile">
+        <div class="level-left">
+          <a class="level-item" aria-label="delete">
+            <a href="?delete=<%- i %>" class="button is-danger is-light">Delete</a>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </article>
+</div>
