@@ -117,7 +117,7 @@ Structures.extend('Guild', Guild => {
                             return true;
                         } else {
                             await doc.updateOne({ responses: doc.responses });
-                            this.customresponses = doc.responses;
+                            this.customresponses = doc;
                             this.cache.customresponses = true;
                             return true;
                         }
