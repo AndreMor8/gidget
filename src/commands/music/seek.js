@@ -3,7 +3,7 @@ module.exports = {
     run: async (bot, message, args) => {
         if(!message.guild) return message.channel.send("This command only works in servers.");
         if(!args[1]) return message.channel.send("Usage: `seek <time>`\n`seek 1:30`");
-        const serverQueue = bot.queue.get(message.guild.id)
+        const serverQueue = message.guild.queue;
         if (!serverQueue) return message.channel.send("There is nothing playing.");
         
         const exp = args[1].split(":")

@@ -1,5 +1,4 @@
 const Levels = require("../../utils/discord-xp");
-const MessageModel = require("../../database/models/levelconfig");
 
 module.exports = {
   run: async (bot, message, args) => {
@@ -9,9 +8,8 @@ module.exports = {
         return message.channel.send("You do not have permission to use this command!");
       }
     }
-    const msgDocument = await MessageModel.findOne({ guildId: message.guild.id })
-    if (!msgDocument) return message.channel.send("The levels on this server are disabled! Use `togglelevel level` to enable the system!")
-    if (msgDocument && !msgDocument.levelsystem) return message.channel.send("The levels on this server are disabled! Use `togglelevel level` to enable the system!")
+    const msgDocument = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig()
+    if ((!msgDocument) || (msgDocument && !msgDocument.levelsystem)) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!")
     const target = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || await (args[1] ? await message.guild.members.fetch(args[1]).catch(err => { }) : undefined);
     if (target) {
       if (target.user.bot) return message.reply('why do you want to configure the level of a bot?');

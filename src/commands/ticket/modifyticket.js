@@ -10,15 +10,15 @@ module.exports = {
     if(!args[2]) {
       return message.channel.send(new MessageEmbed()
                                  .setTitle(message.guild.name + " ticket config")
-                                 .setDescription(`For the message with ID ` + msgDocument.messageId + `. [Message Link](https://ptb.discordapp.com/channels/${msgDocument.guildId}/${msgDocument.channelId}/${msgDocument.messageId})`)
+                                 .setDescription(`For the message with ID ` + msgDocument.messageId + `. [Message Link](https://ptb.discordapp.com/channels/${msgDocument.guildId}/${msgDocument.channelId}/${msgDocument.messageId})\n\`modifyticket <id> <option> <...args>\``)
                                  .addField("Channel", "<#" + msgDocument.channelId + ">")
-                                 .addField("Category", message.guild.channels.cache.get(msgDocument.categoryId).name)
-                                 .addField("Roles", msgDocument.roles[0] ? msgDocument.roles.map(r => "<@&" + r + ">").join(", "): "No Roles")
-                                 .addField("Manual closing?", manual ? "Yes" : "No")
+                                 .addField("Category (category)", message.guild.channels.cache.get(msgDocument.categoryId).name)
+                                 .addField("Roles (setroles)", msgDocument.roles[0] ? msgDocument.roles.map(r => "<@&" + r + ">").join(", "): "No Roles")
+                                 .addField("Manual closing? (manual)", manual ? "Yes" : "No")
                                  .addField("Emoji to react", Number(msgDocument.emojiId) ? (bot.emojis.cache.get(msgDocument.emojiId) ? bot.emojis.cache.get(msgDocument.emojiId).toString() : "Deleted") : msgDocument.emojiId)
-                                 .addField("Perms", msgDocument.perms[0] ? msgDocument.perms.join(", ") : "?")
-                                 .addField("Welcome", msgDocument.welcomemsg ? msgDocument.welcomemsg : "None")
-                                 .addField("Text channel description", msgDocument.desc ? msgDocument.desc : "None"))
+                                 .addField("Perms (perms)", msgDocument.perms[0] ? msgDocument.perms.join(", ") : "?")
+                                 .addField("Welcome (welcomemsg)", msgDocument.welcomemsg ? msgDocument.welcomemsg : "None")
+                                 .addField("Text channel description (desc)", msgDocument.desc ? msgDocument.desc : "None"))
     };
     switch (args[2]) {
       case "perms":

@@ -17,7 +17,7 @@ module.exports = {
       return message.channel.send(
         "You need to be in a voice channel to play music!"
       );
-    const serverQueue = bot.queue.get(message.guild.id);
+    const serverQueue = message.guild.queue;
     if (serverQueue) {
       if (serverQueue.voiceChannel.id !== voiceChannel.id)
         return message.channel.send(
@@ -33,11 +33,11 @@ module.exports = {
     if (message.guild.afkChannelID === voiceChannel.id) {
       return message.channel.send("I cannot play music on an AFK channel.");
     }
-    let musicVariables = bot.musicVariables1.get(message.guild.id);
+    let musicVariables = message.guild.musicVariables
     if (musicVariables && musicVariables.other)
       return message.channel.send("I'm doing another operation");
     if (!musicVariables) {
-      let something = {
+      message.guild.musicVariables = {
         merror: 0,
         perror: 0,
         inp: 0,
@@ -49,8 +49,7 @@ module.exports = {
         time1: null,
         other: false
       };
-      bot.musicVariables1.set(message.guild.id, something);
-      musicVariables = bot.musicVariables1.get(message.guild.id);
+      musicVariables = message.guild.musicVariables
     }
     if (musicVariables.inp == 1) return message.channel.send("I'm catching your playlist. Hang on!");
 
@@ -109,7 +108,7 @@ module.exports = {
             .then(m => form1.delete());
         }
       } catch (err) {
-        if (!serverQueue) bot.musicVariables1.delete(message.guild.id);
+        if (!serverQueue) message.guild.musicVariables = null;
         message.channel.stopTyping(true);
         message.channel.send("Some error ocurred. Here's a debug: " + err);
       }
@@ -144,7 +143,7 @@ module.exports = {
         }
         return handleVideo(message, voiceChannel, searchResults.items[0].link);
       } catch (err) {
-        if (!serverQueue) bot.musicVariables1.delete(message.guild.id);
+        if (!serverQueue) message.guild.musicVariables = null;
         message.channel.stopTyping(true);
         message.channel.send("Some error ocurred. Here's a debug: " + err);
       }
@@ -155,12 +154,10 @@ module.exports = {
 };
 
 async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
-  const serverQueue = message.client.queue.get(message.guild.id);
+  const serverQueue = message.guild.queue;
 
-  const musicVariables = message.client.musicVariables1.get(message.guild.id);
-  const songInfo = await ytdl
-    .getInfo(ytlink)
-    .catch(err => {
+  const musicVariables = message.guild.musicVariables;
+  const songInfo = await ytdl.getInfo(ytlink).catch(err => {
       console.log(err);
       musicVariables.merror = 1;
     });
@@ -194,9 +191,8 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
         loop: false,
         inseek: false,
       };
-      message.client.queue.set(message.guild.id, queueConstruct);
-
       queueConstruct.songs.push(song);
+      message.guild.queue = queueConstruct;
 
       try {
         let connection = await voiceChannel.join();
@@ -204,8 +200,8 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
           setTimeout(async () => {
             await voiceChannel.leave();
           }, 10000);
-          message.client.queue.delete(message.guild.id);
-          message.client.musicVariables1.delete(message.guild.id);
+          message.guild.queue = null;;
+          message.guild.musicVariables = null;
           message.channel.stopTyping();
           return message.channel.send(
             "Sorry, but I'm muted. Contact an admin to unmute me."
@@ -218,8 +214,8 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
       } catch (error) {
         console.error(error);
         await voiceChannel.leave();
-        message.client.queue.delete(message.guild.id);
-        message.client.musicVariables1.delete(message.guild.id);
+        message.guild.queue = null;
+        message.guild.musicVariables = null;
         message.channel.stopTyping();
         return message.channel.send(
           "I could not join the voice channel. To prevent the bot from turning off the queue has been removed. Here's a debug: " +
@@ -240,9 +236,9 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
   }
 }
 async function play(guild, song, seek = 0) {
-  const serverQueue = guild.client.queue.get(guild.id);
+  const serverQueue = guild.queue;
 
-  const musicVariables = guild.client.musicVariables1.get(guild.id);
+  const musicVariables = guild.musicVariables;
 
   if (!song) {
     if(serverQueue) {
@@ -253,8 +249,8 @@ async function play(guild, song, seek = 0) {
       serverQueue.voiceChannel.leave();
     }
     }
-    guild.client.queue.delete(guild.id);
-    guild.client.musicVariables1.delete(guild.id);
+    guild.queue = null;
+    guild.musicVariables = null;
     return;
   }
   try {
@@ -289,8 +285,8 @@ async function play(guild, song, seek = 0) {
         if (serverQueue.voiceChannel) {
           serverQueue.voiceChannel.leave();
         }
-        guild.client.queue.delete(guild.id);
-        guild.client.musicVariables1.delete(guild.id);
+        guild.queue = null;
+        guild.musicVariables = null;
         return;
       }
     });

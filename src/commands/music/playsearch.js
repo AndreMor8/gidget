@@ -5,8 +5,8 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
   run: async (bot, message, args) => {
     if(!message.guild) return message.channel.send("This command only works on servers.")
-    const serverQueue = bot.queue.get(message.guild.id);
-    const musicVariables = bot.musicVariables1.get(message.guild.id);
+    const serverQueue = message.guild.queue
+    const musicVariables = message.guild.musicVariables;
     if(!message.member.voice.channel) return message.channel.send("You must be on a voice channel.");
     if(serverQueue && serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send("I'm on another voice channel! I cannot be on two channels at the same time.");
     if(musicVariables && musicVariables.other) return message.channel.send("I'm doing another operation");

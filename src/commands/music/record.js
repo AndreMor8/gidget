@@ -10,9 +10,9 @@ module.exports = {
     if(args[1] === "dm" || args[1] === "server") {
       options = { mode: "pcm" }
     } else if(args[1] !== "play") return message.channel.send("`dm` to send the file to your direct messages, `play` to play it on the voice channel, `server` to send the file to this channel.");
-    const serverQueue = bot.queue.get(message.guild.id);
+    const serverQueue = message.guild.queue
     if (serverQueue && serverQueue.inseek) return;
-    let musicVariables = bot.musicVariables1.get(message.guild.id);
+    let musicVariables = message.guild.musicVariables;
     if (!message.member.voice.channel)
       return message.channel.send(
         "You have to be in a voice channel to pause the music!"
@@ -59,7 +59,7 @@ module.exports = {
             else await message.member.send("Here's your recording. You must pass it to Audacity as raw data to listen to it.", attachment);
             await voiceChannel.leave();
           }
-          bot.musicVariables1.delete(message.guild.id);
+          message.musicVariables = null;
         }
       });
     });

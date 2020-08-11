@@ -5,9 +5,9 @@ const MessageModel = require("../../database/models/levelconfig");
 module.exports = {
   run: async (bot, message, args) => {
     if(!message.guild) return message.channel.send("This command only works in servers");
-    const msgDocument = await MessageModel.findOne({ guildId: message.guild.id })
-    if(!msgDocument) return message.channel.send("The levels on this server are disabled! Use `togglelevel level` to enable the system!")
-    if(msgDocument && !msgDocument.levelsystem) return message.channel.send("The levels on this server are disabled! Use `togglelevel level` to enable the system!")
+    const msgDocument = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig()
+    if(!msgDocument) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!")
+    if(msgDocument && !msgDocument.levelsystem) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!")
     
     const rawLeaderboard = await Levels.fetchLeaderboard(message.guild.id, 10); // We grab top 10 users with most xp in the current server.
     if (rawLeaderboard.length < 1) return message.reply("Nobody's in leaderboard yet.");

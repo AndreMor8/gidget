@@ -1,5 +1,5 @@
 const MessageModel = require("../../database/models/levelconfig");
-const Discord = require("discord.js");
+//I don't think on rewrite this.
 module.exports = {
     run: async (bot, message, args) => {
         if (!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send("You do not have permission to use this command!")
@@ -49,16 +49,16 @@ module.exports = {
                     levelsystem: false,
                     roles: arr
                 }).save().then(() => {
+                    message.guild.cache.levelconfig = false;
                     message.channel.send("Updated");
-                    bot.level.delete(message.guild.id);
                 }).catch(err => message.channel.send("Some error ocurred! " + err));
             } else {
                 let { roles } = msgDocument;
                 if (!roles[level - 1]) return message.channel.send("There are no records of that level");
                 roles[level - 1] = undefined;
                 msgDocument.updateOne({ roles: roles }).then(() => {
+                    message.guild.cache.levelconfig = false;
                     message.channel.send("Updated");
-                    bot.level.delete(message.guild.id);
                 }).catch(err => message.channel.send("Some error ocurred! " + err));
             }
         };

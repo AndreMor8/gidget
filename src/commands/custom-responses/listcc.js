@@ -2,7 +2,7 @@ const { MessageEmbed } = require("discord.js")
 const MessageModel = require("../../database/models/customresponses");
 module.exports = {
     run: async (bot, message, args) => {
-        const msgDocument = await MessageModel.findOne({ guildId: message.guild.id });
+        const msgDocument = message.guild.cache.customresponses ? message.guild.customresponses : await message.guild.getCustomResponses();
         if (msgDocument && msgDocument.responses) {
             const { responses } = msgDocument;
             const arr = Object.entries(responses);

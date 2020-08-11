@@ -7,7 +7,7 @@ module.exports = {
     const voiceChannel = message.member.voice.channel;
     if (!voiceChannel)
       return message.channel.send("You need to be in a voice channel to play music!");
-    const serverQueue = bot.queue.get(message.guild.id);
+    const serverQueue = message.guild.queue
     if (serverQueue) return message.channel.send("I'm doing another operation");
     const permissions = voiceChannel.permissionsFor(message.client.user);
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
@@ -16,18 +16,18 @@ module.exports = {
     if (message.guild.afkChannelID === voiceChannel.id) {
       return message.channel.send("I cannot play music on an AFK channel.");
     }
-    let musicVariables = bot.musicVariables1.get(message.guild.id);
+    let musicVariables = message.guild.musicVariables;
     if (musicVariables) return message.channel.send("I'm doing another operation");
     if (!musicVariables) {
-      let something = {
+      message.guild.musicVariables = {
         textChannel: message.channel,
         voiceChannel: voiceChannel,
         loop: false, 
         connection: null,
         other: true,
       };
-      bot.musicVariables1.set(message.guild.id, something);
-      musicVariables = bot.musicVariables1.get(message.guild.id);
+      
+      musicVariables = message.guild.musicVariables
     }
     const file = message.attachments.first() ? message.attachments.first().url : args[1]
     if(!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/.test(file)) return message.channel.send("Invalid URL!")
@@ -36,7 +36,7 @@ module.exports = {
       setTimeout(async () => {
         await voiceChannel.leave();
       }, 10000);
-      message.client.musicVariables1.delete(message.guild.id);
+      message.guild.musicVariables = null;
       message.channel.stopTyping();
       return message.channel.send("Sorry, but I'm muted. Contact an admin to unmute me.");
     }
@@ -47,12 +47,12 @@ module.exports = {
 };
 
 async function playFile(file, guild) {
-  const musicVariables = guild.client.musicVariables1.get(guild.id);
+  const musicVariables = guild.musicVariables;
   const dispatcher = await musicVariables.connection.play(file, { highWaterMark: 1 << 25 });
   dispatcher.on("finish", async () => {
     if(!musicVariables.loop) {
       await musicVariables.voiceChannel.leave();
-      guild.client.musicVariables1.delete(guild.id);
+      guild.musicVariables = null;
     } else {
       playFile(file, guild);
     }
@@ -60,14 +60,14 @@ async function playFile(file, guild) {
   dispatcher.on("close", async () => {
     if (!musicVariables.loop) {
       await musicVariables.voiceChannel.leave();
-      guild.client.musicVariables1.delete(guild.id);
+      guild.musicVariables = null;
     } else {
       playFile(file, guild);
     }
   });
   dispatcher.on("error", async err => {
     await musicVariables.voiceChannel.leave();
-    guild.client.musicVariables1.delete(guild.id);
+    guild.musicVariables = null;
     message.channel.send("Some error ocurred! Here's a debug: ")
   });
   dispatcher.on("start", async () => {

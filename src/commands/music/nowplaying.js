@@ -4,8 +4,8 @@ module.exports = {
   run: async (bot, message, args) => {
     if (!message.guild)
       return message.channel.send("This command only works on servers.");
-    const serverQueue = bot.queue.get(message.guild.id);
-    const musicVariables = bot.musicVariables1.get(message.guild.id);
+    const serverQueue = message.guild.queue
+    const musicVariables = message.guild.musicVariables;
     if (!serverQueue) return message.channel.send("There is nothing playing.");
     if (!serverQueue.connection) return;
     if (!serverQueue.connection.dispatcher) return;

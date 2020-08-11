@@ -8,32 +8,15 @@ module.exports = {
       }
     }
     if (!args[1]) return message.channel.send("Usage: `togglelevel <system/notif>`");
-    let real;
-    const msgDocument = await MessageModel.findOne({ guildId: message.guild.id })
-    if(!msgDocument) {
-      const tosave = new MessageModel({
-        guildId: message.guild.id,
-        levelsystem: false,
-        levelnotif: false,
-        roles: {}
-      })
-      real = await tosave.save()
-      bot.level.delete(message.guild.id);
-    } else {
-      real = msgDocument;
-    }
+    const reference = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig();
     switch (args[1]) {
       case "notif":
-        real.updateOne({ levelnotif: !real.levelnotif }).then(() => {
-          message.channel.send(`Now the level-up notifications are: ${!real.levelnotif ? "Enabled" : "Disabled"}`)
-          bot.level.delete(message.guild.id);
-        }).catch(err => message.channel.send("Some error ocurred. Here's a debug: " + err));
+        await message.guild.changeLevelConfig("levelnotif", !reference.levelnotif)
+        message.channel.send(`Now the level-up notifications are: ${!reference.levelsystem ? "Enabled" : "Disabled"}`)
       break;
       case "system": 
-        real.updateOne({ levelsystem: !real.levelsystem }).then(() => {
-          message.channel.send(`Now the level system is: ${!real.levelsystem ? "Enabled" : "Disabled"}`)
-          bot.level.delete(message.guild.id);
-        }).catch(err => message.channel.send("Some error ocurred. Here's a debug: " + err));
+        await message.guild.changeLevelConfig("levelsystem", !reference.levelsystem)
+        message.channel.send(`Now the level system is: ${!reference.levelsystem ? "Enabled" : "Disabled"}`)
       break;
       default:
         message.channel.send("Invalid mode!");

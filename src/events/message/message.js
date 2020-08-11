@@ -12,14 +12,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
   //Guild-only things
   if (message.guild) {
     // Autoresponses
-    let msgDocument;
-    let c = bot.autoresponsecache.get(message.guild.id);
-    if (c) {
-      msgDocument = c;
-    } else {
-      msgDocument = await MessageModel.findOne({ guildId: message.guild.id });
-      bot.autoresponsecache.set(message.guild.id, msgDocument);
-    }
+    let msgDocument = message.guild.cache.customresponses ? message.guild.customresponses : await message.guild.getCustomResponses(); 
     if (msgDocument) {
       const { responses } = msgDocument;
       if (responses) {
@@ -35,11 +28,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
 
     // Level system
     if (!nolevel) {
-      let msgDocument2 = bot.level.get(message.guild.id);
-      if (!msgDocument2) {
-        msgDocument2 = await MessageModel2.findOne({ guildId: message.guild.id });
-        bot.level.set(message.guild.id, msgDocument2);
-      }
+      let msgDocument2 = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig();
       if (msgDocument2 && msgDocument2.levelsystem) {
         if (!timer.get(message.author.id)) {
           timer.set(message.author.id, true);
@@ -82,25 +71,13 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
 
   let PREFIX;
   if (message.guild) {
-    let prefixes = bot.guildprefix.get(message.guild.id);
-    if (!prefixes) {
-      let pr = await MessageModel3.findOne({ guildId: message.guild.id })
-      if (!pr) {
-        PREFIX = "g%";
-        bot.guildprefix.set(message.guild.id, "g%");
-      } else {
-        PREFIX = pr.prefix;
-        bot.guildprefix.set(message.guild.id, pr.prefix);
-      }
-    } else {
-      PREFIX = prefixes;
-    }
+    PREFIX = message.guild.cache.prefix ? message.guild.prefix : await message.guild.getPrefix();
   } else {
     console.log(message.author.tag + ' "' + message.content + '"');
     PREFIX = "g%";
   }
   //Mention check.
-  if (message.mentions.users.get(bot.user.id) && message.content.startsWith("<@")) message.channel.send("My prefix in this server is " + PREFIX);
+  if (message.mentions.users.get(bot.user.id) && message.content.startsWith("<@" + bot.user.id)) message.channel.send("My prefix in this server is " + PREFIX);
   //Check if message starts with prefix before starting any command
   if (!message.content.startsWith(PREFIX)) return;
   //Command structure
