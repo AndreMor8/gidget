@@ -107,16 +107,16 @@ Structures.extend('Guild', Guild => {
                 if (!keys.length) throw new StructureError("There are no custom responses on this server...");
                 if (index <= keys.length && index >= 1) {
                     let word = keys[index - 1];
-                    if (responses.hasOwnProperty(word)) {
-                        delete responses[word];
-                        const a = Object.keys(responses);
+                    if (doc.responses.hasOwnProperty(word)) {
+                        delete doc.responses[word];
+                        const a = Object.keys(doc.responses);
                         if (a.length < 1) {
                             await msgDocument.deleteOne()
                             this.customresponses = {}
                             this.cache.customresponses = true;
                             return true;
                         } else {
-                            await msgDocument.updateOne({ responses: responses })
+                            await msgDocument.updateOne({ responses: doc.responses })
                             this.customresponses = doc.responses;
                             this.cache.customresponses = true;
                             return true;
