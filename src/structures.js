@@ -111,12 +111,12 @@ Structures.extend('Guild', Guild => {
                         delete doc.responses[word];
                         const a = Object.keys(doc.responses);
                         if (a.length < 1) {
-                            await msgDocument.deleteOne()
+                            await doc.deleteOne()
                             this.customresponses = {}
                             this.cache.customresponses = true;
                             return true;
                         } else {
-                            await msgDocument.updateOne({ responses: doc.responses })
+                            await doc.updateOne({ responses: doc.responses });
                             this.customresponses = doc.responses;
                             this.cache.customresponses = true;
                             return true;
