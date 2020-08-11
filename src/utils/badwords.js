@@ -1,5 +1,5 @@
 let arr = require('badwords.js/array');
-
+arr.splice(arr.indexOf("crap"), 1);
 class Main {
     setOptions(options = {
         censor: '*',

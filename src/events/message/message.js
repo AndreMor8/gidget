@@ -96,6 +96,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
     } else if (!message.guild) {
       command.run(bot, message, args)
         .catch(err => {
+          if (err.name === "StructureError") return message.channel.send(err.message);
           console.error(err);
           message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
         });
