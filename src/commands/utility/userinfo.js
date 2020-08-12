@@ -59,14 +59,16 @@ module.exports = {
       }
     }
     const premiumtext = ["Without Nitro", "Nitro Classic", "***Nitro***"];
-    const thing = user.cache.premium_type ? user.premium_type : await user.getPremiumType();
+    const thing = !user.bot ? (user.cache.premium_type ? user.premium_type : await user.getPremiumType()) : undefined;
     let finaltext = ""
-    if(thing.value < 0) {
-      finaltext = "[*I don't know*](https://gidgetbot.herokuapp.com/auth/)";
-    } else if(thing.type === "db") {
-      finaltext = premiumtext[thing.value] + " (DB)";
-    } else {
-      finaltext = premiumtext[thing.value];
+    if (!user.bot) {
+      if (thing.value < 0) {
+        finaltext = "[*I don't know*](https://gidgetbot.herokuapp.com/auth/)";
+      } else if (thing.type === "db") {
+        finaltext = premiumtext[thing.value] + " (DB)";
+      } else {
+        finaltext = premiumtext[thing.value];
+      }
     }
     var status2 = "";
     if (user.presence.clientStatus) {
@@ -165,27 +167,23 @@ module.exports = {
             member.nickname ? `${member.nickname}` : "None",
             true
           )
-          .addField("Bot?", user.bot ? "Yes" : "No", true)
-          .addField("Nitro type", finaltext, true)
-          .addField("Status", status2, true)
+          .addField("Bot?", user.bot ? "Yes" : "No", true);
+        if (!user.bot) {
+          embed.addField("Nitro type", finaltext, true);
+        }
+        embed.addField("Status", status2, true)
           .addField("Presence", ptext, true)
           .addField("Permissions (General)", `\`${permstext}\``, true)
           .addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
           .addField("Flags", `\`${flagtext}\``, true)
-          .addField(
-            "Last Message",
-            user.lastMessage ? user.lastMessage.url : "Without fetch about that"
-          )
-          .addField(
-            "Boosting?",
-            member.premiumSince
-              ? `Yes, since ${bot.intl.format(member.premiumSince)}`
-              : "No"
-          )
-          .addField(
-            `Joined ${message.guild.name} at`,
-            bot.intl.format(member.joinedAt)
-          )
+          .addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that")
+        if (!user.bot) {
+          embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.intl.format(member.premiumSince)}` : "No")
+        }
+        embed.addField(
+          `Joined ${message.guild.name} at`,
+          bot.intl.format(member.joinedAt)
+        )
           .addField("Joined Discord At", bot.intl.format(user.createdAt))
           .addField(
             "Roles",
@@ -200,8 +198,10 @@ module.exports = {
           .addField("Full Username", user.tag, true)
           .addField("ID", user.id, true)
           .addField("Bot?", user.bot ? "Yes" : "No", true)
-          .addField("Nitro type", finaltext, true)
-          .addField("Status", status2, true)
+        if (!user.bot) {
+          embed.addField("Nitro type", finaltext, true)
+        }
+        embed.addField("Status", status2, true)
           .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)
           .addField("Flags", `\`${flagtext}\``, true)
           .addField(
@@ -219,8 +219,10 @@ module.exports = {
         .addField("Full Username", user.tag, true)
         .addField("ID", user.id, true)
         .addField("Bot?", user.bot ? "Yes" : "No", true)
-        .addField("Nitro type", finaltext, true)
-        .addField("Status", status2, true)
+      if (!user.bot) {
+        embed.addField("Nitro type", finaltext, true)
+      }
+      embed.addField("Status", status2, true)
         .addField("Presence", ptext, true)
         .addField("Flags", `\`${flagtext}\``, true)
         .addField(
