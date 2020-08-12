@@ -232,29 +232,29 @@ Structures.extend("User", (User) => {
                     }
                 });
                 const json = await res.json();
-                if(json && json.premium_type) {
+                if(json && (!json.message)) {
                     this.premium_type.type = "oauth2";
-                    this.premium_type.value = json.premium_type;
+                    this.premium_type.value = json.premium_type || 0;
                     this.cache.premium_type = true;
                     setTimeout(() => {
                         this.cache.premium_type = false;
                     }, 60000);
                     return {
                         type: "oauth2",
-                        value: json.premium_type
+                        value: json.premium_type || 0
                     };
                 } else {
                     const otherthing = await DiscordUser.findOne({ discordId: this.id });
                     if(otherthing && otherthing.premium_type) {
                         this.premium_type.type = "db";
-                        this.premium_type.value = otherthing.premium_type;
+                        this.premium_type.value = otherthing.premium_type || 0;
                         this.cache.premium_type = true;
                         setTimeout(() => {
                             this.cache.premium_type = false;
                         }, 60000);
                         return {
                             type: "db",
-                            value: otherthing.premium_type
+                            value: otherthing.premium_type || 0
                         };
                     } else {
                         this.premium_type.type = null;
