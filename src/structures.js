@@ -5,9 +5,13 @@ class StructureError extends Error {
         this.message = error;
     }
 }
+const fetch = require("node-fetch");
 const prefix = require("./database/models/prefix");
 const cr = require("./database/models/customresponses");
 const level = require("./database/models/levelconfig");
+const OAuth2 = require("./database/models/OAuth2Credentials");
+const DiscordUser = require("./database/models/DiscordUser");
+const CryptoJS = require("crypto-js");
 const { Structures } = require("discord.js");
 
 Structures.extend('Guild', Guild => {
@@ -192,3 +196,80 @@ Structures.extend('Guild', Guild => {
         }
     };
 });
+
+Structures.extend("User", (User) => {
+    return class extends User {
+        constructor(client, data) {
+            super(client, data);
+            this.premium_type = {
+                type: null,
+                value: -1
+            };
+            this.cache = {
+                premium_type: false,
+            }
+        }
+        async getPremiumType() {
+            const thing = await OAuth2.findOne({ discordId: this.id });
+            if(!thing) {;
+                this.premium_type.type = null;
+                this.premium_type.value = -1;
+                this.cache.premium_type = true;
+                setTimeout(() => {
+                    this.cache.premium_type = false;
+                }, 60000);
+                return {
+                    type: null,
+                    value: -1
+                };
+            } else {
+                const token = CryptoJS.AES.decrypt(thing.accessToken, process.env.VERYS);
+                const dectoken = token.toString(CryptoJS.enc.Utf8);
+                const res = await fetch(`https://discord.com/api/v6/users/@me`, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${dectoken}`
+                    }
+                });
+                const json = await res.json();
+                if(json && json.premium_type) {
+                    this.premium_type.type = "oauth2";
+                    this.premium_type.value = json.premium_type;
+                    this.cache.premium_type = true;
+                    setTimeout(() => {
+                        this.cache.premium_type = false;
+                    }, 60000);
+                    return {
+                        type: "oauth2",
+                        value: json.premium_type
+                    };
+                } else {
+                    const otherthing = await DiscordUser.findOne({ discordId: this.id });
+                    if(otherthing && otherthing.premium_type) {
+                        this.premium_type.type = "db";
+                        this.premium_type.value = otherthing.premium_type;
+                        this.cache.premium_type = true;
+                        setTimeout(() => {
+                            this.cache.premium_type = false;
+                        }, 60000);
+                        return {
+                            type: "db",
+                            value: otherthing.premium_type
+                        };
+                    } else {
+                        this.premium_type.type = null;
+                        this.premium_type.value = -1;
+                        this.cache.premium_type = true;
+                        setTimeout(() => {
+                            this.cache.premium_type = false;
+                        }, 60000);
+                        return {
+                            type: null,
+                            value: -1
+                        };;
+                    }
+                }
+            }
+        }
+    }
+})

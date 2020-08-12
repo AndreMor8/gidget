@@ -58,6 +58,16 @@ module.exports = {
         }
       }
     }
+    const premiumtext = ["Without Nitro", "Nitro Classic", "***Nitro***"];
+    const thing = user.cache.premium_type ? user.premium_type : await user.getPremiumType();
+    let finaltext = ""
+    if(thing.value < 0) {
+      finaltext = "[*I don't know*](https://gidgetbot.herokuapp.com/auth/)";
+    } else if(thing.type === "db") {
+      finaltext = premiumtext[thing.value] + " (DB)";
+    } else {
+      finaltext = premiumtext[thing.value];
+    }
     var status2 = "";
     if (user.presence.clientStatus) {
       if (user.presence.clientStatus["web"]) {
@@ -156,6 +166,7 @@ module.exports = {
             true
           )
           .addField("Bot?", user.bot ? "Yes" : "No", true)
+          .addField("Nitro type", finaltext, true)
           .addField("Status", status2, true)
           .addField("Presence", ptext, true)
           .addField("Permissions (General)", `\`${permstext}\``, true)
@@ -189,6 +200,7 @@ module.exports = {
           .addField("Full Username", user.tag, true)
           .addField("ID", user.id, true)
           .addField("Bot?", user.bot ? "Yes" : "No", true)
+          .addField("Nitro type", finaltext, true)
           .addField("Status", status2, true)
           .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)
           .addField("Flags", `\`${flagtext}\``, true)
@@ -207,6 +219,7 @@ module.exports = {
         .addField("Full Username", user.tag, true)
         .addField("ID", user.id, true)
         .addField("Bot?", user.bot ? "Yes" : "No", true)
+        .addField("Nitro type", finaltext, true)
         .addField("Status", status2, true)
         .addField("Presence", ptext, true)
         .addField("Flags", `\`${flagtext}\``, true)

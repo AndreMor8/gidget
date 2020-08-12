@@ -8,4 +8,4 @@ const UserSchema = new mongoose.Schema({
     premium_type: { type: Number }
 });
 
-const DiscordUser = module.exports = mongoose.model('User', UserSchema);s
+const DiscordUser = module.exports = mongoose.model('User', UserSchema);
