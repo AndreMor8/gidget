@@ -23,7 +23,7 @@ module.exports = {
       let emoji;
       let inrevision = Discord.Util.parseEmoji(args[3]);
       if(!inrevision.id) {
-        if(!message.guild.emojis.cache.find(e => e.name === inrevision.name) && !/^(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])$/gmi.test(inrevision.name)) return message.channel.send("Invalid emoji!");
+        if(!message.guild.emojis.cache.find(e => e.name === inrevision.name) && !/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(inrevision.name)) return message.channel.send("Invalid emoji!");
         else {
           if(message.guild.emojis.cache.find(e => e.name === inrevision.name)) {
             emoji = message.guild.emojis.cache.find(e => e.name === inrevision.name).id;
@@ -39,7 +39,7 @@ module.exports = {
       try {
         const embed = new Discord.MessageEmbed()
         .setTitle(args.slice(4).join(" "))
-        .setDescription('React with '+ (/^(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])$/gmi.test(emoji) ? emoji : bot.emojis.cache.get(emoji).toString())+' to create a ticket.')
+          .setDescription('React with ' + (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emoji) ? emoji : bot.emojis.cache.get(emoji).toString())+' to create a ticket.')
         .setColor("BLUE")
         .setFooter('You can only have one ticket at a time');
         let msg = await channel.send(embed)
