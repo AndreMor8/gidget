@@ -2,8 +2,16 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
   run: async (bot, message, args) => {
     let i = 0;
-    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || message.channel;
-    if(channel.guild.id !== message.guild.id) return message.channel.send("That channel is from another guild");
+    let channel;
+    if(message.guild) {
+      channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || message.channel;
+      if (channel.guild.id !== message.guild.id) return message.channel.send("That channel is from another guild");
+      if(!["text", "news"].includes(channel.type)) return message.channel.send("That isn't a text channel!");
+      if(!channel.permissionsFor(bot.user).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have permissions!");
+      if (!channel.permissionsFor(message.author).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("You don't have permissions!");
+    } else {
+      channel = message.channel;
+    }
     const linkregex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/g
     let questions = ["To get out of here put `exit`\nTo omit something say `none` (except in the fields)\n\nTell me the content of the message that will not be in the embed.", "Tell me the embed author", "Tell me a link o upload a attachment for the author image", "Tell me the author link", "Tell me the title", "Tell me the embed link", "Tell me a description", "Tell me a thumbnail link or upload a attachment", "Tell me a image link or upload a attachment", "Tell me a footer text", "Tell me a footer image link or upload a attachment", "Tell me the color to put it on the embed", "Do you want fields?"];
     await message.channel.send(questions[0]);
