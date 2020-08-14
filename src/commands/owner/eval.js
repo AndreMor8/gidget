@@ -1,5 +1,5 @@
 //Rewrite
-const { Util } = require("discord.js");
+const Discord = require("discord.js");
 
 module.exports = {
   run: async (bot, message, args) => {
@@ -8,10 +8,10 @@ module.exports = {
     try {
       let evaluated = await eval(args.slice(1).join(" "));
       if (typeof evaluated !== "string") evaluated = require("util").inspect(evaluated, { depth: 0 });
-      const arr = Util.splitMessage(evaluated, { maxLength: 1950 });
+      const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950 });
       message.channel.send(arr[0], { code: "js" });
     } catch (err) {
-      const arr = Util.splitMessage(err.toString(), { maxLength: 1950 });
+      const arr = Discord.Util.splitMessage(err.toString(), { maxLength: 1950 });
       message.channel.send("```js\n" + arr[0] + "```");
     }
   },
