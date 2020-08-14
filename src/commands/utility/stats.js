@@ -13,8 +13,8 @@ module.exports = {
       .setTitle("***Stats***")
       .setColor("RANDOM")
       .setDescription('Gidget is alive! - Version ' + version)
-      .addField("• RAM", `${((os.totalmem() - os.freemem()) / 1024 / 1024).toFixed(2)} / ${(os.totalmem() / 1024 / 1024).toFixed(2)} MB`, true)
-      .addField("• Process RAM usage", (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2) + " MB", true)
+      .addField("• RAM", `${memory(os.totalmem() - os.freemem(), false)} / ${memory(os.totalmem())}`, true)
+      .addField("• Process RAM usage", memory(process.memoryUsage().rss), true)
       .addField("• Uptime ", `${moment.duration(Date.now() - bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, true)
       .addField("• Discord.js", `v${Discord.version}`, true)
       .addField("• Node.js", `${process.version}`, true)
@@ -30,4 +30,23 @@ module.exports = {
   },
   aliases: [],
   description: "Bot stats",
+}
+
+function memory(bytes = 0, r = true){
+  const gigaBytes = bytes / 1024**3;
+  if(gigaBytes > 1){
+      return `${gigaBytes.toFixed(1)} ${r ? "GB" : ""}`;
+  }
+  
+  const megaBytes = bytes / 1024**2;
+  if(megaBytes > 1){
+      return `${megaBytes.toFixed(2)} ${r ? "MB" : ""}`;
+  }
+
+  const kiloBytes = bytes / 1024;
+  if(kiloBytes > 1){
+      return `${kiloBytes.toFixed(2)} ${r ? "KB" : ""}`;
+  }
+  
+  return `${bytes.toFixed(2)} ${r ? "B" : ""}`;
 }
