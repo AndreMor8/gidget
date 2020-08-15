@@ -25,8 +25,12 @@ const listener = app.listen(process.env.PORT, function () {
 
 function deleteCache(guildID) {
   bot.cachedMessageReactions.delete(guildID);
-  bot.autoresponsecache.delete(guildID);
-  bot.level.delete(guildID);
   bot.rrcache.delete(guildID);
-  bot.guildprefix.delete(guildID);
+  const guild = bot.guilds.cache.get(guildID);
+  if(guild) {
+    guild.cache.prefix = false;
+    guild.cache.customresponses = false;
+    guild.cache.levelconfig = false;
+    return true;
+  } else return false
 }

@@ -25,7 +25,7 @@ module.exports = {
     let embedenabled;
     let embedchannel;
     if (message.guild.me.hasPermission("MANAGE_GUILD")) {
-      let embeddata = await message.guild.fetchEmbed();
+      let embeddata = await message.guild.fetchWidget();
       embedenabled = embeddata.enabled;
       embedchannel = embeddata.channel;
     } else {
@@ -70,9 +70,9 @@ module.exports = {
         `[Widget](https://discord.com/widget?id=${message.guild.id}), [Widget Image](https://discord.com/api/v7/guilds/${message.guild.id}/widget.png)`
       );
     }
-    const vanity = await message.guild.fetchVanityCode().catch(err => {});
-    if (vanity) {
-      links.push("[Vanity invite URL](https://discord.gg/" + vanity + ")");
+    const vanity = await message.guild.fetchVanityData().catch(err => {});
+    if (vanity && vanity.code) {
+      links.push("[Vanity invite URL"+ vanity.uses ? (" ("+ vanity.uses +" uses)") : "" +"](https://discord.gg/" + vanity.code + ")");
     }
 
     const bots = message.guild.members.cache.filter(m => m.user.bot === true)

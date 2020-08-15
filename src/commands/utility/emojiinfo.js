@@ -14,10 +14,10 @@ module.exports = {
       if (!emoji) return message.channel.send("Invalid emoji!");
     }
 
-    let auth;
-    if (message.guild.me.hasPermission("MANAGE_EMOJIS") && emoji.guild.id === message.guild.id) {
+    let auth = emoji.author;
+    if (!auth && message.guild.me.hasPermission("MANAGE_EMOJIS") && emoji.guild.id === message.guild.id) {
       auth = await emoji.fetchAuthor();
-    } else {
+    } else if(!auth) {
       auth = "*Without perms to see that*";
     }
     const embed = new MessageEmbed()

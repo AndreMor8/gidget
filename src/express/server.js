@@ -5,6 +5,7 @@ const app = express();
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const DS = require("./strategies/discord.js");
+const { guilds } = require('./utils/utils.js');
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
@@ -57,3 +58,15 @@ app.get("/ping", (req, res) => {
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
+function deleteCache(guildID) {
+  bot.cachedMessageReactions.delete(guildID);
+  bot.rrcache.delete(guildID);
+  const guild = bot.guilds.cache.get(guildID);
+  if(guild) {
+    guild.cache.prefix = false;
+    guild.cache.customresponses = false;
+    guild.cache.levelconfig = false;
+    return true;
+  } else return false
+}
