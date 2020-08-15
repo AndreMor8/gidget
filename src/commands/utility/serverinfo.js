@@ -16,7 +16,7 @@ module.exports = {
     let links = [`[Guild](https://discord.com/channels/${server.id})`];
     let embedenabled;
     let embedchannel;
-    let catname;
+    let catname = "";
     let invitenum = "";
     let bannumber = "";
     let bots;
@@ -32,8 +32,8 @@ module.exports = {
     let offline;
     let active;
     if (server instanceof Discord.Guild) {
-      const cat = server.channels.cache.filter(c => c.type === "category")
-        .size;
+      const cat = server.channels.cache.filter(c => c.type === "category").size;
+      console.log(cat);
       if (cat == 1) {
         catname += "1 category";
       } else {
