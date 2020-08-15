@@ -164,7 +164,7 @@ module.exports = {
           .addField("Invite count", invitenum, true);
       }
     } else {
-      embed.addField("Approximate member's count", rmembers + "\nOnline: " + active + "\nOffline: " + (rmembers - active));
+      embed.addField("Approximate member's count", rmembers + "\nOnline: " + active + "\nOffline: " + (rmembers - active), true);
     }
     embed.addField("Features", features || "None", true)
       .addField("Links", links.join(", "))
