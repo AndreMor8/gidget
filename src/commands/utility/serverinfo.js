@@ -129,7 +129,7 @@ module.exports = {
     const embed = new Discord.MessageEmbed()
       .setTitle("Server info")
       .setAuthor(server.name, servericon)
-      .addField("Name", `${server.name} (${server.nameAcronym})`, true)
+      .addField("Name", `${server.name} ${(server instanceof Discord.Guild) ? (" (" + server.nameAcronym + ")") : ""}`, true)
       .addField("ID", server.id, true)
     if (server.description) {
       embed.addField("Description", server.description, true);
@@ -163,7 +163,7 @@ module.exports = {
     }
     embed.addField("Features", features || "None", true)
       .addField("Links", links.join(", "))
-      .setThumbnail(server instanceof Discord.GuildPreview ? server.discoverySplashURL({ format: "png", size: 128 }) : server.bannerURL({ format: "png", size: 128 }))
+      .setThumbnail((server instanceof Discord.Guild) ? server.bannerURL({ format: "png", size: 128 }) : server.discoverySplashURL({ format: "png", size: 128 }))
       .setImage(server.splashURL({ format: "png", size: 128 }))
       .setColor("#FF00FF")
       .setTimestamp();
