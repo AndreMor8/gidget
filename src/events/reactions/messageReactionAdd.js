@@ -50,7 +50,7 @@ module.exports = async (bot, reaction, user) => {
         id: user.id
       },
       {
-        deny: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+        deny: "VIEW_CHANNEL",
         id: reaction.message.guild.id
       },
       {
@@ -75,7 +75,7 @@ module.exports = async (bot, reaction, user) => {
         type: "text",
         topic: todesc,
         permissionOverwrites: roleperm,
-        parent: categoryId,
+        parent: cat,
         reason: "User created a ticket!"
       })
       .then(ch => {
