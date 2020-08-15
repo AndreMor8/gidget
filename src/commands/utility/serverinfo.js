@@ -8,8 +8,8 @@ module.exports = {
       bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()) ||
       await bot.guilds.fetch(args[1]).catch(err => { }) ||
       await bot.fetchGuildPreview(args[1]).catch(err => { })) : message.guild;
-
-    if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server")
+    if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server");
+    if((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
     var servericon = server.iconURL({ dynamic: true });
     let features = server.features.join("\n");
     //¯\_(ツ)_/¯
@@ -114,6 +114,9 @@ module.exports = {
       ).size;
 
       active = online + idle + dnd;
+    } else {
+      rmembers = server.approximateMemberCount;
+      active = server.approximatePresenceCount;
     }
 
     if (server.splashURL()) {
@@ -160,6 +163,8 @@ module.exports = {
         embed.addField("Ban count", bannumber, true)
           .addField("Invite count", invitenum, true);
       }
+    } else {
+      embed.addField("Approximate member's count", rmembers + "\nOnline: " + active + "\nOffline: " + (rmembers - active));
     }
     embed.addField("Features", features || "None", true)
       .addField("Links", links.join(", "))
