@@ -46,15 +46,15 @@ module.exports = async (bot, reaction, user) => {
     let cat = reaction.message.guild.channels.cache.get(categoryId);
     let roleperm = [
       {
-        allow: "VIEW_CHANNEL",
+        allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
         id: user.id
       },
       {
-        deny: "VIEW_CHANNEL",
+        deny: ["VIEW_CHANNEL", "SEND_MESSAGES"],
         id: reaction.message.guild.id
       },
       {
-        allow: "VIEW_CHANNEL",
+        allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
         id: bot.user.id
       }
     ];
@@ -63,7 +63,7 @@ module.exports = async (bot, reaction, user) => {
       for (let i in roles) {
         if (reaction.message.guild.roles.cache.get(roles[i])) {
           roleperm.push({
-            allow: "VIEW_CHANNEL",
+            allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
             id: roles[i]
           });
         }
