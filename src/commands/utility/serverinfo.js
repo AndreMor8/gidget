@@ -2,155 +2,173 @@ const Discord = require("discord.js");
 
 module.exports = {
   run: async (bot, message, args) => {
-    if (message.channel.type === "dm")
-      return message.channel.send("This command only works on servers.");
-    await message.guild.fetch();
-    var servericon = message.guild.iconURL({ dynamic: true });
-    const features = message.guild.features.join("\n");
-    if (!features) {
-      var features2 = "None";
-    } else {
-      var features2 = features;
-    }
+    if (!message.guild && !args[1]) return message.channel.send("Put a server ID!");
+    const server = args[1] ? (bot.guilds.cache.get(args[1]) ||
+      bot.guilds.cache.find(e => e.name === args.slice(1).join(" ")) ||
+      bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()) ||
+      await bot.guilds.fetch(args[1]).catch(err => { }) ||
+      await bot.fetchGuildPreview(args[1]).catch(err => { })) : message.guild;
 
-    const cat = message.guild.channels.cache.filter(c => c.type === "category")
-      .size;
-    var catname = "";
-    if (cat == 1) {
-      catname += "category";
-    } else {
-      catname += "categories";
-    }
-
+    if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server")
+    var servericon = server.iconURL({ dynamic: true });
+    let features = server.features.join("\n");
+    //¯\_(ツ)_/¯
+    let links = [`[Guild](https://discord.com/channels/${server.id})`];
     let embedenabled;
     let embedchannel;
-    if (message.guild.me.hasPermission("MANAGE_GUILD")) {
-      let embeddata = await message.guild.fetchWidget();
-      embedenabled = embeddata.enabled;
-      embedchannel = embeddata.channel;
-    } else {
-      embedenabled = message.guild.embedEnabled || message.guild.widgetEnabled
-      embedchannel = message.guild.embedChannel || message.guild.widgetChannel
-    }
-
-
+    let catname;
     let invitenum = "";
     let bannumber = "";
-    if (message.guild.id === "402555684849451028") {
-      const bans = await message.guild.fetchBans();
-
-      if (bans.first()) {
-        bannumber = bans.size + " bans";
+    let bots;
+    let rmembers;
+    let roles;
+    let mroles;
+    let rroles;
+    let ae;
+    let emojis;
+    let online;
+    let idle;
+    let dnd;
+    let offline;
+    let active;
+    if (server instanceof Discord.Guild) {
+      const cat = server.channels.cache.filter(c => c.type === "category")
+        .size;
+      if (cat == 1) {
+        catname += "1 category";
       } else {
-        bannumber = "Without bans";
+        catname += cat + " categories";
       }
 
-      const invites = await message.guild.fetchInvites();
-
-      if (invites.first()) {
-        invitenum = invites.size + " invites";
+      if (server.me.hasPermission("MANAGE_GUILD")) {
+        let embeddata = await server.fetchWidget();
+        embedenabled = embeddata.enabled;
+        embedchannel = embeddata.channel;
       } else {
-        invitenum = "Without invites";
+        embedenabled = server.embedEnabled || server.widgetEnabled
+        embedchannel = server.embedChannel || server.widgetChannel
       }
+
+      if (server.id === "402555684849451028") {
+        const bans = await server.fetchBans();
+
+        if (bans.first()) {
+          bannumber = bans.size + " bans";
+        } else {
+          bannumber = "Without bans";
+        }
+
+        const invites = await server.fetchInvites();
+
+        if (invites.first()) {
+          invitenum = invites.size + " invites";
+        } else {
+          invitenum = "Without invites";
+        }
+      }
+      if (server.bannerURL()) {
+        links.push(
+          `[Banner Image](${server.bannerURL({ format: "png", size: 4096 })})`
+        );
+      }
+      if (embedenabled) {
+        links.push(
+          `[Widget](https://discord.com/widget?id=${server.id}), [Widget Image](https://discord.com/api/v7/guilds/${server.id}/widget.png)`
+        );
+      }
+      const vanity = await server.fetchVanityData().catch(err => { });
+      if (vanity && vanity.code) {
+        links.push("[Vanity invite URL" + vanity.uses ? (" (" + vanity.uses + " uses)") : "" + "](https://discord.gg/" + vanity.code + ")");
+      }
+
+      bots = server.members.cache.filter(m => m.user.bot === true)
+        .size;
+
+      rmembers = server.memberCount - bots;
+
+      roles = server.roles.cache.size;
+
+      mroles = server.roles.cache.filter(r => r.managed === true)
+        .size;
+
+      rroles = roles - mroles;
+
+      ae = server.emojis.cache.filter(e => e.animated === true).size;
+
+      emojis = server.emojis.cache.size - ae;
+
+      online = server.members.cache.filter(
+        m => m.user.presence.status === "online"
+      ).size;
+
+      idle = server.members.cache.filter(
+        m => m.user.presence.status === "idle"
+      ).size;
+
+      dnd = server.members.cache.filter(
+        m => m.user.presence.status === "dnd"
+      ).size;
+
+      offline = server.members.cache.filter(
+        m => m.user.presence.status === "offline"
+      ).size;
+
+      active = online + idle + dnd;
     }
 
-    let links = [`[Guild](https://discord.com/channels/${message.guild.id})`];
-    if (message.guild.splashURL()) {
+    if (server.splashURL()) {
       links.push(
-        `[Invite Splash Image](${message.guild.splashURL({ format: "png", size: 1024 })})`
+        `[Invite Splash Image](${server.splashURL({ format: "png", size: 4096 })})`
       );
     }
-    if (message.guild.bannerURL()) {
-      links.push(
-        `[Banner Image](${message.guild.bannerURL({ format: "png", size: 1024 })})`
-      );
+
+    if (server.discoverySplashURL()) {
+      links.push("[Discovery Splash image](" + server.discoverySplashURL({ format: "png", size: 4096 }) + ")");
     }
-    if (embedenabled) {
-      links.push(
-        `[Widget](https://discord.com/widget?id=${message.guild.id}), [Widget Image](https://discord.com/api/v7/guilds/${message.guild.id}/widget.png)`
-      );
-    }
-    const vanity = await message.guild.fetchVanityData().catch(err => {});
-    if (vanity && vanity.code) {
-      links.push("[Vanity invite URL"+ vanity.uses ? (" ("+ vanity.uses +" uses)") : "" +"](https://discord.gg/" + vanity.code + ")");
-    }
-
-    const bots = message.guild.members.cache.filter(m => m.user.bot === true)
-      .size;
-
-    const rmembers = message.guild.memberCount - bots;
-
-    const roles = message.guild.roles.cache.size;
-
-    const mroles = message.guild.roles.cache.filter(r => r.managed === true)
-      .size;
-
-    const rroles = roles - mroles;
-
-    const ae = message.guild.emojis.cache.filter(e => e.animated === true).size;
-
-    const emojis = message.guild.emojis.cache.size - ae;
-
-    const online = message.guild.members.cache.filter(
-      m => m.user.presence.status === "online"
-    ).size;
-
-    const idle = message.guild.members.cache.filter(
-      m => m.user.presence.status === "idle"
-    ).size;
-
-    const dnd = message.guild.members.cache.filter(
-      m => m.user.presence.status === "dnd"
-    ).size;
-
-    const offline = message.guild.members.cache.filter(
-      m => m.user.presence.status === "offline"
-    ).size;
-
-    const active = online + idle + dnd;
 
     const embed = new Discord.MessageEmbed()
       .setTitle("Server info")
-      .setAuthor(message.guild.name, servericon)
-      .addField("Name", `${message.guild.name} (${message.guild.nameAcronym})`, true)
-      .addField("ID", message.guild.id, true)
-    if (message.guild.description) {
-      embed.addField("Description", message.guild.description, true);
+      .setAuthor(server.name, servericon)
+      .addField("Name", `${server.name} (${server.nameAcronym})`, true)
+      .addField("ID", server.id, true)
+    if (server.description) {
+      embed.addField("Description", server.description, true);
     }
-    embed.addField("Server Owner", message.guild.owner.user.tag, true)
-      .addField("Server Create Date", bot.intl.format(message.guild.createdAt), true)
-      .addField("Server Region", message.guild.region, true)
-      .addField("Verification Level", message.guild.verificationLevel, true)
-    if (message.guild.rulesChannel) {
-      embed.addField("Rules channel", message.guild.rulesChannel.toString(), true);
+    if (server instanceof Discord.Guild) {
+      embed.addField("Server Owner", server.owner.user.tag, true)
+        .addField("Server Create Date", bot.intl.format(server.createdAt), true)
+        .addField("Server Region", server.region, true)
+        .addField("Verification Level", server.verificationLevel, true)
+      if (server.rulesChannel) {
+        embed.addField("Rules channel", server.rulesChannel.toString(), true);
+      }
+      if (server.publicUpdatesChannel) {
+        embed.addField("Discord private updates", server.publicUpdatesChannel.toString(), true);
+      }
+      embed.addField("Member Count", `${server.memberCount}\nHumans: ${rmembers}\n Bots: ${bots}`, true)
+        .addField("Channel Count", `${server.channels.cache.filter(c => c.type === "text" || c.type === "voice").size} (${catname})\nText = ${server.channels.cache.filter(c => c.type === "text").size}\nVoice = ${server.channels.cache.filter(c => c.type === "voice").size}`, true)
+        .addField("Emojis", `${server.emojis.cache.size}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
+        .addField("Roles", `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, true)
+        .addField("Server Boost Level", server.premiumTier, true)
+        .addField("Boosts", server.premiumSubscriptionCount, true)
+      if (server.systemChannel) {
+        embed.addField("System Channel", server.systemChannel.toString(), true);
+      }
+      embed.addField("Widget Enabled?", embedenabled ? "Yes" + (embedchannel ? ", in " + embedchannel.toString() : "") : "No", true)
+        .addField("Presence Count (" + active + " active on this server)", `**Online:** ${online}\n**Idle**: ${idle}\n**Do Not Disturb:** ${dnd}\n**Offline:** ${offline}`, true);
+      if (server.id === "402555684849451028") {
+        embed.addField("Ban count", bannumber, true)
+          .addField("Invite count", invitenum, true);
+      }
     }
-    if (message.guild.publicUpdatesChannel) {
-      embed.addField("Discord private updates", message.guild.publicUpdatesChannel.toString(), true);
-    }
-    embed.addField("Member Count", `${message.guild.memberCount}\nHumans: ${rmembers}\n Bots: ${bots}`, true)
-      .addField("Channel Count", `${message.guild.channels.cache.filter(c => c.type === "text" || c.type === "voice").size} (${cat} ${catname})\nText = ${message.guild.channels.cache.filter(c => c.type === "text").size}\nVoice = ${message.guild.channels.cache.filter(c => c.type === "voice").size}`, true)
-      .addField("Emojis", `${message.guild.emojis.cache.size}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
-      .addField("Roles", `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, true)
-      .addField("Server Boost Level", message.guild.premiumTier, true)
-      .addField("Boosts", message.guild.premiumSubscriptionCount, true)
-      .addField("Features", features2, true)
-    if (message.guild.systemChannel) {
-      embed.addField("System Channel", message.guild.systemChannel.toString(), true);
-    }
-    embed.addField("Widget Enabled?", embedenabled ? "Yes" + (embedchannel ? ", in " + embedchannel.toString() : "") : "No", true);
-    if (message.guild.id === "402555684849451028") {
-      embed.addField("Ban count", bannumber, true)
-        .addField("Invite count", invitenum, true);
-    }
-    embed
-      .addField("Presence Count (" + active + " active on this server)", `**Online:** ${online}\n**Idle**: ${idle}\n**Do Not Disturb:** ${dnd}\n**Offline:** ${offline}`, true)
+    embed.addField("Features", features || "None", true)
       .addField("Links", links.join(", "))
-      .setThumbnail(message.guild.bannerURL({ format: "png", size: 128 }))
-      .setImage(message.guild.splashURL({ format: "png", size: 128 }))
+      .setThumbnail(server instanceof Discord.GuildPreview ? server.discoverySplashURL({ format: "png", size: 128 }) : server.bannerURL({ format: "png", size: 128 }))
+      .setImage(server.splashURL({ format: "png", size: 128 }))
       .setColor("#FF00FF")
       .setTimestamp();
-    if (message.guild.id === "402555684849451028") {
-      let fetch = message.guild.roles.cache.get("402559343540568084").members.map(m => m.user);
+    if (server.id === "402555684849451028") {
+      let fetch = server.roles.cache.get("402559343540568084").members.map(m => m.user);
       let admins = fetch.join("\n");
       embed.addField("Admin List", admins);
       message.channel.send(embed);
