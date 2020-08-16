@@ -9,7 +9,7 @@ module.exports = {
       await bot.guilds.fetch(args[1]).catch(err => { }) ||
       await bot.fetchGuildPreview(args[1]).catch(err => { })) : message.guild;
     if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server");
-    if((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
+    if ((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
     var servericon = server.iconURL({ dynamic: true });
     let features = server.features.join("\n");
     //¯\_(ツ)_/¯
@@ -39,13 +39,10 @@ module.exports = {
       } else {
         catname += cat + " categories";
       }
-
-      if (server.me.hasPermission("MANAGE_GUILD")) {
-        let embeddata = await server.fetchWidget().catch(err => {});
-        if(embeddata) {
-          embedenabled = embeddata.enabled;
-          embedchannel = embeddata.channel;
-        }
+      let embeddata = await server.fetchWidget().catch(err => { });
+      if (embeddata) {
+        embedenabled = embeddata.enabled;
+        embedchannel = embeddata.channel;
       } else {
         embedenabled = server.embedEnabled || server.widgetEnabled
         embedchannel = server.embedChannel || server.widgetChannel
