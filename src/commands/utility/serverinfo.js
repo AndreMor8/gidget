@@ -10,10 +10,10 @@ module.exports = {
       await bot.fetchGuildPreview(args[1]).catch(err => { })) : message.guild;
     if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server");
     if ((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
-    var servericon = server.iconURL({ dynamic: true });
-    let features = server.features.join("\n");
+    let servericon = server.iconURL({ dynamic: true, size: 4096 });
     //¯\_(ツ)_/¯
     let links = [`[Guild](https://discord.com/channels/${server.id})`];
+    if(servericon) links.push(`[Server icon](${servericon})`);
     let embedenabled;
     let embedchannel;
     let catname = "";
@@ -165,7 +165,7 @@ module.exports = {
     } else {
       embed.addField("Approximate member's count", rmembers + "\nOnline: " + active + "\nOffline: " + (rmembers - active), true);
     }
-    embed.addField("Features", features || "None", true)
+    embed.addField("Features", server.features.join("\n") || "None", true)
       .addField("Links", links.join(", "))
       .setThumbnail((server instanceof Discord.Guild) ? server.bannerURL({ format: "png", size: 128 }) : server.discoverySplashURL({ format: "png", size: 128 }))
       .setImage(server.splashURL({ format: "png", size: 128 }))
