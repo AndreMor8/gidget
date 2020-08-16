@@ -1,4 +1,4 @@
-var safeEval = require('notevil')
+const safeEval = require('notevil')
 const Discord = require("discord.js");
 module.exports = {
     run: async (bot, message, args) => {

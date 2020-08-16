@@ -4,8 +4,8 @@ const timer = new Map();
 module.exports = {
   run: async (bot, message, args) => {
     if (!args[1]) return message.channel.send("Put some URL");
-    if(message.author.id !== "577000793094488085") {
-      if(!timer.get(message.author.id)) {
+    if (message.author.id !== "577000793094488085") {
+      if (!timer.get(message.author.id)) {
         timer.set(message.author.id, true)
         setTimeout(() => {
           timer.delete(message.author.id);
@@ -52,25 +52,22 @@ module.exports = {
   description: "Screenshot of a page"
 };
 
-async function pup(message, url, options) {
+async function pup(message = new Discord.Message(), url, options) {
   const result = checkCleanUrl(url);
   if (result && !message.channel.nsfw) return message.channel.send("To view inappropriate pages use an NSFW channel");
+  var form = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>").catch(err => { });
+  message.channel.startTyping().catch(err => { });
   try {
-    var form = await message.channel.send(
-      "Hang on! <:WaldenRead:665434370022178837>"
-    );
-    message.channel.startTyping(2);
-  } catch (err) {
-  }
-  try {
-    var page = await message.client.browser.newPage();
-    page.on("error", error => {
-      message.channel
-        .send(
-          `There was an error opening a page. Here's a debug: ${error.message}`
-        )
-        .then(m => form.delete());
+    setTimeout(() => {
+      message.channel.stopTyping(true);
+    }, 40000);
+    page = await message.client.browser.newPage();
+    page.once("error", async error => {
+      message.channel.stopTyping(true);
+      await message.channel.send(`There was an error opening a page. Here's a debug: ${error.message}`).catch(err => { });;
+      await form.delete().catch(err => { });;
     });
+    if(!page) return;
     await page.goto(url, { waitUntil: "networkidle2" });
     let screenshot;
     if (options && !isNaN(options.x) && !isNaN(options.y)) {
@@ -81,23 +78,16 @@ async function pup(message, url, options) {
       screenshot = await page.screenshot({ type: "png" });
     }
     const attachment = new Discord.MessageAttachment(screenshot, "file.png");
-    await message.channel
-      .send(
-        "Time: " + (Date.now() - message.createdTimestamp) / 1000 + "s",
-        attachment
-      )
-      .then(m => {
-      form.delete()
-    });
     message.channel.stopTyping(true);
+    await message.channel.send("Time: " + (Date.now() - message.createdTimestamp) / 1000 + "s", attachment)
+    await form.delete();
   } catch (error) {
-    await message.channel
-      .send(`Some error ocurred. Here's a debug: ${error.message}`)
-      .then(m => form.delete());
     message.channel.stopTyping(true);
+    await message.channel.send(`Some error ocurred. Here's a debug: ${error.message}`).catch(err => { });
+    await form.delete().catch(err => { });
   } finally {
     try {
-      if(page && page.close && page.close instanceof Function) {
+      if (page && page.close && page.close instanceof Function) {
         await page.close();
       }
     } catch (error) {
