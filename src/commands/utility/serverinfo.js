@@ -41,7 +41,7 @@ module.exports = {
       }
 
       if (server.me.hasPermission("MANAGE_GUILD")) {
-        let embeddata = await server.fetchWidget();
+        let embeddata = await server.fetchWidget().catch(err => {});
         embedenabled = embeddata.enabled;
         embedchannel = embeddata.channel;
       } else {
