@@ -77,7 +77,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
     PREFIX = "g%";
   }
   //Mention check.
-  if (message.mentions.users.get(bot.user.id) && message.content.startsWith("<@" + bot.user.id)) message.channel.send("My prefix in this server is " + PREFIX);
+  if (message.mentions.users.get(bot.user.id) && message.content.startsWith("<@")) message.channel.send("My prefix in this server is " + PREFIX);
   //Check if message starts with prefix before starting any command
   if (!message.content.startsWith(PREFIX)) return;
   //Command structure
