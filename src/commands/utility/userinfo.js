@@ -88,10 +88,7 @@ module.exports = {
     var ptext = "";
     if (user.presence.activities && user.presence.activities[0]) {
       for (const npresence of Object.values(user.presence.activities)) {
-        if (
-          npresence.name == "Custom Status" ||
-          npresence.type == "CUSTOM_STATUS"
-        ) {
+        if (npresence.type == "CUSTOM_STATUS") {
           ptext += ptype[npresence.type] + "\n";
           if (npresence.emoji) ptext += npresence.emoji.toString() + " ";
           if (npresence.state) ptext += npresence.state;
