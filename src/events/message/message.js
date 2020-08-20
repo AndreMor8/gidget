@@ -85,14 +85,14 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
   const command = bot.commands.get(args[0].toLowerCase()) || bot.commands.find(a => a.aliases.includes(args[0].toLowerCase()))
   if (command) {
     if (message.guild && message.channel.permissionsFor(bot.user).has("SEND_MESSAGES")) {
-      if(command.owner && message.author.id !== "577000793094488084") return message.channel.send("Only AndreMor can use this command");
-      if(command.dev && !(["577000793094488084"].includes(message.author.id))) return message.channel.send("Only Gidget developers can use this command");
+      if(command.owner && message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
+      if(command.dev && !(["577000793094488085"].includes(message.author.id))) return message.channel.send("Only Gidget developers can use this command");
       if(command.onlyguild && message.guild.id !== process.env.GUILD_ID) return message.channel.send("This command only works on Wow Wow Discord");
       const userperms = message.member.permissions;
       const userchannelperms = message.channel.permissionsFor(message.member);
       const botperms = message.guild.me.permissions;
       const botchannelperms = message.channel.permissionsFor(message.guild.me);
-      if(message.author.id !== "577000793094488084") {
+      if(message.author.id !== "577000793094488085") {
         if(!userperms.has(command.permissions.user[0])) return message.channel.send("You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[0]).has(8)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
         if(!userchannelperms.has(command.permissions.user[1])) return message.channel.send("You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[1]).has(8)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
       }
