@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const b = require("../../utils/badwords");
 const badwords = new b();
+badwords.setOptions({whitelist: ["crap"]});
 const Levels = require("../../utils/discord-xp");
 const timer = new Discord.Collection();
 //Start message event
