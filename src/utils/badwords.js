@@ -8,7 +8,7 @@ class Main {
     }) {
         this.options = options;
         arr = arr.filter((item, index, arr) => {
-            return !whitelist.includes(item);
+            return !this.options.whitelist.includes(item);
         })
         return this;
     }
