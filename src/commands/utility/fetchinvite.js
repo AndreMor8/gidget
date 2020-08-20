@@ -39,5 +39,9 @@ module.exports = {
     }
   },
   aliases: ["fi", "fthinv"],
-  description: "Get the information from a Discord invite, using natural methods"
+  description: "Get the information from a Discord invite, using natural methods",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 }

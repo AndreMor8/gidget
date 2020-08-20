@@ -4,8 +4,7 @@ const ytdl = require("ytdl-core")
 const { MessageEmbed } = require("discord.js");
 module.exports = {
   run: async (bot, message, args) => {
-    if(!message.guild) return message.channel.send("This command only works on servers.")
-    const serverQueue = message.guild.queue
+    const serverQueue = message.guild.queue;
     const musicVariables = message.guild.musicVariables;
     if(!message.member.voice.channel) return message.channel.send("You must be on a voice channel.");
     if(serverQueue && serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send("I'm on another voice channel! I cannot be on two channels at the same time.");
@@ -88,5 +87,10 @@ module.exports = {
       }
   },
   aliases: ["ps"],
-  description: "Browse videos to select which will be to play."
+  description: "Browse videos to select which will be to play.",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 }

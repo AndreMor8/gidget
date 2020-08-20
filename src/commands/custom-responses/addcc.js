@@ -2,11 +2,6 @@ const MessageModel = require("../../database/models/customresponses");
 const Discord = require("discord.js")
 module.exports = {
   run: async (bot, message = new Discord.Message(), args) => {
-    if (!message.member.hasPermission("ADMINISTRATOR")) {
-      if(message.author.id !== "577000793094488085") {
-        return message.reply(`you do not have permission to execute this command.`);
-      }
-    }
     if (!args[1])
       return message.channel.send(
         "Usage: `addcc <match> | <response>`\nThe cases here are global, insensitive, and multi-line."
@@ -26,5 +21,10 @@ module.exports = {
     message.channel.send("Custom response set correctly");
   },
   aliases: [],
-  description: "Add custom responses in the database."
+  description: "Add custom responses in the database.",
+  guildonly: true,
+  permissions: {
+    user: [8, 0],
+    bot: [0, 0]
+  }
 };

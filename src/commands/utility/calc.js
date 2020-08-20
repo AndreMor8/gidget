@@ -19,6 +19,10 @@ module.exports = {
   message.channel.send(embed);
 },
 aliases: [],
-description: "Calculate something"
+description: "Calculate something",
+permissions: {
+  user: [0, 0],
+  bot: [0, 16384]
+}
 }
   

@@ -9,4 +9,8 @@ module.exports = {
     },
     aliases: [],
     description: "Bot test",
+    permissions: {
+        user: [0, 0],
+        bot: [0, 0]
+      }
 }

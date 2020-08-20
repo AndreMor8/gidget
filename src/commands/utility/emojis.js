@@ -54,5 +54,10 @@ module.exports = {
     message.channel.send(realtext, { split: { char: " " } });
   },
   aliases: [],
-  description: "Show all guild emojis"
+  description: "Show all guild emojis",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 }

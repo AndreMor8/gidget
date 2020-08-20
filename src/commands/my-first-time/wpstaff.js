@@ -14,4 +14,9 @@ module.exports = {
     },
     aliases: ["wubbzypedia-staff"],
     description: "Wubbzypedia staff :)",
+    onlyguild: true,
+    permissions: {
+      user: [0, 0],
+      bot: [0, 0]
+    }
 }

@@ -25,5 +25,10 @@ module.exports = {
     message.channel.send(embed);
   },
   aliases: [],
-  description: "Leaderboard"
+  description: "Leaderboard",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 }

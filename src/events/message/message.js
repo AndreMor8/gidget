@@ -1,9 +1,6 @@
 const Discord = require("discord.js");
 const b = require("../../utils/badwords");
 const badwords = new b();
-const MessageModel = require("../../database/models/customresponses");
-const MessageModel2 = require("../../database/models/levelconfig");
-const MessageModel3 = require("../../database/models/prefix");
 const Levels = require("../../utils/discord-xp");
 const timer = new Discord.Collection();
 //Start message event
@@ -19,7 +16,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
         const arr = Object.entries(responses);
         for (let i in arr) {
           const regex = new RegExp(arr[i][0], "gmi");
-          if (regex.test(message.content)) {
+          if (regex.test(message.content) && message.channel.permissionsFor(bot.user).has("SEND_MESSAGES")) {
             await message.channel.send(arr[i][1]).catch(err => { });
           }
         }
@@ -88,15 +85,32 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
   const command = bot.commands.get(args[0].toLowerCase()) || bot.commands.find(a => a.aliases.includes(args[0].toLowerCase()))
   if (command) {
     if (message.guild && message.channel.permissionsFor(bot.user).has("SEND_MESSAGES")) {
+      if(command.owner && message.author.id !== "577000793094488084") return message.channel.send("Only AndreMor can use this command");
+      if(command.dev && !(["577000793094488084"].includes(message.author.id))) return message.channel.send("Only Gidget developers can use this command");
+      if(command.onlyguild && message.guild.id !== process.env.GUILD_ID) return message.channel.send("This command only works on Wow Wow Discord");
+      const userperms = message.member.permissions;
+      const userchannelperms = message.channel.permissionsFor(message.member);
+      const botperms = message.guild.me.permissions;
+      const botchannelperms = message.channel.permissionsFor(message.guild.me);
+      if(message.author.id !== "577000793094488084") {
+        if(!userperms.has(command.permissions.user[0])) return message.channel.send("You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + !(new Discord.Permissions(command.permissions.user[0]).has(8)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR" + "`");
+        if(!userchannelperms.has(command.permissions.user[1])) return message.channel.send("You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + !(new Discord.Permissions(command.permissions.user[1]).has(8)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR" + "`");
+      }
+      if(!botperms.has(command.permissions.bot[0])) return message.channel.send("Sorry, I don't have sufficient permissions to run that command.\nRequired permissions:\n`" + !(new Discord.Permissions(command.permissions.bot[0]).has(8)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR" + "`");
+      if(!botchannelperms.has(command.permissions.bot[1])) return message.channel.send("Sorry, I don't have sufficient permissions to run that command **in this channel**.\nRequired permissions:\n`" + !(new Discord.Permissions(command.permissions.bot[1]).has(8)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR" + "`");
+      
       command.run(bot, message, args)
         .catch(err => {
+          if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
           console.error(err);
           message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
         });
     } else if (!message.guild) {
+      if(command.onlyguild) return message.channel.send("This command onlu works in Wow Wow Discord")
+      if(command.guildonly) return message.channel.send("This command only works in servers");
       command.run(bot, message, args)
         .catch(err => {
-          if (err.name === "StructureError") return message.channel.send(err.message);
+          if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
           console.error(err);
           message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
         });

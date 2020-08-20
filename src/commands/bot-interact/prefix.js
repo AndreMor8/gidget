@@ -15,4 +15,9 @@ module.exports = {
   },
   aliases: [],
   description: "Change the prefix of the server",
+  guildonly: true,
+  permissions: {
+    user: [8, 0],
+    bot: [0, 0]
+  }
 }

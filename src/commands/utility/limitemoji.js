@@ -1,9 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 module.exports = {
   run: async (bot, message, args) => {
-    if (!message.guild) return message.channel.send('This command only works on servers.')
-    if (!message.member.hasPermission("MANAGE_EMOJIS")) return message.channel.send("You do not have permissions to execute this command");
-    if (!message.guild.me.hasPermission("MANAGE_EMOJIS")) return message.channel.send("I need the `MANAGE_EMOJIS` permission for that :(")
     if (!args[1]) return message.channel.send("Usage: limitemojis <emoji> <mode> <role(s)>");
     let e = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1])
     if (e) return cmd_sendumfrage(message, args.slice(2), e.id);
@@ -54,8 +51,10 @@ module.exports = {
     }
   },
   aliases: ["le"],
-  description: "Limit emojis to certain roles"
+  description: "Limit emojis to certain roles",
+  guildonly: true,
+  permissions: {
+    user: [1073741824, 0],
+    bot: [1073741824, 0]
+  }
 }
-/*
-Now the roles that can use the emoji are: " + e.roles.cache.first() ? e.roles.cache.map(r => r.name).join(", ") : "Everyone
-*/

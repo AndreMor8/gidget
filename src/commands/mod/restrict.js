@@ -4,8 +4,6 @@ const MessageModel = require('../../database/models/muterole.js')
 
 module.exports = {
   run: async (bot, message, args) => {
-    if (message.channel.type === 'dm') return message.channel.send('This command only works in servers')
-    if (!message.member.hasPermission("BAN_MEMBERS")) return message.reply(`you do not have permission to execute this command.`)
     if (!args[1]) return message.channel.send('Usage: `restrict <member> <reason>`')
     if (args[1] === 'role') {
       if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
@@ -72,4 +70,9 @@ module.exports = {
   },
   aliases: [],
   description: "Restrict members",
+  guildonly: true,
+  permissions: {
+    user: [4, 0],
+    bot: [268435456, 0]
+  }
 }

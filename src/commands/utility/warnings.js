@@ -60,5 +60,10 @@ module.exports = {
     }
   },
   aliases: ["nw"],
-  description: "It shows the warnings that the user has, by DMs."
+  description: "It shows the warnings that the user has, by DMs.",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 };

@@ -234,5 +234,9 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "User info"
+  description: "User info",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+}
 };

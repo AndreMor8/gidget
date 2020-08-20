@@ -11,4 +11,8 @@ module.exports = {
     },
     aliases: [],
     description: "Info about Gidget in plain text",
+    permissions: {
+        user: [0, 0],
+        bot: [0, 0]
+      }
 }

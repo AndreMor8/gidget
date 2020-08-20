@@ -5,4 +5,8 @@ module.exports = {
     },
     aliases: ["kookykid"],
     description: "Kooky Kid",
+    permissions: {
+      user: [0, 0],
+      bot: [0, 0]
+    }
 }

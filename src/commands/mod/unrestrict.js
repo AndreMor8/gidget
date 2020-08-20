@@ -6,8 +6,6 @@ const MessageModel2 = require('../../database/models/mutedmembers.js');
 
 module.exports = {
   run: async (bot, message, args) => {
-    if (message.channel.type === 'dm') return message.channel.send('This command only works in servers')
-    if (!message.member.hasPermission("BAN_MEMBERS")) return message.reply(`you do not have permission to execute this command.`)
     if (!args[1]) return message.channel.send('Please mention the user or enter their ID.')
       let member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(err => {}) : undefined)
       if (!member) return message.channel.send('Invalid member!')
@@ -51,4 +49,9 @@ module.exports = {
     },
     aliases: [],
     description: "Unrestrict members",
+    guildonly: true,
+    permissions: {
+      user: [4, 0],
+      bot: [268435456, 0]
+    }
 }

@@ -4,12 +4,6 @@ const MessageModel = require("../../database/models/warn2");
 
 module.exports = {
     run: async (bot, message, args) => {
-      if (!message.guild)
-      return message.channel.send("This command only works on servers.");
-    if (!message.member.hasPermission("BAN_MEMBERS"))
-      return message.reply(
-        `You do not have permission to execute this command.`
-      );
       if (!args[1])
       return message.channel.send(
         "You must mention a member or write their ID."
@@ -39,5 +33,10 @@ module.exports = {
       }
     },
     aliases: [],
+    guildonly: true,
     description: "Remove the warning from a member.",
+    permissions: {
+      user: [4, 0],
+      bot: [0, 0]
+    }
 }

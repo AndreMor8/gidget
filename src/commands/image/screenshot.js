@@ -49,7 +49,11 @@ module.exports = {
     }
   },
   aliases: ["ss", "pageshot", "screenwebpage", "web"],
-  description: "Screenshot of a page"
+  description: "Screenshot of a page",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 32768]
+  }
 };
 
 async function pup(message = new Discord.Message(), url, options) {

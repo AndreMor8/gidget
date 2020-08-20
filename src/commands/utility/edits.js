@@ -50,5 +50,9 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "See edited messages!"
+  description: "See edited messages!",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 }

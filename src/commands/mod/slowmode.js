@@ -2,8 +2,6 @@ const Discord = require('discord.js');
 
 module.exports = {
   run: async (bot, message, args) => {
-    if (message.channel.type === 'dm') return message.channel.send('This command only works on servers.')
-    if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply(`you do not have permission to execute this command.`)
     if (!args[1]) {
       return message.channel.send('Usage: <:Gidget:610310249580331033>`slowmode <seconds> <channel>`')
     } else {
@@ -25,4 +23,9 @@ module.exports = {
   },
   aliases: [],
   description: "Edit the channel slowmode",
+  guildonly: true,
+  permissions: {
+    user: [268435456, 0],
+    bot: [0, 16]
+  }
 }

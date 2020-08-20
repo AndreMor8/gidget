@@ -1,6 +1,5 @@
 module.exports = {
   run: async (bot, message, args) => {
-    if (!message.guild) return message.channel.send("This command only works on servers.");
     const serverQueue = message.guild.queue
     if (serverQueue && serverQueue.inseek) return;
     const musicVariables = message.guild.musicVariables;
@@ -39,5 +38,10 @@ module.exports = {
     serverQueue.connection.dispatcher.end();
   },
   aliases: ["leave"],
-  description: "Stop the queue"
+  description: "Stop the queue",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 };

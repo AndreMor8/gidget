@@ -11,4 +11,8 @@ module.exports = {
     },
     aliases: ["number", "random", "numrandom", "randomnumber", "numberrandom", "rn"],
     description: "Random number",
+    permissions: {
+      user: [0, 0],
+      bot: [0, 0]
+    }
 }

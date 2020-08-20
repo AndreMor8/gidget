@@ -181,5 +181,9 @@ module.exports = {
     }
   },
   aliases: ["server"],
-  description: "Server info"
+  description: "Server info",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 };

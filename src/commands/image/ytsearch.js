@@ -130,5 +130,9 @@ module.exports = {
     }
   },
   aliases: ["ytsr"],
-  description: "Random Wubbzy Image"
+  description: "Search on YouTube",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 };

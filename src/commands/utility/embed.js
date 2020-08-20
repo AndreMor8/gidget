@@ -202,6 +202,10 @@ module.exports = {
   },
   description: "Create a embed",
   aliases: [],
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 }
 
 function fields(message, embed) {

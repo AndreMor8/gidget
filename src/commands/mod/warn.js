@@ -6,12 +6,6 @@ const MessageModel2 = require("../../database/models/warn2");
 
 module.exports = {
   run: async (bot, message, args) => {
-    if (message.channel.type === "dm")
-      return message.channel.send("This command only works on servers.");
-    if (!message.member.hasPermission("BAN_MEMBERS"))
-      return message.reply(
-        `You do not have permission to execute this command.`
-      );
     if (!args[1])
       return message.channel.send(
         "You haven't said anything. Put a member or `set`"
@@ -21,8 +15,7 @@ module.exports = {
     }).catch(err => console.log(err));
     if (!msgDocument) {
       try {
-        let dbMsg = await new MessageModel({ guildid: message.guild.id, role: false, roletime: 0, roleid: '0', kick: false, kicktime: 0, ban: false, bantime: 0 });
-        var dbMsgModel = await dbMsg.save();
+        var dbMsgModel = await MessageModel.create({ guildid: message.guild.id, role: false, roletime: 0, roleid: '0', kick: false, kicktime: 0, ban: false, bantime: 0 });
       } catch (err) {
         console.log(err);
       }
@@ -30,6 +23,7 @@ module.exports = {
       var dbMsgModel = msgDocument;
     }
     if (args[1] === "set") {
+      if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
       if (!dbMsgModel) return console.log("Doesn't exist.");
       if (args[2] === "role") {
         if (!args[3]) return message.channel.send('First put the number of warnings to put the role, and then mention the role, write its ID or write its name. Set "false" to not use roles in this system.')
@@ -236,5 +230,10 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "Warn a member"
+  description: "Warn a member",
+  guildonly: true,
+  permissions: {
+    user: [4, 0],
+    bot: [268435456, 0]
+  }
 };

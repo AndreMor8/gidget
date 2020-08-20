@@ -7,15 +7,12 @@ let msgCollectorFilter = (newMsg, originalMsg) => newMsg.author.id === originalM
 
 module.exports = {
     run: async (bot, message, args) => {
-      if (message.channel.type === 'dm') return message.channel.send('This command only works on servers.')
-        if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
-        if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?")
         if (args.slice(1).length < 1) {
             let msg = await message.channel.send("Put the message ID");
             await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
-        } else if(args.slice(1).length > 1) {
-          let msg = await message.channel.send("Too many arguments!");
-          await msg.delete({ timeout: 3500 }).catch(err => console.log(err)); 
+        } else if (args.slice(1).length > 1) {
+            let msg = await message.channel.send("Too many arguments!");
+            await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
         }
         else {
             try {
@@ -67,10 +64,10 @@ module.exports = {
                             });
                             dbMsgModel.save()
                                 .then(m => {
-                              console.log(m);
-                              bot.cachedMessageReactions.delete(fetchedMessage.id);
-                              message.channel.send('I\'ve added that to my database.');
-                            })
+                                    console.log(m);
+                                    bot.cachedMessageReactions.delete(fetchedMessage.id);
+                                    message.channel.send('I\'ve added that to my database.');
+                                })
                                 .catch(err => message.channel.send('Something happened when I tried to save the data to my database. Here\'s a debug: ' + err));
                         }
                     });
@@ -84,5 +81,10 @@ module.exports = {
         }
     },
     aliases: [],
+    guildonly: true,
     description: "Role reaction system",
+    permissions: {
+        user: [8, 0],
+        bot: [268435456, 0]
+    }
 }

@@ -16,4 +16,8 @@ module.exports = {
     },
     aliases: [],
     description: "A little command. Nothing else.",
+    permissions: {
+      user: [0, 0],
+      bot: [0, 0]
+    }
 }

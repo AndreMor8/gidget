@@ -12,4 +12,8 @@ module.exports = {
   },
   aliases: [],
   description: "Receive a link to invite the bot ;)",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 }

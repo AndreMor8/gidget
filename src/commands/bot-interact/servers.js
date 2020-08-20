@@ -13,5 +13,9 @@ module.exports = {
         message.channel.send(serverEmbed)
     },
     aliases: [],
-    description: "Server and user count"
+    description: "Server and user count",
+    permissions: {
+        user: [0, 0],
+        bot: [0, 16384]
+      }
 }

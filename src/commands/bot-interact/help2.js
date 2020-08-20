@@ -27,10 +27,14 @@ module.exports = {
         if(message.content.includes("--nodm") || !message.guild) {
           message.channel.send(embed);
         } else {
-          message.author.send(embed).then(m => message.channel.send("I've sent the list to your DM.")).catch(err => message.channel.send("Your DMs seem to be closed"));
+          message.author.send(embed).then(m => message.channel.send("I've sent the list to your DM.")).catch(err => message.channel.send("Your DMs seem to be closed").catch(err => {}));
         }
     },
     aliases: [],
     secret: true,
     description: "Shows help with bot commands",
+    permissions: {
+      user: [0, 0],
+      bot: [0, 0]
+    }
 }

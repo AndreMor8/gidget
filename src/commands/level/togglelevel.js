@@ -1,12 +1,6 @@
 const MessageModel = require("../../database/models/levelconfig");
 module.exports = {
   run: async (bot, message, args) => {
-    if(!message.guild) return message.channel.send("This command only works in servers");
-    if(!message.member.hasPermission("ADMINISTRATOR")){
-      if(message.guild.id === "312846399731662850" && message.author.id !== "577000793094488085") {
-        return message.channel.send("You do not have permission to use this command!");
-      }
-    }
     if (!args[1]) return message.channel.send("Usage: `togglelevel <system/notif>`");
     const reference = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig();
     switch (args[1]) {
@@ -23,5 +17,10 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "Change if you want levels on your server or not."
+  description: "Change if you want levels on your server or not.",
+  guildonly: true,
+  permissions: {
+    user: [8, 0],
+    bot: [0, 0]
+  }
 }

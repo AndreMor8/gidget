@@ -6,4 +6,8 @@ module.exports = {
     },
     aliases: [],
     description: "Widget fix something",
+    permissions: {
+      user: [0, 0],
+      bot: [0, 0]
+    }
 }

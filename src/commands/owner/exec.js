@@ -3,7 +3,6 @@ const exec = require("util").promisify(ch.exec);
 const { Util } = require("discord.js");
 module.exports = {
     run: async (client, message, args) => {
-        if (message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
         try {
             const { stdout, stderr } = await exec(args.slice(1).join(" "));
             if (!stdout && !stderr) return message.channel.send("Command executed, but no output");
@@ -21,5 +20,10 @@ module.exports = {
         }
     },
     aliases: [],
-    description: "Execute terminal commands"
+    description: "Execute terminal commands",
+    dev: true,
+    permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 }

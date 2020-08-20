@@ -2,7 +2,6 @@ const MessageModel = require("../../database/models/levelconfig");
 //I don't think on rewrite this.
 module.exports = {
     run: async (bot, message, args) => {
-        if (!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send("You do not have permission to use this command!")
         if (!args[1]) return message.channel.send("Usage: `setlevelroles add <level> <roles> / setlevelroles remove <level>`");
         let mode = args[1];
         if(mode !== "add" && mode !== "remove") return message.channel.send("Invalid mode!");
@@ -63,7 +62,6 @@ module.exports = {
             }
         };
 
-
         if(mode === "add") {
             let roles = message.mentions.roles.first() ? message.mentions.roles.map(e => e.id) : args.slice(3);
             if (!roles.every(e => message.guild.roles.cache.has(e))) return message.channel.send("Invalid roles!");
@@ -73,5 +71,10 @@ module.exports = {
         }
     },
     aliases: [],
-    description: "..."
+    description: "...",
+    guildonly: true,
+    permissions: {
+        user: [8, 0],
+        bot: [0, 0]
+      }
 }

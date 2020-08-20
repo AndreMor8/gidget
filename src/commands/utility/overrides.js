@@ -45,4 +45,9 @@ module.exports = {
     },
     aliases: [],
     description: "See the channel overwrites",
+    guildonly: true,
+    permissions: {
+      user: [0, 0],
+      bot: [0, 0]
+    }
 }

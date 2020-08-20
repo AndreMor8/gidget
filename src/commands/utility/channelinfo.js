@@ -51,5 +51,9 @@ module.exports = {
     message.channel.send(embed);
   },
   aliases: [],
-  description: "Show the info of a certain channel."
+  description: "Show the info of a certain channel.",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 }

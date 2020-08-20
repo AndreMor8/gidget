@@ -5,4 +5,8 @@ module.exports = {
     },
     aliases: [],
     description: "Wubbzy in a animated version",
+    permissions: {
+      user: [0, 0],
+      bot: [0, 0]
+    }
 }

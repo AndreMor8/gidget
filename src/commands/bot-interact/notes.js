@@ -71,5 +71,9 @@ module.exports = {
     }
   },
   aliases: ["meowdb"],
-  description: "A simple notes system :)"
+  description: "A simple notes system :)",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 }

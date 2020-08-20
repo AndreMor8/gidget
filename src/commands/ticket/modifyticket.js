@@ -2,7 +2,6 @@ const MessageModel = require("../../database/models/ticket");
 const { Pèrmissions, MessageEmbed } = require("discord.js") 
 module.exports = {
   run: async (bot, message, args) => {
-    if(!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send("Sorry, you don\'t have permission for that!")
     if(!args[1]) return message.channel.send("Put a message ID");
     const msgDocument = await MessageModel.findOne({ guildId: message.guild.id, messageId: args[1] });
     if(!msgDocument) return message.channel.send("I can't find a ticket system in that message.");
@@ -81,5 +80,10 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "Modify the ticket system"
+  description: "Modify the ticket system",
+  guildonly: true,
+  permissions: {
+    user: [8, 0],
+    bot: [0, 16384]
+  }
 }

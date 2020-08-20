@@ -1,6 +1,5 @@
 module.exports = {
     run: async (bot, message, args) => {
-        if (!message.guild) return message.channel.send("This command only works on servers.");
         if (!args[1]) return message.channel.send("Put the song row number to remove it");
         const voiceChannel = message.member.voice.channelID;
         if (!voiceChannel) return message.channel.send("You need to be in a voice channel to remove a song!");
@@ -22,5 +21,10 @@ module.exports = {
         return message.channel.send("Song #" + number + " removed from the queue");
     },
     aliases: [],
-    description: "Remove a song from the queue"
+    description: "Remove a song from the queue",
+    guildonly: true,
+    permissions: {
+        user: [0, 0],
+        bot: [0, 0]
+      }
 }

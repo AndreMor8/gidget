@@ -97,7 +97,7 @@ module.exports = {
       .setDescription(text)
       .setFooter("Made by: " + msg.author.tag + ", finish date:", msg.author.displayAvatarURL({ dynamic: true }))
       .setColor("RANDOM")
-      .setTimestamp(new Date(new Date().getTime() + time));
+      .setTimestamp(new Date(Date.now() + time));
       if (msg.member.hasPermission("MENTION_EVERYONE")) {
         if(msg.mentions.everyone) {
           if(msg.content.includes("@everyone")) {
@@ -145,5 +145,10 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "Reaction poll system"
+  description: "Reaction poll system",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 };

@@ -81,5 +81,10 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "Start listening tickets"
+  description: "Start listening tickets",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [16, 0]
+  }
 };

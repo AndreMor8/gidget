@@ -2,8 +2,6 @@ const Discord = require("discord.js");
 const { wiki } = require("../../utils/wikilogin.js");
 module.exports = {
   run: async (bot, message, args) => {
-    if(!message.guild) return message.channel.send('This command only works on Wow Wow Discord.')
-    if (message.guild.id !== '402555684849451028') return message.channel.send('This command only works on Wow Wow Discord.')
     if (!args[1]) return message.channel.send("Usage: fetchdiffs <page>");
     wiki.getArticleRevisionsAsync(args.slice(1).join(" ")).then(async (content) => {
       let i = content.length - 1;
@@ -90,6 +88,10 @@ module.exports = {
     }).catch(err => message.channel.send("Error: " + err))
   },
   aliases: [],
-  guildonly: true,
-  description: "Test for wiki commands"
+  onlyguild: true,
+  description: "Test for wiki commands",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+}
 }

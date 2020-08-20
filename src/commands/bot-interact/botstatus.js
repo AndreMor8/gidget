@@ -54,6 +54,10 @@ module.exports = {
       message.channel.send('Presence changed!');
     },
     aliases: ['clientstatus', 'bst', 'cst'],
-    guildonly: true,
-    description: 'Change the status or presence of the bot.'
+    onlyguild: true,
+    description: 'Change the status or presence of the bot.',
+    permissions: {
+      user: [0, 0],
+      bot: [0, 0]
+    }
 }

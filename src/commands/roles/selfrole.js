@@ -4,7 +4,6 @@ const MessageModel = require('../../database/models/selfrole');
 
 module.exports = {
   run: async (bot, message, args) => {
-    if (message.channel.type === 'dm') return message.channel.send('This command only works on servers.')
       if (!args[1]) return message.channel.send('You haven\'t said anything. The options are `join`, `leave`, `list`. For interact with the database: `add`, `remove`')
       if (args[1] === 'list') {
         let msgDocument = await MessageModel.find({ guildid: message.guild.id }, "word");
@@ -125,4 +124,9 @@ module.exports = {
     },
     aliases: [],
     description: "Add or remove roles from yourself",
+    guildonly: true,
+    permissions: {
+      user: [0, 0],
+      bot: [268435456, 0]
+  }
 }

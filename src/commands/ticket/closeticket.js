@@ -3,8 +3,6 @@ const MessageModel2 = require("../../database/models/ticket");
 
 module.exports = {
   run: async (bot, message, args) => {
-    if(!message.guild) return message.channel.send('This command only works in servers');
-    if (!message.guild.me.hasPermission("MANAGE_CHANNELS")) return message.channel.send("I don't have permission for that :(")
     let msgDocument2 = await MessageModel.findOne({ guildId: message.guild.id, channelId: message.channel.id })
     if(!msgDocument2) return message.channel.send("This isn't a ticket-type chat!")
     let { from } = msgDocument2;
@@ -53,5 +51,10 @@ module.exports = {
 
   },
   aliases: [],
-  description: "Close a user ticket"
+  description: "Close a user ticket",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16]
+  }
 };

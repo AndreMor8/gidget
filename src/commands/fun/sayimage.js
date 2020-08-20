@@ -64,5 +64,9 @@ module.exports = {
     },
     aliases: [],
     description: ":)",
-    secret: true
+    secret: true,
+    permissions: {
+        user: [0, 0],
+        bot: [0, 32678]
+      }
 }

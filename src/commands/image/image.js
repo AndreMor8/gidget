@@ -11,6 +11,10 @@ module.exports = {
     },
     aliases: [],
     description: "Random images",
+    permissions: {
+        user: [0, 0],
+        bot: [0, 16384]
+      }
 }
 
 async function image(message){ 

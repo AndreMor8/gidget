@@ -21,5 +21,10 @@ module.exports = {
         } else return message.channel.send("There are no custom responses on this server...");
     },
     aliases: [],
-    description: "Display the list of server custom responses."
+    description: "Display the list of server custom responses.",
+    guildonly: true,
+    permissions: {
+        user: [0, 0],
+        bot: [0, 16384]
+      }
 }

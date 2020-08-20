@@ -1,7 +1,5 @@
 module.exports = {
   run: async (bot, message, args) => {
-    if (!message.guild)
-      return message.channel.send("This command only works on servers.");
     const serverQueue = message.guild.queue
     const musicVariables = message.guild.musicVariables;
     if (!message.member.voice.channel) return message.channel.send("You need to be in a voice channel to loop the music!");
@@ -30,5 +28,10 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "Loops the song"
+  description: "Loops the song",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 };

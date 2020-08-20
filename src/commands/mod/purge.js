@@ -1,9 +1,6 @@
 const Discord = require('discord.js')
 module.exports = {
   run: async (bot, message = new Discord.Message(), args) => {
-    if (!message.guild) return message.channel.send('This command only works on servers.')
-    if (!message.channel.permissionsFor(message.member).has("MANAGE_MESSAGES")) return message.reply(`You do not have permission to execute this command.`)
-    if (!message.channel.permissionsFor(message.guild.me).has("MANAGE_MESSAGES")) return message.reply("I don't have permission to delete messages :(");
     if (!args[1] || (isNaN(args[1]) && !args[2])) return message.reply('how many messages should I delete? Specify it.');
     let number = args[2] ? parseInt(args[2]) : parseInt(args[1]);
     
@@ -79,4 +76,9 @@ module.exports = {
   },
   aliases: ["bulkdelete", "prune"],
   description: "Bulk delete messages",
+  guildonly: true,
+  permissions: {
+    user: [0, 8192],
+    bot: [0, 8192]
+  }
 }

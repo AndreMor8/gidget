@@ -1,7 +1,6 @@
 const timer = new Map();
 module.exports = {
   run: async (bot, message, args) => {
-    if (!message.guild.me.hasPermission("MANAGE_EMOJIS")) return message.channel.send("I need the `MANAGE_EMOJIS` permission for that :(")
     let u = timer.get(message.author.id);
     if(!u) {
       if (!message.member.hasPermission("ADMINISTRATOR")) {
@@ -24,4 +23,9 @@ module.exports = {
   },
   aliases: [],
   description: "Reestablish roles for new members",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [1073741824, 0]
+  }
 }

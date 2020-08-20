@@ -3,7 +3,6 @@ const Discord = require("discord.js");
 
 module.exports = {
   run: async (bot, message, args) => {
-    if (message.author.id !== "577000793094488085") return message.channel.send('Only AndreMor can use this command')
     if (!args[1]) return message.channel.send("Put something to evaluate.");
     try {
       let evaluated = await eval(args.slice(1).join(" "));
@@ -17,5 +16,10 @@ module.exports = {
   },
   aliases: ["ev"],
   secret: true,
-  description: "Eval a code via command"
+  description: "Eval a code via command",
+  dev: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 };

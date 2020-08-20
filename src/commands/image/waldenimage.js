@@ -9,7 +9,11 @@ module.exports = {
     image(message);
   },
   aliases: [],
-  description: "Random Walden Image"
+  description: "Random Walden Image",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 };
 
 async function image(message) {

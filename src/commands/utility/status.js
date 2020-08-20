@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 
 module.exports = {
     run: async (bot, message, args) => {
-        const user = message.mentions.users.first() || message.client.users.cache.get(args[1]) || message.client.users.cache.find(m => m.username === args.slice(1).join(" ")) || message.author;
+        const user = message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(m => m.username === args.slice(1).join(" ")) || message.author;
 
         const clientStatus = user.presence.clientStatus;
         const status = {
@@ -107,4 +107,8 @@ module.exports = {
     },
     aliases: [],
     description: "Client status",
+    permissions: {
+        user: [0, 0],
+        bot: [0, 0]
+    }
 }

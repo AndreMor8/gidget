@@ -21,5 +21,9 @@ module.exports = {
     }).catch(err => message.channel.send("Error: " + err));
   },
   aliases: ["djs", "discordjs", "discord.js"],
-  description: "Discord.js Docs :)"
+  description: "Discord.js Docs :)",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 }

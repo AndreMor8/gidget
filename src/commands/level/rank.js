@@ -5,7 +5,6 @@ const rankimage = require("../../utils/rank.js");
 
 module.exports = {
 	run: async (bot, message, args) => {
-    if(!message.guild) return message.channel.send("This command only works in servers");
     const msgDocument = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig()
     if(!msgDocument) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!")
     if(msgDocument && !msgDocument.levelsystem) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!")
@@ -28,5 +27,10 @@ module.exports = {
     message.channel.send(attachment);
 	},
 	aliases: ["level"],
-	description: "Rank"
+  description: "Rank",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 }

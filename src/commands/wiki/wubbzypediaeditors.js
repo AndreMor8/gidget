@@ -2,8 +2,6 @@ const cheerio = require("cheerio");
 const { wiki } = require("../../utils/wikilogin.js");
 module.exports = {
   run: async (bot, message, args) => {
-    if (!message.guild) return;
-    if (message.guild.id !== "402555684849451028") return message.channel.send("This command only works on Wow Wow Discord");
     if (!args[1]) return message.channel.send("Usage: `wubbzypediaeditors <wiki username>`");
     try {
       const user = await wiki.whoisAsync(args.slice(1).join(" "));
@@ -42,6 +40,10 @@ module.exports = {
     }
   },
   aliases: ["wpeditors", "wpe", "editorsrole", "er", "wper"],
-  guildonly: true,
-  description: "When the requirements are met, give the Wubbzypedia Editors role to that person"
+  onlyguild: true,
+  description: "When the requirements are met, give the Wubbzypedia Editors role to that person",
+  permissions: {
+    user: [0, 0],
+    bot: [268435456, 0]
+}
 };

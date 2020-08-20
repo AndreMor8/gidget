@@ -30,4 +30,8 @@ module.exports = {
   },
   aliases: [],
   description: "A fun game",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 };

@@ -93,4 +93,9 @@ module.exports = {
   },
   aliases: [],
   description: "Get information about a role",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 }

@@ -22,5 +22,10 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "If a server member leaves, save the roles and when they come back, put them back."
+  description: "If a server member leaves, save the roles and when they come back, put them back.",
+  guildonly: true,
+  permissions: {
+    user: [8, 0],
+    bot: [268435456, 0]
+}
 }

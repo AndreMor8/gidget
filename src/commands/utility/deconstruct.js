@@ -19,4 +19,8 @@ module.exports = {
   },
   aliases: [],
   description: "De-structure a snowflake to indicate data.",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 }

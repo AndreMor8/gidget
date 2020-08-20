@@ -21,5 +21,9 @@ module.exports = {
     },
     aliases: [],
     secret: true,
-    description: "Search something in a wiki"
+    description: "Search something in a wiki",
+    permissions: {
+        user: [0, 0],
+        bot: [0, 0]
+    }
 }

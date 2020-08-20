@@ -4,8 +4,6 @@ const Discord = require('discord.js');
 
 module.exports = {
     run: async (bot, message, args) => {
-      if (message.channel.type === 'dm') return message.channel.send('This command only works on servers.')
-        if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`You do not have permission to execute this command.`)
         if (args.slice(1).length !== 1) return message.channel.send('Put the message ID.');
         // Check if the message exists.
         const { channel, author } = message;
@@ -25,24 +23,24 @@ module.exports = {
                         let awaitMsgOps = { max: 1, time: 20000, errors: ['time'] };
                         let choice = (await channel.awaitMessages(filter, awaitMsgOps)).first();
                         if (choice.content === "add") {
-                          if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?")
+                            if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?")
                             let addMsgPrompt = await channel.send("Enter an emoji name followed by the corresponding role name, separated with a comma. e.g: WubbzyWalk, A Wubbzy Fan");
-                            let collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel, args);
+                            let collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel);
                             msgModel.updateOne({ emojiRoleMappings: collectorResult }).then(() => {
-                              bot.cachedMessageReactions.delete(fetchedMessage.id)
-                              message.channel.send("Updated!");
+                                bot.cachedMessageReactions.delete(fetchedMessage.id)
+                                message.channel.send("Updated!");
                             })
                         }
                         else if (choice.content === "remove") {
-                          msgModel.deleteOne().then(m => {
-                            bot.cachedMessageReactions.set(fetchedMessage.id, false);
-                            message.channel.send('Ok. Removed.');
-                          }).catch(err => message.channel.send('Some error ocurred. Here\'s a debug: ' + err));
+                            msgModel.deleteOne().then(m => {
+                                bot.cachedMessageReactions.set(fetchedMessage.id, false);
+                                message.channel.send('Ok. Removed.');
+                            }).catch(err => message.channel.send('Some error ocurred. Here\'s a debug: ' + err));
                         } else {
-                          message.channel.send('Incorrect. Run this command again and say the correct parameters');
+                            message.channel.send('Incorrect. Run this command again and say the correct parameters');
                         }
                     } catch (err) {
-                      message.channel.send('You haven\'t said anything. Please try the command again.');
+                        message.channel.send('You haven\'t said anything. Please try the command again.');
                     }
                 }
                 else {
@@ -51,13 +49,18 @@ module.exports = {
             }
         }
         catch (err) {
-          message.channel.send("Some error ocurred. Here's a debug: " + err);
+            message.channel.send("Some error ocurred. Here's a debug: " + err);
         }
     },
     aliases: [],
     description: "Role reaction system (Edit)",
+    guildonly: true,
+    permissions: {
+        user: [8, 0],
+        bot: [268435456, 0]
+    }
 }
-function handleCollector(fetchedMessage, author, channel, msgModel, messageId) {
+function handleCollector(fetchedMessage, author, channel, msgModel) {
     return new Promise((resolve, reject) => {
         let collectorFilter = (m) => m.author.id === author.id;
         let collector = new MessageCollector(channel, collectorFilter);

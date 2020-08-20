@@ -73,5 +73,9 @@ module.exports = {
 
     },
     aliases: [],
-    description: "View advanced user presence information."
+    description: "View advanced user presence information.",
+    permissions: {
+        user: [0, 0],
+        bot: [0, 16384]
+      }
 }

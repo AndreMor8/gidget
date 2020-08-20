@@ -2,12 +2,6 @@ const Levels = require("../../utils/discord-xp");
 
 module.exports = {
   run: async (bot, message, args) => {
-    if (!message.guild) return message.channel.send("This command only works in servers");
-    if (!message.member.hasPermission("ADMINISTRATOR")) {
-      if (message.guild.id === "312846399731662850" && message.author.id !== "577000793094488085") {
-        return message.channel.send("You do not have permission to use this command!");
-      }
-    }
     const msgDocument = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig()
     if ((!msgDocument) || (msgDocument && !msgDocument.levelsystem)) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!")
     const target = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || await (args[1] ? await message.guild.members.fetch(args[1]).catch(err => { }) : undefined);
@@ -81,5 +75,10 @@ module.exports = {
     }
   },
   aliases: ["ml"],
-  description: "Modify the levels"
+  description: "Modify the levels",
+  guildonly: true,
+  permissions: {
+    user: [8, 0],
+    bot: [0, 0]
+  }
 }

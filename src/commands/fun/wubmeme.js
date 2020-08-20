@@ -34,7 +34,11 @@ module.exports = {
         }
     },
     aliases: [],
-    description: "Wubmeme!"
+    description: "Wubmeme!",
+    permissions: {
+        user: [0, 0],
+        bot: [0, 32678]
+      }
 }
 
 async function px64 (message, args) {

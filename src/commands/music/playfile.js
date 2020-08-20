@@ -1,7 +1,5 @@
 module.exports = {
   run: async (bot, message, args) => {
-     if (!message.guild)
-      return message.channel.send("This command only works on servers.");
     if (!args[1] && !message.attachments.first())
       return message.channel.send("Please enter a file link or upload an attachment");
     const voiceChannel = message.member.voice.channel;
@@ -43,7 +41,12 @@ module.exports = {
     playFile(file, message.guild);
   },
   aliases: [],
-  description: "Play a real audio file"
+  description: "Play a real audio file",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 };
 
 async function playFile(file, guild) {

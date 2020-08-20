@@ -16,5 +16,9 @@ module.exports = {
     message.channel.send(embed);
   },
   aliases: [],
-  description: "This fetches the actual bot application on Discord"
+  description: "This fetches the actual bot application on Discord",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 }

@@ -6,8 +6,6 @@ const moment = require("moment");
 require("moment-duration-format");
 module.exports = {
   run: async (bot, message, args, seek) => {
-    if (!message.guild)
-      return message.channel.send("This command only works on servers.");
     if (!args[1])
       return message.channel.send(
         "Please enter a YouTube link or search term."
@@ -150,7 +148,12 @@ module.exports = {
     }
   },
   aliases: ["join"],
-  description: "Play music from YouTube"
+  description: "Play music from YouTube",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 };
 
 async function handleVideo(message, voiceChannel, ytlink, playlist = false) {

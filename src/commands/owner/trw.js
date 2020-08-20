@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 
 module.exports = {
     run: async (bot, message, args) => {
-        if (message.author.id !== '577000793094488085') return message.channel.send('Only AndreMor can use this command.')
         if (message.deletable) message.delete();
 
         const hook = new Discord.WebhookClient(process.env.TRW_ID, process.env.TRW_TOKEN);
@@ -13,5 +12,6 @@ module.exports = {
     },
     aliases: [],
     secret: true,
+    owner: true,
     description: "The real Wubbzy webhook",
 }

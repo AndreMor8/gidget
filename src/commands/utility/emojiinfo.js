@@ -40,5 +40,10 @@ module.exports = {
     message.channel.send(embed);
   },
   aliases: ["emoji"],
-  description: "Get information from an emoji."
+  description: "Get information from an emoji.",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 };

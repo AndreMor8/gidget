@@ -13,7 +13,11 @@ module.exports = {
     }
   },
   aliases: [],
-  description: "Walden"
+  description: "Walden",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 32678]
+  }
 };
 
 async function px32(message, args) {

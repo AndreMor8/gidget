@@ -3,8 +3,6 @@ const { Readable } = require('stream');
 
 module.exports = {
   run: async (bot, message, args) => {
-    if (!message.guild)
-      return message.channel.send("This command only works on servers.");
     if(!args[1]) return message.channel.send("`dm` to send the file to your direct messages, `play` to play it on the voice channel, `server` to send the file to this channel.");
     let options = {}
     if(args[1] === "dm" || args[1] === "server") {
@@ -65,5 +63,10 @@ module.exports = {
     });
   },
   aliases: [],
-  description: "I'm going to record your voice (experimental)"
+  description: "I'm going to record your voice (experimental)",
+  guildonly: true,
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 };

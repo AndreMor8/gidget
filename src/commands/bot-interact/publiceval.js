@@ -51,5 +51,9 @@ module.exports = {
         }
     },
     aliases: [],
-    description: "Evaluate JavaScript code. The bot is not at risk."
+    description: "Evaluate JavaScript code. The bot is not at risk.",
+    permissions: {
+        user: [0, 0],
+        bot: [0, 16384]
+      }
 }

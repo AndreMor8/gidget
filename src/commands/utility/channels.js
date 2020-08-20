@@ -42,6 +42,10 @@ module.exports = {
   },
   aliases: [],
   description: "Channel structure for a server....",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 0]
+  }
 }
 
 function advancedmap(c) {

@@ -30,6 +30,10 @@ module.exports = {
   },
   aliases: [],
   description: "Bot stats",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 16384]
+  }
 }
 
 function memory(bytes = 0, r = true){

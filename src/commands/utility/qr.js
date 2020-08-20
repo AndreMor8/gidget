@@ -11,5 +11,9 @@ module.exports = {
     message.channel.send(new Discord.MessageAttachment(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${text.replace(new RegExp(" ", "g"), "%20")}`, 'qr.png')).then(() => message.channel.stopTyping())
   },
   aliases: [],
-  description: "Generate a QR"
+  description: "Generate a QR",
+  permissions: {
+    user: [0, 0],
+    bot: [0, 32768]
+  }
 }
