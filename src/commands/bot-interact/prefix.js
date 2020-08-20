@@ -4,7 +4,7 @@ const fs = require('fs');
 
 module.exports = {
   run: async (bot, message, args) => {
-    if (!args[1]) return message.channel.send('The actual prefix is ' + message.guild.cache.prefix ? message.guild.prefix : await message.guild.getPrefix());
+    if (!args[1]) return message.channel.send('The actual prefix is ' + (message.guild.cache.prefix ? message.guild.prefix : await message.guild.getPrefix()));
     if (args[2]) return message.channel.send('I\'m not compatible with spaces, sorry.')
 
     const thing = await message.guild.setPrefix(args[1]);
