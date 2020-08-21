@@ -40,6 +40,6 @@ module.exports = {
     description: 'Some console.log tests',
     permissions: {
     user: [0, 0],
-    bot: [0, 32678]
+    bot: [0, 32768]
   }
 }

@@ -11,7 +11,7 @@ module.exports = {
         const mensaje = args.slice(2).join(" ")
         if (!mensaje) return message.channel.send("Put some message")
 
-        const canvas = Canvas.createCanvas(400, 69)
+        const canvas = Canvas.createCanvas(600, 69)
         const ctx = canvas.getContext('2d')
 
         ctx.fillStyle = "#36393f"
@@ -41,16 +41,6 @@ module.exports = {
         ctx.font = "11.2px Sans Serif"
         ctx.fillStyle = "#72767d"
 
-        let hour = Math.floor(Math.random() * 12)
-        let min = Math.floor(Math.random() * 60)
-        const t = ["AM", "PM"]
-        const tt = t[Math.floor(Math.random() * t.length)]
-
-        hour = (hour < 10 ? "0" : "") + hour
-        min = (min < 10 ? "0" : "") + min
-
-        ctx.fillText(`Today at ${hour}:${min} ${tt}`, 66 + largo + 8, 27)
-
         ctx.lineWidth = .1
         ctx.font = "14.5px Whitney"
         ctx.fillStyle = "#dcddde"
@@ -67,6 +57,6 @@ module.exports = {
     secret: true,
     permissions: {
         user: [0, 0],
-        bot: [0, 32678]
+        bot: [0, 32768]
       }
 }
