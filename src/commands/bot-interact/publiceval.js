@@ -7,6 +7,7 @@ module.exports = {
         let algo = 0;
         let code = args.slice(1).join(' ');
         if(code.match(/toString/gmi) && code.match(/toString/gmi).length > 1) return message.channel.send("No");
+        if(code.match(/Math/gmi) && code.match(/toString/gmi).length > 5) return message.channel.send("No");
         try {
             let evalued = await safeEval(code, {
                 "JSON": Object.create(JSON),
