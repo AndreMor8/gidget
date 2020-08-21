@@ -20,7 +20,7 @@ module.exports = {
                     message.channel.send(obj1, obj2);
                     return true;
                 },
-            }, {timeout: 750, maxIterations: 10});
+            }, {timeout: 500, maxIterations: 100});
             if (typeof evalued !== "string")
                 evalued = require("util").inspect(evalued, { depth: 0 });
             let txt = "" + evalued;
