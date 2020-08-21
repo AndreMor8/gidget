@@ -7,11 +7,9 @@ module.exports = {
         let algo = 0;
         let code = args.slice(1).join(' ');
         if(code.match(/toString/gmi) && code.match(/toString/gmi).length > 1) return message.channel.send("No");
-        if(code.match(/Math/gmi) && code.match(/Math/gmi).length > 5) return message.channel.send("No");
         try {
             let evalued = await safeEval(code, {
                 "JSON": Object.create(JSON),
-                "Math": Object.create(Math),
                 send: function (obj1, obj2) {
                     if(algo > 2) throw new Error("Only 3 messages per instance")
                     algo++;
@@ -21,7 +19,7 @@ module.exports = {
                     message.channel.send(obj1, obj2);
                     return true;
                 },
-            }, {timeout: 500, maxIterations: 100});
+            }, {timeout: 200, maxIterations: 5});
             if (typeof evalued !== "string")
                 evalued = require("util").inspect(evalued, { depth: 0 });
             let txt = "" + evalued;
