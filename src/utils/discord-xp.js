@@ -252,7 +252,6 @@ class DiscordXp {
   static xpFor(targetLevel) {
     if (isNaN(targetLevel) || isNaN(parseInt(targetLevel, 10))) throw new TypeError("Target level should be a valid number.");
     if (isNaN(targetLevel)) targetLevel = parseInt(targetLevel, 10);
-    if (targetLevel < 1) throw new RangeError("Target level should be a positive number.");
     return targetLevel * targetLevel * 100;
   }
 }
