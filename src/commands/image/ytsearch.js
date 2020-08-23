@@ -9,6 +9,7 @@ module.exports = {
       const filters = await ytsr.getFilters(args.slice(1).join(" "));
       filter1 = filters.get("Type").find(o => o.name === "Video");
       let options = {
+        safeSearch: true,
         limit: 50,
         nextpageRef: filter1.ref
       };
