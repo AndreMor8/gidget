@@ -182,7 +182,11 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
       url: songInfo.videoDetails.video_url,
       duration: songInfo.videoDetails.lengthSeconds,
       seektime: 0,
+      age_restricted: songInfo.age_restricted,
     };
+    if(song.age_restricted && !message.channel.nsfw) {
+      if(!playlist) return message.channel.send("To listen to inappropriate content ask for this video on an NSFW channel.");
+    }
 
     if (!serverQueue) {
       const queueConstruct = {
