@@ -10,6 +10,8 @@ In this folder the source code of Gidget is offered either to learn how it works
 
 You are also welcome to invite the bot here: https://discordapp.com/api/oauth2/authorize?client_id=694306281736896573&permissions=0&scope=bot
 
+Join the support server: https://discord.gg/KDy4gJ7
+
 Note that self-hosting is not dynamic, you will need to change some parts of the code for Gidget to suit you.
 _I know, I haven't put an example of the .env file yet, you will have to search the code for the necessary variables. :(_
 
