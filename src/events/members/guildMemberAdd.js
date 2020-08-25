@@ -58,7 +58,7 @@ module.exports = async (bot, member) => {
 
     if (error !== 1) {
       channel.send(
-        `Welcome to Wow Wow Discord ${member}! <a:WubbzyFaceA:612311062611492900> While you wait 10 minutes before chatting here, check <#402556086093348874> to enjoy this server correctly. <:WubbzyLove:608130212076453928>. Remember to read the DM that I send you :)`
+        `Welcome to Wow Wow Discord ${member}! <a:WubbzyFaceA:612311062611492900> While you wait 10 minutes before chatting here, check <#402556086093348874> to enjoy this server correctly. <:WubbzyLove:608130212076453928>. Remember to read the DM that I sent to you :)`
       );
     } else {
       channel.send(
