@@ -3,9 +3,9 @@ require("dotenv").config();
 // where your node app starts
 
 // init project
-const Discord = require("discord.js-light");
+const Discord = require("discord.js");
 require("./structures");
-const bot = new Discord.Client({ cacheGuilds: true, cacheChannels: true, cacheOverwrites: true, cacheRoles: true, cacheEmojis: true, cachePresences: true, ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL }, allowedMentions: { parse: [] }});
+const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL }, allowedMentions: { parse: [] }});
 const reg = require('./utils/registry');
 const puppeteer = require("puppeteer");
 const database = require("./database/database");
