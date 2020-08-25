@@ -27,6 +27,7 @@
     "cpu-stat": "2.0.1",
     "crypto-js": "^4.0.0",
     "discord.js": "^12.3.1",
+    "discord.js-light": "^3.2.5",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
