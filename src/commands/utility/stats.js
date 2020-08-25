@@ -21,7 +21,10 @@ module.exports = {
       .addField("• Hosting service", 'Azure', true)
       .addField("• Operating system", `\`\`\`md\n${os.version()}\n${os.release()}\`\`\``)
       .addField("• CPU", `\`\`\`md\n${os.cpus().map(i => `${i.model}`)[0]}\`\`\``)
-      .addField("• CPU usage", `\`${percent.toFixed(2)}%\``, true)
+      if(bot.voice.connections.size) {
+        embedStats.addField("Voice connections", bot.voice.connections.size.toString())
+      }
+      embedStats.addField("• CPU usage", `\`${percent.toFixed(2)}%\``, true)
       .addField("• Arch", `\`${os.arch()}\``, true)
       .addField("• Platform", `\`\`${os.platform()}\`\``, true)
       .setFooter("Gidget stats")
