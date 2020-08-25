@@ -22,7 +22,7 @@ module.exports = {
           "I'm on another voice channel! I cannot be on two channels at the same time."
         );
     }
-    const permissions = voiceChannel.permissionsFor(message.client.user);
+    const permissions = voiceChannel.permissionsFor(bot.user.id);
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
       return message.channel.send(
         "I need the permissions to join and speak in your voice channel!"
