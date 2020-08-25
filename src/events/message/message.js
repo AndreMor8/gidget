@@ -17,7 +17,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
         const arr = Object.entries(responses);
         for (let i in arr) {
           const regex = new RegExp(arr[i][0], "gmi");
-          if (regex.test(message.content) && message.channel.permissionsFor(bot.user).has("SEND_MESSAGES")) {
+          if (regex.test(message.content) && message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
             await message.channel.send(arr[i][1]).catch(err => { });
           }
         }
@@ -85,7 +85,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
   if (!args[0]) return;
   const command = bot.commands.get(args[0].toLowerCase()) || bot.commands.find(a => a.aliases.includes(args[0].toLowerCase()))
   if (command) {
-    if (message.guild && message.channel.permissionsFor(bot.user).has("SEND_MESSAGES")) {
+    if (message.guild && message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
       if(command.owner && message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
       if(command.dev && !(["577000793094488085"].includes(message.author.id))) return message.channel.send("Only Gidget developers can use this command");
       if(command.onlyguild && message.guild.id !== process.env.GUILD_ID) return message.channel.send("This command only works on Wow Wow Discord");

@@ -34,7 +34,7 @@ module.exports = async (bot, reaction, user) => {
   });
   if (msgDocument2) {
     await bot.users.fetch(user.id);
-    if(reaction.message.channel.permissionsFor(bot.user).has("MANAGE_MESSAGES")) await reaction.users.remove(user);
+    if(reaction.message.channel.permissionsFor(bot.user.id).has("MANAGE_MESSAGES")) await reaction.users.remove(user);
     let msgDocument3 = await MessageModel3.findOne({
       guildId: reaction.message.guild.id,
       from: reaction.message.id,

@@ -13,7 +13,7 @@ module.exports = {
         message.guild.channels.cache.find(c => c.name === args[1]);
       if (!channel) return message.channel.send("Invalid channel!");
       if (channel.type !== "text") return message.channel.send("Invalid channel type!");
-      if (!channel.permissionsFor(bot.user).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have the `SEND_MESSAGES` and the `EMBED_LINKS` permission in that channel");
+      if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have the `SEND_MESSAGES` and the `EMBED_LINKS` permission in that channel");
       if(!args[2]) return message.channel.send("Put a category channel!")
       let category =    message.guild.channels.cache.get(args[2]) ||
         message.guild.channels.cache.find(c => c.name === args[2]);

@@ -7,8 +7,8 @@ module.exports = {
       channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || message.channel;
       if (channel.guild.id !== message.guild.id) return message.channel.send("That channel is from another guild");
       if(!["text", "news"].includes(channel.type)) return message.channel.send("That isn't a text channel!");
-      if(!channel.permissionsFor(bot.user).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have permissions!");
-      if (!channel.permissionsFor(message.author).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("You don't have permissions!");
+      if(!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have permissions!");
+      if (!channel.permissionsFor(message.author.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("You don't have permissions!");
     } else {
       channel = message.channel;
     }

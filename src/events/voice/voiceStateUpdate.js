@@ -1,4 +1,5 @@
 module.exports = async (bot, oldState, newState) => {
+  if(!newState.guild) return;
   const musicVariables = newState.guild.musicVariables;
   if (musicVariables && !newState.channel && (newState.member.id === bot.user.id)) {
     newState.guild.queue = null;
