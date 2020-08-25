@@ -24,6 +24,7 @@ module.exports = {
     let collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 120000 })
     collector.on("collect", async m => {
       if(m.content === "exit") return collector.stop("Exited");
+      if(m.content === "preview") return message.channel.send("Here's a preview of your embed", embed).then(e => e.delete({ timeout: 15000 }));
       switch(i) {
         case 0:
           if(m.content === "none") {
@@ -201,7 +202,7 @@ module.exports = {
     })
   },
   description: "Create a embed",
-  aliases: [],
+  aliases: ["createembed"],
   permissions: {
     user: [0, 0],
     bot: [0, 0]
