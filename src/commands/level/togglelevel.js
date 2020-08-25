@@ -1,4 +1,3 @@
-const MessageModel = require("../../database/models/levelconfig");
 module.exports = {
   run: async (bot, message, args) => {
     if (!args[1]) return message.channel.send("Usage: `togglelevel <system/notif>`");
@@ -6,7 +5,7 @@ module.exports = {
     switch (args[1]) {
       case "notif":
         await message.guild.changeLevelConfig("levelnotif", !reference.levelnotif)
-        message.channel.send(`Now the level-up notifications are: ${!reference.levelsystem ? "Enabled" : "Disabled"}`)
+        message.channel.send(`Now the level-up notifications are: ${!reference.levelnotif ? "Enabled" : "Disabled"}`)
       break;
       case "system": 
         await message.guild.changeLevelConfig("levelsystem", !reference.levelsystem)

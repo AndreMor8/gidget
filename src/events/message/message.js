@@ -58,7 +58,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
     }
     //Things for Wow Wow Discord
     if (message.guild.id === process.env.GUILD_ID && !message.channel.nsfw) {
-      if (badwords.isProfane(message.content.toLowerCase())) {
+      if (badwords.isProfane(message.content.toLowerCase()) && !message.member.hasPermission("ADMINISTRATOR")) {
         await message.delete()
         await message.reply("swearing is not allowed in this server!", { allowedMentions: { parse: ["users"] } });
       }

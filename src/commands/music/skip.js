@@ -22,9 +22,9 @@ module.exports = {
         ((message.member.voice.channel.members.size - 1) / 100) * 75
       );
       if (memberRequired > 1) {
-        if (musicVariables.memberVoted.indexOf(message.author.id) === -1) {
+        if (!musicVariables.memberVoted.includes(message.author.id)) {
           musicVariables.memberVoted.push(message.author.id);
-          if (musicVariables.memberVoted.length <= memberRequired) {
+          if (musicVariables.memberVoted.length < memberRequired) {
             return message.channel.send(
               `Skipping? (${musicVariables.memberVoted.length}/${memberRequired})`
             );

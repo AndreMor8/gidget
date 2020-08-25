@@ -165,13 +165,13 @@ Structures.extend('Guild', Guild => {
             if(doc) {
                 if(config === "levelnotif") {
                     doc.levelnotif = value;
-                    await doc.updateOne({ levelnotif: value });
+                    await doc.save();
                     this.levelconfig = doc;
                     this.cache.levelconfig = true;
                     return true;
                 } else if(config === "levelsystem") {
                     doc.levelsystem = value;
-                    await doc.updateOne({ levelsystem: value });
+                    await doc.save();
                     this.levelconfig = doc;
                     this.cache.levelconfig = true;
                     return true;

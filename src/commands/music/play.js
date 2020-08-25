@@ -117,6 +117,7 @@ module.exports = {
         const filters = await ytsr.getFilters(args.slice(1).join(" "));
         filter = filters.get("Type").find(o => o.name === "Video");
         let options = {
+          safeSearch: true,
           limit: 1,
           nextpageRef: filter.ref
         };
@@ -181,7 +182,11 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
       url: songInfo.videoDetails.video_url,
       duration: songInfo.videoDetails.lengthSeconds,
       seektime: 0,
+      age_restricted: songInfo.videoDetails.age_restricted,
     };
+    if(song.age_restricted && !message.channel.nsfw) {
+      if(!playlist) return message.channel.send("To listen to inappropriate content ask for this video on an NSFW channel.");
+    }
 
     if (!serverQueue) {
       const queueConstruct = {
