@@ -107,7 +107,9 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
           message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
         });
     } else if (!message.guild) {
-      if(command.onlyguild) return message.channel.send("This command onlu works in Wow Wow Discord")
+      if(command.owner && message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
+      if(command.dev && !(["577000793094488085"].includes(message.author.id))) return message.channel.send("Only Gidget developers can use this command");
+      if(command.onlyguild) return message.channel.send("This command only works in Wow Wow Discord")
       if(command.guildonly) return message.channel.send("This command only works in servers");
       command.run(bot, message, args)
         .catch(err => {
