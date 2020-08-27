@@ -26,6 +26,7 @@ module.exports = {
         }
         const tosay = args.slice(1).join(" ");
         //if(tosay > 64) return message.channel.send("Must be less than 64 characters") //Going to test
+        message.channel.startTyping();
         const res = await fetch(`https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=64&client=tw-ob&q=${encodeURIComponent(tosay)}&tl=${reallang}`);
         const buf = await res.buffer();
         const att = new MessageAttachment(buf, "tts.mp3");
