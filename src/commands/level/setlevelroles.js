@@ -19,7 +19,7 @@ module.exports = {
                 roles[level - 1] = toadd;
                 msgDocument.updateOne({ roles: roles }).then(() => {
                     message.channel.send("Updated");
-                    bot.level.delete(message.guild.id);
+                    message.guild.cache.levelconfig = false;
                 }).catch(err => message.channel.send("Some error ocurred! " + err));
             } else {
                 let arr = [];
@@ -31,7 +31,7 @@ module.exports = {
                     roles: arr
                 }).save().then(() => {
                     message.channel.send("Updated");
-                    bot.level.delete(message.guild.id);
+                    message.guild.cache.levelconfig = false;
                 }).catch(err => message.channel.send("Some error ocurred! " + err));
             }
         };
