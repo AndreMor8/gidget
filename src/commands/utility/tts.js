@@ -22,7 +22,7 @@ module.exports = {
         if(!reallang) return message.channel.send("Invalid language!\nhttps://github.com/AndreMor955/gidget/blob/master/src/utils/languages.js")
         const tosay = args.slice(1).join(" ");
         //if(tosay > 64) return message.channel.send("Must be less than 64 characters") //Going to test
-        const res = await fetch(`https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=64&client=tw-ob&q=${tosay}&tl=${reallang}`);
+        const res = await fetch(`https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=64&client=tw-ob&q=${encodeURIComponent(tosay)}&tl=${reallang}`);
         const buf = await res.buffer();
         const att = new MessageAttachment(buf, "tts.mp3");
         await message.channel.send(att);
