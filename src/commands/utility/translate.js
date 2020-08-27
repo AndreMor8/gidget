@@ -1,5 +1,6 @@
 const gtranslate = require('google-translate-open-api').default;
 const { parseMultiple } = require('google-translate-open-api')
+const languages = require("../../utils/languages");
 const { MessageEmbed } = require("discord.js")
 
 module.exports = {
@@ -15,6 +16,9 @@ module.exports = {
             lang = "en"
         }
 
+        const reallang = languages.getCode(lang);
+        if(!reallang) return message.channel.send("Invalid language!\nhttps://github.com/AndreMor955/gidget/blob/master/src/utils/languages.js")
+
         //Get text
         let text = args.slice(1).join(" ");
         if (text.length > 700) {
@@ -25,14 +29,14 @@ module.exports = {
         let ptext = text;
         text = text.split(/(?=[?!.])/gi);
         text.push(" ");
-        gtranslate(text, { to: lang }).then(result => {
+        gtranslate(text, { to: reallang }).then(result => {
             const translated = result.data[0];
             const res = parseMultiple(translated);
             let embed = new MessageEmbed()
                 .setTitle("Translate")
                 .setColor("RANDOM")
                 .addField('Input', `\`\`\`css\n${ptext}\`\`\``)
-                .addField('Lang', `\`\`\`css\n${lang}\`\`\``)
+                .addField('Lang', `\`\`\`css\n${reallang}\`\`\``)
                 .addField('Output', `\`\`\`css\n${"" + res.join(" ")}\`\`\``)
                 .setTimestamp()
             message.channel.send(embed)
