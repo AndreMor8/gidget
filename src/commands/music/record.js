@@ -22,8 +22,8 @@ module.exports = {
     }
     if (musicVariables && musicVariables.other) return message.channel.send("I'm doing another operation");
     const SILENCE_FRAME = Buffer.from([0xF8, 0xFF, 0xFE]);
-    bot.musicVariables1.set(message.guild.id, { other: true });
-    musicVariables = bot.musicVariables1.get(message.guild.id);
+    message.guild.musicVariables = { other: true };
+    musicVariables = message.guild.musicVariables;
     class Silence extends Readable {
       _read() {
         this.push(SILENCE_FRAME);
@@ -32,11 +32,12 @@ module.exports = {
     const voiceChannel = message.member.voice.channel;
     voiceChannel.join().then(async (connection) => {
       await connection.play(new Silence(), { type: "opus" });
-      await message.channel.send('Start talking. I will record what you say until you finish speaking.');
+      await message.channel.send('Start talking. I will record **what you say** until you finish speaking.');
       const audio = connection.receiver.createStream(message.author, options);
       let i = 0;
       let o = 0;
       connection.on("speaking", async (user, speaking) => {
+        if(user.id !== message.author.id) return;
         if (speaking.has("SPEAKING") && i < 1) {
           i++
           await message.channel.send('I am listening to you. Stop talking to give you the recording.');
@@ -49,14 +50,23 @@ module.exports = {
             })
             dispatcher.on("finish", async () => {
               await voiceChannel.leave();
+              message.guild.musicVariables = null;
+            })
+            dispatcher.on("close", () => {
+              message.guild.musicVariables = null;
+            })
+            dispatcher.on("error", async (err) => {
+              await voiceChannel.leave();
+              message.channel.send("Some error ocurred! Here's a debug: " + err);
+              message.guild.musicVariables = null;
             })
           } else {
             const attachment = new Discord.MessageAttachment(audio, 'audio.pcm');
             if(args[1] === "server") await message.channel.send("Here's your recording. You must pass it to Audacity as raw data to listen to it.", attachment);
             else await message.member.send("Here's your recording. You must pass it to Audacity as raw data to listen to it.", attachment);
             await voiceChannel.leave();
+            message.guild.musicVariables = null;
           }
-          message.musicVariables = null;
         }
       });
     });
