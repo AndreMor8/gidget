@@ -32,15 +32,14 @@ module.exports = {
     const voiceChannel = message.member.voice.channel;
     voiceChannel.join().then(async (connection) => {
       await connection.play(new Silence(), { type: "opus" });
-      message.channel.send('Start talking. I will record what you say until you finish speaking.');
-      let audio;
+      await message.channel.send('Start talking. I will record what you say until you finish speaking.');
+      const audio = connection.receiver.createStream(message.author, options);
       let i = 0;
       let o = 0;
       connection.on("speaking", async (user, speaking) => {
-        if (speaking.toArray().indexOf("SPEAKING") !== -1 && i < 1) {
+        if (speaking.has("SPEAKING") && i < 1) {
           i++
           await message.channel.send('I am listening to you. Stop talking to give you the recording.');
-          audio = connection.receiver.createStream(message.author, options);
         } else if(i > 0 && o < 1) {
           o++
           if(args[1] === "play") {
