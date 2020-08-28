@@ -27,10 +27,12 @@ process.on("unhandledRejection", error => {
   //Timezone thing
   bot.intl = Intl.DateTimeFormat("en", { dateStyle: "full", timeStyle: "full", timeZone: "America/New_York", hour12: true, timeZoneName: "short" })
   //Puppeteer
+  if(process.env.PUPPETEER !== "NO") {
   bot.browser = await puppeteer.launch({ headless: true, defaultViewport: {
     width: 1440,
     height: 900
   }, args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox"] });
+  }
   //Registers
   reg.registerEvents(bot, "../events");
   reg.registerCommands(bot, "../commands");
