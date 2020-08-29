@@ -30,13 +30,24 @@ async function px32(message, args) {
   let meme = await Jimp.read(
     "https://cdn.glitch.com/9215ce3e-8f9b-4577-9468-e5a34523fe98%2Fwalden-says-5d018d79327df.png?v=1590048195907"
   );
-
+  let pre_text = args.join(" ").split("");
+  let realtext = "";
+  let post_text = "";
+  for (let i = 0; i < pre_text.length; i++) {
+    post_text += pre_text[i];
+    if(realtext.length > 13) {
+      realtext += " " + pre_text[i];
+      post_text = "";
+    } else {
+      realtext += pre_text[i];
+    }
+  }
   meme.print(
     font,
     403,
     20,
     {
-      text: args.join(" "),
+      text: realtext,
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
@@ -61,13 +72,24 @@ async function px64(message, args) {
   let meme = await Jimp.read(
     "https://cdn.glitch.com/9215ce3e-8f9b-4577-9468-e5a34523fe98%2Fwalden-says-5d018d79327df.png?v=1590048195907"
   );
-
+  let pre_text = args.join(" ").split("");
+  let realtext = "";
+  let post_text = "";
+  for (let i = 0; i < pre_text.length; i++) {
+    post_text += pre_text[i];
+    if (realtext.length > 13) {
+      realtext += " " + pre_text[i];
+      post_text = "";
+    } else {
+      realtext += pre_text[i];
+    }
+  }
   meme.print(
     font,
     382,
     15,
     {
-      text: args.join(" "),
+      text: realtext,
       alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     },
