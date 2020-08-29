@@ -74,12 +74,16 @@ function handleCollector(fetchedMessage, author, channel, msgModel) {
                 let { cache } = msg.guild.emojis;
                 let [emojiName, roleName] = msg.content.split(/,\s+/);
                 if (!emojiName && !roleName) return;
-                let emoji = cache.find(emoji => emoji.name.toLowerCase() === emojiName.toLowerCase());
+                let emoji = cache.find(emoji => (emoji.toString() === emojiName) || (emoji.name.toLowerCase() === emojiName.toLowerCase()));
                 if (!emoji) {
-                    msg.channel.send("Emoji does not exist. Try again.")
-                        .then(msg => msg.delete({ timeout: 2000 }))
-                        .catch(err => console.log(err));
-                    return;
+                    if (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emojiName)) {
+                        emoji = emojiName;
+                    } else {
+                        msg.channel.send("Emoji does not exist. Try again.")
+                            .then(msg => msg.delete({ timeout: 2000 }))
+                            .catch(err => console.log(err));
+                        return;
+                    }
                 }
                 let role = msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                 if (!role) {
