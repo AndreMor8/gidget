@@ -94,7 +94,7 @@ function handleCollector(fetchedMessage, author, channel, msgModel) {
                 }
                 fetchedMessage.react(emoji)
                     .catch(err => console.log(err));
-                emojiRoleMappings.set(emoji.id, role.id);
+                emojiRoleMappings.set((emoji.id || emoji), role.id);
             }
         });
         collector.on('end', () => {

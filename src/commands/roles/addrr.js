@@ -50,7 +50,7 @@ module.exports = {
                         fetchedMessage.react(emoji)
                             .then(emoji => console.log("Reacted."))
                             .catch(err => console.log(err));
-                        emojiRoleMappings.set(emoji.id, role.id);
+                        emojiRoleMappings.set((emoji.id || emoji), role.id);
                     });
                     collector.on('end', async (collected, reason) => {
                         let findMsgDocument = await MessageModel
