@@ -36,12 +36,12 @@ async function px32(message, args) {
   for (let i = 0; i < pre_text.length; i++) {
     post_text += pre_text[i];
     if (pre_text[i] === " ") {
-      post_text = "";
+      post_text = " ";
       continue;
     }
-    if (post_text.length > 13) {
+    if (post_text.length > 12) {
       realtext += " " + pre_text[i];
-      post_text = "";
+      post_text = " ";
     } else {
       realtext += pre_text[i];
     }
@@ -82,12 +82,12 @@ async function px64(message, args) {
   for (let i = 0; i < pre_text.length; i++) {
     post_text += pre_text[i];
     if(pre_text[i] === " ") {
-      post_text = "";
+      post_text = " ";
       continue;
     }
-    if (post_text.length > 13) {
+    if (post_text.length > 6) {
       realtext += " " + pre_text[i];
-      post_text = "";
+      post_text = " ";
     } else {
       realtext += pre_text[i];
     }
