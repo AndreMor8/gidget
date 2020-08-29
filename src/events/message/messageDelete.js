@@ -9,11 +9,14 @@ module.exports = async (bot, message) => {
 
   await MessageModel3.findOneAndDelete({ messageId: message.id });
 
-  //Things for Wow Wow Discord
+  
   if (message.partial) return;
-  if (message.channel.type === "dm") return;
-  if (message.guild.id != "402555684849451028") return;
+  if (!message.guild) return;
+  
+  message.channel.snipe = message;
 
+  //Things for Wow Wow Discord
+  if (message.guild.id != "402555684849451028") return;
   if (message.channel.id === "617228699489533953" || message.channel.id === "656991277291667506") return;
 
   const channel = message.guild.channels.cache.get("656991277291667506");

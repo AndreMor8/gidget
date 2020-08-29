@@ -273,3 +273,18 @@ Structures.extend("User", (User) => {
         }
     }
 })
+
+Structures.extend("TextChannel", TextChannel => {
+    return class extends TextChannel {
+        constructor(guild, data) {
+            super(guild, data);
+            this.snipe = null;
+            setInterval(() => {
+                this.snipe = null;
+            }, 300000);
+        }
+        deleteSnipe() {
+            this.snipe = null;
+        }
+    }
+})
