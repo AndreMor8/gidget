@@ -37,6 +37,7 @@ async function px32(message, args) {
     post_text += pre_text[i];
     if (pre_text[i] === " ") {
       post_text = " ";
+      realtext += pre_text[i];
       continue;
     }
     if (post_text.length > 12) {
@@ -83,6 +84,7 @@ async function px64(message, args) {
     post_text += pre_text[i];
     if(pre_text[i] === " ") {
       post_text = " ";
+      realtext += pre_text[i];
       continue;
     }
     if (post_text.length > 6) {
