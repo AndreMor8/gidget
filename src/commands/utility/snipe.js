@@ -13,8 +13,8 @@ module.exports = {
         if(!channel.permissionsFor(message.author).has("VIEW_CHANNEL")) return message.channel.send("You don't have permissions");
         if(!channel.snipe) return message.channel.send("There are no snipes");
         else {
-            const attachmenttext = Discord.Util.splitMessage(channel.snipe.attachments.map(e => "1. " + e.url).join("\n"), { maxLength: 1000 });
-            const reactiontext = Discord.Util.splitMessage(channel.snipe.reactions.cache.map(e => e.emoji.toString() + " => " + e.users.cache.size).join(", "), { maxLength: 1000 });
+            const attachmenttext = Discord.Util.splitMessage(channel.snipe.attachments.map(e => "1. " + e.url).join("\n"), { maxLength: 1000 })[0];
+            const reactiontext = Discord.Util.splitMessage(channel.snipe.reactions.cache.map(e => e.emoji.toString() + " => " + e.users.cache.size).join(", "), { maxLength: 1000 })[0];
             const embed = new Discord.MessageEmbed()
             .setTitle("Snipe")
             .setColor("RANDOM")
