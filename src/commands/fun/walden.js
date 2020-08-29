@@ -35,7 +35,7 @@ async function px32(message, args) {
   let post_text = "";
   for (let i = 0; i < pre_text.length; i++) {
     post_text += pre_text[i];
-    if(realtext.length > 13) {
+    if(post_text.length > 13) {
       realtext += " " + pre_text[i];
       post_text = "";
     } else {
@@ -77,7 +77,7 @@ async function px64(message, args) {
   let post_text = "";
   for (let i = 0; i < pre_text.length; i++) {
     post_text += pre_text[i];
-    if (realtext.length > 13) {
+    if (post_text.length > 13) {
       realtext += " " + pre_text[i];
       post_text = "";
     } else {
