@@ -13,14 +13,16 @@ module.exports = {
         if(!channel.permissionsFor(message.author).has("VIEW_CHANNEL")) return message.channel.send("You don't have permissions");
         if(!channel.snipe) return message.channel.send("There are no snipes");
         else {
+            const attachmenttext = Discord.Util.splitMessage(channel.snipe.attachments.map(e => "1. " + e.url).join("\n"), { maxLength: 1000 });
+            const reactiontext = Discord.Util.splitMessage(channel.snipe.reactions.cache.map(e => e.emoji.toString() + " => " + e.users.cache.size).join(", "), { maxLength: 1000 });
             const embed = new Discord.MessageEmbed()
             .setTitle("Snipe")
             .setColor("RANDOM")
             .setAuthor(channel.snipe.author.tag, channel.snipe.author.displayAvatarURL({ dynamic: true, format: "png" }))
-            .addField("Content", channel.snipe.content || "Without content")
+            .addField("Content", channel.snipe.content || "*Without content...*")
             .addField("Embeds", channel.snipe.embeds.length.toString())
-            .addField("Attachments", channel.snipe.attachments.size.toString())
-            .addField("Reactions", channel.snipe.reactions.cache.size.toString())
+            .addField("Attachments", attachmenttext || "*Without attachments...*")
+            .addField("Reactions", reactiontext || "*Without reactions...*")
             message.channel.send(embed);
         }
     }
