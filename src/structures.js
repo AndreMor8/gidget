@@ -11,6 +11,7 @@ const cr = require("./database/models/customresponses");
 const level = require("./database/models/levelconfig");
 const OAuth2 = require("./database/models/OAuth2Credentials");
 const DiscordUser = require("./database/models/DiscordUser");
+const MessageLinksModel = require("./database/models/messagelinks");
 const CryptoJS = require("crypto-js");
 const { Structures } = require("discord.js");
 
@@ -23,10 +24,12 @@ Structures.extend('Guild', Guild => {
             this.prefix = "g%";
             this.customresponses = {};
             this.levelconfig = {};
+            this.messagelinksconfig = {};
             this.cache = {
                 prefix: false,
                 customresponses: false,
                 levelconfig: false,
+                messagelinksconfig: false,
             };
         }
         /**
@@ -188,10 +191,51 @@ Structures.extend('Guild', Guild => {
                 return true;
             }
         }
+        /**
+         * @returns {Object} The document
+         */
+        async getMessageLinksConfig() {
+            const doc = await MessageLinksModel.findOne({ guildId: this.id });
+            if(doc) {
+                this.messagelinksconfig = doc;
+                this.cache.messagelinksconfig = true;
+                return doc;
+            } else {
+                this.messagelinksconfig = {};
+                this.cache.messagelinksconfig = true;
+                return {};
+            }
+        }
+        /**
+         * 
+         * @param {Boolean} value New value for the document
+         * @returns {Boolean} Always true
+         */
+        async setMessageLinksConfig(value) {
+            if(typeof value !== "boolean") throw new Error("'value' isn't a boolean");
+            const doc = await MessageLinksModel.findOne({ guildID: this.id });
+            if(doc) {
+                await doc.updateOne({ enabled: value });
+                this.messagelinksconfig = doc;
+                this.messagelinksconfig.enabled = value;
+                this.cache.messagelinksconfig = true;
+                return true;
+            } else {
+                const newDoc = await MessageLinksModel.create({
+                    guildID: this.id,
+                    enabled: value
+                });
+                this.messagelinksconfig = true;
+                this.cache.messagelinksconfig = true;
+                return true;
+            }
+        }
+
         noCache(){
             this.cache.customresponses = false;
             this.cache.prefix = false;
             this.cache.levelconfig = false;
+            this.cache.messagelinksconfig = false;
             return true;
         }
     };
