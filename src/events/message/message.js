@@ -68,7 +68,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
           const [channelid, messageid] = urlobj.pathname.split("/").slice(3);
           const channel = bot.channels.cache.get(channelid);
           if (channel && channel.permissionsFor(message.author).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-            const msg = channel.messages.cache.get(messageid) || (messageid ? (await channels.messages.fetch(messageid).catch(err => { })) : undefined)
+            const msg = channel.messages.cache.get(messageid) || (messageid ? (await channel.messages.fetch(messageid).catch(err => { })) : undefined)
             if (msg) {
               const embed = new Discord.MessageEmbed()
               .setAuthor(msg.author.tag, msg.author.displayAvatarURL({ format: "png", dynamic: true }))
