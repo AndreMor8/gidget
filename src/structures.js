@@ -225,7 +225,7 @@ Structures.extend('Guild', Guild => {
                     guildID: this.id,
                     enabled: value
                 });
-                this.messagelinksconfig = true;
+                this.messagelinksconfig = newDoc;
                 this.cache.messagelinksconfig = true;
                 return true;
             }
