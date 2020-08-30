@@ -40,7 +40,7 @@ async function px32(message, args) {
       realtext += pre_text[i];
       continue;
     }
-    if (post_text.length > 12) {
+    if (post_text.length > 13) {
       realtext += " " + pre_text[i];
       post_text = " ";
     } else {
