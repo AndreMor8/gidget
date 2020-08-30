@@ -65,7 +65,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
         const regex = /((http|https):\/\/)((www|canary|ptb)\.)?(discordapp|discord)\.com\/channels\/[0-9]{17,20}\/[0-9]{17,20}\/[0-9]{17,20}/gmi;
         const matches = message.content.match(regex);
         if (matches && matches.length) {
-          const urlobj = new url(args[0]);
+          const urlobj = new url(matches[0]);
           const [channelid, messageid] = urlobj.pathname.split("/").slice(1);
           const channel = bot.channels.cache.get(channelid);
           if (channel && channel.permissionsFor(message.author).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
