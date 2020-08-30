@@ -75,7 +75,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
               .setDescription(msg.content || "*Without content*")
               .addField("URL", "[Message Link](" + msg.url + ")", true)
               .addField("Embeds", msg.embeds.length.toString(), true)
-              .addField("Message flags", msg.flags.toArray().join(", ") || "Without flags")
+              .addField("Message flags", msg.flags.toArray().join(", ") || "Without flags", true)
               .setFooter("Mentioned by: " + message.author.tag, message.author.displayAvatarURL({ format: "png", dynamic: true }));
               if(msg.attachments.first()) {
                 embed.setImage(msg.attachments.first().url);
