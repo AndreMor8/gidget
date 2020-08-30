@@ -23,6 +23,7 @@ module.exports = {
             .addField("Embeds", channel.snipe.embeds.length.toString())
             .addField("Attachments", attachmenttext || "*Without attachments...*")
             .addField("Reactions", reactiontext || "*Without reactions...*")
+            .addField("Flags", channel.snipe.flags.toArray().join(", ") || "*Without flags*")
             message.channel.send(embed);
         }
     }
