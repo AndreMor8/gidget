@@ -195,7 +195,7 @@ Structures.extend('Guild', Guild => {
          * @returns {Object} The document
          */
         async getMessageLinksConfig() {
-            const doc = await MessageLinksModel.findOne({ guildId: this.id });
+            const doc = await MessageLinksModel.findOne({ guildID: this.id });
             if(doc) {
                 this.messagelinksconfig = doc;
                 this.cache.messagelinksconfig = true;
