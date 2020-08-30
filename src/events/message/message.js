@@ -65,9 +65,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
         const matches = message.content.match(regex);
         if (matches && matches.length) {
           const urlobj = new URL(matches[0]);
-          console.log(urlobj.pathname.split("/").slice(1))
-          const [channelid, messageid] = urlobj.pathname.split("/").slice(1);
-          console.log(channelid, messageid)
+          const [channelid, messageid] = urlobj.pathname.split("/").slice(3);
           const channel = bot.channels.cache.get(channelid);
           if (channel && channel.permissionsFor(message.author).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
             const msg = channel.messages.cache.get(messageid) || await channels.messages.fetch(messageid).catch(err => {});
