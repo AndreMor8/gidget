@@ -22,6 +22,7 @@ module.exports = {
     aliases: [],
     description: "Execute terminal commands",
     dev: true,
+    secret: true,
     permissions: {
     user: [0, 0],
     bot: [0, 0]
