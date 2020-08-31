@@ -45,7 +45,8 @@ module.exports = async (bot, member) => {
         }
       }
     }
-    const welcome = member.guild.cache.welcome ? member.guild.welcome : await member.guild.getWelcome();
+  }
+  const welcome = member.guild.cache.welcome ? member.guild.welcome : await member.guild.getWelcome();
     if(welcome && welcome.leaveenabled && welcome.leavetext) {
       const channel = member.guild.channels.cache.get(welcome.leavechannelID);
       if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
@@ -53,7 +54,6 @@ module.exports = async (bot, member) => {
         await channel.send(finalText || "?").catch(err => {});
       }
     }
-  }
   /*
   //Things for Wow Wow Discord
   if (member.guild.id !== "402555684849451028") return;
