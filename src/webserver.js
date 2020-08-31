@@ -30,6 +30,8 @@ function deleteCache(guildID) {
     guild.cache.prefix = false;
     guild.cache.customresponses = false;
     guild.cache.levelconfig = false;
+    guild.cache.welcome = false;
+    guild.cache.messagelinksconfig = false;
     return true;
   } else return false
 }

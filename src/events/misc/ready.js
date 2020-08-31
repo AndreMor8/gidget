@@ -16,7 +16,13 @@ module.exports = async bot => {
   if (doc2) {
     poll();
   }
-
+  const guildsToFetch = bot.guilds.cache.filter(e => e.me.hasPermission("MANAGE_GUILD")).array();
+  for(const guild of guildsToFetch) {
+    guild.inviteCount = await guild.getInviteCount().catch(err => {
+      console.log(err);
+      return {};
+    });
+  }
   console.log(`Gidget is alive! Version ` + version);
 };
 

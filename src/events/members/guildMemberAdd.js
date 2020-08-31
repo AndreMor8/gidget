@@ -2,7 +2,6 @@ const MessageModel = require("../../database/models/roles");
 const MessageModel2 = require("../../database/models/retreiveconfig");
 const Discord = require("discord.js");
 module.exports = async (bot, member) => {
-  let error = 0;
   let verify = bot.rrcache.get(member.guild.id);
   if (!verify) {
     verify = await MessageModel2.findOne({ guildId: member.guild.id });
@@ -25,6 +24,33 @@ module.exports = async (bot, member) => {
       msgDocument.deleteOne();
     }
   }
+
+  const welcome = member.guild.cache.welcome ? member.guild.welcome : await member.guild.getWelcome();
+
+  if (welcome) {
+    let inviterMention = "Unknown";
+      if (((/%INVITER%/gmi.test(welcome.text)) || (/%INVITER%/gmi.test(welcome.dmmessage))) && member.guild.me.hasPermission("MANAGE_GUILD")) {
+        const invitesBefore = member.guild.inviteCount
+        const invitesAfter = await member.guild.getInviteCount();
+        for (const inviter in invitesAfter) {
+          if (invitesBefore[inviter] === (invitesAfter[inviter] - 1)) {
+            inviterMention = "<@!" + inviter + ">";
+          }
+        }
+      }
+    if (welcome.enabled && welcome.text) {
+      const channel = member.guild.channels.cache.get(welcome.channelID);
+      if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
+        let finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention);
+        await channel.send(finalText || "?").catch(err => {});
+      }
+    }
+    if(welcome.dmenabled && welcome.dmtext) {
+      let finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention);
+      await member.send(finalText || "?").catch(err => {});
+    }
+  }
+  //Things for Wow Wow Discord
   if (member.guild.id !== "402555684849451028") return;
   const embed = new Discord.MessageEmbed()
     .setTitle("Welcome to Wow Wow Discord!, " + member.user.username)
@@ -39,7 +65,7 @@ module.exports = async (bot, member) => {
     )
     .addField(
       "Why is the verification level high?",
-      `This is to avoid raids with self-bots, and for people to read [the rules](https://ptb.discordapp.com/channels/402555684849451028/402556086093348874/402568434522521600) before chatting. We recommend reading the server rules to find out what is allowed and restricted. <#402556086093348874>`
+      `This is to avoid raids with self-bots, and for people to read [the rules](https://ptb.discord.com/channels/402555684849451028/402556086093348874/402568434522521600) before chatting. We recommend reading the server rules to find out what is allowed and restricted. <#402556086093348874>`
     )
     .addField(
       "How do I get permissions to upload images and others?",
@@ -47,26 +73,9 @@ module.exports = async (bot, member) => {
     )
     .addField(
       "Remember to use common sense!",
-      `Not everything is covered by the rules. Following [Discord ToS](https://discordapp.com/terms) is an example of this, because everyone should know that.\n\nWe hope you have a friendly experience here! <:WubbzyHi:494666575773696001>`
+      `Not everything is covered by the rules. Following [Discord ToS](https://discord.com/terms) is an example of this, because everyone should know that.\n\nWe hope you have a friendly experience here! <:WubbzyHi:494666575773696001>`
     )
     .setFooter("Thanks for joining!")
     .setTimestamp();
-  try {
-    await member.send(embed);
-    const channel = member.guild.channels.cache.get("402555684849451030");
-    if (!channel) return;
-
-    if (error !== 1) {
-      channel.send(
-        `Welcome to Wow Wow Discord ${member}! <a:WubbzyFaceA:612311062611492900> While you wait 10 minutes before chatting here, check <#402556086093348874> to enjoy this server correctly. <:WubbzyLove:608130212076453928>. Remember to read the DM that I sent to you :)`
-      );
-    } else {
-      channel.send(
-        `Welcome to Wow Wow Discord ${member}! <a:WubbzyFaceA:612311062611492900> While you wait 10 minutes before chatting here, check <#402556086093348874> to enjoy this server correctly. <:WubbzyLove:608130212076453928>. Your DMs are closed :(`
-      );
-    }
-  } catch (err) {
-    error = 1;
-    console.log(err);
-  }
+    await member.send(embed).catch(err => {});
 };

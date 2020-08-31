@@ -2,13 +2,10 @@ const MessageModel = require("../../database/models/roles");
 const MessageModel2 = require("../../database/models/retreiveconfig");
 const MessageModel3 = require("../../database/models/mutedmembers");
 module.exports = async (bot, member) => {
-  const date = new Date();
+  //const date = new Date();
 
   /* Temp-mute function - Delete the member if they left the server */
-  let s = await MessageModel3.findOne({ guildId: member.guild.id, memberId: member.id });
-  if (s) {
-    MessageModel3.deleteOne();
-  }
+  await MessageModel3.findOneAndDelete({ guildId: member.guild.id, memberId: member.id }).catch(err => {});
 
   /* Retrieving-roles function */
   //I don't want errors..
@@ -48,9 +45,16 @@ module.exports = async (bot, member) => {
         }
       }
     }
-
+    const welcome = member.guild.cache.welcome ? member.guild.welcome : await member.guild.getWelcome();
+    if(welcome && welcome.leaveenabled && welcome.leavetext) {
+      const channel = member.guild.channels.cache.get(welcome.leavechannelID);
+      if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
+        let finalText = welcome.leavetext.replace(/%MEMBER%/gmi, member.toString()).replace(/%SERVER%/gmi, member.guild.name);
+        await channel.send(finalText || "?").catch(err => {});
+      }
+    }
   }
-
+  /*
   //Things for Wow Wow Discord
   if (member.guild.id !== "402555684849451028") return;
   const channel = member.guild.channels.cache.get("402555684849451030");
@@ -62,8 +66,9 @@ module.exports = async (bot, member) => {
   } else {
     sendMessage(bot, member, channel, date)
   }
+  */
 };
-
+/*
 async function sendMessage(bot, member, channel, date, realmember, user = false) {
   await bot.users.fetch(member.user.id);
   let auditlog;
@@ -114,3 +119,4 @@ async function sendMessage(bot, member, channel, date, realmember, user = false)
     ).catch(err => { });
   }
 }
+*/

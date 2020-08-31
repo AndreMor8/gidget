@@ -9,6 +9,7 @@ const fetch = require("node-fetch");
 const prefix = require("./database/models/prefix");
 const cr = require("./database/models/customresponses");
 const level = require("./database/models/levelconfig");
+const welcome = require("./database/models/welcome");
 const OAuth2 = require("./database/models/OAuth2Credentials");
 const DiscordUser = require("./database/models/DiscordUser");
 const MessageLinksModel = require("./database/models/messagelinks");
@@ -22,16 +23,35 @@ Structures.extend('Guild', Guild => {
             this.queue = null;
             this.musicVariables = null;
             this.prefix = "g%";
+            this.welcome = {};
             this.customresponses = {};
             this.levelconfig = {};
             this.messagelinksconfig = {};
+            this.inviteCount = {};
             this.cache = {
                 prefix: false,
                 customresponses: false,
                 levelconfig: false,
                 messagelinksconfig: false,
+                welcome: false
             };
         }
+
+        async getInviteCount() {
+            const col = await this.fetchInvites()
+            const invites = col.array();
+            const inviteCounter = {}
+
+            for (const invite of invites) {
+                const { uses, inviter } = invite
+                const { id } = inviter
+
+                inviteCounter[id] = (inviteCounter[id] || 0) + uses
+            }
+
+            return inviteCounter;
+        }
+        
         /**
          * @returns {String} The actual guild prefix
          */
@@ -146,13 +166,13 @@ Structures.extend('Guild', Guild => {
         }
         async getLevelConfig() {
             const doc = await level.findOne({ guildId: this.id });
-            if(doc) {
+            if (doc) {
                 this.levelconfig = doc;
                 this.cache.levelconfig = true;
                 return doc;
             } else {
                 this.levelconfig = {},
-                this.cache.levelconfig = true;
+                    this.cache.levelconfig = true;
                 return {};
             }
         }
@@ -163,16 +183,16 @@ Structures.extend('Guild', Guild => {
          * @returns {Boolean} If the/a document was created/updated
          */
         async changeLevelConfig(config, value) {
-            if(typeof value !== "boolean") return false;
+            if (typeof value !== "boolean") return false;
             const doc = await level.findOne({ guildId: this.id });
-            if(doc) {
-                if(config === "levelnotif") {
+            if (doc) {
+                if (config === "levelnotif") {
                     doc.levelnotif = value;
                     await doc.save();
                     this.levelconfig = doc;
                     this.cache.levelconfig = true;
                     return true;
-                } else if(config === "levelsystem") {
+                } else if (config === "levelsystem") {
                     doc.levelsystem = value;
                     await doc.save();
                     this.levelconfig = doc;
@@ -196,7 +216,7 @@ Structures.extend('Guild', Guild => {
          */
         async getMessageLinksConfig() {
             const doc = await MessageLinksModel.findOne({ guildID: this.id });
-            if(doc) {
+            if (doc) {
                 this.messagelinksconfig = doc;
                 this.cache.messagelinksconfig = true;
                 return doc;
@@ -212,9 +232,9 @@ Structures.extend('Guild', Guild => {
          * @returns {Boolean} Always true
          */
         async setMessageLinksConfig(value) {
-            if(typeof value !== "boolean") throw new Error("'value' isn't a boolean");
+            if (typeof value !== "boolean") throw new Error("'value' isn't a boolean");
             const doc = await MessageLinksModel.findOne({ guildID: this.id });
-            if(doc) {
+            if (doc) {
                 await doc.updateOne({ enabled: value });
                 this.messagelinksconfig = doc;
                 this.messagelinksconfig.enabled = value;
@@ -231,11 +251,96 @@ Structures.extend('Guild', Guild => {
             }
         }
 
-        noCache(){
+        async getWelcome() {
+            const doc = await welcome.findOne({ guildID: this.id });
+            if (doc) {
+                this.welcome = doc;
+                this.cache.welcome = true;
+                return doc;
+            } else {
+                const thing = await welcome.create({
+                    guildID: this.id
+                });
+                this.welcome = thing;
+                this.cache.welcome = true;
+                return thing;
+            }
+
+        }
+        /**
+         * 
+         * @param {Number} tochange Thing in the DB to change
+         * @param {Boolean|String} newData The new content
+         * @returns {Boolean} Always true
+         * @throws {Error} Only in invalid data.
+         */
+        async setWelcome(tochange, newData) {
+            let doc = await welcome.findOne({ guildID: this.id });
+            if (!doc) {
+                doc = await welcome.create({
+                    guildID: this.id
+                });
+            }
+            switch (tochange) {
+                case 0: {
+                    await doc.updateOne({ enabled: newData });
+                    this.welcome.enabled = newData;
+                    this.cache.welcome = true;
+                    return true;
+                }
+                case 1: {
+                    await doc.updateOne({ channelID: newData });
+                    this.welcome.channelID = newData;
+                    this.cache.welcome = true;
+                    return true;
+                }
+                case 2: {
+                    await doc.updateOne({ text: newData });
+                    this.welcome.text = newData
+                    this.cache.welcome = true;
+                    return true;
+                }
+                case 3: {
+                    await doc.updateOne({ dmenabled: newData });
+                    this.welcome.dmenabled = newData
+                    this.cache.welcome = true;
+                    return true;
+                }
+                case 4: {
+                    await doc.updateOne({ dmtext: newData });
+                    this.welcome.dmtext = newData
+                    this.cache.welcome = true;
+                    return true;
+                }
+                case 5: {
+                    await doc.updateOne({ leaveenabled: newData });
+                    this.welcome.leaveenabled = newData
+                    this.cache.welcome = true;
+                    return true;
+                }
+                case 6: {
+                    await doc.updateOne({ leavechannelID: newData });
+                    this.welcome.leavechannelID = newData
+                    this.cache.welcome = true;
+                    return true;
+                }
+                case 7: {
+                    await doc.updateOne({ leavetext: newData });
+                    this.welcome.leavetext = newData
+                    this.cache.welcome = true;
+                    return true;
+                }
+                default:
+                    throw new Error("Nope");
+            }
+        }
+
+        noCache() {
             this.cache.customresponses = false;
             this.cache.prefix = false;
             this.cache.levelconfig = false;
             this.cache.messagelinksconfig = false;
+            this.cache.welcome = false;
             return true;
         }
     };
@@ -255,7 +360,8 @@ Structures.extend("User", (User) => {
         }
         async getPremiumType() {
             const thing = await OAuth2.findOne({ discordId: this.id });
-            if(!thing) {;
+            if (!thing) {
+                ;
                 this.premium_type.type = null;
                 this.premium_type.value = -1;
                 this.cache.premium_type = true;
@@ -276,7 +382,7 @@ Structures.extend("User", (User) => {
                     }
                 });
                 const json = await res.json();
-                if(json && (!json.message)) {
+                if (json && (!json.message)) {
                     this.premium_type.type = "oauth2";
                     this.premium_type.value = json.premium_type || 0;
                     this.cache.premium_type = true;
@@ -289,7 +395,7 @@ Structures.extend("User", (User) => {
                     };
                 } else {
                     const otherthing = await DiscordUser.findOne({ discordId: this.id });
-                    if(otherthing && otherthing.premium_type) {
+                    if (otherthing && otherthing.premium_type) {
                         this.premium_type.type = "db";
                         this.premium_type.value = otherthing.premium_type || 0;
                         this.cache.premium_type = true;
