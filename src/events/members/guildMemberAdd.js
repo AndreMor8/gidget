@@ -37,6 +37,7 @@ module.exports = async (bot, member) => {
             inviterMention = (inviter === member.guild.id) ? "System" : ("<@!" + inviter + ">");
           }
         }
+        member.guild.inviteCount = invitesAfter;
       }
     if (welcome.enabled && welcome.text) {
       const channel = member.guild.channels.cache.get(welcome.channelID);
