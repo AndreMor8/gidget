@@ -70,7 +70,7 @@ module.exports = async (bot, member) => {
     )
     .addField(
       "How do I get permissions to upload images and others?",
-      `You must be chatting with us for a while before giving yourself those permissions. The level that will give you those permissions is level 2. (with Gaius Play bot)\nYou can check your level by going to <#608560264425635850> and typing \`-level\``
+      `You must be chatting with us for a while before giving yourself those permissions. The level that will give you those permissions is level 2. (with me)\nYou can check your level by going to <#608560264425635850> and typing <:Gidget:610310249580331033>\`level\``
     )
     .addField(
       "Remember to use common sense!",
