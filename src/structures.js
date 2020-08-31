@@ -38,14 +38,13 @@ Structures.extend('Guild', Guild => {
         }
 
         async getInviteCount() {
-            const col = await this.fetchInvites()
+            const col = await this.fetchInvites();
             const invites = col.array();
             const inviteCounter = {}
 
             for (const invite of invites) {
                 const { uses, inviter } = invite
-                const { id } = inviter
-
+                const id = inviter ? inviter.id : invite.guild.id;
                 inviteCounter[id] = (inviteCounter[id] || 0) + uses
             }
 

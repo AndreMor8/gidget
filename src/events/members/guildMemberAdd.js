@@ -34,7 +34,7 @@ module.exports = async (bot, member) => {
         const invitesAfter = await member.guild.getInviteCount();
         for (const inviter in invitesAfter) {
           if (invitesBefore[inviter] === (invitesAfter[inviter] - 1)) {
-            inviterMention = "<@!" + inviter + ">";
+            inviterMention = (inviter === member.guild.id) ? "System" : ("<@!" + inviter + ">");
           }
         }
       }
