@@ -143,6 +143,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
         if (command.guildonly) return message.channel.send("This command only works in servers");
         command.run(bot, message, args)
           .catch(err => {
+            message.channel.stopTyping(true);
             if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
             console.error(err);
             message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
