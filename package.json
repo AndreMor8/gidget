@@ -39,6 +39,7 @@
     "mongoose": "^5.10.2",
     "ms": "^2.1.2",
     "node-fetch": "^2.6.0",
+    "node-lame": "^1.2.2",
     "nodemw": "^0.13.0",
     "notevil": "^1.3.3",
     "puppeteer": "^5.2.1",
