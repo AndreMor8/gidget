@@ -1,16 +1,14 @@
 const { MessageAttachment } = require("discord.js");
-const fetch = require("node-fetch");
 const languages = require("../../utils/languages");
 module.exports = {
     aliases: [],
-    description: "TTS",
+    description: "TTS, Text-To-Speech",
     permissions: {
         user: [0, 0],
         bot: [0, 32768]
     },
     run: async (bot, message, args) => {
         if(!args[1]) return message.channel.send("Put something");
-        message.channel.startTyping();
         //Get language
         let lang = args[args.length - 1];
         if (lang.charAt(0) == '-') {
@@ -20,17 +18,12 @@ module.exports = {
             lang = "en"
         }
         const reallang = languages.getCode(lang);
-        if(!reallang) {
-            message.channel.send("Invalid language!\nhttps://github.com/AndreMor955/gidget/blob/master/src/utils/languages.js")
-            return message.channel.stopTyping(true)
-        }
+        if(!reallang) return message.channel.send("Invalid language!\nhttps://github.com/AndreMor955/gidget/blob/master/src/utils/languages.js")
         const tosay = args.slice(1).join(" ");
-        //if(tosay > 64) return message.channel.send("Must be less than 64 characters") //Going to test
+        if(tosay.length > 200) return message.channel.send("Must be less than 200 characters")
         message.channel.startTyping();
-        const res = await fetch(`https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=64&client=tw-ob&q=${encodeURIComponent(tosay)}&tl=${reallang}`);
-        const buf = await res.buffer();
-        const att = new MessageAttachment(buf, "tts.mp3");
-        await message.channel.send(att);
+        const att = new MessageAttachment(`https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=64&client=tw-ob&q=${encodeURIComponent(tosay)}&tl=${encodeURIComponent(reallang)}`, "tts.mp3");
+        await message.channel.send(att).catch(err => {});
         message.channel.stopTyping(true);
     }
 }
