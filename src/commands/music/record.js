@@ -81,7 +81,9 @@ module.exports = {
               encoder.encode().then(async res => {
                 const buf = res.getBuffer();
                 const attachment = new Discord.MessageAttachment(buf, 'audio.mp3');
-                if (args[1] === "server") await message.channel.send("Here's your recording.", attachment).catch(err => {});
+                if (args[1] === "server") await message.channel.send("Here's your recording.", attachment).catch(err => {
+                  if(err.code === 40005) message.channel.send("The file is very large. I can't send you that.").catch(err => {});
+                });
                 else await message.member.send("Here's your recording.", attachment).catch(err => {
                   switch(err.code) {
                     case 40005:
