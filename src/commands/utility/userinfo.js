@@ -59,15 +59,15 @@ module.exports = {
       }
     }
     const premiumtext = ["Without Nitro", "Nitro Classic", "***Nitro***"];
-    const thing = !user.bot ? (user.cache.premium_type ? user.premium_type : await user.getPremiumType()) : undefined;
+    const thing = !user.bot ? (user.cache.premium ? user.premium : await user.getPremiumType()) : undefined;
     let finaltext = ""
     if (!user.bot) {
       if (thing.value < 0) {
         finaltext = "[*I don't know*](https://gidgetbot.herokuapp.com/auth/)";
-      } else if (thing.type === "db") {
-        finaltext = premiumtext[thing.value] + " (DB)";
+      } else if (thing.from === "db") {
+        finaltext = premiumtext[thing.type] + " (DB)";
       } else {
-        finaltext = premiumtext[thing.value];
+        finaltext = premiumtext[thing.type];
       }
     }
     var status2 = "";

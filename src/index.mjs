@@ -6,14 +6,13 @@ const { require } = commons(import.meta.url);
 // where your node app starts
 
 // init project
-const Discord = require('discord.js');
+import Discord from 'discord.js';
 import './structures.mjs';
 export const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL }, allowedMentions: { parse: [] } });
 import reg from './utils/registry.js';
 import puppeteer from "puppeteer";
 export const version = "0.98 Post-Beta";
 const database = require("./database/database.js");
-
 (async () => {
   //Pre-login
   //Database
