@@ -49,29 +49,29 @@ Object.assign(User.prototype, {
                 }
             });
             const json = await res.json();
-            if (json && (!json.message)) {
+            if (json && ((!json.message) && (json.premium_type))) {
                 this.premium.from = "oauth2";
-                this.premium.type = json.premium || 0;
+                this.premium.type = json.premium_type || 0;
                 this.cache.premium = true;
                 setTimeout(() => {
                     this.cache.premium = false;
                 }, 60000);
                 return {
                     from: "oauth2",
-                    type: json.premium || 0
+                    type: json.premium_type || 0
                 };
             } else {
                 const otherthing = await DiscordUser.findOne({ discordId: this.id });
-                if (otherthing && otherthing.premium) {
+                if (otherthing && otherthing.premium_type) {
                     this.premium.from = "db";
-                    this.premium.type = otherthing.premium || 0;
+                    this.premium.type = otherthing.premium_type || 0;
                     this.cache.premium = true;
                     setTimeout(() => {
                         this.cache.premium = false;
                     }, 60000);
                     return {
                         from: "db",
-                        type: otherthing.premium || 0
+                        type: otherthing.premium_type || 0
                     };
                 } else {
                     this.premium.from = null;
