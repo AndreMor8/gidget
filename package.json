@@ -5,10 +5,10 @@
     "node": "14.x"
   },
   "description": "A Discord Bot, for Wow Wow Discord",
-  "main": "./src/index.js",
+  "main": "./src/index.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js"
+    "start": "node ./src/index.mjs"
   },
   "repository": {
     "url": "https://github.com/AndreMor955/gidget/"

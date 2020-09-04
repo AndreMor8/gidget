@@ -1,5 +1,5 @@
-const { bot } = require("../index.js");
 module.exports = async () => {
+  const { bot } = await import("../index.mjs");
   {
     var i = Math.floor(Math.random() * 7);
     switch (i) {

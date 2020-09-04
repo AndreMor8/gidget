@@ -1,10 +1,10 @@
-const { bot } = require("../index.js");
 const MessageModel = require("../database/models/poll.js");
 const { Util } = require("discord.js");
 let i = 0;
 let cache;
 
 module.exports = async (reupdate = false) => {
+  const { bot } = await import("../index.mjs");
   if (i === 1 && reupdate) {
     i = 0;
     clearInterval(interval);

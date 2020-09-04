@@ -3,11 +3,11 @@ const os = require('os')
 const cpuStat = require("cpu-stat");
 const moment = require("moment")
 require("moment-duration-format");
-const { version } = require("../../index.js")
 const { promisify } = require("util");
 const p = promisify(cpuStat.usagePercent);
 module.exports = {
   run: async (bot, message, args) => {
+    const { version } = await import("../../index.mjs");
     let percent = await p();
     let embedStats = new Discord.MessageEmbed()
       .setTitle("***Stats***")

@@ -1,5 +1,5 @@
-const { bot } = require('./index.js');
-const express = require("express");
+import { bot } from './index.mjs';
+import express from "express";
 const app = express();
 
 app.use(express.json());

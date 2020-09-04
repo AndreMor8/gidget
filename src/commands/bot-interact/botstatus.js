@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const { psi } = require("../../events/misc/ready.js");
 module.exports = {
     run: async (bot, message, args) => {

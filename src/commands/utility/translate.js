@@ -1,5 +1,4 @@
-const gtranslate = require('google-translate-open-api').default;
-const { parseMultiple } = require('google-translate-open-api')
+const { default:gtranslate, parseMultiple } = require('google-translate-open-api');
 const languages = require("../../utils/languages");
 const { MessageEmbed } = require("discord.js")
 
