@@ -1,3 +1,5 @@
+import commons from './utils/commons.mjs';
+const { require } = commons(import.meta.url);
 class StructureError extends Error {
     constructor(error) {
         super();
@@ -5,16 +7,16 @@ class StructureError extends Error {
         this.message = error;
     }
 }
-const fetch = require("node-fetch");
-const prefix = require("./database/models/prefix");
-const cr = require("./database/models/customresponses");
-const level = require("./database/models/levelconfig");
-const welcome = require("./database/models/welcome");
-const OAuth2 = require("./database/models/OAuth2Credentials");
-const DiscordUser = require("./database/models/DiscordUser");
-const MessageLinksModel = require("./database/models/messagelinks");
-const CryptoJS = require("crypto-js");
-const { Structures } = require("discord.js");
+import fetch from "node-fetch";
+import prefix from "./database/models/prefix.js";
+import cr from "./database/models/customresponses.js";
+import level from "./database/models/levelconfig.js";
+import welcome from "./database/models/welcome.js";
+import OAuth2 from "./database/models/OAuth2Credentials.js";
+import DiscordUser from "./database/models/DiscordUser.js";
+import MessageLinksModel from "./database/models/messagelinks.js";
+import CryptoJS from "crypto-js";
+const { Structures } = require('discord.js');
 
 Structures.extend('Guild', Guild => {
     return class extends Guild {
