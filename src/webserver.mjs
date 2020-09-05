@@ -18,7 +18,7 @@ app.get("/", async (req, res) => {
   }
 });
 
-const listener = app.listen(process.env.PORT, function () {
+const listener = app.listen(process.env.GIDGET_PORT || process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
