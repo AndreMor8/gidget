@@ -18,7 +18,7 @@ module.exports = {
       .addField("• Uptime ", `${moment.duration(Date.now() - bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, true)
       .addField("• Discord.js", `v${Discord.version}`, true)
       .addField("• Node.js", `${process.version}`, true)
-      .addField("• Hosting service", 'Azure', true)
+      .addField("• Hosting service", process.env.HOSTER, true)
       .addField("• Operating system", `\`\`\`md\n${os.version()}\n${os.release()}\`\`\``)
       .addField("• CPU", `\`\`\`md\n${os.cpus().map(i => `${i.model}`)[0]}\`\`\``)
       if(bot.voice.connections.size) {
