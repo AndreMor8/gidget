@@ -30,28 +30,33 @@ module.exports = async (bot, member) => {
   if (welcome) {
     let inviterMention = "Unknown";
     let inviterTag = "Unknown"
+    try {
       if (((/%INVITER%/gmi.test(welcome.text)) || (/%INVITER%/gmi.test(welcome.dmmessage))) && member.guild.me.hasPermission("MANAGE_GUILD")) {
         const invitesBefore = member.guild.inviteCount
         const invitesAfter = await member.guild.getInviteCount();
         for (const inviter in invitesAfter) {
           if (invitesBefore[inviter] === (invitesAfter[inviter] - 1)) {
             inviterMention = (inviter === member.guild.id) ? "System" : ("<@!" + inviter + ">");
-            const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter);
+            const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(err => {});
             if(t) inviterTag = t;
           }
         }
         member.guild.inviteCount = invitesAfter;
       }
-    if (welcome.enabled && welcome.text) {
-      const channel = member.guild.channels.cache.get(welcome.channelID);
-      if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
-        let finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITER%/gmi, inviterTag);
-        await channel.send(finalText || "?").catch(err => {});
+    } catch (err) {
+      console.log(err);
+    } finally {
+      if (welcome.enabled && welcome.text) {
+        const channel = member.guild.channels.cache.get(welcome.channelID);
+        if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
+          let finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITER%/gmi, inviterTag);
+          await channel.send(finalText || "?").catch(err => {});
+        }
       }
-    }
-    if(welcome.dmenabled && welcome.dmtext) {
-      let finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITER%/gmi, inviterTag);
-      await member.send(finalText || "?").catch(err => {});
+      if(welcome.dmenabled && welcome.dmtext) {
+        let finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITER%/gmi, inviterTag);
+        await member.send(finalText || "?").catch(err => {});
+      }
     }
   }
   //Things for Wow Wow Discord
