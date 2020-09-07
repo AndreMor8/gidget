@@ -7,7 +7,7 @@ const { checkCleanUrl } = require('../../utils/clean-url/index');
 module.exports = {
   run: async (bot, message, args) => {
     if (!args[1]) return message.channel.send('You must send something first.')
-    if (badwords.isProfane(args.slice(1).join(" ").toLowerCase())) return message.channel.send("To order this content go to an NSFW channel.")
+    if (badwords.isProfane(args.slice(1).join(" ").toLowerCase()) && !message.channel.nsfw) return message.channel.send("To order this content go to an NSFW channel.")
     message.channel.startTyping();
     googleIt({ 'query': args.slice(1).join(" "), 'limit': 7, disableConsole: true }).then(results => {
       if (results.some(e => checkCleanUrl(e.link)) && !message.channel.nsfw) {
