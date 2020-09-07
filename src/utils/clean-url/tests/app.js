@@ -1,4 +1,4 @@
-const checkCleanUrl = require('../index');
+const { checkCleanUrl } = require('../index');
 
 const test = [
     ['facebook.com', false],

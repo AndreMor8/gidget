@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const checkCleanUrl = require('../../utils/clean-url/index');
+const { checkSingleCleanURL } = require('../../utils/clean-url/index');
 const timer = new Map();
 module.exports = {
   run: async (bot, message, args) => {
@@ -56,8 +56,8 @@ module.exports = {
   }
 };
 
-async function pup(message = new Discord.Message(), url, options) {
-  const result = checkCleanUrl(url);
+async function pup(message, url, options) {
+  const result = await checkSingleCleanURL(url);
   if (result && !message.channel.nsfw) return message.channel.send("To view inappropriate pages use an NSFW channel");
   var form = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>").catch(err => { });
   message.channel.startTyping().catch(err => { });
