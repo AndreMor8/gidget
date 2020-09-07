@@ -14,7 +14,7 @@ module.exports = {
         message.channel.stopTyping(true);
         return message.channel.send("Your search includes NSFW content. To order this content go to an NSFW channel.");
       }
-      if (results.some(e => (badwords.isProfane(e.title.toLowerCase()) || badwords.isProfane(e.snippete.toLowerCase()))) && !message.channel.nsfw) {
+      if (results.some(e => (badwords.isProfane(e.title.toLowerCase()) || badwords.isProfane(e.snippet.toLowerCase()))) && !message.channel.nsfw) {
         message.channel.stopTyping(true);
         return message.channel.send("Your search includes NSFW content. To order this content go to an NSFW channel.");
       }
