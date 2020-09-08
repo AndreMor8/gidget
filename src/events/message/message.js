@@ -117,7 +117,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
     if (command) {
       if (message.guild && message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
         if (command.owner && message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
-        if (command.dev && !(["577000793094488085"].includes(message.author.id))) return message.channel.send("Only Gidget developers can use this command");
+        if (command.dev && !(process.env.DEVS.split(",").includes(message.author.id))) return message.channel.send("Only Gidget developers can use this command");
         if (command.onlyguild && message.guild.id !== process.env.GUILD_ID) return message.channel.send("This command only works on Wow Wow Discord");
         const userperms = message.member.permissions;
         const userchannelperms = message.channel.permissionsFor(message.member);
@@ -135,18 +135,21 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
             if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
             console.error(err);
             message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
+          }).finally(() => {
+            message.channel.stopTyping(true);
           });
       } else if (!message.guild) {
         if (command.owner && message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
-        if (command.dev && !(["577000793094488085"].includes(message.author.id))) return message.channel.send("Only Gidget developers can use this command");
+        if (command.dev && !(process.env.DEVS.split(",").includes(message.author.id))) return message.channel.send("Only Gidget developers can use this command");
         if (command.onlyguild) return message.channel.send("This command only works in Wow Wow Discord")
         if (command.guildonly) return message.channel.send("This command only works in servers");
         command.run(bot, message, args)
           .catch(err => {
-            message.channel.stopTyping(true);
             if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
             console.error(err);
             message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
+          }).finally(e => {
+            message.channel.stopTyping(true);
           });
       }
     }

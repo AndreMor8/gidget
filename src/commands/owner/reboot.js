@@ -16,7 +16,7 @@ module.exports = {
     aliases: ['restart'],
     secret: true,
     description: 'Reboot the bot to update files',
-    dev: true,
+    owner: true,
     permissions: {
         user: [0, 0],
         bot: [0, 0]
