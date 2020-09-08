@@ -15,14 +15,19 @@ module.exports = {
 
         if (!serverQueue || !serverQueue.songs[0] || !serverQueue.songs[0].duration) return;
 
-        if (serverQueue.songs[0].duration < reconverted) return message.channel.send("The song is too short for the specified time!");
+        if (serverQueue.songs[0].duration <= (reconverted + 2000)) return message.channel.send("The song is too short for the specified time!");
 
         if (reconverted < 0) return message.channel.send("Huh?");
         serverQueue.inseek = true;
         serverQueue.songs[0].seektime = reconverted;
         message.channel.send("This may take a bit...").then(() => message.channel.startTyping())
         serverQueue.connection.dispatcher.end();
-        await bot.commands.get("play").run(bot, message, ["play", "seek"], reconverted);
+        await bot.commands.get("play").run(bot, message, ["play", "seek"], reconverted).catch(err => {
+            console.log(err);
+            message.channel.send("Error: " + err);
+        }).finally(e => {
+            message.channel.stopTyping(true);
+        })
     },
     aliases: [],
     description: "Change the position of the stream",
