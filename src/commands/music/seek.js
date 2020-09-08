@@ -15,7 +15,7 @@ module.exports = {
 
         if (!serverQueue || !serverQueue.songs[0] || !serverQueue.songs[0].duration) return;
 
-        if (serverQueue.songs[0].duration <= (reconverted + 2000)) return message.channel.send("The song is too short for the specified time!");
+        if (serverQueue.songs[0].duration <= (reconverted + 2)) return message.channel.send("The song is too short for the specified time!");
 
         if (reconverted < 0) return message.channel.send("Huh?");
         serverQueue.inseek = true;
