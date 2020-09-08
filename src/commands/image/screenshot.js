@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const { checkSingleCleanURL } = require('../../utils/clean-url/index');
 const timer = new Map();
+const check = require('../../utils/nsfwjs');
 module.exports = {
   run: async (bot, message, args) => {
     if (!args[1]) return message.channel.send("Put some URL");
@@ -71,7 +72,7 @@ async function pup(message, url, options) {
       await message.channel.send(`There was an error opening a page. Here's a debug: ${error.message}`).catch(err => { });;
       await form.delete().catch(err => { });;
     });
-    if(!page) return;
+    if (!page) return;
     await page.goto(url, { waitUntil: "networkidle2" });
     let screenshot;
     if (options && !isNaN(options.x) && !isNaN(options.y)) {
@@ -81,11 +82,17 @@ async function pup(message, url, options) {
     } else {
       screenshot = await page.screenshot({ type: "png" });
     }
+    const isNSFW = await check(screenshot);
+    if (isNSFW && !message.channel.nsfw) {
+      message.channel.stopTyping(true);
+      return message.channel.send("NSFW content has been detected in the generated image. If you want to see it, ask for it on a NSFW channel.")
+    };
     const attachment = new Discord.MessageAttachment(screenshot, "file.png");
     message.channel.stopTyping(true);
     await message.channel.send("Time: " + (Date.now() - message.createdTimestamp) / 1000 + "s", attachment)
     await form.delete();
   } catch (error) {
+    console.log(error);
     message.channel.stopTyping(true);
     await message.channel.send(`Some error ocurred. Here's a debug: ${error.message}`).catch(err => { });
     await form.delete().catch(err => { });
