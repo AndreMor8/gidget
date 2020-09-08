@@ -37,14 +37,21 @@ module.exports = async (bot, member) => {
         for (const inviter in invitesAfter) {
           if (invitesBefore[inviter] === (invitesAfter[inviter] - 1)) {
             inviterMention = (inviter === member.guild.id) ? "System" : ("<@!" + inviter + ">");
-            const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(err => {});
-            if(t) inviterTag = t;
+            if(inviter !== member.guild.id) {
+              const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(err => {});
+              if(t) inviterTag = t;
+            } else {
+              inviterTag = "System";  
+            }
           }
         }
         member.guild.inviteCount = invitesAfter;
       }
     } catch (err) {
       console.log(err);
+      if(member.guild.me.hasPermission("MANAGE_GUILD")) {
+        member.guild.inviteCount = await member.guild.getInviteCount();
+      }
     } finally {
       if (welcome.enabled && welcome.text) {
         const channel = member.guild.channels.cache.get(welcome.channelID);
