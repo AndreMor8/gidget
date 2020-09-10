@@ -12,6 +12,8 @@ export const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANN
 import reg from './utils/registry.js';
 import puppeteer from "puppeteer";
 export const version = "0.98 Post-Beta";
+import nsfwjs from 'nsfwjs';
+import tf from '@tensorflow/tfjs-node';
 const database = require("./database/database.js");
 
 (async () => {
@@ -34,6 +36,7 @@ const database = require("./database/database.js");
       }, args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox"]
     });
   }
+  bot.nsfwjs = await nsfwjs.load();
   //Registers
   reg.registerEvents(bot, "../events");
   reg.registerCommands(bot, "../commands");

@@ -1,4 +1,3 @@
-const nsfwjs = require('nsfwjs');
 const tf = require('@tensorflow/tfjs-node');
 const jimp = require('jimp');
 
@@ -7,13 +6,12 @@ const jimp = require('jimp');
  * @param {Buffer} buffer The image to check
  * @returns {Promise<Boolean>} If it is NSFW it will give true, otherwise false.
  */
-module.exports = async function(buffer) {
+module.exports = async function(model, buffer) {
     if(!Buffer.isBuffer(buffer)) throw new Error("'buffer' isn't a Buffer");
     const newImage = await jimp.read(buffer);
     newImage.resize(224, 224);
     const newThing = await newImage.getBufferAsync(jimp.MIME_JPEG);
     const tocheck = tf.node.decodeImage(newThing);
-    const model = await nsfwjs.load();
     const predictions = await model.classify(tocheck);
     let maxThing = [null, 0];
     for(const prediction of predictions) {

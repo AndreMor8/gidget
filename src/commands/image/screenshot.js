@@ -82,7 +82,7 @@ async function pup(message, url, options) {
     } else {
       screenshot = await page.screenshot({ type: "png" });
     }
-    const isNSFW = await check(screenshot);
+    const isNSFW = await check(message.client.nsfwjs, screenshot);
     if (isNSFW && !message.channel.nsfw) {
       message.channel.stopTyping(true);
       return message.channel.send("NSFW content has been detected in the generated image. If you want to see it, ask for it on a NSFW channel.")
