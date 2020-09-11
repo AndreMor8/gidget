@@ -1,3 +1,5 @@
+const fs = require('fs');
+const COOKIE = fs.readFileSync(require('path').join(__dirname, "/../../../cookies.txt"), "utf-8");
 const ytdl = require("ytdl-core");
 const ytsr = require("ytsr");
 const ytpl = require("ytpl");
@@ -51,7 +53,7 @@ module.exports = {
     }
     if (musicVariables.inp == 1) return message.channel.send("I'm catching your playlist. Hang on!");
 
-    if(typeof seek === "number") {
+    if (typeof seek === "number") {
       return await play(message.guild, serverQueue.songs[0], seek)
     } else if (ytdl.validateURL(args[1])) {
       if (serverQueue) {
@@ -161,10 +163,16 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
   const serverQueue = message.guild.queue;
 
   const musicVariables = message.guild.musicVariables;
-  const songInfo = await ytdl.getInfo(ytlink).catch(err => {
-      console.log(err);
-      musicVariables.merror = 1;
-    });
+  const songInfo = await ytdl.getInfo(ytlink, {
+    requestOptions: {
+      headers: {
+        cookie: COOKIE
+      },
+    },
+  }).catch(err => {
+    console.log(err);
+    musicVariables.merror = 1;
+  });
   if (musicVariables.merror == 1) {
     message.channel.stopTyping(true);
     musicVariables.merror = 0;
@@ -184,8 +192,8 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
       seektime: 0,
       age_restricted: songInfo.videoDetails.age_restricted,
     };
-    if(song.age_restricted && !message.channel.nsfw) {
-      if(!playlist) return message.channel.send("To listen to inappropriate content ask for this video on an NSFW channel.");
+    if (song.age_restricted && !message.channel.nsfw) {
+      if (!playlist) return message.channel.send("To listen to inappropriate content ask for this video on an NSFW channel.");
       else return;
     }
 
@@ -228,7 +236,7 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
         message.channel.stopTyping();
         return message.channel.send(
           "I could not join the voice channel. To prevent the bot from turning off the queue has been removed. Here's a debug: " +
-            error
+          error
         );
       }
     } else {
@@ -250,20 +258,26 @@ async function play(guild, song, seek = 0) {
   const musicVariables = guild.musicVariables;
 
   if (!song) {
-    if(serverQueue) {
+    if (serverQueue) {
       if (serverQueue.textChannel) {
-      serverQueue.textChannel.stopTyping();
-    }
-    if (serverQueue.voiceChannel) {
-      serverQueue.voiceChannel.leave();
-    }
+        serverQueue.textChannel.stopTyping();
+      }
+      if (serverQueue.voiceChannel) {
+        serverQueue.voiceChannel.leave();
+      }
     }
     guild.queue = null;
     guild.musicVariables = null;
     return;
   }
   try {
-    const dispatcher = serverQueue.connection.play(ytdl(song.url, { filter: "audioonly", highWaterMark: 1 << 25 }), { seek: seek });
+    const dispatcher = serverQueue.connection.play(ytdl(song.url, {
+      filter: "audioonly", highWaterMark: 1 << 25, requestOptions: {
+        headers: {
+          cookie: COOKIE
+        },
+      },
+    }), { seek: seek });
     dispatcher.on("start", async () => {
       if (serverQueue.inseek) {
         serverQueue.inseek = false
@@ -278,7 +292,7 @@ async function play(guild, song, seek = 0) {
       serverQueue.textChannel.stopTyping();
     });
     dispatcher.on("finish", async () => {
-      if(serverQueue.inseek) return;
+      if (serverQueue.inseek) return;
       musicVariables.memberVoted = [];
       if (!serverQueue.loop) serverQueue.songs.shift();
       if (!serverQueue.playing) serverQueue.playing = true;
@@ -286,7 +300,7 @@ async function play(guild, song, seek = 0) {
     });
     dispatcher.on("close", async () => {
       if (serverQueue.inseek) return;
-      if(!guild.me.voice.channel) {
+      if (!guild.me.voice.channel) {
         clearTimeout(musicVariables.time);
         if (serverQueue.textChannel) {
           serverQueue.textChannel.stopTyping();
@@ -312,11 +326,11 @@ async function play(guild, song, seek = 0) {
     console.log(err);
     musicVariables.memberVoted = [];
     serverQueue.songs.shift();
-    if(serverQueue.textChannel) {
+    if (serverQueue.textChannel) {
       serverQueue.textChannel.stopTyping();
       await serverQueue.textChannel
-      .send("An error occurred. Here's a debug: " + err)
-      .catch(err => console.log(err));
+        .send("An error occurred. Here's a debug: " + err)
+        .catch(err => console.log(err));
     }
     if (!serverQueue.playing) serverQueue.playing = true;
     await play(guild, serverQueue.songs[0]);
