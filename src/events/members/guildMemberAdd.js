@@ -12,15 +12,17 @@ module.exports = async (bot, member) => {
       memberid: member.user.id
     });
     if (msgDocument) {
-      let { roles } = msgDocument;
-      let toadd = [];
-      roles.forEach(r => {
-        let role = member.guild.roles.cache.get(r);
-        if (role && !role.deleted && role.editable && !role.managed) {
-          toadd.push(role.id);
+      if (member.guild.me.hasPermission("MANAGE_ROLES")) {
+        let { roles } = msgDocument;
+        let toadd = [];
+        for (const r of roles) {
+          let role = member.guild.roles.cache.get(r);
+          if (role && !role.deleted && role.editable && !role.managed) {
+            toadd.push(role.id);
+          }
         }
-      });
-      member.roles.add(toadd, "Retrieving roles");
+        await member.roles.add(toadd, "Retrieving roles").catch(err => { });
+      }
       msgDocument.deleteOne();
     }
   }
@@ -37,11 +39,11 @@ module.exports = async (bot, member) => {
         for (const inviter in invitesAfter) {
           if (invitesBefore[inviter] === (invitesAfter[inviter] - 1)) {
             inviterMention = (inviter === member.guild.id) ? "System" : ("<@!" + inviter + ">");
-            if(inviter !== member.guild.id) {
-              const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(err => {});
-              if(t) inviterTag = t;
+            if (inviter !== member.guild.id) {
+              const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(err => { });
+              if (t) inviterTag = t;
             } else {
-              inviterTag = "System";  
+              inviterTag = "System";
             }
           }
         }
@@ -49,20 +51,20 @@ module.exports = async (bot, member) => {
       }
     } catch (err) {
       console.log(err);
-      if(member.guild.me.hasPermission("MANAGE_GUILD")) {
+      if (member.guild.me.hasPermission("MANAGE_GUILD")) {
         member.guild.inviteCount = await member.guild.getInviteCount();
       }
     } finally {
       if (welcome.enabled && welcome.text) {
         const channel = member.guild.channels.cache.get(welcome.channelID);
         if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
-          let finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITER%/gmi, inviterTag);
-          await channel.send(finalText || "?").catch(err => {});
+          let finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag);
+          await channel.send(finalText || "?").catch(err => { });
         }
       }
-      if(welcome.dmenabled && welcome.dmtext) {
-        let finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITER%/gmi, inviterTag);
-        await member.send(finalText || "?").catch(err => {});
+      if (welcome.dmenabled && welcome.dmtext) {
+        let finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag);
+        await member.send(finalText || "?").catch(err => { });
       }
     }
   }
@@ -93,5 +95,5 @@ module.exports = async (bot, member) => {
     )
     .setFooter("Thanks for joining!")
     .setTimestamp();
-    await member.send(embed).catch(err => {});
+  await member.send(embed).catch(err => { });
 };
