@@ -1,6 +1,6 @@
 const ytsr = require("ytsr");
 const ytpl = require("ytpl");
-const ytdl = require("ytdl-core")
+const ytdl = require("discord-ytdl-core")
 const { MessageEmbed } = require("discord.js");
 module.exports = {
   run: async (bot, message, args) => {
