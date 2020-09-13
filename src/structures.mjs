@@ -46,7 +46,7 @@ Structures.extend('Guild', Guild => {
 
             for (const invite of invites) {
                 const id = invite.inviter ? invite.inviter.id : invite.guild.id;
-                inviteCounter[id] = (inviteCounter[id] ? parseInt(inviteCounter[id]) : undefined || 0) + uses;
+                inviteCounter[id] = (inviteCounter[id] ? parseInt(inviteCounter[id]) : undefined || 0) + (parseInt(invite.uses) || 0);
             }
 
             return inviteCounter;
