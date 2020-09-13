@@ -22,7 +22,7 @@ module.exports = async (bot, oldState, newState) => {
       newState.guild.musicVariables = null;
     }, 60000)
   } else {
-    if (serverQueue.voiceChannel.members.size < 2 && musicVariables.i === 0) {
+    if (serverQueue.voiceChannel.members.filter(e => !e.user.bot).size < 1 && musicVariables.i === 0) {
       serverQueue.playing = false;
       serverQueue.connection.dispatcher.pause();
       serverQueue.textChannel.send("There's no one on the voice channel! I'm going to remove the queue in 60 seconds!")
@@ -35,7 +35,7 @@ module.exports = async (bot, oldState, newState) => {
         newState.guild.musicVariables = null;
       }, 60000)
     }
-    if (serverQueue.voiceChannel.members.size > 1 && musicVariables.i === 1) {
+    if (serverQueue.voiceChannel.members.filter(e => !e.user.bot).size > 0 && musicVariables.i === 1) {
       clearTimeout(musicVariables.time)
       serverQueue.playing = true;
       serverQueue.connection.dispatcher.resume();

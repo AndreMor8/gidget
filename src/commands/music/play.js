@@ -36,7 +36,6 @@ module.exports = {
       return message.channel.send("I'm doing another operation");
     if (!musicVariables) {
       message.guild.musicVariables = {
-        merror: 0,
         perror: 0,
         inp: 0,
         py: 0,
@@ -158,31 +157,16 @@ module.exports = {
 };
 
 async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
-  const serverQueue = message.guild.queue;
-
-  const musicVariables = message.guild.musicVariables;
-  const songInfo = await ytdl.getInfo(ytlink, {
-    requestOptions: {
-      headers: {
-        cookie: COOKIE
+  try {
+    const serverQueue = message.guild.queue;
+    const musicVariables = message.guild.musicVariables;
+    const songInfo = await ytdl.getBasicInfo(ytlink, {
+      requestOptions: {
+        headers: {
+          cookie: COOKIE
+        },
       },
-    },
-  }).catch(err => {
-    console.log(err);
-    musicVariables.merror = 1;
-  });
-  if (musicVariables.merror == 1) {
-    message.channel.stopTyping(true);
-    musicVariables.merror = 0;
-    if (playlist && musicVariables.perror == 0) {
-      musicVariables.perror = 1;
-      return message.reply(`I couldn't catch all the videos.`);
-    } else if (!playlist) {
-      return message.reply("something bad happened. Try again!");
-    } else {
-      return;
-    }
-  } else {
+    });
     const song = {
       title: songInfo.videoDetails.title,
       url: songInfo.videoDetails.video_url,
@@ -232,22 +216,27 @@ async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
         message.guild.queue = null;
         message.guild.musicVariables = null;
         message.channel.stopTyping();
-        return message.channel.send(
-          "I could not join the voice channel. To prevent the bot from turning off the queue has been removed. Here's a debug: " +
-          error
-        );
+        return message.channel.send("I could not join the voice channel. To prevent the bot from turning off the queue has been removed. Here's a debug: " + error);
       }
     } else {
       serverQueue.songs.push(song);
       if (playlist) return;
       else {
         message.channel.stopTyping();
-        return message.channel.send(
-          `**${song.title}** has been added to the queue!`
-        );
+        return message.channel.send(`**${song.title}** has been added to the queue!`);
       }
     }
     return;
+  } catch (err) {
+    message.channel.stopTyping(true);
+    if (playlist && musicVariables.perror == 0) {
+      musicVariables.perror = 1;
+      return message.reply(`I couldn't catch all the videos.`);
+    } else if (!playlist) {
+      return message.reply("Error: " + err);
+    } else {
+      return;
+    }
   }
 }
 async function play(guild, song, seek = 0) {
@@ -273,7 +262,6 @@ async function play(guild, song, seek = 0) {
       opusEncoded: true,
       seek: seek,
       filter: "audioonly",
-      highWaterMark: 1 << 25,
       requestOptions: {
         headers: {
           cookie: COOKIE
