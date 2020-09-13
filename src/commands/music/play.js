@@ -262,11 +262,7 @@ async function play(guild, song, seek = 0) {
       opusEncoded: true,
       seek: seek,
       filter: "audioonly",
-      requestOptions: {
-        headers: {
-          cookie: COOKIE
-        },
-      },
+      highWaterMark: 1 << 25
     }), { type: "opus" });
     dispatcher.on("start", async () => {
       if (serverQueue.inseek) {

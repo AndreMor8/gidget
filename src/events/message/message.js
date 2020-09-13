@@ -30,7 +30,7 @@ module.exports = async (bot, message = new Discord.Message(), nolevel = false) =
       //Command message code
       //Command structure
       //Arguments with spaces
-      let args = message.content.substring(PREFIX.length).trim().split(/ +/g);
+      let args = message.content.substring(PREFIX.length).trimEnd().split(/ +/g);
       if (!args[0]) return;
       const command = bot.commands.get(args[0].toLowerCase()) || bot.commands.find(a => a.aliases.includes(args[0].toLowerCase()));
       if (command) {
