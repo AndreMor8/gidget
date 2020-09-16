@@ -17,7 +17,7 @@ _I know, I haven't put an example of the .env file yet, you will have to search 
 
 ## Some details
 
-This bot uses Discord.js v12.2.0 to interact with the Discord API.
+This bot uses Discord.js v12.3.1 to interact with the Discord API.
 
 The command/event handler base and reaction-role system are based on [**this code**](https://github.com/ansonfoong/discordjs-v12-bot).
 
