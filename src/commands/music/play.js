@@ -3,13 +3,13 @@ const ytdl = require("discord-ytdl-core");
 const ytsr = require("ytsr");
 const ytpl = require("ytpl");
 const moment = require("moment");
+const { url } = require('inspector');
+const Discord = require('discord.js');
 require("moment-duration-format");
 module.exports = {
   run: async (bot, message, args, seek) => {
     if (!args[1])
-      return message.channel.send(
-        "Please enter a YouTube link or search term."
-      );
+      return message.channel.send("Please enter a YouTube link or search term.");
     const voiceChannel = message.member.voice.channel;
     if (!voiceChannel)
       return message.channel.send(
@@ -60,7 +60,9 @@ module.exports = {
         }
       }
       message.channel.startTyping();
-      return handleVideo(message, voiceChannel, args[1]);
+      return handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: args[1], handle: true }]).catch(err => {
+        message.channel.send("Error: " + err);
+      });
     } else if (ytdl.validateID(args[1])) {
       if (serverQueue) {
         if (serverQueue.loop) {
@@ -69,7 +71,9 @@ module.exports = {
         }
       }
       message.channel.startTyping();
-      return handleVideo(message, voiceChannel, "https://www.youtube.com/watch?v=" + args[1]);
+      return handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: "https://www.youtube.com/watch?v=" + args[1], handle: true }]).catch(err => {
+        message.channel.send("Error: " + err);
+      });;
     } else if (ytpl.validateID(args[1])) {
       let form1 = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>");
       message.channel.startTyping();
@@ -84,26 +88,35 @@ module.exports = {
             message.channel.send("🔁 The song repeat has been disabled.");
           }
         }
-        for (const video of Object.values(videos)) {
-          await handleVideo(message, voiceChannel, video.url_simple, true).catch(error =>
-            console.log(error)
-          );
-        }
-        if (musicVariables.inp == 1) {
-          musicVariables.inp = 0;
-          musicVariables.perror = 0;
-          message.channel.stopTyping(true);
-          message.channel
-            .send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.items.length} songs)!`)
-            .then(m => form1.delete());
-        } else {
-          musicVariables.inp = 0;
-          musicVariables.perror = 0;
-          message.channel.stopTyping(true);
-          message.channel
-            .send("I couldn't queue your playlist.")
-            .then(m => form1.delete());
-        }
+        let songs = Object.values(videos).map(e => {
+          return {
+            url: e.url_simple,
+            title: e.title,
+            duration: 10, //:/
+            seektime: 0,
+            age_restricted: false
+          }
+        });
+        await handleVideo(message, voiceChannel, video.url_simple, true).then(() => {
+          if (musicVariables.inp == 1) {
+            musicVariables.inp = 0;
+            musicVariables.perror = 0;
+            message.channel.stopTyping(true);
+            message.channel
+              .send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.items.length} songs)!`)
+              .then(m => form1.delete());
+          } else {
+            musicVariables.inp = 0;
+            musicVariables.perror = 0;
+            message.channel.stopTyping(true);
+            message.channel
+              .send("I couldn't queue your playlist.")
+              .then(m => form1.delete());
+          }
+        }).catch(error =>
+          console.log(error)
+        );
+        
       } catch (err) {
         if (!serverQueue) message.guild.musicVariables = null;
         message.channel.stopTyping(true);
@@ -156,89 +169,104 @@ module.exports = {
   }
 };
 
-async function handleVideo(message, voiceChannel, ytlink, playlist = false) {
-  try {
-    const serverQueue = message.guild.queue;
-    const musicVariables = message.guild.musicVariables;
-    const songInfo = await ytdl.getBasicInfo(ytlink, {
-      requestOptions: {
-        headers: {
-          cookie: COOKIE
-        },
+/**
+ * Get the necessary YouTube video info. Don't use this if another API is helping you on that.
+ * @param {String} URL The YouTube video URL.
+ * @returns {Object} The video object ready to push to the queue.
+ */
+async function handleVideo(URL) {
+  const songInfo = await ytdl.getBasicInfo(url, {
+    requestOptions: {
+      headers: {
+        cookie: COOKIE
       },
-    });
-    const song = {
-      title: songInfo.videoDetails.title,
-      url: songInfo.videoDetails.video_url,
-      duration: songInfo.videoDetails.lengthSeconds,
-      seektime: 0,
-      age_restricted: songInfo.videoDetails.age_restricted,
-    };
-    if (song.age_restricted && !message.channel.nsfw) {
-      if (!playlist) return message.channel.send("To listen to inappropriate content ask for this video on an NSFW channel.");
-      else return;
-    }
+    },
+  });
+  const song = {
+    title: songInfo.videoDetails.title,
+    url: songInfo.videoDetails.video_url,
+    duration: songInfo.videoDetails.lengthSeconds,
+    seektime: 0,
+    age_restricted: songInfo.videoDetails.age_restricted,
+  };
+  return song;
+}
 
-    if (!serverQueue) {
-      const queueConstruct = {
-        textChannel: message.channel,
-        voiceChannel: voiceChannel,
-        connection: null,
-        songs: [],
-        volume: 5,
-        playing: true,
-        loop: false,
-        inseek: false,
-      };
-      queueConstruct.songs.push(song);
-      message.guild.queue = queueConstruct;
-
-      try {
-        let connection = await voiceChannel.join();
-        if (connection.voice.mute) {
-          setTimeout(async () => {
-            await voiceChannel.leave();
-          }, 10000);
-          message.guild.queue = null;;
-          message.guild.musicVariables = null;
-          message.channel.stopTyping();
-          return message.channel.send(
-            "Sorry, but I'm muted. Contact an admin to unmute me."
-          );
-        }
-        queueConstruct.connection = connection;
-        musicVariables.py = 1;
-        await play(message.guild, queueConstruct.songs[0]);
-        message.channel.stopTyping();
-      } catch (error) {
-        console.error(error);
-        await voiceChannel.leave();
-        message.guild.queue = null;
-        message.guild.musicVariables = null;
-        message.channel.stopTyping();
-        return message.channel.send("I could not join the voice channel. To prevent the bot from turning off the queue has been removed. Here's a debug: " + error);
-      }
-    } else {
-      serverQueue.songs.push(song);
-      if (playlist) return;
-      else {
-        message.channel.stopTyping();
-        return message.channel.send(`**${song.title}** has been added to the queue!`);
-      }
+/**
+ * 
+ * @param {Object} serverQueue 
+ * @param {Discord.TextChannel} textChannel 
+ * @param {Discord.VoiceChannel} voiceChannel 
+ * @param {Object[]} songs 
+ * @param {Boolean} playlist
+ * @returns {void}
+ */
+async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_songs, playlist) {
+  const songs = [];
+  for (const pre_song of pre_songs) {
+    let song = pre_song
+    if (pre_song.handle) {
+      song = await handleVideo(pre_song.url);
     }
-    return;
-  } catch (err) {
-    message.channel.stopTyping(true);
-    if (playlist && musicVariables.perror == 0) {
-      musicVariables.perror = 1;
-      return message.reply(`I couldn't catch all the videos.`);
-    } else if (!playlist) {
-      return message.reply("Error: " + err);
-    } else {
-      return;
+    if (song.age_restricted && !textChannel.nsfw) {
+      if (!playlist) {
+        textChannel.send("To listen to inappropriate content ask for this video on an NSFW channel.");
+        return;
+      }
+      else continue;
     }
   }
+  if (!serverQueue) {
+    const queueConstruct = {
+      textChannel: textChannel,
+      voiceChannel: voiceChannel,
+      connection: null,
+      songs,
+      volume: 5,
+      playing: true,
+      loop: false,
+      inseek: false,
+    };
+
+    voiceChannel.guild.queue = queueConstruct;
+
+    try {
+      let connection = await voiceChannel.join();
+      if (connection.voice.mute) {
+        setTimeout(() => {
+          voiceChannel.leave();
+        }, 10000);
+        connection.channel.guild.queue = null;;
+        connection.channel.guild.musicVariables = null;
+        textChannel.stopTyping();
+        textChannel.send("Sorry, but I'm muted. Contact an admin to unmute me.");
+        return;
+      }
+      queueConstruct.connection = connection;
+      musicVariables.py = 1;
+      await play(connection.channel.guild, queueConstruct.songs[0]);
+      textChannel.stopTyping();
+    } catch (error) {
+      console.error(error);
+      voiceChannel.leave();
+      voiceChannel.guild.queue = null;
+      voiceChannel.guild.musicVariables = null;
+      textChannel.stopTyping();
+      textChannel.send("I could not join the voice channel. To prevent the bot from turning off the queue has been removed. Here's a debug: " + error);
+      return;
+    }
+  } else {
+    for (const s of songs) {
+      serverQueue.songs.push(s);
+    }
+    if (!playlist) {
+      textChannel.stopTyping();
+      textChannel.send(`**${songs[0].title}** has been added to the queue!`);
+    }
+  }
+  return;
 }
+
 async function play(guild, song, seek = 0) {
   const serverQueue = guild.queue;
 
@@ -265,17 +293,17 @@ async function play(guild, song, seek = 0) {
       highWaterMark: 1 << 25
     }), { type: "opus" });
     dispatcher.on("start", async () => {
+      dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
       if (serverQueue.inseek) {
         serverQueue.inseek = false
         serverQueue.textChannel.stopTyping();
         return serverQueue.textChannel.send("Position moved to " + moment.duration(seek, "seconds").format());
       };
-      dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
       if (!serverQueue.loop)
         serverQueue.textChannel.send(
-          `<:JukeboxRobot:610310184484732959> Now playing: **${song.title}**`
+          `<:JukeboxRobot:610310184484732959> Now playings: **${song.title}**`
         );
-      serverQueue.textChannel.stopTyping();
+      serverQueue.textChannel.stopTyping(true);
     });
     dispatcher.on("finish", async () => {
       if (serverQueue.inseek) return;
