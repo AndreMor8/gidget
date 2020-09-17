@@ -38,7 +38,6 @@ module.exports = {
     if (!musicVariables) {
       message.guild.musicVariables = {
         perror: 0,
-        inp: 0,
         py: 0,
         memberVoted: [],
         i: 0,
@@ -49,7 +48,6 @@ module.exports = {
       };
       musicVariables = message.guild.musicVariables
     }
-    if (musicVariables.inp == 1) return message.channel.send("I'm catching your playlist. Hang on!");
 
     if (typeof seek === "number") {
       return await play(message.guild, serverQueue.songs[0], seek)
@@ -82,7 +80,6 @@ module.exports = {
         const playlist = await ytpl(args[1]);
         const videos = playlist.items;
         message.channel.startTyping(playlist.items.length - 1);
-        musicVariables.inp = 1;
         if (serverQueue) {
           if (serverQueue.loop) {
             serverQueue.loop = false;
