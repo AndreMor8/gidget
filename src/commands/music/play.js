@@ -285,7 +285,7 @@ async function play(guild, song, seek = 0) {
       };
       if (!serverQueue.loop)
         serverQueue.textChannel.send(
-          `<:JukeboxRobot:610310184484732959> Now playings: **${song.title}**`
+          `<:JukeboxRobot:610310184484732959> Now playing: **${song.title}**`
         );
       serverQueue.textChannel.stopTyping(true);
     });
