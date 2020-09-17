@@ -16,9 +16,6 @@ module.exports = {
     if (serverQueue.voiceChannel.id !== message.member.voice.channel.id)
       return message.channel.send("I'm on another voice channel!");
 
-    if (musicVariables.inp == 1)
-      return message.channel.send("I'm catching your playlist. Hang on!");
-
     if (!serverQueue.loop) {
       serverQueue.loop = true;
       return message.channel.send("🔁 The song repeat has been enabled.");

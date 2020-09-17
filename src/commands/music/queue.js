@@ -6,7 +6,6 @@ module.exports = {
     const musicVariables = message.guild.musicVariables;
     if (!serverQueue || !musicVariables) return message.channel.send("There is nothing playing.");
     if(!serverQueue.songs[0]) return message.channel.send("There is nothing playing.");
-    if (musicVariables.inp == 1) return message.channel.send("I'm catching your playlist. Hang on!");
     let fullduration = 0;
     serverQueue.songs.forEach(e => {
       fullduration = fullduration + Number(e.duration);
