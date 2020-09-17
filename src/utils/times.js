@@ -5,10 +5,10 @@ module.exports = function(time = "0:00") {
     if(arr.some(s => !isNaN(s))) {
         const final = arr.reverse();
         return toMilliseconds({
-            seconds: final[0],
-            minutes: final[1],
-            hours: final[2],
-            days: final[3]
+            seconds: parseInt(final[0]) || undefined,
+            minutes: parseInt(final[1]) || undefined,
+            hours: parseInt(final[2]) || undefined,
+            days: parseInt(final[3]) || undefined
         })
     } else {
         return ms(time);
