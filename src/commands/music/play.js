@@ -93,7 +93,7 @@ module.exports = {
           return {
             url: e.url_simple,
             title: e.title,
-            duration: times(e.duration) * 1000,
+            duration: times(e.duration) / 1000,
             seektime: 0,
             age_restricted: false
           }
@@ -137,7 +137,7 @@ module.exports = {
             `I didn't find any video. Check your term and try again.`
           );
         }
-        await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: searchResults.items[0].link, title: searchResults.items[0].title, duration: times(searchResults.items[0].duration), seektime: 0, age_restricted: false }]);
+        await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: searchResults.items[0].link, title: searchResults.items[0].title, duration: times(searchResults.items[0].duration) / 1000, seektime: 0, age_restricted: false }]);
       } catch (err) {
         if (!serverQueue) message.guild.musicVariables = null;
         message.channel.stopTyping(true);
