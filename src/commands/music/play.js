@@ -5,6 +5,7 @@ const ytpl = require("ytpl");
 const moment = require("moment");
 const { url } = require('inspector');
 const Discord = require('discord.js');
+const times = require('../../utils/times');
 require("moment-duration-format");
 module.exports = {
   run: async (bot, message, args, seek) => {
@@ -92,35 +93,19 @@ module.exports = {
           return {
             url: e.url_simple,
             title: e.title,
-            duration: 10, //:/
+            duration: times(e.duration) * 1000,
             seektime: 0,
             age_restricted: false
           }
         });
-        await handleVideo(message, voiceChannel, video.url_simple, true).then(() => {
-          if (musicVariables.inp == 1) {
-            musicVariables.inp = 0;
-            musicVariables.perror = 0;
-            message.channel.stopTyping(true);
-            message.channel
-              .send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.items.length} songs)!`)
-              .then(m => form1.delete());
-          } else {
-            musicVariables.inp = 0;
-            musicVariables.perror = 0;
-            message.channel.stopTyping(true);
-            message.channel
-              .send("I couldn't queue your playlist.")
-              .then(m => form1.delete());
-          }
-        }).catch(error =>
-          console.log(error)
-        );
-        
+        await handleServerQueue(serverQueue, textChannel, voiceChannel, songs, true)
+        message.channel.stopTyping(true);
+        message.channel.send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.items.length} songs)!`)          
       } catch (err) {
         if (!serverQueue) message.guild.musicVariables = null;
         message.channel.stopTyping(true);
-        message.channel.send("Some error ocurred. Here's a debug: " + err);
+        message.channel.send("I couldn't queue your playlist. Here's a debug: " + err)
+        .then(m => form1.delete()).catch(err => {});
       }
     } else {
       let filter;
@@ -152,7 +137,7 @@ module.exports = {
             `I didn't find any video. Check your term and try again.`
           );
         }
-        return handleVideo(message, voiceChannel, searchResults.items[0].link);
+        await handleServerQueue(serverQueue, textChannel, voiceChannel, [{ url: searchResults.items[0].link, title: searchResults.items[0].title, duration: times(searchResults.items[0].duration), seektime: 0, age_restricted: false }]);
       } catch (err) {
         if (!serverQueue) message.guild.musicVariables = null;
         message.channel.stopTyping(true);
@@ -199,9 +184,9 @@ async function handleVideo(URL) {
  * @param {Discord.VoiceChannel} voiceChannel 
  * @param {Object[]} songs 
  * @param {Boolean} playlist
- * @returns {void}
+ * @returns {Promise<void>}
  */
-async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_songs, playlist) {
+async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_songs, playlist = false) {
   const songs = [];
   for (const pre_song of pre_songs) {
     let song = pre_song
