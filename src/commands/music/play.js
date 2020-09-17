@@ -160,7 +160,7 @@ module.exports = {
  * @returns {Object} The video object ready to push to the queue.
  */
 async function handleVideo(URL) {
-  const songInfo = await ytdl.getBasicInfo(url, {
+  const songInfo = await ytdl.getBasicInfo(URL, {
     requestOptions: {
       headers: {
         cookie: COOKIE
