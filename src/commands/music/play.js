@@ -201,6 +201,7 @@ async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_son
       }
       else continue;
     }
+    songs.push(song);
   }
   if (!serverQueue) {
     const queueConstruct = {
