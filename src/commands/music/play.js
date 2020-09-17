@@ -98,7 +98,7 @@ module.exports = {
             age_restricted: false
           }
         });
-        await handleServerQueue(serverQueue, textChannel, voiceChannel, songs, true)
+        await handleServerQueue(serverQueue, message.channel, voiceChannel, songs, true)
         message.channel.stopTyping(true);
         message.channel.send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.items.length} songs)!`)          
       } catch (err) {
@@ -137,7 +137,7 @@ module.exports = {
             `I didn't find any video. Check your term and try again.`
           );
         }
-        await handleServerQueue(serverQueue, textChannel, voiceChannel, [{ url: searchResults.items[0].link, title: searchResults.items[0].title, duration: times(searchResults.items[0].duration), seektime: 0, age_restricted: false }]);
+        await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: searchResults.items[0].link, title: searchResults.items[0].title, duration: times(searchResults.items[0].duration), seektime: 0, age_restricted: false }]);
       } catch (err) {
         if (!serverQueue) message.guild.musicVariables = null;
         message.channel.stopTyping(true);
