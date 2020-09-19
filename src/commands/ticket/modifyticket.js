@@ -1,5 +1,5 @@
 const MessageModel = require("../../database/models/ticket");
-const { Pèrmissions, MessageEmbed } = require("discord.js") 
+const { Permissions, MessageEmbed } = require("discord.js") 
 module.exports = {
   run: async (bot, message, args) => {
     if(!args[1]) return message.channel.send("Put a message ID");
