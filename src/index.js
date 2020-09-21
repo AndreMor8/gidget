@@ -13,7 +13,6 @@ import { registerCommands, registerEvents } from './utils/registry.js';
 import puppeteer from "puppeteer";
 export const version = "0.98 Post-Beta";
 import nsfwjs from 'nsfwjs';
-import '@tensorflow/tfjs-node';
 const database = require("./database/database.cjs");
 
 (async () => {
