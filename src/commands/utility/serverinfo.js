@@ -92,7 +92,7 @@ export default class extends Command {
           uses: server.vanityURLUses,
           code: server.vanityURLCode
         };
-        links.push("[Vanity invite URL" + vanity.uses ? (" (" + vanity.uses + " uses)") : "" + "](https://discord.gg/" + vanity.code + ")");
+        links.push("[Vanity invite URL" + (vanity.uses ? (" (" + vanity.uses + " uses)") : "") + "](https://discord.gg/" + (vanity.code) + ")");
       }
 
       bots = server.members.cache.filter(m => m.user.bot === true)
