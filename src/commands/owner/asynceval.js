@@ -1,3 +1,5 @@
+import commons from '../../utils/commons.js';
+const { require, __dirname, __filename } = commons(import.meta.url);
 import Discord from "discord.js";
 import Command from "../../utils/command.js";
 import util from 'util';
