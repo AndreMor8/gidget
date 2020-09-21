@@ -10,7 +10,6 @@ export default class extends Command {
         this.description = "Execute terminal commands";
         this.dev = true;
         this.secret = true;
-
     }
     async run(message, args) {
         try {

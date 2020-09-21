@@ -34,7 +34,6 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
       if (!args[0]) return;
       const command = bot.commands.get(args[0].toLowerCase()) || bot.commands.find(a => a.aliases.includes(args[0].toLowerCase()));
       if (command) {
-        console.log(command);
         if (command.owner && message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
         if (command.dev && (message.author.id !== "577000793094488085" || !process.env.DEVS.split(",").includes(message.author.id))) return message.channel.send("Only Gidget developers can use this command");
         if (!message.guild && command.guildonly) return message.channel.send("This command only works on servers");

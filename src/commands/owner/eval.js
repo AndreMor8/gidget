@@ -1,7 +1,7 @@
 //Rewrite
 import Discord from "discord.js";
 import Command from "../../utils/command.js";
-
+import util from 'util';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -14,7 +14,7 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Put something to evaluate.");
     try {
       let evaluated = await eval(args.slice(1).join(" "));
-      if (typeof evaluated !== "string") evaluated = require("util").inspect(evaluated, { depth: 0 });
+      if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
       const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950 });
       message.channel.send(arr[0], { code: "js" });
     } catch (err) {
