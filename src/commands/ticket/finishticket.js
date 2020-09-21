@@ -1,9 +1,19 @@
-const Discord = require("discord.js");
-const MessageModel = require("../../database/models/ticket");
-const MessageModel2 = require('../../database/models/tmembers');
+import Discord from "discord.js";
+import MessageModel from "../../database/models/ticket.js";
+import Command from "../../utils/command.js";
 
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "Finish listening tickets";
+    this.guildonly = true;
+    this.permissions = {
+      user: [8, 0],
+      bot: [0, 0]
+    };
+
+  }
+  async run(message, args) {
     if (!args[1]) return message.channel.send("Put the message ID of that ticket system!");
     let msgDocument = await MessageModel.findOne({
       guildId: message.guild.id,
@@ -14,12 +24,5 @@ module.exports = {
     } else {
       message.channel.send('I don\'t see a ticket system here.');
     }
-  },
-  aliases: [],
-  description: "Finish listening tickets",
-  guildonly: true,
-  permissions: {
-    user: [8, 0],
-    bot: [0, 0]
   }
-};
+}

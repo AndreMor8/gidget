@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose'
 const MessageSchema = new mongoose.Schema({
     channelId: { type: String, required: true },
     messageId: { type: String, required: true },
@@ -6,4 +6,4 @@ const MessageSchema = new mongoose.Schema({
     reactions: { type: Array }
 });
 
-const MessageModel = module.exports = mongoose.model('polltimes', MessageSchema);
+export default mongoose.model('polltimes', MessageSchema);

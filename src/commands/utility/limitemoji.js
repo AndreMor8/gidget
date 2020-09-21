@@ -1,10 +1,24 @@
-const { MessageEmbed } = require("discord.js");
-module.exports = {
-  run: async (bot, message, args) => {
-    if (!args[1]) return message.channel.send("Usage: limitemojis <emoji> <mode> <role(s)>");
-    let e = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1])
-    if (e) return cmd_sendumfrage(message, args.slice(2), e.id);
-    else return cmd_umfrage(message, args.slice(1));
+import Command from '../../utils/command.js';
+import { MessageEmbed } from "discord.js";
+export default class extends Command {
+  constructor(options) {
+    super(options)
+    this.aliases = ["le"];
+    this.description = "Limit emojis to certain roles";
+    this.guildonly = true;
+    this.permissions = {
+      user: [1073741824, 0],
+      bot: [1073741824, 0]
+    };
+  }
+  async run(message, args) {
+    if (!args[1])
+      return message.channel.send("Usage: limitemojis <emoji> <mode> <role(s)>");
+    let e = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1]);
+    if (e)
+      return cmd_sendumfrage(message, args.slice(2), e.id);
+    else
+      return cmd_umfrage(message, args.slice(1));
     function cmd_umfrage(msg, args) {
       if (args.length) {
         var custom = /^<a?:/;
@@ -25,17 +39,19 @@ module.exports = {
 
     function cmd_sendumfrage(msg, args, emoji) {
       let emojiobj = msg.guild.emojis.cache.get(emoji);
-      if(!emojiobj) return message.channel.send("That emoji isn't on the server");
-      if(!args[0]) {
-        if(!emojiobj.roles.cache.first()) return message.channel.send("That emoji can be used by anyone");
+      if (!emojiobj)
+        return message.channel.send("That emoji isn't on the server");
+      if (!args[0]) {
+        if (!emojiobj.roles.cache.first())
+          return message.channel.send("That emoji can be used by anyone");
         let text = emojiobj.roles.cache.map(e => e.toString()).join("\n");
         const embed = new MessageEmbed()
-        .setTitle("List of roles they can use " + emojiobj.name)
-        .setDescription(text)
+          .setTitle("List of roles they can use " + emojiobj.name)
+          .setDescription(text);
         return message.channel.send(embed);
       }
       let roles = msg.mentions.roles.first() ? msg.mentions.roles : args.slice(1);
-      
+
       switch (args[0]) {
         case "add":
           emojiobj.roles.add(roles).then(e => message.channel.send("Ok. I've put the roles correctly")).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
@@ -47,14 +63,7 @@ module.exports = {
           emojiobj.roles.set(roles).then(e => message.channel.send("Ok. I've put the roles correctly")).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
           break;
       }
-      
+
     }
-  },
-  aliases: ["le"],
-  description: "Limit emojis to certain roles",
-  guildonly: true,
-  permissions: {
-    user: [1073741824, 0],
-    bot: [1073741824, 0]
   }
 }

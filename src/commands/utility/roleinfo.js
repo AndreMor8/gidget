@@ -1,7 +1,17 @@
-const Discord = require('discord.js');
+import Command from '../../utils/command.js';
+import Discord from 'discord.js';
 
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "Get information about a role";
+    this.guildonly = true;
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 16384]
+    };
+  }
+  async run(message, args) {
     if (!message.guild) return message.channel.send('This command only works on servers.')
     function msg(role) {
       const mng = {
@@ -68,7 +78,7 @@ module.exports = {
         .setColor(role.hexColor)
         .setTitle('Information about ' + role.name)
         .addField('ID', role.id, true)
-        .addField('Created At', bot.intl.format(role.createdAt), true)
+        .addField('Created At', role.client.intl.format(role.createdAt), true)
         .addField('Mention', role.toString() + ' `' + role.toString() + '`', true)
         .addField('Managed?', mng[role.managed], true)
         .addField('Hoisted?', mng[role.hoist], true)
@@ -90,12 +100,5 @@ module.exports = {
       if (!role) return message.channel.send('That\'s not a valid role. Mention the role, type its name or put the ID.');
       msg(role);
     }
-  },
-  aliases: [],
-  description: "Get information about a role",
-  guildonly: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
   }
 }

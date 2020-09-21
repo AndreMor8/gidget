@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose'
 const MessageSchema = new mongoose.Schema({
     guildId: { type: String, required: true },
     messageId: { type: String, required: true },
@@ -12,4 +12,4 @@ const MessageSchema = new mongoose.Schema({
     desc: { type: String }
 });
 
-const MessageModel = module.exports = mongoose.model('ticket', MessageSchema);
+export default mongoose.model('ticket', MessageSchema);

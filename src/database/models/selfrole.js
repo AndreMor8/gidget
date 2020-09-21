@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose'
 const MessageSchema = new mongoose.Schema({
     guildid: { type: String, required: true },
     word: { type: String, required: true },
     roleid: { type: String, required: true }
 });
 
-const MessageModel = module.exports = mongoose.model('selfrole', MessageSchema);
+export default mongoose.model('selfrole', MessageSchema);

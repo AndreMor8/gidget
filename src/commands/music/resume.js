@@ -1,5 +1,18 @@
-module.exports = {
-  run: async (bot, message, args) => {
+import Command from "../../utils/command.js";
+
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = [];
+    this.description = "Resume the music";
+    this.guildonly = true;
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 0]
+    };
+
+  }
+  async run(message, args) {
     const serverQueue = message.guild.queue
     if (!serverQueue) return message.channel.send("There is nothing playing.");
     if (serverQueue && serverQueue.inseek) return;
@@ -26,12 +39,5 @@ module.exports = {
     serverQueue.playing = true;
     serverQueue.connection.dispatcher.resume();
     return message.channel.send("**Resuming!**");
-  },
-  aliases: [],
-  description: "Resume the music",
-  guildonly: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 0]
   }
-};
+}

@@ -1,7 +1,6 @@
-const cachedMessageReactions = new Map();
-const MessageModel = require('../../database/models/message');
+import MessageModel from '../../database/models/message.js';
 
-module.exports = async (bot, reaction, user) => {
+export default async (bot, reaction, user) => {
   if(user.bot) return;
   if (!reaction.message.guild) return;
   

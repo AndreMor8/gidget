@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const thing = new mongoose.Schema({
     guildID: { type: String, required: true },
     enabled: { type: Boolean, default: false }
 });
 
-module.exports = mongoose.model("messagelink", thing);
+export default mongoose.model("messagelink", thing);

@@ -1,6 +1,7 @@
-const Promise = require("bluebird");
-const api = require("nodemw");
-const wiki = new api({
+import Promise from "bluebird";
+import eeee from "nodemw";
+export const api = eeee;
+export const wiki = new api({
     protocol: 'https',
     server: 'wubbzy.fandom.com',
     path: '/',
@@ -10,7 +11,3 @@ const wiki = new api({
 });
 
 Promise.promisifyAll(wiki);
-
-module.exports = {
-  api, wiki
-};

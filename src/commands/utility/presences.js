@@ -1,11 +1,20 @@
-const Discord = require("discord.js");
-const moment = require("moment");
-require("moment-duration-format");
-module.exports = {
-    run: async (bot, message, args) => {
+import Discord from "discord.js";
+import moment from "moment";
+import "moment-duration-format";
+import Command from "../../utils/command.js";
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.description = "View advanced user presence information.";
+        this.permissions = {
+            user: [0, 0],
+            bot: [0, 16384]
+        };
+    }
+    async run(message, args) {
         let number = !isNaN(args[args.length - 1]) && args[args.length - 1].length < 15 ? parseInt(args[args.length - 1]) : 0;
         if (!isNaN(args[args.length - 1]) && args.length > 1 && args[args.length - 1].length < 15) args.pop();
-        let user = message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ")) || bot.users.cache.find(e => e.tag === args.slice(1).join(" ")) || (message.guild ? (message.guild.members.cache.find(e => e.displayName === args.slice(1).join(" ")) ? message.guild.members.cache.find(e => e.displayName === args.slice(1).join(" ")).user : undefined) : undefined);
+        let user = message.mentions.users.first() || this.bot.users.cache.get(args[1]) || this.bot.users.cache.find(e => e.username === args.slice(1).join(" ")) || this.bot.users.cache.find(e => e.tag === args.slice(1).join(" ")) || (message.guild ? (message.guild.members.cache.find(e => e.displayName === args.slice(1).join(" ")) ? message.guild.members.cache.find(e => e.displayName === args.slice(1).join(" ")).user : undefined) : undefined);
         if (!user) {
             user = message.author;
         }
@@ -18,9 +27,9 @@ module.exports = {
             .setColor("RANDOM")
             .addField("Name", presence.name, true)
             .addField("Type", presence.type, true);
-            if(!isNaN(presence.createdTimestamp) && presence.createdAt) {
-                embed.addField("Created At", bot.intl.format(presence.createdAt), true)
-            }
+        if (!isNaN(presence.createdTimestamp) && presence.createdAt) {
+            embed.addField("Created At", this.bot.intl.format(presence.createdAt), true)
+        }
         if (presence.applicationID) {
             embed.addField("Application ID", presence.applicationID, true)
         }
@@ -71,11 +80,5 @@ module.exports = {
         }
         message.channel.send(embed);
 
-    },
-    aliases: [],
-    description: "View advanced user presence information.",
-    permissions: {
-        user: [0, 0],
-        bot: [0, 16384]
-      }
+    }
 }

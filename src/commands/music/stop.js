@@ -1,5 +1,18 @@
-module.exports = {
-  run: async (bot, message, args) => {
+import Command from "../../utils/command.js";
+
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = ["leave"];
+    this.description = "Stop the queue";
+    this.guildonly = true;
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 0]
+    };
+
+  }
+  async run(message, args) {
     const serverQueue = message.guild.queue
     if (serverQueue && serverQueue.inseek) return;
     const musicVariables = message.guild.musicVariables;
@@ -19,7 +32,7 @@ module.exports = {
       }
       if (musicVariables.loop) musicVariables.loop = false;
       return musicVariables.connection.dispatcher.destroy();
-    } 
+    }
     if (!serverQueue)
       return message.channel.send(
         "There is nothing playing that I could stop."
@@ -36,12 +49,5 @@ module.exports = {
     }
     serverQueue.songs = [];
     serverQueue.connection.dispatcher.end();
-  },
-  aliases: ["leave"],
-  description: "Stop the queue",
-  guildonly: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 0]
   }
-};
+}

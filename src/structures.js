@@ -1,4 +1,4 @@
-import commons from './utils/commons.mjs';
+import commons from './utils/commons.js';
 const { require } = commons(import.meta.url);
 class StructureError extends Error {
     constructor(error) {

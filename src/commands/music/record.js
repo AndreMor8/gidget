@@ -1,14 +1,20 @@
-const Discord = require('discord.js')
-const { Readable } = require('stream');
-const Lame = require("node-lame").Lame;
+import Command from '../../utils/command.js';
+import Discord from 'discord.js';
+import { Readable } from 'stream';
+import cosaparaelmp3 from "node-lame";
 const SILENCE_FRAME = Buffer.from([0xF8, 0xFF, 0xFE]);
 class Silence extends Readable {
   _read() {
     this.push(SILENCE_FRAME);
   }
 }
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "I'm going to record your voice (experimental)";
+    this.guildonly = true;
+  }
+  async run(message, args) {
     if (!message.member.voice.channel) return message.channel.send("You have to be in a voice channel!");
     if (!args[1]) return message.channel.send("`dm` to send the file to your direct messages, `play` to play it on the voice channel, `server` to send the file to this channel.");
     let options = {}
@@ -47,7 +53,7 @@ module.exports = {
           if (args[1] === "play") {
             const dispatcher = connection.play(audio, { type: "opus" })
             dispatcher.on("start", () => {
-              message.channel.send("I'm playing your recording.").catch(err => {});
+              message.channel.send("I'm playing your recording.").catch(err => { });
             })
             dispatcher.on("finish", async () => {
               await voiceChannel.leave();
@@ -58,7 +64,7 @@ module.exports = {
             })
             dispatcher.on("error", async (err) => {
               await voiceChannel.leave();
-              message.channel.send("Some error ocurred in the dispatcher! Here's a debug: " + err).catch(err => {});
+              message.channel.send("Some error ocurred in the dispatcher! Here's a debug: " + err).catch(err => { });
               message.guild.musicVariables = null;
             })
           } else {
@@ -69,7 +75,7 @@ module.exports = {
             });
             audio.on("end", () => {
               let buf = Buffer.concat(chunks);
-              const encoder = new Lame({
+              const encoder = new cosaparaelmp3.Lame({
                 "output": "buffer",
                 "bitrate": 192,
                 "raw": true,
@@ -82,23 +88,23 @@ module.exports = {
                 const buf = res.getBuffer();
                 const attachment = new Discord.MessageAttachment(buf, 'audio.mp3');
                 if (args[1] === "server") await message.channel.send("Here's your recording.", attachment).catch(err => {
-                  if(err.code === 40005) message.channel.send("The file is very large. I can't send you that.").catch(err => {});
+                  if (err.code === 40005) message.channel.send("The file is very large. I can't send you that.").catch(err => { });
                 });
                 else await message.member.send("Here's your recording.", attachment).catch(err => {
-                  switch(err.code) {
+                  switch (err.code) {
                     case 40005:
-                      message.channel.send("The file is very large. I can't send you that.").catch(err => {});
+                      message.channel.send("The file is very large. I can't send you that.").catch(err => { });
                       break;
                     case 50007:
-                      message.channel.send("I can't send you DMs :(").catch(err => {});
+                      message.channel.send("I can't send you DMs :(").catch(err => { });
                       break;
                     default:
                       console.log(err);
-                      message.channel.send("Error when sending the file: " + err).catch(err => {});
+                      message.channel.send("Error when sending the file: " + err).catch(err => { });
                   }
                 });
               }).catch(async err => {
-                await message.channel.send("Error when converting the PCM buffer: " + err).catch(err => {});
+                await message.channel.send("Error when converting the PCM buffer: " + err).catch(err => { });
               }).finally(() => {
                 voiceChannel.leave();
                 message.channel.stopTyping(true);
@@ -109,12 +115,5 @@ module.exports = {
         }
       });
     });
-  },
-  aliases: [],
-  description: "I'm going to record your voice (experimental)",
-  guildonly: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 0]
   }
-};
+}

@@ -1,7 +1,16 @@
-const Discord = require("discord.js");
-
-module.exports = {
-  run: async (bot, message, args) => {
+import Command from '../../utils/command.js';
+import Discord from "discord.js";
+export default class extends Command {
+  constructor(options) {
+    super(options)
+    this.aliases = ["server"];
+    this.description = "Server info";
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 16384]
+    };
+  }
+  async run(message, args) {
     if (!message.guild && !args[1]) return message.channel.send("Put a server ID!");
     const server = args[1] ? (bot.guilds.cache.get(args[1]) ||
       bot.guilds.cache.find(e => e.name === args.slice(1).join(" ")) ||
@@ -13,7 +22,7 @@ module.exports = {
     let servericon = server.iconURL({ dynamic: true, size: 4096 });
     //¯\_(ツ)_/¯
     let links = [`[Guild](https://discord.com/channels/${server.id})`];
-    if(servericon) links.push(`[Server icon](${servericon})`);
+    if (servericon) links.push(`[Server icon](${servericon})`);
     let embedenabled;
     let embedchannel;
     let catname = "";
@@ -78,6 +87,12 @@ module.exports = {
       const vanity = await server.fetchVanityData().catch(err => { });
       if (vanity && vanity.code) {
         links.push("[Vanity invite URL" + vanity.uses ? (" (" + vanity.uses + " uses)") : "" + "](https://discord.gg/" + vanity.code + ")");
+      } else if(server.vanityURLCode) {
+        const vanity = {
+          uses: server.vanityURLUses,
+          code: server.vanityURLCode
+        };
+        links.push("[Vanity invite URL" + vanity.uses ? (" (" + vanity.uses + " uses)") : "" + "](https://discord.gg/" + vanity.code + ")");
       }
 
       bots = server.members.cache.filter(m => m.user.bot === true)
@@ -138,7 +153,7 @@ module.exports = {
     }
     if (server instanceof Discord.Guild) {
       embed.addField("Server Owner", server.owner.user.tag, true)
-        .addField("Server Create Date", bot.intl.format(server.createdAt), true)
+        .addField("Server Create Date", this.bot.intl.format(server.createdAt), true)
         .addField("Server Region", server.region, true)
         .addField("Verification Level", server.verificationLevel, true)
       if (server.rulesChannel) {
@@ -179,11 +194,5 @@ module.exports = {
     } else {
       message.channel.send(embed);
     }
-  },
-  aliases: ["server"],
-  description: "Server info",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
   }
-};
+}

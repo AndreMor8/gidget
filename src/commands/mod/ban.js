@@ -1,7 +1,15 @@
-const Discord = require('discord.js');
-
-module.exports = {
-    run: async (bot, message, args) => {
+import Command from '../../utils/command.js';
+export default class extends Command {
+    constructor(options) {
+        super(options)
+        this.guildonly = true;
+        this.description = "Ban a member from the server";
+        this.permissions = {
+            user: [4, 0],
+            bot: [4, 0]
+        }
+    }
+    async run(message, args) {
         let user = message.client.users.cache.get(args[1]) || message.mentions.users.first() || args[1];
 
         if (user) {
@@ -30,12 +38,5 @@ module.exports = {
         } else {
             message.reply("Specify a server member to ban them! <:WidgetBan:610310292286603264>");
         }
-    },
-    aliases: [],
-    guildonly: true,
-    description: "Ban a member from the server",
-    permissions: {
-        user: [4, 0],
-        bot: [4, 0]
     }
 }

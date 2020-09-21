@@ -1,7 +1,17 @@
-const Discord = require('discord.js');
+import Command from '../../utils/command.js';
 
-module.exports = {
-    run: async (bot, message, args) => {
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.aliases = [];
+        this.guildonly = true;
+        this.description = "kick a member from the server";
+        this.permissions = {
+            user: [2, 0],
+            bot: [2, 0]
+        }
+    }
+    async run(message, args) {
         let user = message.client.users.cache.get(args[1]) || message.mentions.users.first() || args[1];
         if (user) {
             var member = message.guild.member(user);
@@ -29,12 +39,5 @@ module.exports = {
         } else {
             message.reply("Specify a server member to kick them! <:WubbzyKick:460284747311087620>");
         }
-    },
-    aliases: [],
-    guildonly: true,
-    description: "kick a member from the server",
-    permissions: {
-        user: [2, 0],
-        bot: [2, 0]
     }
 }

@@ -1,17 +1,26 @@
-const Discord = require('discord.js');
-
-module.exports = {
-	run: async (bot, message, args) => {
+import Command from '../../utils/command.js';
+import Discord from 'discord.js';
+export default class extends Command {
+	constructor(options) {
+		super(options);
+		this.description = "User avatar";
+		this.permissions = {
+			user: [0, 0],
+			bot: [0, 16384]
+		};
+	}
+	async run(message, args) {
+		//Needs rewrite
 		if (args[1] === 'server') {
-      if (message.channel.type !== 'dm') {
-       var avatar = message.guild.iconURL({ dynamic: true });
-			const embed = new Discord.MessageEmbed()
-				.setTitle('Server icon')
-				.setImage(avatar)
-			return message.channel.send(embed); 
-      } else {
-        return message.channel.send('This command only works on servers.');
-      }
+			if (message.channel.type !== 'dm') {
+				var avatar = message.guild.iconURL({ dynamic: true });
+				const embed = new Discord.MessageEmbed()
+					.setTitle('Server icon')
+					.setImage(avatar)
+				return message.channel.send(embed);
+			} else {
+				return message.channel.send('This command only works on servers.');
+			}
 		}
 
 		let memberId = message.content.substring(message.content.indexOf(' ') + 1);
@@ -37,11 +46,5 @@ module.exports = {
 				.setImage(`${user.displayAvatarURL({ format: "png", size: 1024, dynamic: true })}`)
 			message.channel.send(embed);
 		});
-	},
-	aliases: [],
-	description: "User avatar",
-	permissions: {
-		user: [0, 0],
-		bot: [0, 16384]
-	  }
+	}
 }

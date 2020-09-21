@@ -6,7 +6,7 @@
  * See https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
  */
 
-var langs = {
+const langs = {
     'auto': 'Automatic',
     'af': 'Afrikaans',
     'sq': 'Albanian',
@@ -113,12 +113,14 @@ var langs = {
     'yo': 'Yoruba',
     'zu': 'Zulu'
 };
+ 
+export default langs;
 /**
  * Returns the ISO 639-1 code of the desiredLang – if it is supported by Google Translate
  * @param {string} desiredLang – the name or the code of the desired language
  * @returns {string|boolean} The ISO 639-1 code of the language or false if the language is not supported
  */
-function getCode(desiredLang) {
+export function getCode(desiredLang) {
     if (!desiredLang) {
         return false;
     }
@@ -144,10 +146,6 @@ function getCode(desiredLang) {
  * @param desiredLang – the ISO 639-1 code or the name of the desired language
  * @returns {boolean}
  */
-function isSupported(desiredLang) {
+export function isSupported(desiredLang) {
     return Boolean(getCode(desiredLang));
 }
-
-module.exports = langs;
-module.exports.isSupported = isSupported;
-module.exports.getCode = getCode;

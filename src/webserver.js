@@ -1,4 +1,4 @@
-import { bot } from './index.mjs';
+import { bot } from './index.js';
 import express from "express";
 const app = express();
 

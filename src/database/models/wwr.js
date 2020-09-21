@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema({
   author: { type: String, required: true },
@@ -7,4 +7,4 @@ const schema = new mongoose.Schema({
   date: { type: Date, required: true }
 });
 
-module.exports = mongoose.model('ideas', schema);
+export default mongoose.model('ideas', schema);

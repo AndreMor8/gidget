@@ -1,14 +1,29 @@
-module.exports = {
-  run: async (bot, message, args) => {
-    const serverQueue = message.guild.queue
-    if (serverQueue && serverQueue.inseek) return;
+import Command from "../../utils/command.js";
+
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = [];
+    this.description = "Change the volume dispatcher";
+    this.guildonly = true;
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 0]
+    };
+  }
+  async run(bot, message, args) {
+    const serverQueue = message.guild.queue;
+    if (serverQueue && serverQueue.inseek)
+      return;
     const musicVariables = message.guild.musicVariables;
     if (!message.member.voice.channel)
       return message.channel.send(
         "You need to be in a voice channel to change the volume!"
       );
-    if (!serverQueue) return message.channel.send("There is nothing playing.");
-    if (!musicVariables) return message.channel.send("There is nothing playing.");
+    if (!serverQueue)
+      return message.channel.send("There is nothing playing.");
+    if (!musicVariables)
+      return message.channel.send("There is nothing playing.");
     if (serverQueue.voiceChannel.id !== message.member.voice.channel.id)
       return message.channel.send("I'm on another voice channel!");
     if (!args[1])
@@ -24,12 +39,5 @@ module.exports = {
         "Invalid number. The allowed range is 0 to 5."
       );
     }
-  },
-  aliases: [],
-  description: "Change the volume dispatcher",
-  guildonly: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 0]
   }
-};
+}

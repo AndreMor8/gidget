@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose'
 const MessageSchema = new mongoose.Schema({
     guildid: { type: String, required: true },
     role: { type: Boolean, required: true },
@@ -10,4 +10,4 @@ const MessageSchema = new mongoose.Schema({
     bantime: { type: Number, default: 0 }
 });
 
-const MessageModel = module.exports = mongoose.model('warn-system', MessageSchema);
+export default mongoose.model('warn-system', MessageSchema);

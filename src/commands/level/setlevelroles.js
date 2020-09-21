@@ -1,12 +1,23 @@
-const MessageModel = require("../../database/models/levelconfig");
+import Command from '../../utils/command.js';
+import MessageModel from "../../database/models/levelconfig.js";
 //I don't think on rewrite this.
-module.exports = {
-    run: async (bot, message, args) => {
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.aliases = [];
+        this.description = "Put a role that will be given when a user reaches a level.";
+        this.guildonly = true;
+        this.permissions = {
+            user: [8, 0],
+            bot: [0, 0]
+        };
+    }
+    async run(message, args) {
         if (!args[1]) return message.channel.send("Usage: `setlevelroles add <level> <roles> / setlevelroles remove <level>`");
         let mode = args[1];
-        if(mode !== "add" && mode !== "remove") return message.channel.send("Invalid mode!");
-        if(!args[2]) return message.channel.send("Put a level!");
-        if(isNaN(args[2])) return message.channel.send("Invalid level!");
+        if (mode !== "add" && mode !== "remove") return message.channel.send("Invalid mode!");
+        if (!args[2]) return message.channel.send("Put a level!");
+        if (isNaN(args[2])) return message.channel.send("Invalid level!");
         if (mode === "add" && !args[3]) return message.channel.send("Put the roles to be delivered when the level is reached");
 
         let add = async (leve, toadd) => {
@@ -62,19 +73,12 @@ module.exports = {
             }
         };
 
-        if(mode === "add") {
+        if (mode === "add") {
             let roles = message.mentions.roles.first() ? message.mentions.roles.map(e => e.id) : args.slice(3);
             if (!roles.every(e => message.guild.roles.cache.has(e))) return message.channel.send("Invalid roles!");
             add(args[2], roles);
-        } else if(mode === "remove") {
+        } else if (mode === "remove") {
             remove(args[2]);
         }
-    },
-    aliases: [],
-    description: "...",
-    guildonly: true,
-    permissions: {
-        user: [8, 0],
-        bot: [0, 0]
-      }
+    }
 }

@@ -1,11 +1,18 @@
-const Discord = require("discord.js");
-const MeowDB = require("meowdb");
+import commons from '../../utils/commons.js';
+const { __dirname } = commons(import.meta.url);
+import Command from '../../utils/command.js';
+import Discord from 'discord.js';
+import MeowDB from 'meowdb';
 const notes = new MeowDB({
     dir: __dirname,
     name: "notes"
 });
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "A simple notes system :)";
+  }
+  async run (message, args) {
     if(args[1] === "add") {
       if (!args[2]) return message.channel.send("Put some text!");
       if(notes.exists(message.author.id)) {
@@ -69,11 +76,5 @@ module.exports = {
       }
       else return message.channel.send("You don't have notes");
     }
-  },
-  aliases: ["meowdb"],
-  description: "A simple notes system :)",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
   }
 }

@@ -1,12 +1,21 @@
-const Discord = require('discord.js');
-
-const { MessageCollector } = require('discord.js');
-const MessageModel = require('../../database/models/message');
+import { MessageCollector } from 'discord.js';
+import MessageModel from '../../database/models/message.js';
+import Command from '../../utils/command.js';
 
 let msgCollectorFilter = (newMsg, originalMsg) => newMsg.author.id === originalMsg.author.id;
 
-module.exports = {
-    run: async (bot, message, args) => {
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.aliases = [];
+        this.guildonly = true;
+        this.description = "Role reaction system";
+        this.permissions = {
+            user: [8, 0],
+            bot: [268435456, 0]
+        };
+    }
+    async run(message, args) {
         if (args.slice(1).length < 1) {
             let msg = await message.channel.send("Put the message ID");
             await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
@@ -83,12 +92,5 @@ module.exports = {
                 await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
             }
         }
-    },
-    aliases: [],
-    guildonly: true,
-    description: "Role reaction system",
-    permissions: {
-        user: [8, 0],
-        bot: [268435456, 0]
     }
 }

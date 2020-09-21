@@ -1,14 +1,24 @@
-const COOKIE = require('fs').readFileSync(require('path').join(__dirname, "/../../../cookies.txt"), "utf-8");
-const ytdl = require("discord-ytdl-core");
-const ytsr = require("ytsr");
-const ytpl = require("ytpl");
-const moment = require("moment");
-const { url } = require('inspector');
-const Discord = require('discord.js');
-const times = require('../../utils/times');
-require("moment-duration-format");
-module.exports = {
-  run: async (bot, message, args, seek) => {
+import fs from 'fs';
+import path from 'path';
+import commons from '../../utils/commons.js';
+const { __dirname } = commons(import.meta.url);
+const COOKIE = fs.readFileSync(path.join(__dirname, "/../../../cookies.txt"), "utf-8");
+import ytdl from "discord-ytdl-core";
+import ytsr from "ytsr";
+import ytpl from "ytpl";
+import moment from "moment";
+import Discord from 'discord.js';
+import times from '../../utils/times.js';
+import "moment-duration-format";
+import Command from '../../utils/command.js';
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = ["join"];
+    this.description = "Play music from YouTube";
+    this.guildonly = true;
+  }
+  async run(message, args, seek) {
     if (!args[1])
       return message.channel.send("Please enter a YouTube link or search term.");
     const voiceChannel = message.member.voice.channel;
@@ -23,7 +33,7 @@ module.exports = {
           "I'm on another voice channel! I cannot be on two channels at the same time."
         );
     }
-    const permissions = voiceChannel.permissionsFor(bot.user.id);
+    const permissions = voiceChannel.permissionsFor(this.bot.user.id);
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
       return message.channel.send(
         "I need the permissions to join and speak in your voice channel!"
@@ -32,7 +42,7 @@ module.exports = {
     if (message.guild.afkChannelID === voiceChannel.id) {
       return message.channel.send("I cannot play music on an AFK channel.");
     }
-    let musicVariables = message.guild.musicVariables
+    let musicVariables = message.guild.musicVariables;
     if (musicVariables && musicVariables.other)
       return message.channel.send("I'm doing another operation");
     if (!musicVariables) {
@@ -46,11 +56,11 @@ module.exports = {
         time1: null,
         other: false
       };
-      musicVariables = message.guild.musicVariables
+      musicVariables = message.guild.musicVariables;
     }
-
+  
     if (typeof seek === "number") {
-      return await play(message.guild, serverQueue.songs[0], seek)
+      return await play(message.guild, serverQueue.songs[0], seek);
     } else if (ytdl.validateURL(args[1])) {
       if (serverQueue) {
         if (serverQueue.loop) {
@@ -93,16 +103,17 @@ module.exports = {
             duration: times(e.duration) / 1000,
             seektime: 0,
             age_restricted: false
-          }
+          };
         });
-        await handleServerQueue(serverQueue, message.channel, voiceChannel, songs, true)
+        await handleServerQueue(serverQueue, message.channel, voiceChannel, songs, true);
         message.channel.stopTyping(true);
-        message.channel.send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.items.length} songs)!`)          
+        message.channel.send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.items.length} songs)!`);
       } catch (err) {
-        if (!serverQueue) message.guild.musicVariables = null;
+        if (!serverQueue)
+          message.guild.musicVariables = null;
         message.channel.stopTyping(true);
         message.channel.send("I couldn't queue your playlist. Here's a debug: " + err)
-        .then(m => form1.delete()).catch(err => {});
+          .then(m => form1.delete()).catch(err => { });
       }
     } else {
       let filter;
@@ -136,20 +147,14 @@ module.exports = {
         }
         await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: searchResults.items[0].link, title: searchResults.items[0].title, duration: times(searchResults.items[0].duration) / 1000, seektime: 0, age_restricted: false }]);
       } catch (err) {
-        if (!serverQueue) message.guild.musicVariables = null;
+        if (!serverQueue)
+          message.guild.musicVariables = null;
         message.channel.stopTyping(true);
         message.channel.send("Some error ocurred. Here's a debug: " + err);
       }
     }
-  },
-  aliases: ["join"],
-  description: "Play music from YouTube",
-  guildonly: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 0]
   }
-};
+}
 
 /**
  * Get the necessary YouTube video info. Don't use this if another API is helping you on that.

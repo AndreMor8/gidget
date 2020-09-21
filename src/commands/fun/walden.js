@@ -1,7 +1,17 @@
-const Discord = require("discord.js");
-const Jimp = require("jimp");
-module.exports = {
-  run: async (bot, message, args) => {
+import Command from '../../utils/command.js';
+import Discord from 'discord.js';
+import Jimp from 'jimp';
+
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "Walden";
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 32768]
+    }
+  }
+  async run(message, args) {
     if (!args[1])
       return message.channel.send("Usage: `walden [<32>/<64>] <text>`");
     if (args[1] === "64") {
@@ -11,14 +21,8 @@ module.exports = {
     } else {
       px32(message, args.slice(1));
     }
-  },
-  aliases: [],
-  description: "Walden",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 32768]
   }
-};
+}
 
 async function px32(message, args) {
   if (!args[0])
@@ -82,7 +86,7 @@ async function px64(message, args) {
   let post_text = "";
   for (let i = 0; i < pre_text.length; i++) {
     post_text += pre_text[i];
-    if(pre_text[i] === " ") {
+    if (pre_text[i] === " ") {
       post_text = " ";
       realtext += pre_text[i];
       continue;

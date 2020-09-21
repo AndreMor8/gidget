@@ -1,11 +1,23 @@
-const Discord = require("discord.js");
+import Discord from "discord.js";
 
-const MessageModel = require("../../database/models/warn");
+import MessageModel from "../../database/models/warn.js";
 
-const MessageModel2 = require("../../database/models/warn2");
+import MessageModel2 from "../../database/models/warn2.js";
+import Command from "../../utils/command.js";
 
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options)
+
+    this.description = "Warn a member";
+    this.guildonly = true;
+    this.permissions = {
+      user: [4, 0],
+      bot: [268435456, 0]
+    };
+
+  }
+  async run(message, args) {
     if (!args[1])
       return message.channel.send(
         "You haven't said anything. Put a member or `set`"
@@ -23,7 +35,7 @@ module.exports = {
       var dbMsgModel = msgDocument;
     }
     if (args[1] === "set") {
-      if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
+      if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
       if (!dbMsgModel) return console.log("Doesn't exist.");
       if (args[2] === "role") {
         if (!args[3]) return message.channel.send('First put the number of warnings to put the role, and then mention the role, write its ID or write its name. Set "false" to not use roles in this system.')
@@ -55,10 +67,10 @@ module.exports = {
                 });
                 message.channel.send(
                   "Now I am going to put the role " +
-                    roleObj.name +
-                    " to the members that have " +
-                    warnings +
-                    " warning(s)"
+                  roleObj.name +
+                  " to the members that have " +
+                  warnings +
+                  " warning(s)"
                 );
               } catch (err) {
                 console.log(err);
@@ -154,7 +166,7 @@ module.exports = {
       if (!dbMsgModel) return console.log("Doesn't exist.");
       let member =
         message.mentions.members.first() ||
-        message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(err => {}) : undefined)
+        message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(err => { }) : undefined)
       if (!member) return message.channel.send("Invalid member!");
       let document = await MessageModel2.findOne({
         guildid: message.guild.id,
@@ -179,21 +191,21 @@ module.exports = {
           if (args[2]) {
             member.send(
               "You've been warned on " +
-                message.guild.name +
-                " with reason: " +
-                args.slice(2).join(" ") +
-                ". You have " +
-                newWarnings +
-                " warning(s)."
+              message.guild.name +
+              " with reason: " +
+              args.slice(2).join(" ") +
+              ". You have " +
+              newWarnings +
+              " warning(s)."
             );
             message.channel.send(`I've warned ${member.user.tag} with reason: ${args.slice(2).join(" ")}. They now have ${newWarnings} warnings.`);
           } else {
             member.send(
               "You've been warned on " +
-                message.guild.name +
-                ". You have " +
-                newWarnings +
-                " warning(s)."
+              message.guild.name +
+              ". You have " +
+              newWarnings +
+              " warning(s)."
             );
             message.channel.send(`I've warned ${member.user.tag}. They now have ${newWarnings} warnings.`);
           }
@@ -228,12 +240,5 @@ module.exports = {
         return message.channel.send("Something happened");
       }
     }
-  },
-  aliases: [],
-  description: "Warn a member",
-  guildonly: true,
-  permissions: {
-    user: [4, 0],
-    bot: [268435456, 0]
   }
-};
+}

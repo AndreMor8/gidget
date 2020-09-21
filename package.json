@@ -5,16 +5,18 @@
     "node": "14.x"
   },
   "description": "A Discord Bot, for Wow Wow Discord",
-  "main": "./src/index.mjs",
+  "main": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.mjs"
+    "start": "node --experimental-json-modules ./src/index.js"
   },
+  "type": "module",
   "repository": {
     "url": "https://github.com/AndreMor955/gidget/"
   },
   "author": "AndreMor",
-  "license": "ISC",
+  "homepage": "https://gidgetbot.herokuapp.com/",
+  "license": "Apache-2.0",
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "@jimp/custom": "^0.16.1",

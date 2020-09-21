@@ -1,7 +1,16 @@
-const { MessageEmbed } = require("discord.js")
-const MessageModel = require("../../database/models/customresponses");
-module.exports = {
-    run: async (bot, message, args) => {
+import Command from '../../utils/command.js'
+import { MessageEmbed } from 'discord.js';
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.description = "Display the list of server custom responses.";
+        this.guildonly = true;
+        this.permissions = {
+            user: [0, 0],
+            bot: [0, 16384]
+        }
+    }
+    async run(message, args) {
         const msgDocument = message.guild.cache.customresponses ? message.guild.customresponses : await message.guild.getCustomResponses();
         if (msgDocument && msgDocument.responses) {
             const { responses } = msgDocument;
@@ -19,12 +28,5 @@ module.exports = {
 
             message.channel.send(embed);
         } else return message.channel.send("There are no custom responses on this server...");
-    },
-    aliases: [],
-    description: "Display the list of server custom responses.",
-    guildonly: true,
-    permissions: {
-        user: [0, 0],
-        bot: [0, 16384]
-      }
+    }
 }

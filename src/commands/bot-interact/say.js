@@ -1,22 +1,23 @@
-const Discord = require('discord.js');
+import Command from '../../utils/command.js';
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "Make me say something",
+      this.permissions = {
+        user: [0, 0],
+        bot: [0, 0]
+      }
+  }
+  async run(message, args) {
+    // Check if you can delete the message
+    if (message.deletable) message.delete();
 
-module.exports = {
-    run: async (bot, message, args) => {
-        // Check if you can delete the message
-        if (message.deletable) message.delete();
-      
-        if (!args[1]) return message.reply(`Nothing to say?`).then(m => m.delete( {timeout: 5000} ));
-      
-        if(message.member && message.member.hasPermission("MENTION_EVERYONE")){
-          message.channel.send(args.slice(1).join(" "), { allowedMentions: { parse: ["users", "everyone", "roles"] } });
-        } else {
-          message.channel.send(args.slice(1).join(" "));
-        }
-    },
-    aliases: [],
-    description: "Make me say something",
-    permissions: {
-      user: [0, 0],
-      bot: [0, 0]
+    if (!args[1]) return message.reply(`Nothing to say?`).then(m => m.delete({ timeout: 5000 }));
+
+    if (message.member && message.member.hasPermission("MENTION_EVERYONE")) {
+      message.channel.send(args.slice(1).join(" "), { allowedMentions: { parse: ["users", "everyone", "roles"] } });
+    } else {
+      message.channel.send(args.slice(1).join(" "));
     }
+  }
 }

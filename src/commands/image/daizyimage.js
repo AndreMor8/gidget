@@ -1,23 +1,27 @@
-const Discord = require("discord.js");
+import Command from "../../utils/command.js";
 
-const cheerio = require("cheerio");
+import Discord from 'discord.js';
 
-const fetch = require('node-fetch');
+import cheerio from 'cheerio';
 
-module.exports = {
-  run: async (bot, message, args) => {
-    image(message);
-  },
-  aliases: [],
-  description: "Random Daizy Image",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
+import fetch from 'node-fetch';
+
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = [];
+    this.description = "Random Daizy Image";
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 16384]
+    }
   }
-};
-
+  async run(message, args) {
+    image(message);
+  }
+}
 async function image(message) {
-  var options = {
+  const options = {
     method: "GET",
     headers: {
       Accept: "text/html",
@@ -30,13 +34,11 @@ async function image(message) {
     options
   );
   const responseBody = await response.text();
-  $ = cheerio.load(responseBody);
+  let $ = cheerio.load(responseBody);
 
-  $ = cheerio.load(responseBody);
+  const links = $(".image a.link");
 
-  var links = $(".image a.link");
-
-  var urls = new Array(links.length)
+  const urls = new Array(links.length)
     .fill(0)
     .map((v, i) => links.eq(i).attr("href"));
 
@@ -44,7 +46,7 @@ async function image(message) {
     return;
   }
 
-  var rimg = urls[Math.floor(Math.random() * urls.length)];
+  const rimg = urls[Math.floor(Math.random() * urls.length)];
 
   // Send result
   const embed = new Discord.MessageEmbed()

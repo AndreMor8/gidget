@@ -1,10 +1,10 @@
-const MessageModel = require('../database/models/muterole.js');
-const MessageModel2 = require('../database/models/mutedmembers.js');
+import MessageModel from '../database/models/muterole.js';
+import MessageModel2 from '../database/models/mutedmembers.js';
 let i = 0;
 let cache;
 
-module.exports = async (reupdate = false) => {
-  const { bot } = await import("../index.mjs");
+export default async (reupdate = false) => {
+  const { bot } = await import("../index.js");
   if(i === 1 && reupdate) {
     i = 0;
     clearInterval(interval);

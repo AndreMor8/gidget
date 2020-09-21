@@ -1,11 +1,17 @@
-const Discord = require("discord.js")
-module.exports = {
-  run: async (bot = new Discord.Client(), message, args) => {
+import Command from '../../utils/command.js';
+import { MessageEmbed } from "discord.js";
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = ["fi", "fthinv"]
+    this.description = "Get the information from a Discord invite, using natural methods"
+  }
+  async run(message, args) {
     if (message.deletable) message.delete();
     if (!args[1]) return message.channel.send("Usage: `fetchinvite <InviteResolvable>`\nAn InviteResolvable can be a URL invite or a invite code");
     try {
-      const invite = await bot.fetchInvite(args[1])
-      const embed = new Discord.MessageEmbed()
+      const invite = await this.bot.fetchInvite(args[1])
+      const embed = new MessageEmbed()
         .setDescription("The API doesn't give me as much information about a Discord invite")
         .setFooter("Requested by: " + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
         .setColor("RANDOM");
@@ -37,11 +43,5 @@ module.exports = {
       if (err.message === "Unknown Invite") return message.channel.send("The API says that invitation is unknown.");
       else return message.channel.send("Something happened when I was trying to collect the information. Here's a debug: " + err);
     }
-  },
-  aliases: ["fi", "fthinv"],
-  description: "Get the information from a Discord invite, using natural methods",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 0]
   }
 }

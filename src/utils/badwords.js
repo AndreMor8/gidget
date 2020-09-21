@@ -1,6 +1,6 @@
-let arr = require('badwords.js/array');
-
-class Main {
+import eeee from 'badwords.js/array.js';
+let arr = eeee;
+export default class Main {
     setOptions(options = {
         censor: '*',
         blacklist: arr,
@@ -45,5 +45,3 @@ class Main {
     }
 
 }
-
-module.exports = Main;

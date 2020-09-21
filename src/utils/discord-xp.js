@@ -1,9 +1,9 @@
 //Copied from discord-xp, to adapt it to my database configuration and updating two things.
 //https://github.com/MrAugu/discord-xp // https://www.npmjs.com/package/discord-xp
 
-const levels = require("../database/models/levels.js");
+import levels from "../database/models/levels.js";
 
-class DiscordXp {
+export default class DiscordXp {
   /**
   * @param {string} [userId] - Discord user id.
   * @param {string} [guildId] - Discord guild id.
@@ -255,6 +255,3 @@ class DiscordXp {
     return targetLevel * targetLevel * 100;
   }
 }
-
-
-module.exports = DiscordXp;

@@ -1,8 +1,7 @@
-const Discord = require('discord.js');
-const MessageModel = require("../../database/models/roles");
-const MessageModel2 = require("../../database/models/retreiveconfig");
-const MessageModel3 = require("../../database/models/mutedmembers");
-module.exports = async (bot, member = new Discord.GuildMember) => {
+import MessageModel from "../../database/models/roles.js";
+import MessageModel2 from "../../database/models/retreiveconfig.js";
+import MessageModel3 from "../../database/models/mutedmembers.js";
+export default async (bot, member) => {
   //const date = new Date();
 
   /* Temp-mute function - Delete the member if they left the server */

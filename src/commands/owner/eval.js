@@ -1,8 +1,16 @@
 //Rewrite
-const Discord = require("discord.js");
+import Discord from "discord.js";
+import Command from "../../utils/command.js";
 
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = ["ev"];
+    this.secret = true;
+    this.description = "Eval a code via command";
+    this.dev = true;
+  }
+  async run(message, args) {
     if (!args[1]) return message.channel.send("Put something to evaluate.");
     try {
       let evaluated = await eval(args.slice(1).join(" "));
@@ -13,13 +21,5 @@ module.exports = {
       const arr = Discord.Util.splitMessage(err.toString(), { maxLength: 1950 });
       message.channel.send("```js\n" + arr[0] + "```");
     }
-  },
-  aliases: ["ev"],
-  secret: true,
-  description: "Eval a code via command",
-  dev: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 0]
   }
-};
+}

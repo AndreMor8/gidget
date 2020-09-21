@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const MessageSchema = new mongoose.Schema({
     guildid: { type: String, required: true },
     muteroleid: { type: String, required: true }
 });
 
-const MessageModel = module.exports = mongoose.model('muterole', MessageSchema);
+export default mongoose.model('muterole', MessageSchema);

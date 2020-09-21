@@ -1,16 +1,13 @@
-const Discord = require('discord.js');
-
-module.exports = {
-    run: async (bot, message, args) => {
+import Command from "../../utils/command.js";
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.description = "Bot test";
+    }
+    async run(message, args) {
         message.channel.send("Pong!")
             .then((msg) => {
-                msg.edit("Ping: " + (Date.now() - msg.createdTimestamp) + 'ms\nPing from the API: '+ bot.ws.ping + 'ms')
+                msg.edit("Ping: " + (Date.now() - msg.createdTimestamp) + 'ms\nPing from the API: ' + this.bot.ws.ping + 'ms');
             });
-    },
-    aliases: [],
-    description: "Bot test",
-    permissions: {
-        user: [0, 0],
-        bot: [0, 0]
-      }
+    }
 }

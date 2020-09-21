@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose'
 const MessageSchema = new mongoose.Schema({
     guildId: { type: String, required: true },
     prefix: { type: String, required: true, default: "g%" }
 });
 
-const MessageModel = module.exports = mongoose.model('prefix', MessageSchema);
+export default mongoose.model('prefix', MessageSchema);

@@ -1,20 +1,20 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import commons from './utils/commons.mjs';
+import commons from './utils/commons.js';
 const { require } = commons(import.meta.url);
 // index.js
 // where your node app starts
 
 // init project
 const Discord = require('discord.js');
-import './structures.mjs';
+import './structures.js';
 export const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL }, allowedMentions: { parse: [] } });
-import reg from './utils/registry.js';
+import { registerCommands, registerEvents } from './utils/registry.js';
 import puppeteer from "puppeteer";
 export const version = "0.98 Post-Beta";
 import nsfwjs from 'nsfwjs';
-import tf from '@tensorflow/tfjs-node';
-const database = require("./database/database.js");
+import '@tensorflow/tfjs-node';
+const database = require("./database/database.cjs");
 
 (async () => {
   //Pre-login
@@ -38,8 +38,8 @@ const database = require("./database/database.js");
   }
   bot.nsfwjs = await nsfwjs.load();
   //Registers
-  reg.registerEvents(bot, "../events");
-  reg.registerCommands(bot, "../commands");
+  await registerEvents(bot, "../events");
+  await registerCommands(bot, "../commands");
   //Login and post-login
   await bot.login();
   bot.user.setPresence({

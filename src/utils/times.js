@@ -1,6 +1,6 @@
-const ms = require("millisecond");
-const toMilliseconds = require('@sindresorhus/to-milliseconds');
-module.exports = function(time = "0:00") {
+import ms from "millisecond";
+import toMilliseconds from '@sindresorhus/to-milliseconds';
+export default function(time = "0:00") {
     const arr = time.split(":")
     if(arr.some(s => !isNaN(s))) {
         const final = arr.reverse();

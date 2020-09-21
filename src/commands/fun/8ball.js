@@ -1,9 +1,18 @@
-const Discord = require("discord.js");
+import Command from '../../utils/command.js';
+import Discord from 'discord.js';
 
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "A fun game";
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 16384]
+    }
+  }
+  async run(message, args) {
     if (!args[1]) return message.reply("Please enter a full question with 2 or more words!");
-    
+
     let replies = [
       "Yes",
       "No",
@@ -21,17 +30,11 @@ module.exports = {
     let question = args.slice(1).join(" ");
 
     let ballembed = new Discord.MessageEmbed()
-    .setAuthor(message.author.username)
-    .setColor("RANDOM")
-    .addField("Question", question)
-    .addField("Answer", replies[result]);
+      .setAuthor(message.author.username)
+      .setColor("RANDOM")
+      .addField("Question", question)
+      .addField("Answer", replies[result]);
 
     message.channel.send(ballembed);
-  },
-  aliases: [],
-  description: "A fun game",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
   }
-};
+}

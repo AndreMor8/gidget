@@ -1,10 +1,10 @@
-const url = require('url');
-const data = require('./assets/sites.json');
-const isporncallback = require('is-porn');
-const { promisify } = require('util');
+import url from 'url';
+import data from './assets/sites.json';
+import isporncallback from 'is-porn';
+import { promisify } from 'util';
 const isPorn = promisify(isporncallback);
 // methods to be exported
-function checkCleanUrl(urlFromReq) {
+export function checkCleanUrl(urlFromReq) {
     let parsedUrl = url.parse(urlFromReq);
     let host = parsedUrl.host || parsedUrl.pathname.trim().split("/")[0];
     if (host in data) return true;
@@ -17,7 +17,7 @@ function checkCleanUrl(urlFromReq) {
     return false;
 }
 
-async function checkSingleCleanURL(urlFromReq) {
+export async function checkSingleCleanURL(urlFromReq) {
     let parsedUrl = url.parse(urlFromReq);
     let host = parsedUrl.host || parsedUrl.pathname.trim().split("/")[0];
     if (host in data) return true;
@@ -31,8 +31,3 @@ async function checkSingleCleanURL(urlFromReq) {
     if (cosas) return true;
     return false;
 }
-
-module.exports = {
-    checkCleanUrl,
-    checkSingleCleanURL
-};

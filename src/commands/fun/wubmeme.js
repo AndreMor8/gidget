@@ -1,8 +1,18 @@
-const Discord = require('discord.js');
-const Jimp = require('jimp');
-module.exports = {
-    run: async (bot, message, args) => {
-        if(args[1] === "64") {
+import Command from '../../utils/command.js';
+import Discord from 'discord.js';
+import Jimp from 'jimp';
+
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.description = "Wubmeme!";
+        this.permissions = {
+            user: [0, 0],
+            bot: [0, 32768]
+        }
+    }
+    async run(message, args) {
+        if (args[1] === "64") {
             px64(message, args.slice(2));
         } else if (args[1] === "32") {
             let arg = args.slice(2).join(" ").split(" | ");
@@ -32,16 +42,10 @@ module.exports = {
         } else {
             px64(message, args.slice(1));
         }
-    },
-    aliases: [],
-    description: "Wubmeme!",
-    permissions: {
-        user: [0, 0],
-        bot: [0, 32768]
-      }
+    }
 }
 
-async function px64 (message, args) {
+async function px64(message, args) {
     let arg = args.join(" ").split(" | ");
     if (!arg[1]) return message.channel.send("Usage: `wubmeme [<32>/<64>] <text1> | <text2>`");
     if (arg[0].length > 70 || arg[1].length > 70) return message.channel.send("There's a 70 characters limit. Put `32` before the text to expand the limit to 230.");

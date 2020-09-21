@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema({
     accessToken: { type: String, required: true },
@@ -6,4 +6,4 @@ const schema = new mongoose.Schema({
     discordId: { type: String, required: true }
 })
 
-module.exports = mongoose.model("OAuth2Credential", schema);
+export default mongoose.model("OAuth2Credential", schema);

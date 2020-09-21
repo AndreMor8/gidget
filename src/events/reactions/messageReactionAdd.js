@@ -1,8 +1,8 @@
-const MessageModel = require("../../database/models/message");
-const MessageModel2 = require("../../database/models/ticket");
-const MessageModel3 = require("../../database/models/tmembers");
+import MessageModel from "../../database/models/message.js";
+import MessageModel2 from "../../database/models/ticket.js";
+import MessageModel3 from "../../database/models/tmembers.js";
 
-module.exports = async (bot, reaction, user) => {
+export default async (bot, reaction, user) => {
   //Core
   if (user.bot) return;
   if (!reaction.message.guild) return;

@@ -1,11 +1,21 @@
-const Discord = require('discord.js');
-const ms = require("ms");
-const tempmute = require('../../utils/tempmute');
-const MessageModel = require('../../database/models/muterole.js')
-const MessageModel2 = require('../../database/models/mutedmembers.js');
+import Command from '../../utils/command.js'
+import ms from "ms";
+import tempmute from '../../utils/tempmute.js';
+import MessageModel from '../../database/models/muterole.js'
+import MessageModel2 from '../../database/models/mutedmembers.js';
 
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = ["tempr", "tr", "trestrict"];
+    this.description = "Restrict members";
+    this.guildonly = true;
+    this.permissions = {
+      user: [4, 0],
+      bot: [268435456, 0]
+    }
+  }
+  async run(message, args) {
     if (!args[1]) return message.channel.send('Usage: `temprestrict <time> <member> <reason>`');
     let time = ms(args[1]);
     if (typeof time !== "number") return message.channel.send('Invalid time!');
@@ -47,12 +57,5 @@ module.exports = {
     } else {
       return message.channel.send('You must first register a role for restrict. Use `restrict role` for set a role');
     }
-  },
-  aliases: ["tempr", "tr", "trestrict"],
-  description: "Restrict members",
-  guildonly: true,
-  permissions: {
-    user: [4, 0],
-    bot: [268435456, 0]
   }
 }

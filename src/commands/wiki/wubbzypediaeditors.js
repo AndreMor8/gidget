@@ -1,7 +1,18 @@
-const cheerio = require("cheerio");
-const { wiki } = require("../../utils/wikilogin.js");
-module.exports = {
-  run: async (bot, message, args) => {
+import Command from '../../utils/command.js';
+import cheerio from "cheerio";
+import { wiki } from "../../utils/wikilogin.js";
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = ["wpeditors", "wpe", "editorsrole", "er", "wper"];
+    this.onlyguild = true;
+    this.description = "When the requirements are met, give the Wubbzypedia Editors role to that person";
+    this.permissions = {
+      user: [0, 0],
+      bot: [268435456, 0]
+    };
+  }
+  async run(message, args) {
     if (!args[1]) return message.channel.send("Usage: `wubbzypediaeditors <wiki username>`");
     try {
       const user = await wiki.whoisAsync(args.slice(1).join(" "));
@@ -12,7 +23,7 @@ module.exports = {
         return message.channel.send("Error while fetching the Discord tag: " + json.title + "\nStatus: " + json.status);
       if (json.value === message.author.tag) {
         const content = await wiki.fetchUrlAsync("https://wubbzy.fandom.com/wiki/Special:Editcount/" + user.name.replace(/ /g, "_"));
-        $ = cheerio.load(content);
+        let $ = cheerio.load(content);
 
         var mount1 = $("#editcount > table > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr:nth-child(3) > td.ecrowcenter");
 
@@ -38,12 +49,5 @@ module.exports = {
       console.log(err);
       message.channel.send("Error: " + err);
     }
-  },
-  aliases: ["wpeditors", "wpe", "editorsrole", "er", "wper"],
-  onlyguild: true,
-  description: "When the requirements are met, give the Wubbzypedia Editors role to that person",
-  permissions: {
-    user: [0, 0],
-    bot: [268435456, 0]
+  }
 }
-};

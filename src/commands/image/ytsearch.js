@@ -1,8 +1,18 @@
-const Discord = require("discord.js");
-const ytsr = require("ytsr");
+import Discord from "discord.js";
+import ytsr from "ytsr";
+import Command from "../../utils/command.js";
 
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = ["ytsr"];
+    this.description = "Search on YouTube";
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 16384]
+    }
+  }
+  async run(message, args) {
     try {
       message.channel.startTyping();
       let filter1;
@@ -129,11 +139,5 @@ module.exports = {
       message.channel.stopTyping();
       message.channel.send("Some error ocurred. Here's a debug: " + err);
     }
-  },
-  aliases: ["ytsr"],
-  description: "Search on YouTube",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
   }
-};
+}

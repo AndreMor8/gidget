@@ -1,3 +1,3 @@
-module.exports = async (bot, w) => {
+export default async (bot, w) => {
   console.warn(w);
 }

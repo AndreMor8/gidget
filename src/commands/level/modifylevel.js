@@ -1,7 +1,18 @@
-const Levels = require("../../utils/discord-xp");
+import Command from '../../utils/command.js';
+import Levels from '../../utils/discord-xp.js';
 
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = ["ml"];
+    this.description = "Modify the levels";
+    this.guildonly = true;
+    this.permissions = {
+      user: [8, 0],
+      bot: [0, 0]
+    }
+  }
+  async run(message, args) {
     const msgDocument = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig()
     if ((!msgDocument) || (msgDocument && !msgDocument.levelsystem)) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!")
     const target = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || await (args[1] ? await message.guild.members.fetch(args[1]).catch(err => { }) : undefined);
@@ -73,12 +84,5 @@ module.exports = {
         message.reply("Invalid user!");
       }
     }
-  },
-  aliases: ["ml"],
-  description: "Modify the levels",
-  guildonly: true,
-  permissions: {
-    user: [8, 0],
-    bot: [0, 0]
   }
 }

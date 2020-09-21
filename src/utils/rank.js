@@ -1,11 +1,13 @@
 // swiftcord/src/Canvas.js
-const Canvas = require("canvas")
-const jimp = require("jimp")
-const circle = require("@jimp/plugin-circle")
-const configure = require('@jimp/custom');
+import Canvas from "canvas";
+import jimp from "jimp";
+import circle from "@jimp/plugin-circle";
+import configure from '@jimp/custom';
+import commons from './commons.js';
+const { __dirname } = commons(import.meta.url);
 configure({ plugins: [circle] }, jimp);
 
-module.exports = async ({username, discrim, level, rank, neededXP, currentXP, avatarURL}, color = "FFFFFF" ) => {
+export default async ({username, discrim, level, rank, neededXP, currentXP, avatarURL}, color = "FFFFFF" ) => {
         if(!username) throw new Error("No username was provided!");
         if(typeof level !== "number" && !level) throw new Error("No level was provided!");
         if(!rank) throw new Error("No rank was provided!");

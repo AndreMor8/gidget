@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema({
   author: { type: String, required: true },
@@ -8,4 +8,4 @@ const schema = new mongoose.Schema({
   date: { type: Date, required: true }
 });
 
-module.exports = mongoose.model('wubbzymedia-p', schema);
+export default mongoose.model('wubbzymedia-p', schema);

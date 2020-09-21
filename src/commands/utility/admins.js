@@ -1,7 +1,17 @@
-const Discord = require("discord.js");
+import Command from '../../utils/command.js';
+import Discord from 'discord.js';
 
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.onlyguild = true;
+    this.description = "List of admins";
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 16384]
+    };
+  }
+  async run(message, args) {
     const fetch = message.guild.roles.cache
       .get("402559343540568084")
       .members.map(m => m.user);
@@ -10,12 +20,5 @@ module.exports = {
       .setTitle("List of Admins")
       .setDescription(admins);
     message.channel.send(embed);
-  },
-  aliases: [],
-  onlyguild: true,
-  description: "List of admins",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
   }
-};
+}

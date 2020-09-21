@@ -1,9 +1,20 @@
-const Discord = require("discord.js");
-const ms = require("ms");
-const MessageModel = require("../../database/models/poll");
-const interval = require("../../utils/poll");
-module.exports = {
-  run: async (bot, message, args) => {
+import Discord from "discord.js";
+import ms from "ms";
+import MessageModel from "../../database/models/poll.js";
+import Command from "../../utils/command.js";
+import interval from "../../utils/poll.js";
+
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "Reaction poll system";
+    this.guildonly = true;
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 16384]
+    };
+  }
+  async run(message, args) {
     if (!args[1]) return message.channel.send("Usage: `poll <time> [<emoji1>, <emoji2>, <emoji(n)>] <text>`");
     let time = ms(args[1]);
     if (typeof time !== "number" || time < 40000) return message.channel.send("Invalid time! Must be 40 seconds or more.");
@@ -33,7 +44,7 @@ module.exports = {
     function cmd_umfrage(msg, args) {
       var imgs = [];
       if (msg.guild.me.hasPermission("ATTACH_FILES"))
-        imgs = msg.attachments.map(function(img) {
+        imgs = msg.attachments.map(function (img) {
           return { attachment: img.url, name: img.filename };
         });
       if (args.length || imgs.length) {
@@ -93,17 +104,17 @@ module.exports = {
       }
       let mentions = "";
       const embed = new Discord.MessageEmbed()
-      .setTitle("Poll")
-      .setDescription(text)
-      .setFooter("Made by: " + msg.author.tag + ", finish date:", msg.author.displayAvatarURL({ dynamic: true }))
-      .setColor("RANDOM")
-      .setTimestamp(new Date(Date.now() + time));
+        .setTitle("Poll")
+        .setDescription(text)
+        .setFooter("Made by: " + msg.author.tag + ", finish date:", msg.author.displayAvatarURL({ dynamic: true }))
+        .setColor("RANDOM")
+        .setTimestamp(new Date(Date.now() + time));
       if (msg.member.hasPermission("MENTION_EVERYONE")) {
-        if(msg.mentions.everyone) {
-          if(msg.content.includes("@everyone")) {
+        if (msg.mentions.everyone) {
+          if (msg.content.includes("@everyone")) {
             mentions += "@everyone ";
           }
-          if(msg.content.includes("@here")) {
+          if (msg.content.includes("@here")) {
             mentions += "@here ";
           }
         }
@@ -120,7 +131,7 @@ module.exports = {
           poll => {
             msg.delete();
             if (reactions.length) {
-              reactions.forEach(function(entry) {
+              reactions.forEach(function (entry) {
                 poll.react(entry).catch(error => {
                   console.log(error);
                 });
@@ -143,12 +154,5 @@ module.exports = {
           }
         );
     }
-  },
-  aliases: [],
-  description: "Reaction poll system",
-  guildonly: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
   }
-};
+}

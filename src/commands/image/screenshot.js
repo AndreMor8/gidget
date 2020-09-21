@@ -1,9 +1,20 @@
-const Discord = require("discord.js");
-const { checkSingleCleanURL } = require('../../utils/clean-url/index');
+import Command from '../../utils/command.js';
+import Discord from "discord.js";
+import { checkSingleCleanURL } from '../../utils/clean-url/index.js';
 const timer = new Map();
-const check = require('../../utils/nsfwjs');
-module.exports = {
-  run: async (bot, message, args) => {
+import check from '../../utils/nsfwjs.js';
+
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = ["ss", "pageshot", "screenwebpage", "web"],
+      this.description = "Screenshot of a page",
+      this.permissions = {
+        user: [0, 0],
+        bot: [0, 32768]
+      }
+  }
+  async run(message, args) {
     if (!args[1]) return message.channel.send("Put some URL");
     if (message.author.id !== "577000793094488085") {
       if (!timer.get(message.author.id)) {
@@ -48,20 +59,15 @@ module.exports = {
         undefined
       );
     }
-  },
-  aliases: ["ss", "pageshot", "screenwebpage", "web"],
-  description: "Screenshot of a page",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 32768]
   }
-};
+}
 
 async function pup(message, url, options) {
   const result = await checkSingleCleanURL(url);
   if (result && !message.channel.nsfw) return message.channel.send("To view inappropriate pages use an NSFW channel");
   var form = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>").catch(err => { });
   message.channel.startTyping().catch(err => { });
+  let page;
   try {
     setTimeout(() => {
       message.channel.stopTyping(true);

@@ -1,12 +1,12 @@
-const tf = require('@tensorflow/tfjs-node');
-const jimp = require('jimp');
+import tf from '@tensorflow/tfjs-node';
+import jimp from 'jimp';
 
 /**
  * Function that detects if the image has any NSFW content.
  * @param {Buffer} buffer The image to check
  * @returns {Promise<Boolean>} If it is NSFW it will give true, otherwise false.
  */
-module.exports = async function(model, buffer) {
+export default async function(model, buffer) {
     if(!Buffer.isBuffer(buffer)) throw new Error("'buffer' isn't a Buffer");
     const newImage = await jimp.read(buffer);
     newImage.resize(224, 224);

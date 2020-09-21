@@ -1,9 +1,18 @@
-const Discord = require('discord.js');
+import Command from '../../utils/command.js';
+import MessageModel from '../../database/models/muterole.js';
 
-const MessageModel = require('../../database/models/muterole.js')
-
-module.exports = {
-  run: async (bot, message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options)
+    this.aliases = [];
+    this.description = "Restrict members";
+    this.guildonly = true;
+    this.permissions = {
+      user: [4, 0],
+      bot: [268435456, 0]
+    }
+  }
+  async run(message, args) {
     if (!args[1]) return message.channel.send('Usage: `restrict <member> <reason>`')
     if (args[1] === 'role') {
       if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
@@ -35,16 +44,16 @@ module.exports = {
             console.log(err);
             return message.channel.send('I was unable to register the role. Here\'s a debug: ' + err)
           });
-      }    
+      }
     } else {
       if (!args[1]) return message.channel.send('Please mention the user or enter their ID.')
-      let member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(err => {}) : undefined)
+      let member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(err => { }) : undefined)
       if (!member) return message.channel.send('Invalid member!')
       let addMemberRole = (muteroleid, member, args) => {
         let role = message.guild.roles.cache.get(muteroleid)
         if (role && member) {
           if (args[2]) {
-            if(member.guild.id === "402555684849451028") member.roles.remove(["669767097512886285", "599424187227963403", "608624771382378507", "689821345714143251", "674162651265499136"]);
+            if (member.guild.id === "402555684849451028") member.roles.remove(["669767097512886285", "599424187227963403", "608624771382378507", "689821345714143251", "674162651265499136"]);
             member.roles.add(role, 'Restrict command' + args.slice(2).join(" "))
               .then(message.channel.send(`I've restricted ${member.user.tag} with reason: ${args.slice(2).join(" ")}`))
               .catch(err => message.channel.send(`I couldn't restrict that user. Here's a debug: ` + err));
@@ -61,18 +70,11 @@ module.exports = {
         .findOne({ guildid: message.guild.id })
         .catch(err => console.log(err));
       if (MsgDocument) {
-          var { muteroleid } = MsgDocument;
-          addMemberRole(muteroleid, member, args)
-        } else {
-          return message.channel.send('You must first register a role for restrict')
-        } 
+        var { muteroleid } = MsgDocument;
+        addMemberRole(muteroleid, member, args)
+      } else {
+        return message.channel.send('You must first register a role for restrict')
+      }
     }
-  },
-  aliases: [],
-  description: "Restrict members",
-  guildonly: true,
-  permissions: {
-    user: [4, 0],
-    bot: [268435456, 0]
   }
 }

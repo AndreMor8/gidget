@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose'
 const MessageSchema = new mongoose.Schema({
     guildid: { type: String, required: true },
     memberid: { type: String, required: true },
     warnings: 0,
 });
 
-const MessageModel = module.exports = mongoose.model('warn-members', MessageSchema);
+export default mongoose.model('warn-members', MessageSchema);

@@ -1,9 +1,18 @@
-const MessageModel = require('../../database/models/message');
-const { MessageCollector } = require('discord.js');
-const Discord = require('discord.js');
+import MessageModel from '../../database/models/message.js';
+import { MessageCollector } from 'discord.js';
+import Command from '../../utils/command.js';
 
-module.exports = {
-    run: async (bot, message, args) => {
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.description = "Role reaction system (Edit)";
+        this.guildonly = true;
+        this.permissions = {
+            user: [8, 0],
+            bot: [268435456, 0]
+        };
+    }
+    async run(message, args) {
         if (args.slice(1).length !== 1) return message.channel.send('Put the message ID.');
         // Check if the message exists.
         const { channel, author } = message;
@@ -51,13 +60,6 @@ module.exports = {
         catch (err) {
             message.channel.send("Some error ocurred. Here's a debug: " + err);
         }
-    },
-    aliases: [],
-    description: "Role reaction system (Edit)",
-    guildonly: true,
-    permissions: {
-        user: [8, 0],
-        bot: [268435456, 0]
     }
 }
 function handleCollector(fetchedMessage, author, channel, msgModel) {

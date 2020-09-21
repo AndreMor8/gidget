@@ -1,7 +1,7 @@
-const MessageModel = require("../../database/models/roles");
-const MessageModel2 = require("../../database/models/retreiveconfig");
-const Discord = require("discord.js");
-module.exports = async (bot, member) => {
+import MessageModel from "../../database/models/roles.js";
+import MessageModel2 from "../../database/models/retreiveconfig.js";
+import Discord from "discord.js";
+export default async (bot, member) => {
   let verify = bot.rrcache.get(member.guild.id);
   if (!verify) {
     verify = await MessageModel2.findOne({ guildId: member.guild.id });

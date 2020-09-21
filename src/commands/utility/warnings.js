@@ -1,9 +1,13 @@
-const MessageModel = require("../../database/models/warn2");
-
-const Discord = require("discord.js");
-
-module.exports = {
-  run: async (bot, message, args) => {
+import MessageModel from "../../database/models/warn2.js";
+import Command from "../../utils/command.js";
+export default class extends Command {
+  constructor(options) {
+    super(options)
+    this.aliases = ["nw"];
+    this.description = "It shows the warnings that the user has, by DMs.";
+    this.guildonly = true;
+  }
+  async run(message, args) {
     if (!message.guild)
       return message.channel.send("This command only works on servers.");
     if (args[1]) {
@@ -58,12 +62,5 @@ module.exports = {
         message.channel.send(`${member.user.tag} has no warnings`);
       }
     }
-  },
-  aliases: ["nw"],
-  description: "It shows the warnings that the user has, by DMs.",
-  guildonly: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 0]
   }
-};
+}

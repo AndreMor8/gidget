@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose'
 
 const UserSchema = new mongoose.Schema({
     discordId: { type: String, required: true },
@@ -7,5 +7,4 @@ const UserSchema = new mongoose.Schema({
     avatar: { type: String },
     premium_type: { type: Number }
 });
-
-const DiscordUser = module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model('User', UserSchema);

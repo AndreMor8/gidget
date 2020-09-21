@@ -1,5 +1,11 @@
-module.exports = {
-  run: async (bot, message, args) => {
+import Command from "../../utils/command.js";
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "Pause the music";
+    this.guildonly = true;
+  }
+  async run(message, args) {
     const serverQueue = message.guild.queue
     if (serverQueue && serverQueue.inseek) return;
     const musicVariables = message.guild.musicVariables;
@@ -15,12 +21,5 @@ module.exports = {
     serverQueue.playing = false;
     serverQueue.connection.dispatcher.pause();
     return message.channel.send(`**Paused!**`);
-  },
-  aliases: [],
-  description: "Pause the music",
-  guildonly: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 0]
   }
-};
+}

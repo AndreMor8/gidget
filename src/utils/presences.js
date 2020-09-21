@@ -1,5 +1,5 @@
-module.exports = async () => {
-  const { bot } = await import("../index.mjs");
+export default async () => {
+  const { bot } = await import("../index.js");
   {
     var i = Math.floor(Math.random() * 7);
     switch (i) {

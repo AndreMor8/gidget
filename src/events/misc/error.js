@@ -1,3 +1,3 @@
-module.exports = async (bot, e) => {
+export default async (bot, e) => {
   console.error("Error:", e);
 }

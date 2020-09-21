@@ -1,21 +1,25 @@
-const Discord = require("discord.js");
+import Command from "../../utils/command.js";
 
-const cheerio = require("cheerio");
+import Discord from 'discord.js';
 
-const fetch = require('node-fetch');
+import cheerio from 'cheerio';
 
-module.exports = {
-  run: async (bot, message, args) => {
-    image(message);
-  },
-  aliases: [],
-  description: "Random Walden Image",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
+import fetch from 'node-fetch';
+
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.aliases = [];
+    this.description = "Random Walden Image";
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 16384]
+    }
   }
-};
-
+  async run(message, args) {
+    image(message);
+  }
+}
 async function image(message) {
   var options = {
     method: "GET",
@@ -30,7 +34,7 @@ async function image(message) {
     options
   );
   const responseBody = await response.text();
-  $ = cheerio.load(responseBody);
+  let $ = cheerio.load(responseBody);
 
   var links = $(".image a.link");
 

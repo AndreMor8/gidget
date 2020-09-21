@@ -1,9 +1,19 @@
-const { default:gtranslate, parseMultiple } = require('google-translate-open-api');
-const languages = require("../../utils/languages");
-const { MessageEmbed } = require("discord.js")
+import algo from 'google-translate-open-api';
+const { default:gtranslate, parseMultiple } = algo;
+import { getCode } from "../../utils/languages.js";
+import { MessageEmbed } from "discord.js";
+import Command from '../../utils/command.js';
 
-module.exports = {
-    run: async (bot, message, args) => {
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.description = "Translate things";
+        this.permissions = {
+            user: [0, 0],
+            bot: [0, 16384]
+        };
+    }
+    async run(message, args) {
         if (!args[1])
             return message.channel.send("Please include a message to translate!").then(m => m.delete({ timeout: 3000 }))
         //Get language
@@ -15,8 +25,8 @@ module.exports = {
             lang = "en"
         }
 
-        const reallang = languages.getCode(lang);
-        if(!reallang) return message.channel.send("Invalid language!\nhttps://github.com/AndreMor955/gidget/blob/master/src/utils/languages.js")
+        const reallang = getCode(lang);
+        if (!reallang) return message.channel.send("Invalid language!\nhttps://github.com/AndreMor955/gidget/blob/master/src/utils/languages.js")
 
         //Get text
         let text = args.slice(1).join(" ");
@@ -42,11 +52,5 @@ module.exports = {
         }).catch(err => {
             console.log(err);
         })
-    },
-    aliases: [],
-    description: "Translate things",
-    permissions: {
-        user: [0, 0],
-        bot: [0, 16384]
     }
 }

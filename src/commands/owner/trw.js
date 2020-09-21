@@ -1,17 +1,22 @@
-const Discord = require('discord.js');
+import Discord from 'discord.js';
+import Command from '../../utils/command.js';
 
-module.exports = {
-    run: async (bot, message, args) => {
-        if (message.deletable) message.delete();
+export default class extends Command {
+    constructor(options) {
+        super(options)
+        this.aliases = [];
+        this.secret = true;
+        this.owner = true;
+        this.description = "The real Wubbzy webhook";
+    }
+    async run(message, args) {
+        if (message.deletable)
+            message.delete();
 
         const hook = new Discord.WebhookClient(process.env.TRW_ID, process.env.TRW_TOKEN);
 
-        if (!args[1]) return message.reply(`Nothing to say?`).then(message => message.delete({timeout: 5000}));
+        if (!args[1]) return message.reply(`Nothing to say?`).then(message => message.delete({ timeout: 5000 }));
 
         hook.send(args.slice(1).join(" "));
-    },
-    aliases: [],
-    secret: true,
-    owner: true,
-    description: "The real Wubbzy webhook",
+    }
 }

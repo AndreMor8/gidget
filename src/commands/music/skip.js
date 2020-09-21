@@ -1,7 +1,14 @@
-module.exports = {
-  run: async (bot, message, args) => {
-    const serverQueue = message.guild.queue
-    if (serverQueue && serverQueue.inseek) return;
+import Command from '../../utils/command.js';
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "Skip songs";
+    this.guildonly = true;
+  }
+  async run(message, args) {
+    const serverQueue = message.guild.queue;
+    if (serverQueue && serverQueue.inseek)
+      return;
     const musicVariables = message.guild.musicVariables;
     if (!message.member.voice.channel)
       return message.channel.send(
@@ -44,12 +51,5 @@ module.exports = {
     }
     musicVariables.memberVoted = [];
     serverQueue.connection.dispatcher.end();
-  },
-  aliases: [],
-  description: "Skip songs",
-  guildonly: true,
-  permissions: {
-    user: [0, 0],
-    bot: [0, 0]
   }
-};
+}

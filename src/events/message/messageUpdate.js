@@ -1,4 +1,4 @@
-module.exports = async (bot, oldMessage, newMessage) => {
+export default async (bot, oldMessage, newMessage) => {
   if(newMessage.partial) return;
   if(newMessage.author.bot) return;
   //No embed repeats

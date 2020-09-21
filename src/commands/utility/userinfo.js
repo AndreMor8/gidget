@@ -1,8 +1,17 @@
 //Rewrite
-const Discord = require("discord.js");
+import Discord from 'discord.js';
+import Command from '../../utils/command.js';
 
-module.exports = {
-  run: async (bot = new Discord.Client(), message, args) => {
+export default class extends Command {
+  constructor(options) {
+    super(options);
+    this.description = "User info";
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 16384]
+    };
+  }
+  async run(message, args) {
     const status = {
       online: "Online",
       idle: "Idle",
@@ -32,27 +41,26 @@ module.exports = {
       CUSTOM_STATUS: "Custom status:"
     };
 
-    let user =
-      message.mentions.users.first() ||
-      bot.users.cache.get(args[1]) ||
-      bot.users.cache.find(m => m.tag === args.slice(1).join(" ")) ||
-      bot.users.cache.find(m => m.username === args.slice(1).join(" "));
-    if (!args[1]) user = message.author;
+    let user = message.mentions.users.first() ||
+      this.bot.users.cache.get(args[1]) ||
+      this.bot.users.cache.find(m => m.tag === args.slice(1).join(" ")) ||
+      this.bot.users.cache.find(m => m.username === args.slice(1).join(" "));
+    if (!args[1])
+      user = message.author;
     if (!user) {
-      if (
-        message.guild &&
+      if (message.guild &&
         message.guild.members.cache.find(
           m => m.nickname === args.slice(1).join(" ")
-        )
-      ) {
+        )) {
         user = message.guild.members.cache.find(
           m => m.nickname === args.slice(1).join(" ")
         ).user;
       } else {
         try {
-          const fetch = await bot.users.fetch(args[1]);
+          const fetch = await this.bot.users.fetch(args[1]);
           user = fetch;
-          if (!user) return message.channel.send("Invalid member!");
+          if (!user)
+            return message.channel.send("Invalid member!");
         } catch (err) {
           return message.channel.send("Invalid member!");
         }
@@ -60,7 +68,7 @@ module.exports = {
     }
     const premiumtext = ["Without Nitro", "Nitro Classic", "***Nitro***"];
     const thing = !user.bot ? (user.cache.premium_type ? user.premium_type : await user.getPremiumType()) : undefined;
-    let finaltext = ""
+    let finaltext = "";
     if (!user.bot) {
       if (thing.value < 0) {
         finaltext = "[*I don't know*](https://gidgetbot.herokuapp.com/auth/)";
@@ -84,14 +92,17 @@ module.exports = {
     } else {
       status2 = status[user.presence.status];
     }
-    if (!status2) status2 = "Offline/Invisible";
+    if (!status2)
+      status2 = "Offline/Invisible";
     var ptext = "";
     if (user.presence.activities && user.presence.activities[0]) {
       for (const npresence of Object.values(user.presence.activities)) {
         if (npresence.type == "CUSTOM_STATUS") {
           ptext += ptype[npresence.type] + "\n";
-          if (npresence.emoji) ptext += npresence.emoji.toString() + " ";
-          if (npresence.state) ptext += npresence.state;
+          if (npresence.emoji)
+            ptext += npresence.emoji.toString() + " ";
+          if (npresence.state)
+            ptext += npresence.state;
           ptext += "\n";
         } else {
           ptext += ptype[npresence.type] + npresence.name;
@@ -118,7 +129,8 @@ module.exports = {
           ptext += "\n";
         }
       }
-    } else ptext = "None";
+    } else
+      ptext = "None";
 
     let flagtext = "Without flags";
 
@@ -173,15 +185,15 @@ module.exports = {
           .addField("Permissions (General)", `\`${permstext}\``, true)
           .addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
           .addField("Flags", `\`${flagtext}\``, true)
-          .addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that")
+          .addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");
         if (!user.bot) {
-          embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.intl.format(member.premiumSince)}` : "No")
+          embed.addField("Boosting?", member.premiumSince ? `Yes, since ${this.bot.intl.format(member.premiumSince)}` : "No");
         }
         embed.addField(
           `Joined ${message.guild.name} at`,
-          bot.intl.format(member.joinedAt)
+          this.bot.intl.format(member.joinedAt)
         )
-          .addField("Joined Discord At", bot.intl.format(user.createdAt))
+          .addField("Joined Discord At", this.bot.intl.format(user.createdAt))
           .addField(
             "Roles",
             `${member.roles.cache
@@ -194,9 +206,9 @@ module.exports = {
         embed
           .addField("Full Username", user.tag, true)
           .addField("ID", user.id, true)
-          .addField("Bot?", user.bot ? "Yes" : "No", true)
+          .addField("Bot?", user.bot ? "Yes" : "No", true);
         if (!user.bot) {
-          embed.addField("Nitro type", finaltext, true)
+          embed.addField("Nitro type", finaltext, true);
         }
         embed.addField("Status", status2, true)
           .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)
@@ -207,7 +219,7 @@ module.exports = {
           )
           .addField(
             "Joined Discord At",
-            bot.intl.format(user.createdAt)
+            this.bot.intl.format(user.createdAt)
           );
         message.channel.send(embed);
       }
@@ -215,9 +227,9 @@ module.exports = {
       embed
         .addField("Full Username", user.tag, true)
         .addField("ID", user.id, true)
-        .addField("Bot?", user.bot ? "Yes" : "No", true)
+        .addField("Bot?", user.bot ? "Yes" : "No", true);
       if (!user.bot) {
-        embed.addField("Nitro type", finaltext, true)
+        embed.addField("Nitro type", finaltext, true);
       }
       embed.addField("Status", status2, true)
         .addField("Presence", ptext, true)
@@ -228,15 +240,9 @@ module.exports = {
         )
         .addField(
           "Joined Discord At",
-          bot.intl.format(user.createdAt)
+          this.bot.intl.format(user.createdAt)
         );
       message.channel.send(embed);
     }
-  },
-  aliases: [],
-  description: "User info",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
   }
-};
+}

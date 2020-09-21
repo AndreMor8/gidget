@@ -1,11 +1,20 @@
-const Discord = require('discord.js');
-const googleIt = require('google-it');
-const b = require("../../utils/badwords");
+import Command from '../../utils/command.js';
+import Discord from 'discord.js';
+import googleIt from 'google-it';
+import b from "../../utils/badwords.js";
 const badwords = new b();
 badwords.setOptions({ whitelist: ["crap"] });
-const { checkCleanUrl } = require('../../utils/clean-url/index');
-module.exports = {
-  run: async (bot, message, args) => {
+import { checkCleanUrl } from '../../utils/clean-url/index.js';
+export default class extends Command {
+  constructor(options) {
+    super(options)
+    this.description = "Search in Google";
+    this.permissions = {
+      user: [0, 0],
+      bot: [0, 16384]
+    };
+  }
+  async run(message, args) {
     if (!args[1]) return message.channel.send('You must send something first.')
     if (badwords.isProfane(args.slice(1).join(" ").toLowerCase()) && !message.channel.nsfw) return message.channel.send("To order this content go to an NSFW channel.")
     message.channel.startTyping();
@@ -39,11 +48,5 @@ module.exports = {
       message.channel.stopTyping(true);
       message.channel.send('Something happened when searching. Here\'s a debug:' + e);
     })
-  },
-  aliases: [],
-  description: "Search in Google",
-  permissions: {
-    user: [0, 0],
-    bot: [0, 16384]
   }
 }

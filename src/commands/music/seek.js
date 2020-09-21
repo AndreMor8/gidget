@@ -1,6 +1,17 @@
-const ms = require("ms");
-module.exports = {
-    run: async (bot, message, args) => {
+import ms from "ms";
+import Command from "../../utils/command.js";
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.aliases = [];
+        this.description = "Change the position of the stream";
+        this.guildonly = true;
+        this.permissions = {
+            user: [0, 0],
+            bot: [0, 0]
+        };
+    }
+    async run(message, args) {
         if (!args[1]) return message.channel.send("Usage: `seek <time>`\n`seek 1:30`");
         const serverQueue = message.guild.queue;
         if (!serverQueue) return message.channel.send("There is nothing playing.");
@@ -22,18 +33,11 @@ module.exports = {
         serverQueue.songs[0].seektime = reconverted;
         message.channel.send("This may take a bit...").then(() => message.channel.startTyping())
         serverQueue.connection.dispatcher.end();
-        await bot.commands.get("play").run(bot, message, ["play", "seek"], reconverted).catch(err => {
+        await this.bot.commands.get("play").run(bot, message, ["play", "seek"], reconverted).catch(err => {
             console.log(err);
             message.channel.send("Error: " + err);
         }).finally(e => {
             message.channel.stopTyping(true);
         })
-    },
-    aliases: [],
-    description: "Change the position of the stream",
-    guildonly: true,
-    permissions: {
-        user: [0, 0],
-        bot: [0, 0]
     }
 }

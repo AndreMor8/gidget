@@ -1,53 +1,57 @@
-const Discord = require('discord.js');
+import Command from '../../utils/command.js';
 
-module.exports = {
-    run: async (bot, message, args) => {
-        const user = message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(m => m.username === args.slice(1).join(" ")) || message.author;
-
+export default class extends Command {
+    constructor(options) {
+        super(options)
+        this.description = "Client status";
+    }
+    async run(message, args) {
+        const user = message.mentions.users.first() || this.bot.users.cache.get(args[1]) || this.bot.users.cache.find(m => m.username === args.slice(1).join(" ")) || message.author;
+    
         const clientStatus = user.presence.clientStatus;
         const status = {
             online: "Online",
             idle: "Idle",
             dnd: "Do Not Disturb",
             offline: "Offline/Invisible"
-        }
-
+        };
+    
         const desktop = {
             online: "Desktop",
             idle: "Desktop",
             dnd: "Desktop",
-        }
-
+        };
+    
         const web = {
             online: "Web",
             idle: "Web",
             dnd: "Web",
-        }
-
+        };
+    
         const mobile = {
             online: "Mobile",
             idle: "Mobile",
             dnd: "Mobile",
-        }
-
+        };
+    
         const desktop2 = {
             online: "Desktop = Online",
             idle: "Desktop = Idle",
             dnd: "Desktop = Do Not Disturb",
-        }
-
+        };
+    
         const web2 = {
             online: "Web = Online",
             idle: "Web = Idle",
             dnd: "Web = Do Not Disturb",
-        }
-
+        };
+    
         const mobile2 = {
             online: "Mobile = Online",
             idle: "Mobile = Idle",
             dnd: "Mobile = Do Not Disturb",
-        }
-
+        };
+    
         var status2 = '';
         var i = 0;
         if (clientStatus !== null) {
@@ -66,7 +70,7 @@ module.exports = {
                 }
             }
         }
-
+    
         if (i >= 2) {
             status2 = '';
             if (clientStatus["web"] !== undefined) {
@@ -77,7 +81,7 @@ module.exports = {
                 status2 += desktop2[clientStatus["desktop"]] + '\n';
             }
         }
-
+    
         if (!args[1] || user.id == message.author.id) {
             if (user.presence.status !== 'offline') {
                 if (i === 0) {
@@ -103,12 +107,6 @@ module.exports = {
                 message.channel.send(`${user.tag}'s current status is: **${status[user.presence.status]}**`);
             }
         }
-
-    },
-    aliases: [],
-    description: "Client status",
-    permissions: {
-        user: [0, 0],
-        bot: [0, 0]
+    
     }
 }

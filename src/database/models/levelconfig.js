@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose'
 
 const MessageSchema = new mongoose.Schema({
   guildId: { type: String, required: true },
@@ -7,4 +7,4 @@ const MessageSchema = new mongoose.Schema({
   roles: { type: Array, default: [] }
 });
 
-const MessageModel = module.exports = mongoose.model('levelconfig', MessageSchema);
+export default mongoose.model('levelconfig', MessageSchema);

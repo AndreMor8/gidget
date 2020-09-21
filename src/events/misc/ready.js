@@ -1,12 +1,14 @@
-const presence = require("../../utils/presences");
-const tempmute = require("../../utils/tempmute");
-const poll = require("../../utils/poll");
-const MessageModel2 = require('../../database/models/mutedmembers.js');
-const MessageModel3 = require('../../database/models/poll.js');
-var psi = setInterval(presence, 1800000);
-module.exports = async bot => {
-  const { version } = await import("../../index.mjs");
-  await import("../../webserver.mjs")
+import presence from "../../utils/presences.js";
+import tempmute from "../../utils/tempmute.js";
+import poll from "../../utils/poll.js";
+import MessageModel2 from '../../database/models/mutedmembers.js';
+import MessageModel3 from '../../database/models/poll.js';
+import { version } from "../../index.js";
+//For clean the interval with a command
+export var psi = setInterval(presence, 1800000);
+//Start ready event
+export default async bot => {
+  await import("../../webserver.js")
   presence();
   let doc = await MessageModel2.findOne();
   if (doc) {
@@ -25,6 +27,3 @@ module.exports = async bot => {
   }
   console.log(`Gidget is alive! Version ` + version);
 };
-
-//For clean the interval with a command
-module.exports.psi = psi;

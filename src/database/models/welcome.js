@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const chema = new mongoose.Schema({
     guildID: { type: String, required: true },
@@ -12,4 +12,4 @@ const chema = new mongoose.Schema({
     leavetext: { type: String, default: "We're sorry to see you leaving, %MEMBER%" }
 });
 
-module.exports = mongoose.model("welcome", chema);
+export default mongoose.model("welcome", chema);

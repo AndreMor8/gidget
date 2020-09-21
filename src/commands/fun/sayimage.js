@@ -1,9 +1,19 @@
-//Someone asked to put this command.
-const Canvas = require("canvas")
-const Discord = require("discord.js")
+//Someone asked to put this command...
+import Command from '../../utils/command.js';
+import Discord from 'discord.js';
+import Canvas from 'canvas';
 
-module.exports = {
-    run: async (bot, message, args) => {
+export default class extends Command {
+    constructor(options) {
+        super(options);
+        this.description = ":)";
+        this.secret = true;
+        this.permissions = {
+            user: [0, 0],
+            bot: [0, 32768]
+        }
+    }
+    async run(message, args) {
         if (!message.guild) return message.channel.send("This command only works on Wow Wow Discord");
         if (message.guild.id !== "402555684849451028") return message.channel.send("This command only works on Wow Wow Discord");
         const miembro = message.mentions.members.first()
@@ -51,12 +61,5 @@ module.exports = {
 
         const attach = new Discord.MessageAttachment(canvas.toBuffer(), 'isay.png')
         message.channel.send(attach)
-    },
-    aliases: [],
-    description: ":)",
-    secret: true,
-    permissions: {
-        user: [0, 0],
-        bot: [0, 32768]
-      }
+    }
 }
