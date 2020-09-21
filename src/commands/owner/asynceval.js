@@ -12,7 +12,6 @@ export default class extends Command {
   async run(message, args) {
     if (!args[1]) return message.channel.send("Put something to evaluate.\nThis allows using async/await without complications\nRemember to put `return` or this will not return anything.");
     try {
-      let bot = this.bot;
       let evaluated = await eval("(async () => { " + args.slice(1).join(" ") + "})();");
       if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
       const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950 });
