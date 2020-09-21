@@ -12,11 +12,11 @@ export default class extends Command {
   }
   async run(message, args) {
     if (!message.guild && !args[1]) return message.channel.send("Put a server ID!");
-    const server = args[1] ? (bot.guilds.cache.get(args[1]) ||
-      bot.guilds.cache.find(e => e.name === args.slice(1).join(" ")) ||
-      bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()) ||
-      await bot.guilds.fetch(args[1]).catch(err => { }) ||
-      await bot.fetchGuildPreview(args[1]).catch(err => { })) : message.guild;
+    const server = args[1] ? (this.bot.guilds.cache.get(args[1]) ||
+      this.bot.guilds.cache.find(e => e.name === args.slice(1).join(" ")) ||
+      this.bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()) ||
+      await this.bot.guilds.fetch(args[1]).catch(err => { }) ||
+      await this.bot.fetchGuildPreview(args[1]).catch(err => { })) : message.guild;
     if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server");
     if ((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
     let servericon = server.iconURL({ dynamic: true, size: 4096 });
@@ -86,7 +86,7 @@ export default class extends Command {
       }
       const vanity = await server.fetchVanityData().catch(err => { });
       if (vanity && vanity.code) {
-        links.push("[Vanity invite URL" + vanity.uses ? (" (" + vanity.uses + " uses)") : "" + "](https://discord.gg/" + vanity.code + ")");
+        links.push("[Vanity invite URL" + (vanity.uses ? (" (" + vanity.uses + " uses)") : "") + "](https://discord.gg/" + (vanity.code) + ")");
       } else if(server.vanityURLCode) {
         const vanity = {
           uses: server.vanityURLUses,
