@@ -33,7 +33,7 @@ export default class extends Command {
         serverQueue.songs[0].seektime = reconverted;
         message.channel.send("This may take a bit...").then(() => message.channel.startTyping())
         serverQueue.connection.dispatcher.end();
-        await this.bot.commands.get("play").run(bot, message, ["play", "seek"], reconverted).catch(err => {
+        await this.bot.commands.get("play").run(message, ["play", "seek"], reconverted).catch(err => {
             console.log(err);
             message.channel.send("Error: " + err);
         }).finally(e => {
