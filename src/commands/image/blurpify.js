@@ -4,14 +4,12 @@ import fetch from "node-fetch";
 export default class extends Command {
     constructor(options) {
         super(options)
-        this.description = "turn someone into a baguette";
-        this.category = "Image Manipulation"
+        this.description = "Blurpify some user avatar";
     }
     async run(message, args) {
         let person = message.mentions.users.first() || message.author
 
-        
-        const msg = await message.channel.send("Blurpifying...(this may take a while)")
+        const msg = await message.channel.send("Blurpifying... (this may take a while)")
         fetch(`https://nekobot.xyz/api/imagegen?type=blurpify&image=${person.displayAvatarURL({size: 1024, dynamic: true})}`)
         .then((res) => res.json())
         .then((body) => {
