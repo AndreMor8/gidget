@@ -49,6 +49,18 @@ export default class extends Command {
         ctx.font = "11.2px Sans Serif"
         ctx.fillStyle = "#72767d"
 
+        let hour = Math.floor(Math.random() * 12)
+        let min = Math.floor(Math.random() * 60)
+        const t = ["AM", "PM"]
+        const tt = t[Math.floor(Math.random() * t.length)]
+
+        hour = (hour < 10 ? "0" : "") + hour
+        min = (min < 10 ? "0" : "") + min
+
+        ctx.fillText(`Today at ${hour}:${min} ${tt}`, 66 + largo + 8, 27);
+
+        ctx.font = "11.2px Sans Serif"
+        ctx.fillStyle = "#72767d"
         ctx.lineWidth = .1
         ctx.font = "14.5px Whitney"
         ctx.fillStyle = "#dcddde"
