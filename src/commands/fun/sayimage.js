@@ -1,8 +1,8 @@
 //Someone asked to put this command...
 import Command from '../../utils/command.js';
 import Discord from 'discord.js';
-import Canvas from 'canvas';
-
+import algo from 'discord-emoji-canvas';
+const { Canvas, fillWithEmoji } = algo;
 export default class extends Command {
     constructor(options) {
         super(options);
@@ -14,8 +14,6 @@ export default class extends Command {
         }
     }
     async run(message, args) {
-        if (!message.guild) return message.channel.send("This command only works on Wow Wow Discord");
-        if (message.guild.id !== "402555684849451028") return message.channel.send("This command only works on Wow Wow Discord");
         const miembro = message.mentions.members.first()
         if (!miembro) return message.channel.send("Mention someone")
         const mensaje = args.slice(2).join(" ")
@@ -54,10 +52,7 @@ export default class extends Command {
         ctx.lineWidth = .1
         ctx.font = "14.5px Whitney"
         ctx.fillStyle = "#dcddde"
-        ctx.strokeStyle = "#dcddde"
-        let w = ctx.measureText(mensaje).width - Math.floor(ctx.measureText(mensaje).width * .08)
-        ctx.strokeText(mensaje, 66, 50, w)
-        ctx.fillText(mensaje, 66, 50, w)
+        await fillWithEmoji(ctx, mensaje, 66, 50)
 
         const attach = new Discord.MessageAttachment(canvas.toBuffer(), 'isay.png')
         message.channel.send(attach)
