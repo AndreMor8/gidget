@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import Command from './command.js';
 import commons from './commons.js';
 const { __dirname } = commons(import.meta.url);
 export async function registerCommands(bot, dir) {
@@ -23,7 +24,17 @@ export async function registerCommands(bot, dir) {
                 }
                 catch (err) {
                     console.error("There was an error initializing the " + cmdName + " command\n", err);
-                    bot.commands.set(cmdName, { run: async (bot, message, args) => message.channel.send("That command is not loaded due to error: " + err), description: "That command is not loaded due to error", aliases: [] });
+                    class ErrorCommand extends Command {
+                        constructor(options) {
+                            super(options);
+                            this.description = "That command is not loaded due to error";
+                            this.secret = true;
+                        }
+                        async run(message, args) {
+                            await message.channel.send("That command is not loaded due to error: " + err);
+                        }
+                    }
+                    bot.commands.set(cmdName, new ErrorCommand({ name: cmdName, category, bot }));
                 }
             }
         }
