@@ -42,14 +42,14 @@ export default class extends Command {
           }
         }
       } else {
-        if (!bot.emojis.cache.get(inrevision.id)) return message.channel.send("Invalid emoji!");
-        else emoji = bot.emojis.cache.get(inrevision.id).id;
+        if (!this.bot.emojis.cache.get(inrevision.id)) return message.channel.send("Invalid emoji!");
+        else emoji = this.bot.emojis.cache.get(inrevision.id).id;
       }
       if (!args[4]) return message.channel.send("Put a title for the ticket embed")
       try {
         const embed = new Discord.MessageEmbed()
           .setTitle(args.slice(4).join(" "))
-          .setDescription('React with ' + (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emoji) ? emoji : bot.emojis.cache.get(emoji).toString()) + ' to create a ticket.')
+          .setDescription('React with ' + (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emoji) ? emoji : this.bot.emojis.cache.get(emoji).toString()) + ' to create a ticket.')
           .setColor("BLUE")
           .setFooter('You can only have one ticket at a time');
         let msg = await channel.send(embed)
@@ -84,7 +84,7 @@ export default class extends Command {
       }).catch(err => console.log(err));
       if (msgDocument) {
         let { channelId, emojiId } = msgDocument;
-        message.channel.send(`To create a ticket, go to <#${channelId}> and react with ${bot.emojis.cache.get(emojiId) ? bot.emojis.cache.get(emojiId).toString() : emojiId}`)
+        message.channel.send(`To create a ticket, go to <#${channelId}> and react with ${this.bot.emojis.cache.get(emojiId) ? this.bot.emojis.cache.get(emojiId).toString() : emojiId}`)
       } else {
         message.channel.send('I am not listening to tickets on this server.');
       }

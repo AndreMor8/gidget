@@ -25,7 +25,7 @@ export default class extends Command {
       var regex = /(<a?:)(\d+)(>)/g;
       if (regex.test(text)) {
         regex.lastIndex = 0;
-        var emojis = bot.emojis;
+        var emojis = this.bot.emojis;
         var entry = null;
         while ((entry = regex.exec(text)) !== null) {
           if (emojis.has(entry[2])) {

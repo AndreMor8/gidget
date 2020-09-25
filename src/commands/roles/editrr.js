@@ -24,7 +24,6 @@ export default class extends Command {
                 // Check if the message exists in the DB.
                 let msgModel = await MessageModel.findOne({ messageId: fetchedMessage.id, guildId: message.guild.id });
                 if (msgModel) {
-                    bot.emit('msgDocFetched', msgModel);
                     // Prompt the user for configurations.
                     let filter = m => m.author.id === author.id && (m.content.toLowerCase() === 'add' || m.content.toLowerCase() === 'remove');
                     let tempMsg = channel.send('If you are going to add more reaction-roles to that message, put `add`. To remove the configuration say `remove`');
@@ -36,13 +35,13 @@ export default class extends Command {
                             let addMsgPrompt = await channel.send("Enter an emoji name followed by the corresponding role name, separated with a comma. e.g: WubbzyWalk, A Wubbzy Fan");
                             let collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel);
                             msgModel.updateOne({ emojiRoleMappings: collectorResult }).then(() => {
-                                bot.cachedMessageReactions.delete(fetchedMessage.id)
+                                this.bot.cachedMessageReactions.delete(fetchedMessage.id)
                                 message.channel.send("Updated!");
                             })
                         }
                         else if (choice.content === "remove") {
                             msgModel.deleteOne().then(m => {
-                                bot.cachedMessageReactions.set(fetchedMessage.id, false);
+                                this.bot.cachedMessageReactions.set(fetchedMessage.id, false);
                                 message.channel.send('Ok. Removed.');
                             }).catch(err => message.channel.send('Some error ocurred. Here\'s a debug: ' + err));
                         } else {

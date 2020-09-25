@@ -78,7 +78,7 @@ export default class extends Command {
                             dbMsgModel.save()
                                 .then(m => {
                                     console.log(m);
-                                    bot.cachedMessageReactions.delete(fetchedMessage.id);
+                                    this.bot.cachedMessageReactions.delete(fetchedMessage.id);
                                     message.channel.send('I\'ve added that to my database.');
                                 })
                                 .catch(err => message.channel.send('Something happened when I tried to save the data to my database. Here\'s a debug: ' + err));
