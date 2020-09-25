@@ -16,14 +16,14 @@ export default class extends Command {
       return message.channel.send("This command only works on servers.");
     if (!args[1])
       return message.channel.send("Usage: emoji <emoji>");
-    let emoji = this.botemojis.cache.get(args[1]) ||
-      this.botemojis.cache.find(e => e.name === args[1]);
+    let emoji = this.bot.emojis.cache.get(args[1]) ||
+      this.bot.emojis.cache.find(e => e.name === args[1]);
     if (!emoji) {
       let e = Util.parseEmoji(args[1]);
       if (!e.id)
-        emoji = this.botemojis.cache.find(a => a.name === e.name);
+        emoji = this.bot.emojis.cache.find(a => a.name === e.name);
       else
-        emoji = this.botemojis.cache.get(e.id);
+        emoji = this.bot.emojis.cache.get(e.id);
       if (!emoji)
         return message.channel.send("Invalid emoji!");
     }
