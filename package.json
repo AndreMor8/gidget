@@ -42,7 +42,7 @@
     "math-expression-evaluator": "^1.2.22",
     "meowdb": "^2.1.6",
     "millisecond": "^0.1.2",
-    "moment": "^2.27.0",
+    "moment": "^2.29.0",
     "moment-duration-format": "^2.3.2",
     "mongoose": "^5.10.7",
     "ms": "^2.1.2",
