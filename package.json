@@ -22,7 +22,7 @@
     "@jimp/custom": "^0.16.1",
     "@jimp/plugin-circle": "^0.16.1",
     "@sindresorhus/to-milliseconds": "^1.2.0",
-    "@tensorflow/tfjs-node": "^2.3.0",
+    "@tensorflow/tfjs-node": "^2.4.0",
     "badwords.js": "^0.1.6",
     "bluebird": "^3.7.2",
     "canvas": "^2.6.1",
