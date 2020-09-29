@@ -75,11 +75,11 @@ function optimizeFrameColors(data) {
 function render(sprite, character, frames, size, delay) {
   return new Promise((s, r) => {
     // canvas used to render the frames for the gif
-    const renderCanvas = Canvas.createCanvas(112, 112);
+    const renderCanvas = Canvas.createCanvas(size, size);
     const renderCtx = renderCanvas.getContext("2d");
 
     // canvas used to optimize the GIF colors
-    const tempCanvas = Canvas.createCanvas(112, 112);
+    const tempCanvas = Canvas.createCanvas(size, size);
     const tempCtx = tempCanvas.getContext("2d");
     renderCanvas.width = renderCanvas.height = tempCanvas.width = tempCanvas.height = size;
 
