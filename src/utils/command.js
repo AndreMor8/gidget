@@ -20,9 +20,15 @@ export default class Command {
         this.dev = false;
         this.secret = false;
     }
+    /**
+     * Command code
+     * @param {Discord.Message} message The Discord.js message object
+     * @param {String[]} args The pre-converted args
+     * @returns {Promise<void>} In most of the cases, void.
+     */
     async run(message, args) {
-        console.log(`Èl comando ${this.name} se ha ejecutado, ar`);
-        message.channel.send(`Èl comando ${this.name} se ha ejecutado`);
+        console.log(`${this.name} command was executed`);
+        await message.channel.send(`${this.name} command was executed`);
     }
     delete() {
         this.client.commands.delete(this.name);
