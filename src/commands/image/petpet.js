@@ -15,6 +15,7 @@ export default class extends Command {
     }
     async run(message, args) {
         try {
+            let post = args[1] ? true : false;
             let fps = args[args.length - 1];
             if (fps.charAt(0) == '-') {
                 fps = fps.substring(1);
@@ -46,6 +47,7 @@ export default class extends Command {
             const buf = await petpet(torender, delay);
             message.channel.stopTyping(true);
             await message.channel.send({
+                content: (post ? "" : "Usage: `petpet [user/emoji/image/attachment] [-<FPS>]"),
                 files: [{
                     attachment: buf,
                     name: "petpet.gif",

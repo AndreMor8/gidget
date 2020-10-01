@@ -18,7 +18,7 @@ export default class extends Command {
         const source1 = mentions[0] || this.bot.users.cache.get(args[1]) || await this.bot.users.fetch(args[1]).catch(err => {}) || message.author;
         const source2 = mentions[1] || this.bot.users.cache.get(args[2]) || await this.bot.users.fetch(args[2]).catch(err => {});
         const source3 = mentions[2] || this.bot.users.cache.get(args[3]) || await this.bot.users.fetch(args[3]).catch(err => {});
-        const source4 = mentions[3] || this.bot.users.cache.get(args[3]) || await this.bot.users.fetch(args[3]).catch(err => {});
+        const source4 = mentions[3] || this.bot.users.cache.get(args[4]) || await this.bot.users.fetch(args[4]).catch(err => {});
         const sources = [source1, source2, source3, source4];
         const realsources = [];
         for(let i in sources) {
@@ -40,6 +40,6 @@ export default class extends Command {
             ctx.drawImage(canvasimages[i], constants[i][0], constants[i][1], 62, 57.6)
             }
         const att = new MessageAttachment(canvas.toBuffer(), "algo.png");
-        await message.channel.send(att);
+        await message.channel.send((realsources.length <= 1 ? "Usage: `wubphone [user1] [user2] [user3] [user4]`" : ""), att);
     }
 }
