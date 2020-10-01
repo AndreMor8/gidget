@@ -17,7 +17,7 @@ export async function registerCommands(bot, dir) {
             if (file.endsWith(".js")) {
                 let cmdName = file.substring(0, file.indexOf(".js"));
                 try {
-                    let cmdModule = await import(path.join(__dirname, dir, file));
+                    let cmdModule = await import("file:///" + path.join(__dirname, dir, file));
                     let cmdClass = new cmdModule.default({ name: cmdName, category, bot })
                     bot.commands.set(cmdName, cmdClass);
 
@@ -52,7 +52,7 @@ export async function registerEvents(bot, dir) {
             if (file.endsWith(".js")) {
                 let eventName = file.substring(0, file.indexOf(".js"));
                 try {
-                    let eventModule = await import(path.join(__dirname, dir, file));
+                    let eventModule = await import("file:///" + path.join(__dirname, dir, file));
                     bot.on(eventName, eventModule.default.bind(null, bot));
                 }
                 catch (err) {

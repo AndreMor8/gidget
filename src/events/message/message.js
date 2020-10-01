@@ -14,8 +14,8 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
     if (message.guild) {
       if (message.guild.id === process.env.GUILD_ID && !message.channel.nsfw) {
         if (badwords.isProfane(message.content.toLowerCase()) && !message.member.hasPermission("ADMINISTRATOR")) {
-          await message.delete()
-          return await message.reply("swearing is not allowed in this server!", { allowedMentions: { parse: ["users"] } });
+          await message.delete();
+          return await message.reply("swearing is not allowed in this server!");
         }
       }
     };
@@ -39,7 +39,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
           if(!process.env.DEVS.split(",").includes(message.author.id)) return message.channel.send("Only Gidget developers can use this command");
         }
         if (!message.guild && command.guildonly) return message.channel.send("This command only works on servers");
-        if (command.onlyguild && (message.guild ? message.guild.id !== process.env.GUILD_ID : false)) return message.channel.send("This command only works on Wow Wow Discord");
+        if (command.onlyguild && (message.guild ? message.guild.id !== process.env.GUILD_ID : true)) return message.channel.send("This command only works on Wow Wow Discord");
         if (message.guild) {
           const userperms = message.member.permissions;
           const userchannelperms = message.channel.permissionsFor(message.member);
@@ -52,15 +52,13 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
           if (!botperms.has(command.permissions.bot[0])) return message.channel.send("Sorry, I don't have sufficient permissions to run that command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.bot[0]).has(8)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
           if (!botchannelperms.has(command.permissions.bot[1])) return message.channel.send("Sorry, I don't have sufficient permissions to run that command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.bot[1]).has(8)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
         }
-
-        command.run(message, args)
-          .catch(err => {
-            if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
-            console.error(err);
-            message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
-          }).finally(() => {
-            message.channel.stopTyping(true);
-          });
+        try {
+          await command.run(message, args);
+        } catch(err) {
+          if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
+          console.error(err);
+          message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
+        }
       }
     } else {
       //Non-commands message code
@@ -146,5 +144,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
     }
   } catch (err) {
     console.log(err);
+  } finally {
+    message.channel.stopTyping(true);
   }
 };
