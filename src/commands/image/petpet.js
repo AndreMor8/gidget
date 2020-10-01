@@ -47,7 +47,7 @@ export default class extends Command {
             const buf = await petpet(torender, delay);
             message.channel.stopTyping(true);
             await message.channel.send({
-                content: (post ? "" : "Usage: `petpet [user/emoji/image/attachment] [-<FPS>]"),
+                content: (post ? "" : "Usage: `petpet [user/emoji/image/attachment] [-<FPS>]`"),
                 files: [{
                     attachment: buf,
                     name: "petpet.gif",
