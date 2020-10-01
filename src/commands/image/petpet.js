@@ -2,6 +2,7 @@ import Discord from 'discord.js';
 import Canvas from 'canvas';
 import Command from '../../utils/command.js';
 import petpet from '../../utils/petpet.js';
+import parser from 'twemoji-parser';
 
 export default class extends Command {
     constructor(options) {
@@ -14,7 +15,6 @@ export default class extends Command {
     }
     async run(message, args) {
         try {
-            message.channel.startTyping();
             let fps = args[args.length - 1];
             if (fps.charAt(0) == '-') {
                 fps = fps.substring(1);
@@ -32,7 +32,16 @@ export default class extends Command {
             if (source instanceof Discord.User) {
                 source = source.displayAvatarURL({ format: "png", size: 128 });
             }
+            if(source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
+                const matched = source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
+                source = `https://cdn.discordapp.com/emojis/${matched[2]}.png`;
+            }
+            const parsed = parser.parse(source);
+            if(parsed.length >= 1) {
+                source = parsed[0].url;
+            }
             if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/gm.test(source)) return message.channel.send("Invalid user or image!");
+            message.channel.startTyping();
             const torender = await Canvas.loadImage(source);
             const buf = await petpet(torender, delay);
             message.channel.stopTyping(true);

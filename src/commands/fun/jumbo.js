@@ -18,7 +18,7 @@ export default class extends Command {
             let img = `https://cdn.discordapp.com/emojis/${matched[2]}.${ext}`
             const att = new MessageAttachment(img, matched[2] + "." + ext) 
             await message.channel.send(att);
-        } else if (parsed.length > 0) {
+        } else if (parsed.length >= 1) {
             const buf = await svg2img(parsed[0].url, { format: "png", width: 150, height: 150 });
             await message.channel.send({
                 files: [{
