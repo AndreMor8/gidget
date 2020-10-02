@@ -1,4 +1,46 @@
+import db from '../../database/models/voicerole.js';
+
 export default async (bot, oldState, newState) => {
+  //VOICEROLE
+  const member = newState.member;
+  if (member && newState.guild.me.hasPermission("MANAGE_ROLES")) {
+    const list = db.findOne({ guildID: { $eq: newState.guild.id } });
+    if (list && list.enabled) {
+      const thing1 = list.list.find(e => e.channels.has(newState.channelID));
+      const thing2 = list.list.find(e => e.channels.has(oldState.channelID));
+      if (thing1 && !thing2) {
+        if (!member.roles.cache.has(thing1.roleID)) {
+          const algo = newState.guild.roles.cache.get(thing1.roleID);
+          if (algo && algo.editable && !algo.managed) {
+            await member.roles.add(thing1.roleID).catch(err => { });
+          }
+        }
+      } else if (thing1 && thing2) {
+        if (!member.roles.cache.has(thing1.roleID)) {
+          const algo = newState.guild.roles.cache.get(thing1.roleID);
+          if (algo && algo.editable && !algo.managed) {
+            await member.roles.add(thing1.roleID).catch(err => { });
+          }
+        }
+        if (member.roles.cache.has(thing2.roleID)) {
+          const algo = newState.guild.roles.cache.get(thing2.roleID);
+          if (algo && algo.editable && !algo.managed) {
+            await member.roles.remove(thing2.roleID).catch(err => { });
+          }
+
+        }
+      } else if (!thing1 && thing2) {
+        if (member.roles.cache.has(thing2.roleID)) {
+          const algo = newState.guild.roles.cache.get(thing2.roleID);
+          if (algo && algo.editable && !algo.managed) {
+            await member.roles.remove(thing2.roleID).catch(err => { });
+          }
+        }
+      }
+    }
+  }
+
+  //MUSIC
   if (!newState.guild) return;
   const musicVariables = newState.guild.musicVariables;
   if (musicVariables && !newState.channel && (newState.member.id === bot.user.id)) {

@@ -1,5 +1,5 @@
 import Command from '../../utils/command.js';
-import def from "../../utils/definitions.json"
+import def from "../../utils/definitions.json";
 import Discord from "discord.js";
 export default class extends Command {
   constructor(options) {
