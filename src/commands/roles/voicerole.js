@@ -40,7 +40,7 @@ export default class extends Command {
                     break;
                 case "add": {
                     if (!args[2]) return message.channel.send("`voicerole add <role> <channel(s)>`");
-                    const role = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]) || message.guild.roles.cache.map(e => e.name === args[2]);
+                    const role = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]) || message.guild.roles.cache.find(e => e.name === args[2]);
                     if (!role) return message.channel.send("Invalid role");
                     if (!role.editable || role.managed) return message.channel.send("I can't give that role :(")
                     if (list.list.find(e => e.roleID === role.id)) return message.channel.send("That role is already set in the database");
@@ -57,7 +57,7 @@ export default class extends Command {
                     break;
                 case "remove": {
                     if (!args[2]) return message.channel.send(`voicerole remove <roleid>`);
-                    const role = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]) || message.guild.roles.cache.find(e => e.name === args.slice(2).join(" "));
+                    let role = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]) || message.guild.roles.cache.find(e => e.name === args.slice(2).join(" "));
                     if(!role) role = { id: args[2] };
                     if (!list.list.find(e => e.roleID === role.id)) return message.channel.send("No role found in the database");
                     await list.updateOne({ $pull: { list: { roleID: role.id } } });
