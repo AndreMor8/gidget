@@ -1,13 +1,14 @@
 import db from '../../database/models/voicerole.js';
 
 export default async (bot, oldState, newState) => {
+  if (!newState.guild) return;
   //VOICEROLE
   const member = newState.member;
   if (member && newState.guild.me.hasPermission("MANAGE_ROLES")) {
-    const list = db.findOne({ guildID: { $eq: newState.guild.id } });
+    const list = await db.findOne({ guildID: { $eq: newState.guild.id } });
     if (list && list.enabled) {
-      const thing1 = list.list.find(e => e.channels.has(newState.channelID));
-      const thing2 = list.list.find(e => e.channels.has(oldState.channelID));
+      const thing1 = list.list.find(e => e.channels.includes(newState.channelID));
+      const thing2 = list.list.find(e => e.channels.includes(oldState.channelID));
       if (thing1 && !thing2) {
         if (!member.roles.cache.has(thing1.roleID)) {
           const algo = newState.guild.roles.cache.get(thing1.roleID);
@@ -16,6 +17,7 @@ export default async (bot, oldState, newState) => {
           }
         }
       } else if (thing1 && thing2) {
+        if(thing1.roleID === thing2.roleID) return;
         if (!member.roles.cache.has(thing1.roleID)) {
           const algo = newState.guild.roles.cache.get(thing1.roleID);
           if (algo && algo.editable && !algo.managed) {
@@ -41,7 +43,6 @@ export default async (bot, oldState, newState) => {
   }
 
   //MUSIC
-  if (!newState.guild) return;
   const musicVariables = newState.guild.musicVariables;
   if (musicVariables && !newState.channel && (newState.member.id === bot.user.id)) {
     newState.guild.queue = null;
