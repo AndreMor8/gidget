@@ -57,8 +57,10 @@ export default class extends Command {
                     break;
                 case "remove": {
                     if (!args[2]) return message.channel.send(`voicerole remove <roleid>`);
-                    if (!list.list.find(e => e.roleID === args[2])) return message.channel.send("No role found in the database");
-                    await list.updateOne({ $pull: { list: { roleID: args[2] } } });
+                    const role = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]) || message.guild.roles.cache.find(e => e.name === args.slice(2).join(" "));
+                    if(!role) role = { id: args[2] };
+                    if (!list.list.find(e => e.roleID === role.id)) return message.channel.send("No role found in the database");
+                    await list.updateOne({ $pull: { list: { roleID: role.id } } });
                     await message.channel.send("The role has been removed from the DB.");
                 }
                     break;
