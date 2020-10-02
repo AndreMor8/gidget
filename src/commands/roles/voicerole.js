@@ -23,13 +23,14 @@ export default class extends Command {
             const embed = new MessageEmbed()
                 .setColor("RANDOM")
                 .setTitle("Voice role configuration")
+                .setDescription("`voicerole add <role> <channel(s)>`: Add a role to the system in which if a member joins one of those, the role will be added.\n`voicerole remove <role>`: Removes a role from the system.\n`voicerole edit <role> <channel(s)>`: Edit an existing role in the system. This is a `set` subcommand.\n`voicerole enable`: Enables this system")
                 .addField("Enabled?", (list.enabled ? "Yes" : "No"))
             for (const option of list.list) {
                 const role = message.guild.roles.cache.get(option.roleID);
                 if (!role) continue;
                 embed.addField(`${role.name} (${role.id})`, option.channels.map(e => `<#${e}>`).join(", ") || "No channels");
             }
-            message.channel.send(embed);
+            await message.channel.send(embed);
         } else {
             switch (args[1].toLowerCase()) {
                 case "enable": {
