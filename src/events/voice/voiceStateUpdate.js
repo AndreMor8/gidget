@@ -17,7 +17,7 @@ export default async (bot, oldState, newState) => {
           }
         }
       } else if (thing1 && thing2) {
-        if(thing1.roleID === thing2.roleID) return;
+        if (thing1.roleID === thing2.roleID) return;
         if (!member.roles.cache.has(thing1.roleID)) {
           const algo = newState.guild.roles.cache.get(thing1.roleID);
           if (algo && algo.editable && !algo.managed) {

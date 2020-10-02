@@ -5,12 +5,12 @@ import { MessageEmbed } from 'discord.js';
 export default class extends Command {
     constructor(options) {
         super(options);
-        this.description = "Give a role to members that are in a voice channel";
+        this.description = "Give a role when a member joins specific voice channels.";
         this.permissions = {
             user: [8, 0],
             bot: [268435456, 0]
-        },
-            this.guildonly = true;
+        };
+        this.guildonly = true;
     }
     async run(message, args) {
         let list = await db.findOne({ guildID: { $eq: message.guild.id } });
@@ -21,7 +21,8 @@ export default class extends Command {
         }
         if (!args[1]) {
             const embed = new MessageEmbed()
-                .setTitle("Voice role options")
+                .setColor("RANDOM")
+                .setTitle("Voice role configuration")
                 .addField("Enabled?", (list.enabled ? "Yes" : "No"))
             for (const option of list.list) {
                 const role = message.guild.roles.cache.get(option.roleID);
@@ -50,14 +51,14 @@ export default class extends Command {
                     }
                     if (realchannels.length < 1) return message.channel.send("No channels selected");
                     await list.updateOne({ $push: { list: { roleID: role.id, channels: realchannels } } });
-                    await message.channel.send("Added");
+                    await message.channel.send("The role and channels have been added to the database.");
                 }
                     break;
                 case "remove": {
                     if (!args[2]) return message.channel.send(`voicerole remove <roleid>`);
                     if (!list.list.find(e => e.roleID === args[2])) return message.channel.send("No role found in the database");
                     await list.updateOne({ $pull: { list: { roleID: args[2] } } });
-                    await message.channel.send("Removed");
+                    await message.channel.send("The role has been removed from the DB.");
                 }
                     break;
                 case "set":
@@ -79,7 +80,7 @@ export default class extends Command {
                         const newarr = list.list.filter(e => e.roleID !== role.id);
                         newarr.push(thing);
                         await list.updateOne({ list: newarr });
-                        await message.channel.send("Updated");
+                        await message.channel.send("Updated channel list.");
                     }
                 }
                     break;
@@ -89,26 +90,3 @@ export default class extends Command {
         }
     }
 }
-
-
-
-/*
-Comando:
-
-voicerole add [role] [channels]
-
-add remove edit(set)
-per role
-
-Vista del array:
-
-[{
-    roleID: "ID del role",
-    channels: ["id de canales", "id2"]
-},
-{
-    roleID: "ID del otro role",
-    channels: ["otras ids", "id2", "id3"]
-}]
-
-*/
