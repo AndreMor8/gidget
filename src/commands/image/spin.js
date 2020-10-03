@@ -1,4 +1,4 @@
-const DEGREES = 30;
+const DEGREES = 20;
 const SIZE = 512;
 const FPS = 20;
 import fetch from 'node-fetch';
@@ -36,15 +36,11 @@ export default class extends Command {
             const image = await Canvas.loadImage(algo);
             const canvas = Canvas.createCanvas(SIZE, SIZE);
             const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#0f0";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.arc(canvas.width / 2, canvas.height / 2, SIZE / 2, 0, 2 * Math.PI);
-            ctx.clip();
             const gif = new GIF({
                 worker: 2,
                 width: SIZE,
                 height: SIZE,
-                transparent: 0x00ff00
+                quality: 4
             });
             gif.on("finished", (buf) => {
                 const att = new MessageAttachment(buf, "spin.gif");
@@ -52,13 +48,18 @@ export default class extends Command {
                 message.channel.send(att);
             })
             for (let i = 0; i < parseInt(360 / DEGREES); i++) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, canvas.height / 2, SIZE / 2, 0, 2 * Math.PI);
+                ctx.closePath();
+                ctx.clip();
                 if (i != 0) {
                     ctx.translate(SIZE / 2, SIZE / 2);
                     ctx.rotate(DEGREES * Math.PI / 180);
                     ctx.translate(-(SIZE / 2), -(SIZE / 2));
                 }
                 ctx.drawImage(image, 0, 0);
-                gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height), { copy: true, delay: (1000 / FPS) })
+                gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height), { delay: (1000 / FPS) })
             }
             gif.render();
         } catch (err) {
