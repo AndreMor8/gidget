@@ -36,6 +36,7 @@ export default class extends Command {
             const image = await Canvas.loadImage(algo);
             const canvas = Canvas.createCanvas(SIZE, SIZE);
             const ctx = canvas.getContext("2d");
+            ctx.save();
             const gif = new GIF({
                 worker: 2,
                 width: SIZE,
@@ -59,7 +60,8 @@ export default class extends Command {
                     ctx.translate(-(SIZE / 2), -(SIZE / 2));
                 }
                 ctx.drawImage(image, 0, 0);
-                gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height), { delay: (1000 / FPS) })
+                gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height), { delay: (1000 / FPS) });
+                ctx.restore();
             }
             gif.render();
         } catch (err) {
