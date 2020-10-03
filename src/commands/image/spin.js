@@ -1,7 +1,7 @@
 const timer = new Set();
 const DEGREES = 24;
 const SIZE = 320;
-const FPS = 16;
+const FPS = 14;
 import fetch from 'node-fetch';
 import sharp from 'sharp';
 import isPng from 'is-png';
@@ -17,7 +17,7 @@ export default class extends Command {
         this.description = "Spin some image";
     }
     async run(message, args) {
-        if(!message.author.id !== "577000793094488085") {
+        if(message.author.id !== "577000793094488085") {
             if(timer.has(message.author.id)) return message.channel.send("Don't overload this command (20 sec cooldown)");
             else {
                 timer.add(message.author.id);
