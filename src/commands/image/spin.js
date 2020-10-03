@@ -75,6 +75,6 @@ async function resize(url) {
     if (!res.ok) throw new Error("Status code: " + res.status);
     const buf = await res.buffer();
     if (!isPng(buf)) throw new Error("Invalid image or the image was not PNG");
-    const newbuf = await sharp(buf).resize(512, 512).png().toBuffer();
+    const newbuf = await sharp(buf).resize(SIZE, SIZE).png().toBuffer();
     return newbuf;
 }
