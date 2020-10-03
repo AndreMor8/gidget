@@ -36,7 +36,6 @@ export default class extends Command {
             const image = await Canvas.loadImage(algo);
             const canvas = Canvas.createCanvas(SIZE, SIZE);
             const ctx = canvas.getContext("2d");
-            ctx.save();
             const gif = new GIF({
                 worker: 2,
                 width: SIZE,
@@ -49,6 +48,7 @@ export default class extends Command {
                 message.channel.send(att);
             })
             for (let i = 0; i < parseInt(360 / DEGREES); i++) {
+                ctx.save();
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.beginPath();
                 ctx.arc(canvas.width / 2, canvas.height / 2, SIZE / 2, 0, 2 * Math.PI);
