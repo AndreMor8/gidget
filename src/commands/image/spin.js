@@ -1,6 +1,7 @@
-const DEGREES = 20;
+const timer = new Set();
+const DEGREES = 24;
 const SIZE = 320;
-const FPS = 15;
+const FPS = 16;
 import fetch from 'node-fetch';
 import sharp from 'sharp';
 import isPng from 'is-png';
@@ -16,6 +17,15 @@ export default class extends Command {
         this.description = "Spin some image";
     }
     async run(message, args) {
+        if(!message.author.id !== "577000793094488085") {
+            if(timer.has(message.author.id)) return message.channel.send("Don't overload this command (20 sec cooldown)");
+            else {
+                timer.add(message.author.id);
+                setTimeout(() => {
+                    timer.delete(message.author.id);
+                }, 20000);
+            }
+        }
         let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || this.bot.users.cache.get(args[1]) || this.bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await this.bot.users.fetch(args[1]).catch(err => { }) || args[1]) : message.author)
         if (!source) return message.channel.send("Invalid user, emoji or image!");
         if (source instanceof User) {
