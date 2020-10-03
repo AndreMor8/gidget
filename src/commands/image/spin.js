@@ -1,5 +1,5 @@
-const DEGREES = 30;
-const SIZE = 350;
+const DEGREES = 20;
+const SIZE = 320;
 const FPS = 15;
 import fetch from 'node-fetch';
 import sharp from 'sharp';
