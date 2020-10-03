@@ -50,9 +50,7 @@ export default class extends Command {
             })
             for (let i = 0; i < parseInt(360 / DEGREES); i++) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.beginPath();
-                ctx.arc(canvas.width / 2, canvas.height / 2, SIZE / 2, 0, 2 * Math.PI);
-                ctx.closePath();
+                ctx.arc(canvas.width / 2, canvas.height / 2, SIZE / 2, 0, 2 * Math.PI);;
                 ctx.clip();
                 if (i != 0) {
                     ctx.translate(SIZE / 2, SIZE / 2);
