@@ -1,5 +1,5 @@
 import tf from '@tensorflow/tfjs-node';
-import jimp from 'jimp';
+import sharp from 'sharp';
 
 /**
  * Function that detects if the image has any NSFW content.
@@ -8,9 +8,7 @@ import jimp from 'jimp';
  */
 export default async function(model, buffer) {
     if(!Buffer.isBuffer(buffer)) throw new Error("'buffer' isn't a Buffer");
-    const newImage = await jimp.read(buffer);
-    newImage.resize(224, 224);
-    const newThing = await newImage.getBufferAsync(jimp.MIME_JPEG);
+    const newThing = await sharp(buffer).resize(224, 224).jpeg().toBuffer();
     const tocheck = tf.node.decodeImage(newThing);
     const predictions = await model.classify(tocheck);
     let maxThing = [null, 0];
