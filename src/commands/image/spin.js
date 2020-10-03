@@ -56,7 +56,7 @@ export default class extends Command {
                 ctx.clip();
                 if (i != 0) {
                     ctx.translate(SIZE / 2, SIZE / 2);
-                    ctx.rotate(DEGREES * Math.PI / 180);
+                    ctx.rotate((DEGREES * i) * Math.PI / 180);
                     ctx.translate(-(SIZE / 2), -(SIZE / 2));
                 }
                 ctx.drawImage(image, 0, 0);
