@@ -1,6 +1,6 @@
 const DEGREES = 20;
-const SIZE = 350;
-const FPS = 16;
+const SIZE = 256;
+const FPS = 17;
 import fetch from 'node-fetch';
 import sharp from 'sharp';
 import isPng from 'is-png';
@@ -40,7 +40,7 @@ export default class extends Command {
                 worker: 2,
                 width: SIZE,
                 height: SIZE,
-                quality: 4
+                quality: 5
             });
             gif.on("finished", (buf) => {
                 const att = new MessageAttachment(buf, "spin.gif");
