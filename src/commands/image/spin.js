@@ -1,7 +1,7 @@
 const timer = new Set();
-const DEGREES = 20;
-const SIZE = 512;
-const FPS = 20;
+const DEGREES = 24;
+const SIZE = 340;
+const FPS = 16;
 import fetch from 'node-fetch';
 import sharp from 'sharp';
 import Command from '../../utils/command.js';
@@ -28,7 +28,7 @@ export default class extends Command {
         let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || this.bot.users.cache.get(args[1]) || this.bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await this.bot.users.fetch(args[1]).catch(err => { }) || args[1]) : message.author)
         if (!source) return message.channel.send("Invalid user, emoji or image!");
         if (source instanceof User) {
-            source = source.displayAvatarURL({ format: "png", size: SIZE });
+            source = source.displayAvatarURL({ format: "png", size: 256 });
         }
         if (source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
             const matched = source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
