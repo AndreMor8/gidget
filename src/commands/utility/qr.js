@@ -18,6 +18,7 @@ export default class extends Command {
     };
   }
   async run(message, args) {
+    if(!args[1]) return message.channel.send("Usage: `qr ['encode'] <text> [-<dot_size>]` or `qr decode [url/attachment]`");
     switch (args[1].toLowerCase()) {
       case 'decode': {
         const source = message.attachments.first() ? message.attachments.first().url : args[2];
