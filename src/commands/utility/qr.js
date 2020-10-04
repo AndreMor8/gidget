@@ -36,7 +36,10 @@ export default class extends Command {
             const newstr = Util.splitMessage(code.data, { limit: 1900, char: " " });
             message.channel.stopTyping(true);
             message.channel.send("`Output:` " + newstr[0]);
-          } else message.channel.stopTyping(true) && message.channel.send("I couldn't read any QR code. Try again");
+          } else {
+            message.channel.stopTyping(true);
+            message.channel.send("I couldn't read any QR code. Try again")
+          };
         } catch (err) {
           message.channel.stopTyping(true);
           message.channel.send(err.toString());
