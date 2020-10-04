@@ -8,7 +8,7 @@ import commons from "./commons.js";
 const { __dirname } = commons(import.meta.url);
 import Canvas from 'canvas';
 let sprite;
-import GIF from "gif.node";
+import GIF from "gif-encoder";
 const SIZE = 112;
 const g = {
   delay: 63,
@@ -84,14 +84,16 @@ function render(sprite, character, frames, size, delay) {
     renderCanvas.width = renderCanvas.height = tempCanvas.width = tempCanvas.height = size;
 
     // Renderer
-    const gif = new GIF({
-      worker: 2,
-      width: size,
-      height: size,
-      transparent: 0x00ff00,
-    });
-
-    gif.on("finished", (buffer) => {
+    const gif = new GIF(size, size);
+    gif.setDelay(delay);
+    gif.setTransparent(0x00ff00);
+    gif.setRepeat(0);
+    let chunks = [];
+    gif.on("data", (b) => {
+      chunks.push(b)
+    })
+    gif.on("end", () => {
+      const buffer = Buffer.concat(chunks);
       s(buffer);
     });
     frames.forEach((frameData, frame) => {
@@ -111,10 +113,11 @@ function render(sprite, character, frames, size, delay) {
 
       // add frame to gif
       renderCtx.drawImage(tempCanvas, 0, 0);
-      gif.addFrame(renderCtx.getImageData(0, 0, renderCanvas.width, renderCanvas.height), { copy: true, delay: delay });
+      if(frame == 0) gif.writeHeader();
+      gif.addFrame(renderCtx.getImageData(0, 0, renderCanvas.width, renderCanvas.height).data);
     });
 
-    gif.render();
+    gif.finish();
   })
 }
 
