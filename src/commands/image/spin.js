@@ -1,7 +1,7 @@
 const timer = new Set();
-const DEGREES = 24;
+const DEGREES = 20;
 const SIZE = 340;
-const FPS = 16;
+const FPS = 19;
 import fetch from 'node-fetch';
 import sharp from 'sharp';
 import Command from '../../utils/command.js';
