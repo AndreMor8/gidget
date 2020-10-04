@@ -1,14 +1,13 @@
 const timer = new Set();
-const DEGREES = 24;
-const SIZE = 320;
-const FPS = 14;
+const DEGREES = 20;
+const SIZE = 512;
+const FPS = 20;
 import fetch from 'node-fetch';
 import sharp from 'sharp';
-import isPng from 'is-png';
 import Command from '../../utils/command.js';
 import parser from 'twemoji-parser';
 import Canvas from 'canvas';
-import GIF from "gif.node";
+import GIF from "gif-encoder";
 import { MessageAttachment, User } from 'discord.js';
 
 export default class extends Command {
@@ -29,7 +28,7 @@ export default class extends Command {
         let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || this.bot.users.cache.get(args[1]) || this.bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await this.bot.users.fetch(args[1]).catch(err => { }) || args[1]) : message.author)
         if (!source) return message.channel.send("Invalid user, emoji or image!");
         if (source instanceof User) {
-            source = source.displayAvatarURL({ format: "png", size: 512 });
+            source = source.displayAvatarURL({ format: "png", size: SIZE });
         }
         if (source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
             const matched = source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
@@ -46,13 +45,16 @@ export default class extends Command {
             const image = await Canvas.loadImage(algo);
             const canvas = Canvas.createCanvas(SIZE, SIZE);
             const ctx = canvas.getContext("2d");
-            const gif = new GIF({
-                worker: 2,
-                width: SIZE,
-                height: SIZE,
-                quality: 5
+            const gif = new GIF(SIZE, SIZE);
+            gif.setQuality(50)
+            gif.setRepeat(0);
+            gif.setDelay((1000 / FPS));
+            let chunks = [];
+            gif.on("data", (b) => {
+                chunks.push(b)
             });
-            gif.on("finished", (buf) => {
+            gif.on("end", () => {
+                const buf = Buffer.concat(chunks);
                 const att = new MessageAttachment(buf, "spin.gif");
                 message.channel.stopTyping(true);
                 message.channel.send(att);
@@ -68,14 +70,14 @@ export default class extends Command {
                     ctx.translate(SIZE / 2, SIZE / 2);
                     ctx.rotate((DEGREES * i) * Math.PI / 180);
                     ctx.translate(-(SIZE / 2), -(SIZE / 2));
-                }
+                } else gif.writeHeader();
                 ctx.drawImage(image, 0, 0);
-                gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height), { delay: (1000 / FPS) });
+                gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
                 ctx.restore();
             }
-            gif.render();
+            gif.finish();
         } catch (err) {
-            message.channel.send("Error: " + err);
+            message.channel.send(err.toString());
         }
     }
 }
@@ -84,7 +86,6 @@ async function resize(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error("Status code: " + res.status);
     const buf = await res.buffer();
-    if (!isPng(buf)) throw new Error("Invalid image or the image was not PNG");
     const newbuf = await sharp(buf).resize(SIZE, SIZE).png().toBuffer();
     return newbuf;
 }
