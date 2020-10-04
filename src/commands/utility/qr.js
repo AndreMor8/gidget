@@ -3,7 +3,6 @@ import qrenc from 'qr';
 import fetch from 'node-fetch';
 import sharp from 'sharp';
 import Canvas from 'canvas';
-import qrdec from 'jsqr';
 import { MessageAttachment, Util } from "discord.js";
 import Command from "../../utils/command.js";
 import jsQR from 'jsqr';
