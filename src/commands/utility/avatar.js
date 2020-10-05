@@ -1,3 +1,4 @@
+//needs rewrite
 import Command from '../../utils/command.js';
 import Discord from 'discord.js';
 export default class extends Command {
@@ -25,7 +26,6 @@ export default class extends Command {
 
 		let memberId = message.content.substring(message.content.indexOf(' ') + 1);
 		let member = message.client.users.cache.get(memberId);
-		console.log(memberId);
 
 		if (member) {
 			const embed = new Discord.MessageEmbed()
