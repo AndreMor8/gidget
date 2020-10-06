@@ -22,7 +22,7 @@ export default class extends Command {
             text: getWellText(args.slice(1).join(" "), 21, 120),
             alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
             alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-        }, WIDTH/2, HEIGHT/2);
+        }, WIDTH, HEIGHT/2);
         const buf = await image.getBufferAsync(Jimp.MIME_PNG);
         const att = new MessageAttachment(buf, "wubbtext.png");
         message.channel.stopTyping(true);
