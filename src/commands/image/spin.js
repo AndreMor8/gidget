@@ -45,10 +45,14 @@ export default class extends Command {
             const image = await Canvas.loadImage(algo);
             const canvas = Canvas.createCanvas(SIZE, SIZE);
             const ctx = canvas.getContext("2d");
+            const tempCanvas = Canvas.createCanvas(SIZE, SIZE);
+            const tempCtx = tempCanvas.getContext("2d");
+            canvas.width = canvas.height = tempCanvas.width = tempCanvas.height = SIZE;
             const gif = new GIF(SIZE, SIZE);
             gif.setQuality(50)
             gif.setRepeat(0);
             gif.setDelay((1000 / FPS));
+            gif.setTransparent(0x00ff00);
             let chunks = [];
             gif.on("data", (b) => {
                 chunks.push(b)
@@ -60,20 +64,26 @@ export default class extends Command {
                 message.channel.send(att);
             })
             for (let i = 0; i < parseInt(360 / DEGREES); i++) {
-                ctx.save();
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.beginPath();
-                ctx.arc(canvas.width / 2, canvas.height / 2, SIZE / 2, 0, 2 * Math.PI);
-                ctx.closePath();
-                ctx.clip();
+                tempCtx.save();
+                tempCtx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#0f0";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                tempCtx.beginPath();
+                tempCtx.arc(canvas.width / 2, canvas.height / 2, SIZE / 2, 0, 2 * Math.PI);
+                tempCtx.closePath();
+                tempCtx.clip();
                 if (i != 0) {
-                    ctx.translate(SIZE / 2, SIZE / 2);
-                    ctx.rotate((DEGREES * i) * Math.PI / 180);
-                    ctx.translate(-(SIZE / 2), -(SIZE / 2));
+                    tempCtx.translate(SIZE / 2, SIZE / 2);
+                    tempCtx.rotate((DEGREES * i) * Math.PI / 180);
+                    tempCtx.translate(-(SIZE / 2), -(SIZE / 2));
                 } else gif.writeHeader();
-                ctx.drawImage(image, 0, 0);
+                tempCtx.drawImage(image, 0, 0);
+                const imgData = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
+                optimizeFrameColors(imgData.data);
+                tempCtx.putImageData(imgData, 0, 0);
+                ctx.drawImage(tempCanvas, 0, 0)
                 gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
-                ctx.restore();
+                tempCtx.restore();
             }
             gif.finish();
         } catch (err) {
@@ -81,6 +91,16 @@ export default class extends Command {
         }
     }
 }
+
+/** Remove partially transparent & #00ff00 (bg color) green pixels */
+function optimizeFrameColors(data) {
+    for (let i = 0; i < data.length; i += 4) {
+      // clamp greens to avoid pure greens from turning transparent
+      data[i + 1] = data[i + 1] > 250 ? 250 : data[i + 1];
+      // clamp transparency
+      data[i + 3] = data[i + 3] > 127 ? 255 : 0;
+    }
+  }
 
 async function resize(url) {
     const res = await fetch(url);
