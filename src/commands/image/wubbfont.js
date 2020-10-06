@@ -18,7 +18,7 @@ export default class extends Command {
         message.channel.startTyping();
         if(!font) font = await Jimp.loadFont(path.join(__dirname, "/../../utils/", "font.fnt"));
         const image = new Jimp(WIDTH, HEIGHT);
-        image.print(font, WIDTH/4, HEIGHT/10, {
+        image.print(font, 0, HEIGHT/10, {
             text: getWellText(args.slice(1).join(" "), 21, 120),
             alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
             alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
