@@ -57,7 +57,7 @@ export default class extends Command {
         embedchannel = server.embedChannel || server.widgetChannel
       }
 
-      if (message.guild.id === "402555684849451028" && server.id === "402555684849451028") {
+      if ((message.guild ? message.guild.id === "402555684849451028" : false) && server.id === "402555684849451028") {
         const bans = await server.fetchBans();
 
         if (bans.first()) {
