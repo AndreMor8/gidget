@@ -1,7 +1,7 @@
 import Command from '../../utils/command.js';
 import Discord from "discord.js";
 import { checkSingleCleanURL } from '../../utils/clean-url/index.js';
-const timer = new Map();
+const timer = new Set();
 import check from '../../utils/nsfwjs.js';
 
 export default class extends Command {
@@ -17,8 +17,8 @@ export default class extends Command {
   async run(message, args) {
     if (!args[1]) return message.channel.send("Put some URL");
     if (message.author.id !== "577000793094488085") {
-      if (!timer.get(message.author.id)) {
-        timer.set(message.author.id, true)
+      if (!timer.has(message.author.id)) {
+        timer.add(message.author.id)
         setTimeout(() => {
           timer.delete(message.author.id);
         }, 25000); //Hm

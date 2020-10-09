@@ -71,7 +71,7 @@ export default class extends Command {
     let finaltext = "";
     if (!user.bot) {
       if (thing.value < 0) {
-        finaltext = "[*I don't know*](https://gidgetbot.herokuapp.com/auth/)";
+        finaltext = "[*I don't know*](https://gidget.xyz/auth/)";
       } else if (thing.type === "db") {
         finaltext = premiumtext[thing.value] + " (DB)";
       } else {

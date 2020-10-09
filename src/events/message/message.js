@@ -4,6 +4,8 @@ const badwords = new b();
 badwords.setOptions({ whitelist: ["crap"] });
 import Levels from "../../utils/discord-xp.js";
 const timer = new Discord.Collection();
+//Only 1 command at a time.
+const internalCooldown = new Set();
 //Start message event
 export default async (bot, message = new Discord.Message(), nolevel = false) => {
   if (message.author.bot) return;
@@ -28,6 +30,8 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
     }
     if (message.content.startsWith(PREFIX)) {
       //Command message code
+      if(internalCooldown.has(message.author.id)) return;
+      else internalCooldown.add(message.author.id);
       //Command structure
       //Arguments with spaces
       let args = message.content.substring(PREFIX.length).trimEnd().split(/ +/g);
@@ -58,6 +62,8 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
           if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
           console.error(err);
           message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
+        } finally {
+          internalCooldown.delete(message.author.id);
         }
       }
     } else {
