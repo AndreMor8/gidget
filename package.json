@@ -20,7 +20,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "@sindresorhus/to-milliseconds": "^1.2.0",
-    "@tensorflow/tfjs-node": "^2.4.0",
+    "@tensorflow/tfjs-node": "^2.5.0",
     "badwords.js": "^0.1.6",
     "bluebird": "^3.7.2",
     "canvas": "^2.6.1",
@@ -42,9 +42,9 @@
     "math-expression-evaluator": "^1.2.22",
     "meowdb": "^2.1.6",
     "millisecond": "^0.1.2",
-    "moment": "^2.29.0",
+    "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
-    "mongoose": "^5.10.7",
+    "mongoose": "^5.10.8",
     "ms": "^2.1.2",
     "node-fetch": "^2.6.1",
     "node-lame": "^1.2.2",
@@ -58,6 +58,6 @@
     "twemoji-parser": "^13.0.0",
     "wikijs": "^6.0.1",
     "ytpl": "^1.0.1",
-    "ytsr": "^1.0.3"
+    "ytsr": "^1.0.4"
   }
 }
