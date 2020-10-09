@@ -173,7 +173,7 @@ export default class extends Command {
       }
       embed.addField("Widget Enabled?", embedenabled ? "Yes" + (embedchannel ? ", in " + embedchannel.toString() : "") : "No", true)
         .addField("Presence Count (" + active + " active on this server)", `**Online:** ${online}\n**Idle**: ${idle}\n**Do Not Disturb:** ${dnd}\n**Offline:** ${offline}`, true);
-      if (message.guild.id === "402555684849451028" && server.id === "402555684849451028") {
+      if ((message.guild ? message.guild.id === "402555684849451028" : false) && server.id === "402555684849451028") {
         embed.addField("Ban count", bannumber, true)
           .addField("Invite count", invitenum, true);
       }
@@ -186,7 +186,7 @@ export default class extends Command {
       .setImage(server.splashURL({ format: "png", size: 128 }))
       .setColor("#FF00FF")
       .setTimestamp();
-    if (message.guild.id === "402555684849451028" && server.id === "402555684849451028") {
+    if ((message.guild ? message.guild.id === "402555684849451028" : false) && server.id === "402555684849451028") {
       let fetch = server.roles.cache.get("402559343540568084").members.map(m => m.user);
       let admins = fetch.join("\n");
       embed.addField("Admin List", admins);
