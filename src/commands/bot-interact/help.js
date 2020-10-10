@@ -28,7 +28,7 @@ export default class extends Command {
       const embed = new Discord.MessageEmbed()
         .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
         .setColor("#FF8000")
-        .addField('Links', `[Bot's page (in progress)](https://gidget.xyz/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://andremor955.github.io) | [Discord.js documentation](https://discord.js.org/#/docs/)`)
+        .addField('Links', `[Bot's page (in progress)](https://gidget.xyz/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://wubbzy.gidget.xyz) | [Discord.js documentation](https://discord.js.org/#/docs/)`)
         .setTitle(g.cat + " (" + g.commands.length + " commands)")
         .setDescription(Discord.Util.splitMessage(g.commands.filter(s => {
           if (s.secret) return false
@@ -62,7 +62,7 @@ export default class extends Command {
         .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
         .setColor("#BDBDBD")
         .setTitle("Help command")
-        .addField('Links', `[Bot's page (in progress)](https://gidget.xyz/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://andremor955.github.io) | [Discord.js documentation](https://discord.js.org/#/docs/)`)
+        .addField('Links', `[Bot's page (in progress)](https://gidget.xyz/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://wubbzy.gidget.xyz) | [Discord.js documentation](https://discord.js.org/#/docs/)`)
       let text = "Use `help <category>` to obtain the category's commands\n\n" + Discord.Util.splitMessage(arr.filter(s => {
         if (s.secret) return false
         if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false
