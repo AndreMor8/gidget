@@ -64,7 +64,7 @@ export default class extends Command {
 
 async function pup(message, url, options) {
   const result = await checkSingleCleanURL(url);
-  if (result && !message.channel.nsfw) return message.channel.send("To view inappropriate pages use an NSFW channel");
+  if (result && !message.channel.nsfw) return message.channel.send("To view inappropriate pages use a NSFW channel");
   var form = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>").catch(err => { });
   message.channel.startTyping().catch(err => { });
   let page;
