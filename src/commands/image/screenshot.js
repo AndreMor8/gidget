@@ -73,9 +73,9 @@ async function pup(message, url, options) {
       message.channel.stopTyping(true);
     }, 40000);
     page = await message.client.browser.newPage();
-    page.once("error", async error => {
+    page.on("error", async error => {
       message.channel.stopTyping(true);
-      await message.channel.send(`There was an error opening a page. Here's a debug: ${error.message}`).catch(err => { });;
+      await message.channel.send(`There was an error opening a page. Here's a debug: ${error}`).catch(err => { });;
       await form.delete().catch(err => { });;
     });
     if (!page) return;
@@ -98,9 +98,8 @@ async function pup(message, url, options) {
     await message.channel.send("Time: " + (Date.now() - message.createdTimestamp) / 1000 + "s", attachment)
     await form.delete();
   } catch (error) {
-    console.log(error);
     message.channel.stopTyping(true);
-    await message.channel.send(`Some error ocurred. Here's a debug: ${error.message}`).catch(err => { });
+    await message.channel.send(`Some error ocurred. Here's a debug: ${error}`).catch(err => { });
     await form.delete().catch(err => { });
   } finally {
     try {
