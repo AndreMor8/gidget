@@ -13,7 +13,7 @@ export default class extends Command {
 		if(args[1] === "server") {
 			if(!message.guild) return message.channel.send("This sub-command only works on servers");
 			if(!message.guild.icon) return message.channel.send("This server doesn't have an avatar");
-			await message.channel.send(new Discord.MessageEmbed()
+			return message.channel.send(new Discord.MessageEmbed()
 			.setTitle(`${message.guild.name}'s avatar`)
 			.setImage(message.guild.iconURL({ format: "png", dynamic: true, size: 4096 })));
 		}
