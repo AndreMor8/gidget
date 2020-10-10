@@ -17,6 +17,6 @@ export default class extends Command {
     const embed = new MessageEmbed()
       .setTitle('List of Mods')
       .setDescription(mods)
-    message.channel.send(embed);
+ await message.channel.send(embed);
   }
 }

@@ -22,7 +22,7 @@ export default class extends Command {
     if (msgDocument) {
       msgDocument.deleteOne().then(m => message.channel.send('Ok, I removed that from my database. Remember to delete the message!'));
     } else {
-      message.channel.send('I don\'t see a ticket system here.');
+   await message.channel.send('I don\'t see a ticket system here.');
     }
   }
 }

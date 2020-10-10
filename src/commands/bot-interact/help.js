@@ -69,7 +69,7 @@ export default class extends Command {
         return true
       }).map(s => "**" + s.catname + "**: " + s.cat).join("\n"))[0]
       embed.setDescription(text || "?");
-      message.channel.send(embed);
+      await message.channel.send(embed);
     }
   }
 }

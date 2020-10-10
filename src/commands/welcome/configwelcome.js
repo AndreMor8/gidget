@@ -37,7 +37,7 @@ export default class extends Command {
                     return message.channel.send("Give me permissions for send messages on the established channel before starting the welcome system.");
                 const reference = !!doc.enabled;
                 await message.guild.setWelcome(0, !reference);
-                message.channel.send("The welcome system has been " + (!reference ? "Enabled" : "Disabled"));
+                await message.channel.send("The welcome system has been " + (!reference ? "Enabled" : "Disabled"));
             }
                 break;
             case "channel": {
@@ -51,7 +51,7 @@ export default class extends Command {
                 if (!channel.permissionsFor(message.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
                     return message.channel.send("I don't have permissions for send messages in that channel");
                 await message.guild.setWelcome(1, channel.id);
-                message.channel.send("Channel set correctly");
+                await message.channel.send("Channel set correctly");
             }
                 break;
             case "message": {
@@ -62,7 +62,7 @@ export default class extends Command {
                         return message.channel.send("You must give me the permission to manage guild if you want the who invited the user to appear");
                 }
                 await message.guild.setWelcome(2, args.slice(2).join(" "));
-                message.channel.send("Welcome message set correctly");
+                await message.channel.send("Welcome message set correctly");
             }
                 break;
             case "dmenable": {
@@ -70,7 +70,7 @@ export default class extends Command {
                     return message.channel.send("There is no text for DM set. Put one in before enabling this system.");
                 const reference = !!doc.dmenabled;
                 await message.guild.setWelcome(3, !reference);
-                message.channel.send("The DM welcome system has been " + (!reference ? "Enabled" : "Disabled"));
+                await message.channel.send("The DM welcome system has been " + (!reference ? "Enabled" : "Disabled"));
             }
                 break;
             case "dmmessage": {
@@ -81,7 +81,7 @@ export default class extends Command {
                         return message.channel.send("You must give me the permission to manage guild if you want the who invited the user to appear");
                 }
                 await message.guild.setWelcome(4, args.slice(2).join(" "));
-                message.channel.send("DM message set correctly");
+                await message.channel.send("DM message set correctly");
             }
                 break;
             case "leaveenable": {
@@ -94,7 +94,7 @@ export default class extends Command {
                     return message.channel.send("Give me permissions for send messages on the established channel before starting the goodbye system.");
                 const reference = !!doc.leaveenabled;
                 await message.guild.setWelcome(5, !reference);
-                message.channel.send("The goodbye system has been " + (!reference ? "Enabled" : "Disabled"));
+                await message.channel.send("The goodbye system has been " + (!reference ? "Enabled" : "Disabled"));
             }
                 break;
             case "leavechannel": {
@@ -108,18 +108,18 @@ export default class extends Command {
                 if (!channel.permissionsFor(message.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
                     return message.channel.send("I don't have permissions for send messages in that channel");
                 await message.guild.setWelcome(6, channel.id);
-                message.channel.send("Channel set correctly");
+                await message.channel.send("Channel set correctly");
             }
                 break;
             case "leavemessage": {
                 if (!args[2])
                     return message.channel.send("You have not put anything");
                 await message.guild.setWelcome(7, args.slice(2).join(" "));
-                message.channel.send("Goodbye message set correctly");
+                await message.channel.send("Goodbye message set correctly");
             }
                 break;
             default:
-                message.channel.send("Invalid mode!");
+                await message.channel.send("Invalid mode!");
         }
         if (message.guild.me.hasPermission("MANAGE_GUILD"))
             message.guild.inviteCount = await message.guild.getInviteCount().catch(err => { return {}; });

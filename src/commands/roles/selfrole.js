@@ -28,7 +28,7 @@ export default class extends Command {
           .setDescription(text)
           .setTimestamp()
           .setColor("RANDOM");
-        message.channel.send(embed);
+        await message.channel.send(embed);
       } else {
         return message.channel.send("This server has no selfroles assigned.");
       }
@@ -62,15 +62,9 @@ export default class extends Command {
               word: args.slice(2).join(" "),
               roleid: roleobj.id,
             });
-            dbMsgModel.save()
-              .then(m => {
-                message.channel.send('Self role added correctly.');
-                console.log(m);
-              })
-              .catch(err => {
-                message.channel.send('Something bad happened. Here\'s a debug: ' + err)
-                console.log(err);
-              });
+            await dbMsgModel.save()
+              .then(m => message.channel.send('Self role added correctly.'))
+              .catch(err => message.channel.send('Something bad happened. Here\'s a debug: ' + err));
           }
         }
 
@@ -80,40 +74,40 @@ export default class extends Command {
       if (!args[2]) return message.channel.send('Put a selfrole name.')
       let name = args.slice(2).join(" ");
       let msgDocument = await MessageModel.findOne({ guildid: message.guild.id, word: name });
-      let addMemberRole = (roleid) => {
+      let addMemberRole = async (roleid) => {
         let role = message.guild.roles.cache.get(roleid)
         let member = message.member;
         if (role && member) {
-          member.roles.add(role).then(message.channel.send('I gave you the role correctly.')).catch(err => message.channel.send(`I can't give you the role. Here's a debug: ` + err));
+          await member.roles.add(role).then(() => message.channel.send('I gave you the role correctly.')).catch(err => message.channel.send(`I can't give you the role. Here's a debug: ` + err));
         } else {
-          message.channel.send('Something happened. That role still exists?')
+          await message.channel.send('Something happened. That role still exists?')
         }
       }
       if (!msgDocument) {
         return message.channel.send('That selfrole doesn\'t exist.');
       } else {
         var { roleid } = msgDocument;
-        addMemberRole(roleid, 'Selfrole command')
+        await addMemberRole(roleid, 'Selfrole command')
       }
     }
     if (args[1] === 'leave') {
       if (!args[2]) return message.channel.send('Put a selfrole name.')
       let name = args.slice(2).join(" ");
       let msgDocument = await MessageModel.findOne({ guildid: message.guild.id, word: name });
-      let removeMemberRole = (roleid) => {
+      let removeMemberRole = async (roleid) => {
         let role = message.guild.roles.cache.get(roleid)
         let member = message.member;
         if (role && member) {
-          member.roles.remove(role).then(message.channel.send('I removed your role correctly.')).catch(err => message.channel.send(`I can't remove your role. Here's a debug: ` + err));
+          member.roles.remove(role).then(() => message.channel.send('I removed your role correctly.')).catch(err => message.channel.send(`I can't remove your role. Here's a debug: ` + err));
         } else {
-          message.channel.send('Something happened. That role still exists?')
+          await message.channel.send('Something happened. That role still exists?')
         }
       }
       if (!msgDocument) {
         return message.channel.send('That selfrole doesn\'t exist.');
       } else {
         var { roleid } = msgDocument;
-        removeMemberRole(roleid, 'Selfrole command')
+        await removeMemberRole(roleid, 'Selfrole command')
       }
     }
     if (args[1] === 'remove') {
@@ -122,10 +116,7 @@ export default class extends Command {
       let name = args.slice(2).join(" ");
       let msgDocument = await MessageModel.findOne({ guildid: message.guild.id, word: name });
       if (msgDocument) {
-        msgDocument.remove().then(m => {
-          console.log(m);
-          message.channel.send('I\'ve removed that selfrole from my database.');
-        }).catch(err => message.channel.send('I was unable to remove that selfrole from my database. Here\'s a debug: ' + err));
+        await msgDocument.remove().then(() => message.channel.send('I\'ve removed that selfrole from my database.')).catch(err => message.channel.send('I was unable to remove that selfrole from my database. Here\'s a debug: ' + err));
       } else {
         return message.channel.send('That selfrole doesn\'t exist.');
       }

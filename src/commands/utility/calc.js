@@ -25,6 +25,6 @@ export default class extends Command {
     }
     embed.addField("Input:", `\`\`\`js\n${args.slice(1).join(" ")}\`\`\``)
       .addField("Output", `\`\`\`js\n${result}\`\`\``);
-    message.channel.send(embed);
+    await message.channel.send(embed);
   }
 }

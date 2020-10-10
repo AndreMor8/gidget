@@ -15,11 +15,11 @@ export default class extends Command {
     if (!args[1])
       return message.channel.send("Usage: `walden [<32>/<64>] <text>`");
     if (args[1] === "64") {
-      px64(message, args.slice(2));
+      await px64(message, args.slice(2));
     } else if (args[1] === "32") {
-      px32(message, args.slice(2));
+      await px32(message, args.slice(2));
     } else {
-      px32(message, args.slice(1));
+      await px32(message, args.slice(1));
     }
   }
 }
@@ -51,18 +51,11 @@ async function px32(message, args) {
       realtext += pre_text[i];
     }
   }
-  meme.print(
-    font,
-    403,
-    20,
-    {
-      text: realtext,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    263,
-    249
-  );
+  meme.print(font, 403, 20, {
+    text: realtext,
+    alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+    alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+  }, 263, 249);
 
   let render = await meme.getBufferAsync(Jimp.MIME_PNG);
 
@@ -98,18 +91,11 @@ async function px64(message, args) {
       realtext += pre_text[i];
     }
   }
-  meme.print(
-    font,
-    382,
-    15,
-    {
-      text: realtext,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    },
-    300,
-    260
-  );
+  meme.print(font, 382, 15, {
+    text: realtext,
+    alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+    alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+  }, 300, 260);
 
   let render = await meme.getBufferAsync(Jimp.MIME_PNG);
 

@@ -1,5 +1,5 @@
 import algo from 'google-translate-open-api';
-const { default:gtranslate, parseMultiple } = algo;
+const { default: gtranslate, parseMultiple } = algo;
 import { getCode } from "../../utils/languages.js";
 import { MessageEmbed } from "discord.js";
 import Command from '../../utils/command.js';
@@ -31,26 +31,23 @@ export default class extends Command {
         //Get text
         let text = args.slice(1).join(" ");
         if (text.length > 700) {
-            message.channel.send("The message is too long!!").then(m => m.delete({ timeout: 3000 }))
+            await message.channel.send("The message is too long!!").then(m => m.delete({ timeout: 3000 }))
             return;
         }
 
         let ptext = text;
         text = text.split(/(?=[?!.])/gi);
         text.push(" ");
-        gtranslate(text, { to: reallang }).then(result => {
-            const translated = result.data[0];
-            const res = parseMultiple(translated);
-            let embed = new MessageEmbed()
-                .setTitle("Translate")
-                .setColor("RANDOM")
-                .addField('Input', `\`\`\`css\n${ptext}\`\`\``)
-                .addField('Lang', `\`\`\`css\n${reallang}\`\`\``)
-                .addField('Output', `\`\`\`css\n${"" + res.join(" ")}\`\`\``)
-                .setTimestamp()
-            message.channel.send(embed)
-        }).catch(err => {
-            console.log(err);
-        })
+        const result = await gtranslate(text, { to: reallang });
+        const translated = result.data[0];
+        const res = parseMultiple(translated);
+        let embed = new MessageEmbed()
+            .setTitle("Translate")
+            .setColor("RANDOM")
+            .addField('Input', `\`\`\`css\n${ptext}\`\`\``)
+            .addField('Lang', `\`\`\`css\n${reallang}\`\`\``)
+            .addField('Output', `\`\`\`css\n${"" + res.join(" ")}\`\`\``)
+            .setTimestamp()
+        await message.channel.send(embed);
     }
 }

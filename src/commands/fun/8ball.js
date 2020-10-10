@@ -11,7 +11,7 @@ export default class extends Command {
     }
   }
   async run(message, args) {
-    if (!args[1]) return message.reply("Please enter a full question with 2 or more words!");
+    if (!args[1]) return await message.reply("Please enter a full question with 2 or more words!");
 
     let replies = [
       "Yes",
@@ -35,6 +35,6 @@ export default class extends Command {
       .addField("Question", question)
       .addField("Answer", replies[result]);
 
-    message.channel.send(ballembed);
+    await message.channel.send(ballembed);
   }
 }

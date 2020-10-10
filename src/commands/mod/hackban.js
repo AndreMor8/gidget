@@ -4,20 +4,32 @@ export default class extends Command {
     super(options);
     this.aliases = ['hkb'];
     this.guildonly = true;
-    this.description = "Ban a user who is not on the server.";
+    this.description = "Ban people who are not on the server. (Only IDs)";
     this.permissions = {
       user: [4, 0],
       bot: [4, 0]
     }
   }
   async run(message, args) {
-    if (!args[1]) return message.channel.send('Put a ~~snowflake~~ user ID to hackban them.');
-    try {
-      await message.guild.members.ban(args[1]);
-      message.channel.send(`I've hackbanned that user.`);
-    } catch (err) {
-      if (err.code === 50035) return message.channel.send("Invalid ID!");
-      message.channel.send(`I couldn't hackban that user. Here's a debug: ${err}`);
+    if (!args[1]) return message.channel.send('Put ~~snowflakes~~ user IDs to hackban them.');
+    const users = [];
+    for (const thing of args.slice(1)) {
+      if (thing.length > 25) continue;
+      if (isNaN(thing)) continue;
+      const matched = thing.match(/^<@!?(\d+)>$/);
+      if (matched && matched[1]) users.push(matched[1]);
+      if (message.guild.members.cache.has(thing)) continue;
+      users.push(thing);
     }
+    if (users.length < 1) return message.channel.send("Invalid IDs. Make sure you have put them right. With this command you can ban actual server members.")
+    for (const user of users) {
+      try {
+        await message.guild.members.ban(user, { reason: (users.length === 1 ? args.slice(2).join(" ") : undefined) });
+      } catch (err) {
+        if (err.code === 50035) await message.channel.send("Invalid ID!").catch(err => {});
+        else await message.channel.send(`I couldn't hackban ${user}: ${err}`).catch(err => {});
+      }
+    }
+    await message.channel.send("Operation completed.");
   }
 }

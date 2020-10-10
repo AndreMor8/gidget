@@ -36,28 +36,28 @@ export default class extends Command {
                             let collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel);
                             msgModel.updateOne({ emojiRoleMappings: collectorResult }).then(() => {
                                 this.bot.cachedMessageReactions.delete(fetchedMessage.id)
-                                message.channel.send("Updated!");
+                                message.channel.send("Updated!").catch(err => {});
                             })
                         }
                         else if (choice.content === "remove") {
-                            msgModel.deleteOne().then(m => {
+                            msgModel.deleteOne().then(async m => {
                                 this.bot.cachedMessageReactions.set(fetchedMessage.id, false);
-                                message.channel.send('Ok. Removed.');
+                                await message.channel.send('Ok. Removed.');
                             }).catch(err => message.channel.send('Some error ocurred. Here\'s a debug: ' + err));
                         } else {
-                            message.channel.send('Incorrect. Run this command again and say the correct parameters');
+                            await message.channel.send('Incorrect. Run this command again and say the correct parameters');
                         }
                     } catch (err) {
-                        message.channel.send('You haven\'t said anything. Please try the command again.');
+                        await message.channel.send('You haven\'t said anything. Please try the command again.');
                     }
                 }
                 else {
-                    message.channel.send("There is no configuration for that message. Please use `addrr` on a message to set up Role Reactions on that message.")
+                    await message.channel.send("There is no configuration for that message. Please use `addrr` on a message to set up Role Reactions on that message.")
                 }
             }
         }
         catch (err) {
-            message.channel.send("Some error ocurred. Here's a debug: " + err);
+            await message.channel.send("Some error ocurred. Here's a debug: " + err);
         }
     }
 }

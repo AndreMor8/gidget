@@ -35,14 +35,14 @@ export default class extends Command {
             if(!code.data) return message.channel.send("I couldn't read any QR code. Try again");
             const newstr = Util.splitMessage(code.data, { limit: 1900, char: " " });
             message.channel.stopTyping(true);
-            message.channel.send("`Output:` " + newstr[0]);
+         await message.channel.send("`Output:` " + newstr[0]);
           } else {
             message.channel.stopTyping(true);
-            message.channel.send("I couldn't read any QR code. Try again")
+         await message.channel.send("I couldn't read any QR code. Try again")
           };
         } catch (err) {
           message.channel.stopTyping(true);
-          message.channel.send(err.toString());
+       await message.channel.send(err.toString());
         }
       }
         break;

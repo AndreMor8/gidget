@@ -51,6 +51,6 @@ export default class extends Command {
       embed.addField("Author", auth, true)
         .addField("Roles that can use the emoji", emoji.roles.cache.first() ? emoji.roles.cache.map(e => `${e}`).join(", ") : "@everyone");
     }
-    message.channel.send(embed);
+ await message.channel.send(embed);
   }
 }

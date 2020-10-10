@@ -20,6 +20,6 @@ export default class extends Command {
     .addField('I choose...', `**${tochoose[Math.floor(Math.random() * tochoose.length)]}**`)
     .setColor("RANDOM")
     .setTimestamp();
-    message.channel.send(embed);
+    await message.channel.send(embed);
   }
 }

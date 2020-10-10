@@ -23,10 +23,10 @@ export default class extends Command {
             let page_data = await wiki.page(args.slice(2).join(" "));
             let esto = await page_data.summary();
             let arr = Discord.Util.splitMessage(esto);
-            message.channel.send(arr[0]);
+         await message.channel.send(arr[0]);
         } catch (err) {
             console.log(err);
-            message.channel.send("Error: " + err);
+         await message.channel.send("Error: " + err);
         }
     }
 }

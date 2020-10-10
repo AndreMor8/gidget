@@ -30,6 +30,6 @@ export default class extends Command {
       let c = e.roles.cache;
       e.edit({ roles: c });
     });
-    message.channel.send("Done, new role members should now be able to use the emoji");
+ await message.channel.send("Done, new role members should now be able to use the emoji");
   }
 }

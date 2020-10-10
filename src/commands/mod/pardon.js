@@ -25,16 +25,16 @@ export default class extends Command {
       let { warnings } = msgDocument;
       let newWarnings = warnings - 1;
       if (newWarnings < 0) {
-         message.channel.send('This member has no warnings.')
+         await message.channel.send('This member has no warnings.')
       } else {
         if (args[2]) {
           let form = await msgDocument.update({ warnings: newWarnings });
-          member.send('You\'ve been pardoned on ' + message.guild.name + ' with reason: ' + args.slice(2).join(" ") + '. Now you have ' + newWarnings + ' warning(s).')
-          message.channel.send(`${member.user.tag} has been pardoned with reason: ${args.slice(2).join(" ")}. Now they have ${newWarnings} warning(s).`)
+          await member.send('You\'ve been pardoned on ' + message.guild.name + ' with reason: ' + args.slice(2).join(" ") + '. Now you have ' + newWarnings + ' warning(s).').catch(err => {});
+          await message.channel.send(`${member.user.tag} has been pardoned with reason: ${args.slice(2).join(" ")}. Now they have ${newWarnings} warning(s).`)
         } else {
           let form = await msgDocument.update({ warnings: newWarnings });
-          member.send('You\'ve been pardoned on ' + message.guild.name + '. Now you have ' + newWarnings + ' warning(s).')
-          message.channel.send(`${member.user.tag} has been pardoned. Now they have ${newWarnings} warning(s).`)
+          await member.send('You\'ve been pardoned on ' + message.guild.name + '. Now you have ' + newWarnings + ' warning(s).').catch(err => {});
+          await message.channel.send(`${member.user.tag} has been pardoned. Now they have ${newWarnings} warning(s).`)
         }
       }
     } catch (err) {

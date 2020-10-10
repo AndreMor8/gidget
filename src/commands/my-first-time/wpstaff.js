@@ -20,6 +20,6 @@ export default class extends Command {
     for (let i = 0; i < 5; i++) {
       text += members[i] + ": " + description[i] + "\n**Permissions:** " + permissions[i] + "\n \n";
     }
-    message.channel.send("The Wubbzypedia staff: \n" + text);
+ await message.channel.send("The Wubbzypedia staff: \n" + text);
   }
 }

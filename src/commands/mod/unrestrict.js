@@ -28,7 +28,7 @@ export default class extends Command {
               if (msg) {
                 msg.deleteOne();
               }
-              message.channel.send(`I've unrestricted ${member.user.tag} with reason: ${args.slice(2).join(" ")}`)
+           await message.channel.send(`I've unrestricted ${member.user.tag} with reason: ${args.slice(2).join(" ")}`)
             })
             .catch(err => message.channel.send(`I couldn't unrestrict that user. Here's a debug: ` + err));
         } else {
@@ -38,12 +38,12 @@ export default class extends Command {
               if (msg) {
                 msg.deleteOne();
               }
-              message.channel.send(`I've unrestricted ${member.user.tag}`)
+           await message.channel.send(`I've unrestricted ${member.user.tag}`)
             })
             .catch(err => message.channel.send(`I couldn't unrestrict that user. Here's a debug: ` + err));
         }
       } else {
-        message.channel.send('Something happened.')
+     await message.channel.send('Something happened.')
       }
     }
     let MsgDocument = await MessageModel

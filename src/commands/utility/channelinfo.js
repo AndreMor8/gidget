@@ -40,7 +40,7 @@ export default class extends Command {
         embed.addField("Last message", channel.lastMessage ? (`ID: ${channel.lastMessage.id}\nURL: [Click here](${channel.lastMessage.url})`) : (channel.lastMessageID ? (`ID: ${channel.lastMessageID}\nURL: [Click here](https://discordapp.com/channels/${message.guild.id}/${channel.id}/${channel.lastMessageID})`) : "Without fetch about that"), true)
           .addField("Number of members who can see it", channel.members.size, true)
           .addField("Pinned messages", channel.permissionsFor(this.bot.user.id).has("VIEW_CHANNEL") ? (await channel.messages.fetchPinned(false)).size : "*Without permissions for see that*", true)
-          .addField("Last pin at", channel.lastPinAt ? channel.lastPinAt.toLocaleString() : "None", true)
+          .addField("Last pin at", channel.lastPinAt ? this.bot.intl.format(channel.lastPinAt) : "None", true)
           .addField("NSFW?", channel.nsfw ? "Yes" : "No", true);
         if (channel.type !== "news") {
           embed.addField("Slowmode", channel.rateLimitPerUser + " seconds", true);
@@ -57,6 +57,6 @@ export default class extends Command {
         embed.addField("Channels in this category", channel.children.size, true);
         break;
     }
-    message.channel.send(embed);
+ await message.channel.send(embed);
   }
 }

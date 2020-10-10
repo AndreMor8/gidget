@@ -78,7 +78,7 @@ export default class extends Command {
                 embed.setThumbnail(presence.assets.smallImageURL({ format: "png" }))
             }
         }
-        message.channel.send(embed);
+        await message.channel.send(embed);
 
     }
 }

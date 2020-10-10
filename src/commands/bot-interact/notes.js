@@ -1,3 +1,4 @@
+//Needs update
 import commons from '../../utils/commons.js';
 const { __dirname } = commons(import.meta.url);
 import Command from '../../utils/command.js';
@@ -14,52 +15,52 @@ export default class extends Command {
   }
   async run (message, args) {
     if(args[1] === "add") {
-      if (!args[2]) return message.channel.send("Put some text!");
+      if (!args[2]) return await message.channel.send("Put some text!");
       if(notes.exists(message.author.id)) {
         const arr = notes.get(message.author.id);
         arr.push(args.slice(2).join(" ").replace(/(\r\n|\n|\r)/gm, " "));
         notes.set(message.author.id, arr);
-        message.channel.send("I've added the new note");
+        await message.channel.send("I've added the new note");
       } else {
         notes.create(message.author.id, [args.slice(2).join(" ")]);
-        message.channel.send("I've added the new note");
+        await message.channel.send("I've added the new note");
       }
     } else if (args[1] === "remove") {
       if(notes.exists(message.author.id)) {
-        if (!args[2]) return message.channel.send("Put the note ID or put `all` to delete all your notes");
+        if (!args[2]) return await message.channel.send("Put the note ID or put `all` to delete all your notes");
         if (args[2] === "all") {
           notes.delete(message.author.id);
-          message.channel.send("I've deleted all your notes.");
+          await message.channel.send("I've deleted all your notes.");
         } else {
           const arr = notes.get(message.author.id);
           let o = parseInt(args[2])
-          if(!o) return message.channel.send("Invalid ID!")
+          if(!o) return await message.channel.send("Invalid ID!")
           let i = o - 1;
-          if(!arr[i]) return message.channel.send("That note ID does not exist.");
+          if(!arr[i]) return await message.channel.send("That note ID does not exist.");
           arr.splice(i, 1);
           notes.set(message.author.id, arr);
-          message.channel.send("I've deleted that note");
+          await message.channel.send("I've deleted that note");
         }
-      } else return message.channel.send("You don't have notes");
+      } else return await message.channel.send("You don't have notes");
     } else if (args[1] === "update") {
       if(notes.exists(message.author.id)) {
-        if (!args[2]) return message.channel.send("Put the note ID you want to update");
+        if (!args[2]) return await message.channel.send("Put the note ID you want to update");
         else {
           const arr = notes.get(message.author.id);
           let o = parseInt(args[2]);
-          if(!o) return message.channel.send("Invalid ID!")
+          if(!o) return await message.channel.send("Invalid ID!")
           let i = o - 1;
-          if(!arr[i]) return message.channel.send("That note ID does not exist.");
-          if (!args[3]) return message.channel.send("Put some text!");
+          if(!arr[i]) return await message.channel.send("That note ID does not exist.");
+          if (!args[3]) return await message.channel.send("Put some text!");
           arr[i] = args.slice(3).join(" ").replace(/(\r\n|\n|\r)/gm, " ");
           notes.set(message.author.id, arr);
-          message.channel.send("I've updated that note");
+          await message.channel.send("I've updated that note");
         }
-      } else return message.channel.send("You don't have notes");
+      } else return await message.channel.send("You don't have notes");
     } else {
       if(notes.exists(message.author.id)) {
         const arr = notes.get(message.author.id);
-        if(!arr[0]) return message.channel.send("You don't have notes")
+        if(!arr[0]) return await message.channel.send("You don't have notes")
         let text = "";
         let i = 0;
         arr.forEach(r => {
@@ -72,9 +73,9 @@ export default class extends Command {
         .setColor("BLUE")
         .setFooter("Powered by MeowDB")
         .setTimestamp();
-        message.channel.send(embed);
+        await message.channel.send(embed);
       }
-      else return message.channel.send("You don't have notes");
+      else return await message.channel.send("You don't have notes");
     }
   }
 }

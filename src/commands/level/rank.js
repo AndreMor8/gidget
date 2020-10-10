@@ -35,6 +35,6 @@ export default class extends Command {
       }
     }
     const attachment = new Discord.MessageAttachment(await rankimage({ username: target.user.username, discrim: target.user.discriminator, level: user.level, rank: index, neededXP: (Levels.xpFor(user.level + 1) - Levels.xpFor(user.level)), currentXP: (user.xp - Levels.xpFor(user.level)) !== 0 ? user.xp - Levels.xpFor(user.level) : (user.xp - Levels.xpFor(user.level)) + 1, avatarURL: target.user.displayAvatarURL({ format: "png" }) }), "rank.png")
-    message.channel.send(attachment);
+    await message.channel.send(attachment);
   }
 }

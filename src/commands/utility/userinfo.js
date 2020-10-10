@@ -201,7 +201,7 @@ export default class extends Command {
               .map(roles => `${roles}`)
               .join(" **|** ") || "No Roles"}`
           );
-        message.channel.send(embed);
+        await message.channel.send(embed);
       } catch (err) {
         embed
           .addField("Full Username", user.tag, true)
@@ -221,7 +221,7 @@ export default class extends Command {
             "Joined Discord At",
             this.bot.intl.format(user.createdAt)
           );
-        message.channel.send(embed);
+        await message.channel.send(embed);
       }
     } else {
       embed
@@ -242,7 +242,7 @@ export default class extends Command {
           "Joined Discord At",
           this.bot.intl.format(user.createdAt)
         );
-      message.channel.send(embed);
+      await message.channel.send(embed);
     }
   }
 }

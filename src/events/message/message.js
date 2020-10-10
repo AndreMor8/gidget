@@ -30,7 +30,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
     }
     if (message.content.startsWith(PREFIX)) {
       //Command message code
-      if(internalCooldown.has(message.author.id)) return;
+      if (internalCooldown.has(message.author.id)) return;
       else internalCooldown.add(message.author.id);
       //Command structure
       //Arguments with spaces
@@ -40,7 +40,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
       if (command) {
         if (command.owner && message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
         if (command.dev && message.author.id !== "577000793094488085") {
-          if(!process.env.DEVS.split(",").includes(message.author.id)) return message.channel.send("Only Gidget developers can use this command");
+          if (!process.env.DEVS.split(",").includes(message.author.id)) return message.channel.send("Only Gidget developers can use this command");
         }
         if (!message.guild && command.guildonly) return message.channel.send("This command only works on servers");
         if (command.onlyguild && (message.guild ? message.guild.id !== process.env.GUILD_ID : true)) return message.channel.send("This command only works on Wow Wow Discord");
@@ -58,10 +58,10 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
         }
         try {
           await command.run(message, args);
-        } catch(err) {
+        } catch (err) {
           if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
           console.error(err);
-          message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
+          await message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
         } finally {
           internalCooldown.delete(message.author.id);
         }
@@ -110,7 +110,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
               }
               if (hasLeveledUp && msgDocument2.levelnotif) {
                 const user = await Levels.fetch(message.author.id, message.guild.id);
-                message.channel.send(
+                await message.channel.send(
                   `${message.author}, congratulations! You have leveled up to **${user.level}**. :tada:`
                 ).catch(err => { });
               }
@@ -141,7 +141,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
                 if (msg.attachments.first()) {
                   embed.setImage(msg.attachments.first().url);
                 }
-                message.channel.send(embed);
+                await message.channel.send(embed);
               }
             }
           }

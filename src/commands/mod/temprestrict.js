@@ -29,7 +29,7 @@ export default class extends Command {
         memberId: member.id,
         date: new Date(new Date().getTime() + time),
       });
-      newData.save().then(() => {
+      await newData.save().then(async () => {
         let role = message.guild.roles.cache.get(muteroleid)
         if (role && member) {
           if (args[3]) {
@@ -46,7 +46,7 @@ export default class extends Command {
               }).catch(err => message.channel.send(`I couldn't restrict that user. Here's a debug: ` + err));
           }
         } else {
-          message.channel.send('Something happened.')
+          await message.channel.send('Something happened.')
         }
       }).catch(err => message.channel.send('I have not been able to correctly save the information in my database. Here\'s a debug: ' + err))
     }

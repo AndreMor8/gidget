@@ -24,10 +24,9 @@ export default class extends Command {
         .catch(err => console.log(err));
       if (MsgDocument) {
         try {
-          let form = await MsgDocument.updateOne({ muteroleid: roleobj.id });
-          message.channel.send('I\'ve updated the role from my database.')
+          await MsgDocument.updateOne({ muteroleid: roleobj.id });
+          await message.channel.send('I\'ve updated the role from my database.')
         } catch (err) {
-          console.log(err);
           return message.channel.send('I was unable to update the role in my database. Here\'s a debug: ' + err);
         }
       } else {
@@ -35,21 +34,15 @@ export default class extends Command {
           guildid: message.guild.id,
           muteroleid: roleobj.id,
         });
-        dbMsgModel.save()
-          .then(m => {
-            message.channel.send('I\'ve successfully registered the role');
-            console.log(m);
-          })
-          .catch(err => {
-            console.log(err);
-            return message.channel.send('I was unable to register the role. Here\'s a debug: ' + err)
-          });
+        await dbMsgModel.save()
+          .then(m => message.channel.send('I\'ve successfully registered the role'))
+          .catch(err => message.channel.send('I was unable to register the role. Here\'s a debug: ' + err));
       }
     } else {
       if (!args[1]) return message.channel.send('Please mention the user or enter their ID.')
       let member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(err => { }) : undefined)
       if (!member) return message.channel.send('Invalid member!')
-      let addMemberRole = (muteroleid, member, args) => {
+      let addMemberRole = async (muteroleid, member, args) => {
         let role = message.guild.roles.cache.get(muteroleid)
         if (role && member) {
           if (args[2]) {
@@ -63,7 +56,7 @@ export default class extends Command {
               .catch(err => message.channel.send(`I couldn't restrict that user. Here's a debug: ` + err));
           }
         } else {
-          message.channel.send('Something happened.')
+          await message.channel.send('Something happened.')
         }
       }
       let MsgDocument = await MessageModel
@@ -71,7 +64,7 @@ export default class extends Command {
         .catch(err => console.log(err));
       if (MsgDocument) {
         var { muteroleid } = MsgDocument;
-        addMemberRole(muteroleid, member, args)
+        await addMemberRole(muteroleid, member, args)
       } else {
         return message.channel.send('You must first register a role for restrict')
       }

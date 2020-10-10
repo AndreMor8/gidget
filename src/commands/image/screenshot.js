@@ -31,7 +31,7 @@ export default class extends Command {
         y: parseInt(args[2]),
         x: parseInt(args[3])
       };
-      pup(
+      await pup(
         message,
         args[1].startsWith("http://") || args[1].startsWith("https://")
           ? args[1]
@@ -43,7 +43,7 @@ export default class extends Command {
         y: parseInt(args[2]),
         x: 0
       };
-      pup(
+      await pup(
         message,
         args[1].startsWith("http://") || args[1].startsWith("https://")
           ? args[1]
@@ -51,7 +51,7 @@ export default class extends Command {
         options
       );
     } else {
-      pup(
+      await pup(
         message,
         args[1].startsWith("http://") || args[1].startsWith("https://")
           ? args[1]

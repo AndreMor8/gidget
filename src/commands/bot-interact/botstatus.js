@@ -1,3 +1,4 @@
+//Needs rewrite
 import Command from '../../utils/command.js';
 import { psi } from "../../events/misc/ready.js";
 
@@ -56,6 +57,6 @@ export default class extends Command {
       args.pop();
     };
     this.bot.user.setPresence({ activity: { name: args.slice(3).join(" "), type: args[2] }, status: args[1] }).catch(console.error);
-    message.channel.send('Presence changed!');
+    await message.channel.send('Presence changed!');
   }
 }

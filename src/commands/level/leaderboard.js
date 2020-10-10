@@ -32,6 +32,6 @@ export default class extends Command {
     .setColor("RANDOM")
     .setThumbnail(message.guild.iconURL({ dynamic: true }))
     .setTimestamp();
-    message.channel.send(embed);
+    await message.channel.send(embed);
   }
 }

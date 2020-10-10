@@ -15,9 +15,9 @@ export default class extends Command {
     if (!args[1]) return message.reply(`Nothing to say?`).then(m => m.delete({ timeout: 5000 }));
 
     if (message.member && message.member.hasPermission("MENTION_EVERYONE")) {
-      message.channel.send(args.slice(1).join(" "), { allowedMentions: { parse: ["users", "everyone", "roles"] } });
+      await message.channel.send(args.slice(1).join(" "), { allowedMentions: { parse: ["users", "everyone", "roles"] } });
     } else {
-      message.channel.send(args.slice(1).join(" "));
+      await message.channel.send(args.slice(1).join(" "));
     }
   }
 }

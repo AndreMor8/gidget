@@ -13,7 +13,7 @@ export default class extends Command {
     }
     async run(message, args) {
         if (args[1] === "64") {
-            px64(message, args.slice(2));
+            await px64(message, args.slice(2));
         } else if (args[1] === "32") {
             let arg = args.slice(2).join(" ").split(" | ");
             if (!arg[1]) return message.channel.send("Usage: `wubmeme [<32>/<64>] <text1> | <text2>`");
@@ -40,7 +40,7 @@ export default class extends Command {
             await message.channel.send(attachment);
             message.channel.stopTyping();
         } else {
-            px64(message, args.slice(1));
+            await px64(message, args.slice(1));
         }
     }
 }

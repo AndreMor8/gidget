@@ -76,7 +76,7 @@ async function playFile(file, guild) {
   dispatcher.on("error", async err => {
     await musicVariables.voiceChannel.leave();
     guild.musicVariables = null;
-    message.channel.send("Some error ocurred! Here's a debug: ")
+ await message.channel.send("Some error ocurred! Here's a debug: ")
   });
   dispatcher.on("start", async () => {
     if (musicVariables.loop) return;

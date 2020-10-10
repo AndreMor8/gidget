@@ -190,9 +190,9 @@ export default class extends Command {
       let fetch = server.roles.cache.get("402559343540568084").members.map(m => m.user);
       let admins = fetch.join("\n");
       embed.addField("Admin List", admins);
-      message.channel.send(embed);
+   await message.channel.send(embed);
     } else {
-      message.channel.send(embed);
+   await message.channel.send(embed);
     }
   }
 }

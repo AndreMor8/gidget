@@ -10,6 +10,6 @@ export default class extends Command {
 
     let output = options[Math.floor(Math.random() * options.length)];
 
-    message.channel.send(`You got: **${output}**!`);
+    await message.channel.send(`You got: **${output}**!`);
   }
 }

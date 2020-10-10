@@ -19,6 +19,6 @@ export default class extends Command {
       content: realargs[1],
       files: message.attachments.map(e => e.url),
     })
-    message.channel.send("Custom response set correctly");
+    await message.channel.send("Custom response set correctly");
   }
 };

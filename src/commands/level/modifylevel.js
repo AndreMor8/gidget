@@ -29,48 +29,48 @@ export default class extends Command {
           let num1 = parseInt(args[3])
           if (!num1) return message.reply('invalid number!');
           if (num1 < 0) return message.reply('invalid number!');
-          Levels.subtractXp(target.id, message.guild.id, num1).then(() => message.channel.send(`Ok, I've subtracted ${num1}xp from ${target.user.tag}.`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
+          await Levels.subtractXp(target.id, message.guild.id, num1).then(() => message.channel.send(`Ok, I've subtracted ${num1}xp from ${target.user.tag}.`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
           break;
         case "subtractlevel":
           if (!args[3]) return message.reply('specify a amount');
           let num2 = parseInt(args[3])
           if (!num2) return message.reply('invalid number!');
           if (num2 < 0) return message.reply('invalid number!');
-          Levels.subtractLevel(target.id, message.guild.id, num2).then(() => message.channel.send(`Ok, I've lowered ${num2} levels to ${target.user.tag}.`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
+          await Levels.subtractLevel(target.id, message.guild.id, num2).then(() => message.channel.send(`Ok, I've lowered ${num2} levels to ${target.user.tag}.`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
           break;
         case "setlevel":
           if (!args[3]) return message.reply('specify a amount');
           let num3 = parseInt(args[3])
           if (typeof num3 !== "number" && !num3) return message.reply('invalid number!');
           if (num3 < 0) return message.reply('invalid number!');
-          Levels.setLevel(target.id, message.guild.id, num3).then(() => message.channel.send(`Ok, I've put ${target.user.tag} on level ${num3}`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
+          await Levels.setLevel(target.id, message.guild.id, num3).then(() => message.channel.send(`Ok, I've put ${target.user.tag} on level ${num3}`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
           break;
         case "appendlevel":
           if (!args[3]) return message.reply('specify a amount');
           let num4 = parseInt(args[3])
           if (!num4) return message.reply('invalid number!');
           if (num4 < 0) return message.reply('invalid number!');
-          Levels.appendLevel(target.id, message.guild.id, num4).then(() => message.channel.send(`Ok, I've increased ${num4} levels to ${target.user.tag}`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
+          await Levels.appendLevel(target.id, message.guild.id, num4).then(() => message.channel.send(`Ok, I've increased ${num4} levels to ${target.user.tag}`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
           break;
         case "appendxp":
           if (!args[3]) return message.reply('specify a amount');
           let num5 = parseInt(args[3])
           if (!num5) return message.reply('invalid number!');
           if (num5 < 0) return message.reply('invalid number!');
-          Levels.appendXp(target.id, message.guild.id, num5).then(() => message.channel.send(`Ok, I've increased ${num5}xp to ${target.user.tag}`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
+          await Levels.appendXp(target.id, message.guild.id, num5).then(() => message.channel.send(`Ok, I've increased ${num5}xp to ${target.user.tag}`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
           break;
         case "setxp":
           if (!args[3]) return message.reply('specify a amount');
           let num6 = parseInt(args[3])
           if (typeof num6 !== "number" && !num6) return message.reply('invalid number!');
           if (num6 < 0) return message.reply('invalid number!');
-          Levels.setXp(target.id, message.guild.id, num6).then(() => message.channel.send(`Ok, I've put ${target.user.tag}'s XP to ${num6}xp`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
+          await Levels.setXp(target.id, message.guild.id, num6).then(() => message.channel.send(`Ok, I've put ${target.user.tag}'s XP to ${num6}xp`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
           break;
         case "delete":
-          Levels.deleteUser(args[1], message.guild.id).then(() => message.channel.send(`Ok, I've removed that user from my database.`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
+          await Levels.deleteUser(args[1], message.guild.id).then(() => message.channel.send(`Ok, I've removed that user from my database.`)).catch(err => message.channel.send('Some error ocurred! Here\'s a debug: ' + err));
           break;
         default:
-          message.reply("invalid argument!");
+          await message.reply("invalid argument!");
           break;
       };
     } else {

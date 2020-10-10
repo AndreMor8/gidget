@@ -46,9 +46,9 @@ export default class extends Command {
       } else {
         let { warnings } = document;
         if (warnings < 1) {
-          message.channel.send(`${member.user.tag} has no warnings`);
+       await message.channel.send(`${member.user.tag} has no warnings`);
         } else {
-          message.channel.send(`${member.user.tag} has ${warnings} warnings`);
+       await message.channel.send(`${member.user.tag} has ${warnings} warnings`);
         }
       }
     } else {
@@ -59,7 +59,7 @@ export default class extends Command {
           )
           .catch(err => message.channel.send("Make sure your DMs are open!"));
       } else {
-        message.channel.send(`${member.user.tag} has no warnings`);
+     await message.channel.send(`${member.user.tag} has no warnings`);
       }
     }
   }

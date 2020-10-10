@@ -14,6 +14,6 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Usage: `delcc <id>`\nUse `listcc` for a ID.");
     if (isNaN(args[1])) return message.channel.send("Invalid ID!");
     await message.guild.deleteCustomResponse(parseInt(args[1]));
-    message.channel.send("Custom response deleted correctly");
+    await message.channel.send("Custom response deleted correctly");
   }
 };

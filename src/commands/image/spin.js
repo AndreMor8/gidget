@@ -16,8 +16,8 @@ export default class extends Command {
         this.description = "Spin some image";
     }
     async run(message, args) {
-        if(message.author.id !== "577000793094488085") {
-            if(timer.has(message.author.id)) return message.channel.send("Don't overload this command (20 sec cooldown)");
+        if (message.author.id !== "577000793094488085") {
+            if (timer.has(message.author.id)) return message.channel.send("Don't overload this command (20 sec cooldown)");
             else {
                 timer.add(message.author.id);
                 setTimeout(() => {
@@ -39,68 +39,71 @@ export default class extends Command {
             source = parsed[0].url;
         }
         if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/gm.test(source)) return message.channel.send("Invalid user, emoji or image!");
-        try {
-            message.channel.startTyping();
-            const algo = await resize(source);
-            const image = await Canvas.loadImage(algo);
-            const canvas = Canvas.createCanvas(SIZE, SIZE);
-            const ctx = canvas.getContext("2d");
-            const tempCanvas = Canvas.createCanvas(SIZE, SIZE);
-            const tempCtx = tempCanvas.getContext("2d");
-            canvas.width = canvas.height = tempCanvas.width = tempCanvas.height = SIZE;
-            const gif = new GIF(SIZE, SIZE);
-            gif.setQuality(50)
-            gif.setRepeat(0);
-            gif.setDelay((1000 / FPS));
-            gif.setTransparent(0x00ff00);
-            let chunks = [];
-            gif.on("data", (b) => {
-                chunks.push(b)
-            });
-            gif.on("end", () => {
-                const buf = Buffer.concat(chunks);
-                const att = new MessageAttachment(buf, "spin.gif");
-                message.channel.stopTyping(true);
-                message.channel.send(att);
-            })
-            for (let i = 0; i < parseInt(360 / DEGREES); i++) {
-                tempCtx.save();
-                tempCtx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "#0f0";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                tempCtx.beginPath();
-                tempCtx.arc(canvas.width / 2, canvas.height / 2, SIZE / 2, 0, 2 * Math.PI);
-                tempCtx.closePath();
-                tempCtx.clip();
-                if (i != 0) {
-                    tempCtx.translate(SIZE / 2, SIZE / 2);
-                    tempCtx.rotate((DEGREES * i) * Math.PI / 180);
-                    tempCtx.translate(-(SIZE / 2), -(SIZE / 2));
-                } else gif.writeHeader();
-                tempCtx.drawImage(image, 0, 0);
-                const imgData = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
-                optimizeFrameColors(imgData.data);
-                tempCtx.putImageData(imgData, 0, 0);
-                ctx.drawImage(tempCanvas, 0, 0)
-                gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
-                tempCtx.restore();
+        return new Promise(async (s, r) => {
+            try {
+                message.channel.startTyping();
+                const algo = await resize(source);
+                const image = await Canvas.loadImage(algo);
+                const canvas = Canvas.createCanvas(SIZE, SIZE);
+                const ctx = canvas.getContext("2d");
+                const tempCanvas = Canvas.createCanvas(SIZE, SIZE);
+                const tempCtx = tempCanvas.getContext("2d");
+                canvas.width = canvas.height = tempCanvas.width = tempCanvas.height = SIZE;
+                const gif = new GIF(SIZE, SIZE);
+                gif.setQuality(50)
+                gif.setRepeat(0);
+                gif.setDelay((1000 / FPS));
+                gif.setTransparent(0x00ff00);
+                let chunks = [];
+                gif.on("data", (b) => {
+                    chunks.push(b)
+                });
+                gif.on("end", async () => {
+                    const buf = Buffer.concat(chunks);
+                    const att = new MessageAttachment(buf, "spin.gif");
+                    message.channel.stopTyping(true);
+                    await message.channel.send(att).catch(err => {});
+                    s();
+                })
+                for (let i = 0; i < parseInt(360 / DEGREES); i++) {
+                    tempCtx.save();
+                    tempCtx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = "#0f0";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    tempCtx.beginPath();
+                    tempCtx.arc(canvas.width / 2, canvas.height / 2, SIZE / 2, 0, 2 * Math.PI);
+                    tempCtx.closePath();
+                    tempCtx.clip();
+                    if (i != 0) {
+                        tempCtx.translate(SIZE / 2, SIZE / 2);
+                        tempCtx.rotate((DEGREES * i) * Math.PI / 180);
+                        tempCtx.translate(-(SIZE / 2), -(SIZE / 2));
+                    } else gif.writeHeader();
+                    tempCtx.drawImage(image, 0, 0);
+                    const imgData = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
+                    optimizeFrameColors(imgData.data);
+                    tempCtx.putImageData(imgData, 0, 0);
+                    ctx.drawImage(tempCanvas, 0, 0)
+                    gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
+                    tempCtx.restore();
+                }
+                gif.finish();
+            } catch (err) {
+                r(err);
             }
-            gif.finish();
-        } catch (err) {
-            message.channel.send(err.toString());
-        }
+        })
     }
 }
 
 /** Remove partially transparent & #00ff00 (bg color) green pixels */
 function optimizeFrameColors(data) {
     for (let i = 0; i < data.length; i += 4) {
-      // clamp greens to avoid pure greens from turning transparent
-      data[i + 1] = data[i + 1] > 250 ? 250 : data[i + 1];
-      // clamp transparency
-      data[i + 3] = data[i + 3] > 127 ? 255 : 0;
+        // clamp greens to avoid pure greens from turning transparent
+        data[i + 1] = data[i + 1] > 250 ? 250 : data[i + 1];
+        // clamp transparency
+        data[i + 3] = data[i + 3] > 127 ? 255 : 0;
     }
-  }
+}
 
 async function resize(url) {
     const res = await fetch(url);

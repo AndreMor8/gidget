@@ -66,17 +66,11 @@ export default class extends Command {
           welcomemsg: "I've created your ticket correctly, %AUTHOR%",
           desc: "Ticket from %AUTHOR%"
         });
-        dbMsgModel
+        await dbMsgModel
           .save()
-          .then(m => {
-            console.log(m);
-            message.channel.send("I'm listening!");
-          })
+          .then(m => message.channel.send("I'm listening!"));
       } catch (err) {
-        message.channel.send(
-          "Some error ocurred. Here's a debug: " +
-          err
-        );
+        await message.channel.send("Some error ocurred. Here's a debug: " + err);
       }
     } else {
       let msgDocument = await MessageModel.findOne({
@@ -84,9 +78,9 @@ export default class extends Command {
       }).catch(err => console.log(err));
       if (msgDocument) {
         let { channelId, emojiId } = msgDocument;
-        message.channel.send(`To create a ticket, go to <#${channelId}> and react with ${this.bot.emojis.cache.get(emojiId) ? this.bot.emojis.cache.get(emojiId).toString() : emojiId}`)
+        await message.channel.send(`To create a ticket, go to <#${channelId}> and react with ${this.bot.emojis.cache.get(emojiId) ? this.bot.emojis.cache.get(emojiId).toString() : emojiId}`)
       } else {
-        message.channel.send('I am not listening to tickets on this server.');
+        await message.channel.send('I am not listening to tickets on this server.');
       }
     }
   }

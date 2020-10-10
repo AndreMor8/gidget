@@ -12,6 +12,6 @@ export default class extends Command {
     async run(message, args) {
         const thing = message.guild.cache.messagelinksconfig ? message.guild.messagelinksconfig : await message.guild.getMessageLinksConfig();
         await message.guild.setMessageLinksConfig(!thing.enabled);
-        message.channel.send("You have " + (!thing.enabled ? "enabled" : "disabled") + " the message link detection system");
+        await message.channel.send("You have " + (!thing.enabled ? "enabled" : "disabled") + " the message link detection system");
     }
 }

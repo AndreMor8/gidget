@@ -18,6 +18,6 @@ export default class extends Command {
     .addField("Public bot?", info.botPublic ? "Yes" : "No")
     .addField("Requires OAuth2 code grant?", info.botRequireCodeGrant ? "Yes" : "No")
     .addField("Owner", info.owner.toString())
-    message.channel.send(embed);
+    await message.channel.send(embed);
   }
 }

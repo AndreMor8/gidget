@@ -22,14 +22,10 @@ export default class extends Command {
       src = "stable";
       cont = args.slice(1).join(" ");
     }
-    fetch(`https://djsdocs.sorta.moe/v2/embed?src=${encodeURIComponent(src)}&q=${encodeURIComponent(cont)}`)
-      .then(r => r.json())
-      .then(res => {
-        if (!res)
-          return message.channel.send(new MessageEmbed().setTitle("Error").setDescription("No results found"));
-        if (res.error)
-          return message.channel.send(new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message));
-        message.channel.send(new MessageEmbed(res));
-      }).catch(err => message.channel.send("Error: " + err));
+    const r = await fetch(`https://djsdocs.sorta.moe/v2/embed?src=${encodeURIComponent(src)}&q=${encodeURIComponent(cont)}`)
+    const res = await r.json();
+    if (!res) return message.channel.send(new MessageEmbed().setTitle("Error").setDescription("No results found"));
+    if (res.error) return message.channel.send(new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message));
+    await message.channel.send(new MessageEmbed(res));
   }
 }

@@ -31,13 +31,9 @@ export default class extends Command {
         if (reconverted < 0) return message.channel.send("Huh?");
         serverQueue.inseek = true;
         serverQueue.songs[0].seektime = reconverted;
-        message.channel.send("This may take a bit...").then(() => message.channel.startTyping())
+        await message.channel.send("This may take a bit...");
+        message.channel.startTyping();
         serverQueue.connection.dispatcher.end();
-        await this.bot.commands.get("play").run(message, ["play", "seek"], reconverted).catch(err => {
-            console.log(err);
-            message.channel.send("Error: " + err);
-        }).finally(e => {
-            message.channel.stopTyping(true);
-        })
+        await this.bot.commands.get("play").run(message, ["play", "seek"], reconverted).catch(err => message.channel.send("Error: " + err)).finally(() => message.channel.stopTyping(true))
     }
 }

@@ -1,4 +1,3 @@
-//needs rewrite
 import Command from '../../utils/command.js';
 import Discord from 'discord.js';
 export default class extends Command {
@@ -11,40 +10,19 @@ export default class extends Command {
 		};
 	}
 	async run(message, args) {
-		//Needs rewrite
-		if (args[1] === 'server') {
-			if (message.channel.type !== 'dm') {
-				var avatar = message.guild.iconURL({ dynamic: true });
-				const embed = new Discord.MessageEmbed()
-					.setTitle('Server icon')
-					.setImage(avatar)
-				return message.channel.send(embed);
-			} else {
-				return message.channel.send('This command only works on servers.');
-			}
+		if(args[1] === "server") {
+			if(!message.guild) return message.channel.send("This sub-command only works on servers");
+			if(!message.guild.icon) return message.channel.send("This server doesn't have an avatar");
+			await message.channel.send(new Discord.MessageEmbed()
+			.setTitle(`${message.guild.name}'s avatar`)
+			.setImage(message.guild.iconURL({ format: "png", dynamic: true, size: 4096 })));
 		}
-
-		let memberId = message.content.substring(message.content.indexOf(' ') + 1);
-		let member = message.client.users.cache.get(memberId);
-
-		if (member) {
-			const embed = new Discord.MessageEmbed()
-				.setTitle(`${member.username}'s avatar`)
-				.setImage(`${member.displayAvatarURL({ format: "png", size: 1024, dynamic: true })}`)
-			return message.channel.send(embed);
-		} else if (!message.mentions.users.size) {
-			var avatar = message.author.displayAvatarURL({ format: "png", size: 1024, dynamic: true });
-			const embed = new Discord.MessageEmbed()
-				.setTitle('Your avatar')
-				.setImage(avatar)
-			return message.channel.send(embed);
+		const user = message.mentions.users.first() || this.bot.users.cache.get(args[1]) || this.bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || (e.tag === args.slice(1).join(" ")))) || (message.guild ? (message.guild.members.cache.find(e => (e.nickname === args.slice(1).join(" ")))) : undefined) || message.author;
+		if(user instanceof Discord.GuildMember) {
+			user = user.user;
 		}
-
-		const avatarList = message.mentions.users.map(user => {
-			const embed = new Discord.MessageEmbed()
-				.setTitle(`${user.username}'s avatar`)
-				.setImage(`${user.displayAvatarURL({ format: "png", size: 1024, dynamic: true })}`)
-			message.channel.send(embed);
-		});
+		await message.channel.send(new Discord.MessageEmbed()
+		.setTitle((user.id === message.author.id) ? `Your avatar` : `${user.tag}'s avatar`)
+		.setImage(user.displayAvatarURL({ dynamic: true, size: 4096, format: "png" })));
 	}
 }

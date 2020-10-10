@@ -25,7 +25,7 @@ module.exports = {
         .addField('Owner-only commands', `trw = Like the say command, but this time for the webhook The real Wubbzy.\nreboot = Restart the server-side part of the bot to update files.\neval = It allows to run code in the bot's JS environment.\nbotstatus = Change the bot's presence in Discord (WWD admins only)`)
         .addField('Links', `[AndreMor's page](https://andremor955.github.io) | [Discord.js documentation](https://discord.js.org/#/docs/)`)
         if(message.content.includes("--nodm") || !message.guild) {
-          message.channel.send(embed);
+       await message.channel.send(embed);
         } else {
           message.author.send(embed).then(m => message.channel.send("I've sent the list to your DM.")).catch(err => message.channel.send("Your DMs seem to be closed").catch(err => {}));
         }

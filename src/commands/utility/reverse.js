@@ -7,6 +7,6 @@ export default class extends Command {
     async run(message, args) {
         if (!args[1])
             return message.reply('you must input text to be reversed!');
-        message.channel.send(args.slice(1).join(' ').split('').reverse().join(''));
+     await message.channel.send(args.slice(1).join(' ').split('').reverse().join(''));
     }
 }

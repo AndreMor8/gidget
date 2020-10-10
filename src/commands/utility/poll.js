@@ -1,3 +1,4 @@
+//Needs update for infinite polls
 import Discord from "discord.js";
 import ms from "ms";
 import MessageModel from "../../database/models/poll.js";

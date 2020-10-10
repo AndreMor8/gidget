@@ -67,7 +67,7 @@ export default class extends Command {
                             .catch(err => console.log(err));
                         if (findMsgDocument) {
                             console.log("The message exists.. Don't save...");
-                            message.channel.send("A role reaction set up exists for this message already...");
+                            await message.channel.send("A role reaction set up exists for this message already...");
                         }
                         else {
                             let dbMsgModel = new MessageModel({
@@ -76,10 +76,10 @@ export default class extends Command {
                                 emojiRoleMappings: emojiRoleMappings
                             });
                             dbMsgModel.save()
-                                .then(m => {
+                                .then(async m => {
                                     console.log(m);
                                     this.bot.cachedMessageReactions.delete(fetchedMessage.id);
-                                    message.channel.send('I\'ve added that to my database.');
+                                    await message.channel.send('I\'ve added that to my database.');
                                 })
                                 .catch(err => message.channel.send('Something happened when I tried to save the data to my database. Here\'s a debug: ' + err));
                         }

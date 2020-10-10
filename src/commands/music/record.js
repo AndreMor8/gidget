@@ -62,10 +62,10 @@ export default class extends Command {
             dispatcher.on("close", () => {
               message.guild.musicVariables = null;
             })
-            dispatcher.on("error", async (err) => {
-              await voiceChannel.leave();
-              message.channel.send("Some error ocurred in the dispatcher! Here's a debug: " + err).catch(err => { });
+            dispatcher.on("error", (err) => {
+              voiceChannel.leave();
               message.guild.musicVariables = null;
+              message.channel.send("Some error ocurred in the dispatcher! Here's a debug: " + err).catch(err => { });
             })
           } else {
             message.channel.startTyping();
@@ -90,25 +90,25 @@ export default class extends Command {
                 if (args[1] === "server") await message.channel.send("Here's your recording.", attachment).catch(err => {
                   if (err.code === 40005) message.channel.send("The file is very large. I can't send you that.").catch(err => { });
                 });
-                else await message.member.send("Here's your recording.", attachment).catch(err => {
+                else await message.member.send("Here's your recording.", attachment).catch(async err => {
                   switch (err.code) {
                     case 40005:
-                      message.channel.send("The file is very large. I can't send you that.").catch(err => { });
+                      await message.channel.send("The file is very large. I can't send you that.").catch(err => { });
                       break;
                     case 50007:
-                      message.channel.send("I can't send you DMs :(").catch(err => { });
+                      await message.channel.send("I can't send you DMs :(").catch(err => { });
                       break;
                     default:
                       console.log(err);
-                      message.channel.send("Error when sending the file: " + err).catch(err => { });
+                      await message.channel.send("Error when sending the file: " + err).catch(err => { });
                   }
                 });
               }).catch(async err => {
                 await message.channel.send("Error when converting the PCM buffer: " + err).catch(err => { });
               }).finally(() => {
                 voiceChannel.leave();
-                message.channel.stopTyping(true);
                 message.guild.musicVariables = null;
+                message.channel.stopTyping(true);
               });
             })
           }

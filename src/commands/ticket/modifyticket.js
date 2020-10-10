@@ -36,7 +36,7 @@ export default class extends Command {
           let perms = new Permissions(args.slice(2));
           msgDocument.updateOne({ perms: perms.toArray() }).then(() => message.channel.send("Permissions to close tickets, saved correctly. *Better use roles*"));
         } catch (err) {
-          message.channel.send("Error: " + err);
+       await message.channel.send("Error: " + err);
         }
         break;
       case "setroles":
@@ -52,7 +52,7 @@ export default class extends Command {
           let toput = [];
           for (let i in roles) {
             if (!message.guild.roles.cache.has(roles[i])) {
-              message.channel.send("The role " + roles[i] + " isn't valid!");
+           await message.channel.send("The role " + roles[i] + " isn't valid!");
             } else {
               toput.push(roles[i]);
             }
@@ -86,7 +86,7 @@ export default class extends Command {
         msgDocument.updateOne({ desc: tomodify2 }).then(() => message.channel.send(tomodify2 ? "Description for the ticket changed correctly" : "Text channel description disabled"));
         break;
       default:
-        message.channel.send("Invalid mode!");
+     await message.channel.send("Invalid mode!");
     }
   }
 }

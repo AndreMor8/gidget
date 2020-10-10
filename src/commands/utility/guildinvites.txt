@@ -26,7 +26,7 @@ module.exports = {
         .setTitle('Server Invites')
         .setDescription('There are ' + numberinvites + ' invitations on this server.\n\n**Info:**\n\n' + mapInvites)
         .setColor('#81F7F3')
-      message.channel.send(embed).then(msg => msg.delete({ timeout: 7000 }).then(message.delete({ timeout: 7000 })));
+   await message.channel.send(embed).then(msg => msg.delete({ timeout: 7000 }).then(message.delete({ timeout: 7000 })));
     }
   },
   aliases: [],

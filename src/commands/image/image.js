@@ -14,7 +14,7 @@ export default class extends Command {
     }
     async run(message, args) {
         if (!args[1]) return message.channel.send('First give me a search term.')
-        image(message, args);
+        await image(message, args);
     }
 }
 
@@ -57,7 +57,7 @@ async function image(message, args) {
     await msg.react('▶️');
     await msg.react('⏹️');
 
-    let collector = msg.createReactionCollector(filter, { idle: 20000 })
+    let collector = msg.createReactionCollector(filter, { idle: 20000 });
     collector.on('collect', async (reaction, user) => {
         if (reaction.emoji.name === '▶️') {
 
@@ -88,6 +88,5 @@ async function image(message, args) {
     })
     collector.on('end', () => {
         if (message.guild && message.channel.permissionsFor(message.client.user).has("MANAGE_MESSAGES")) { msg.reactions.removeAll() }
-    })
-
+    });
 };

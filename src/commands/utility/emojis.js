@@ -63,6 +63,6 @@ export default class extends Command {
         realtext += `**Unavailable (${unavailable}): ** ${utext}`;
     }
 
-    message.channel.send(realtext, { split: { char: " " } });
+ await message.channel.send(realtext, { split: { char: " " } });
   }
 }

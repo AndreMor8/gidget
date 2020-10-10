@@ -27,6 +27,6 @@ export default class extends Command {
       .addField("Process ID", data.processID, true)
       .addField("Increment", data.increment, true)
       .addField("Binary representation", data.binary);
-    message.channel.send(embed);
+    await message.channel.send(embed);
   }
 }

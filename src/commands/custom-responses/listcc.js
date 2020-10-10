@@ -26,7 +26,7 @@ export default class extends Command {
                 .setDescription(text)
                 .setTimestamp()
 
-            message.channel.send(embed);
-        } else return message.channel.send("There are no custom responses on this server...");
+            await message.channel.send(embed);
+        } else return await message.channel.send("There are no custom responses on this server...");
     }
 }

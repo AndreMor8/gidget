@@ -13,7 +13,7 @@ export default class extends Command {
   }
   async run(message, args) {
     if (!message.guild) return message.channel.send('This command only works on servers.')
-    function msg(role) {
+    async function msg(role) {
       const mng = {
         true: 'Yes',
         false: 'No'
@@ -89,16 +89,16 @@ export default class extends Command {
         .addField('Permissions', '`' + permstext + '`')
         .addField('Permissions (Overwrites)', '`' + permstext2 + '`')
         .setTimestamp()
-      message.channel.send(embed);
+        await message.channel.send(embed);
     }
 
     if (!args[1]) {
       let role = message.member.roles.highest;
-      msg(role);
+      await msg(role);
     } else {
       let role = message.mentions.roles.first() || message.guild.roles.cache.get(args[1]) || message.guild.roles.cache.find(r => r.name === args.slice(1).join(" "));
       if (!role) return message.channel.send('That\'s not a valid role. Mention the role, type its name or put the ID.');
-      msg(role);
+      await msg(role);
     }
   }
 }

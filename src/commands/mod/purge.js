@@ -79,11 +79,11 @@ export default class extends Command {
       }
     } else {
       if (isNaN(number)) {
-        message.channel.send('That isn\'t a number!');
+        await message.channel.send('That isn\'t a number!');
       } else if (number > 100) {
-        message.channel.send('I can only delete 100 messages at a time.');
+        await message.channel.send('I can only delete 100 messages at a time.');
       } else if (number < 1) {
-        message.channel.send('I don\'t think 0 or less is what you want to delete.');
+        await message.channel.send('I don\'t think 0 or less is what you want to delete.');
       }
     }
   }

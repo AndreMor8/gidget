@@ -14,11 +14,10 @@ export default class extends Command {
     async run(message, args) {
         let servers = this.bot.guilds.cache.size;
         let users = this.bot.users.cache.size;
-
         let serverEmbed = new MessageEmbed()
-            .setDescription("At the moment I'm in **" + servers + "** servers and with **" + users + "** online users.", true)
+            .setDescription("At the moment I'm in **" + servers + "** servers and with **" + users + "** cached online users.", true)
             .setColor(0xf7a7ff)
             .setFooter('Requested by ' + message.author.username, message.author.displayAvatarURL());
-        message.channel.send(serverEmbed)
+        await message.channel.send(serverEmbed)
     }
 }

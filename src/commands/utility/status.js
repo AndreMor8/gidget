@@ -85,26 +85,26 @@ export default class extends Command {
         if (!args[1] || user.id == message.author.id) {
             if (user.presence.status !== 'offline') {
                 if (i === 0) {
-                    message.channel.send(`Your current status is: **${status[user.presence.status]}**, but I don't know in which client.`);
+                 await message.channel.send(`Your current status is: **${status[user.presence.status]}**, but I don't know in which client.`);
                 } else if (i === 1) {
-                    message.channel.send(`Your current status is: **${status[user.presence.status]}**, via the ` + status2 + ` client.`);
+                 await message.channel.send(`Your current status is: **${status[user.presence.status]}**, via the ` + status2 + ` client.`);
                 } else {
-                    message.channel.send(`You're connected in ` + i + ` clients:\n` + status2);
+                 await message.channel.send(`You're connected in ` + i + ` clients:\n` + status2);
                 }
             } else {
-                message.channel.send(`Your current status is: **${status[user.presence.status]}**`);
+             await message.channel.send(`Your current status is: **${status[user.presence.status]}**`);
             }
         } else {
             if (user.presence.status !== 'offline') {
                 if (i === 0) {
-                    message.channel.send(`${user.tag}'s current status is: **${status[user.presence.status]}**, but I don't know in which client.`);
+                 await message.channel.send(`${user.tag}'s current status is: **${status[user.presence.status]}**, but I don't know in which client.`);
                 } else if (i === 1) {
-                    message.channel.send(`${user.tag}'s current status is: **${status[user.presence.status]}**, via the ` + status2 + ` client.`);
+                 await message.channel.send(`${user.tag}'s current status is: **${status[user.presence.status]}**, via the ` + status2 + ` client.`);
                 } else {
-                    message.channel.send(`${user.tag} is connected in ` + i + ` clients: ` + status2);
+                 await message.channel.send(`${user.tag} is connected in ` + i + ` clients: ` + status2);
                 }
             } else {
-                message.channel.send(`${user.tag}'s current status is: **${status[user.presence.status]}**`);
+             await message.channel.send(`${user.tag}'s current status is: **${status[user.presence.status]}**`);
             }
         }
     

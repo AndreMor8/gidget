@@ -22,9 +22,9 @@ export default class extends Command {
     }
     try {
       await message.guild.members.unban(banInfo.user);
-      message.channel.send(`I've unbanned ${banInfo.user.tag} correctly.`);
+   await message.channel.send(`I've unbanned ${banInfo.user.tag} correctly.`);
     } catch (err) {
-      message.channel.send('I had an error while unbanning this user. Here\'s a debug: ' + err);
+   await message.channel.send('I had an error while unbanning this user. Here\'s a debug: ' + err);
     }
   }
 }

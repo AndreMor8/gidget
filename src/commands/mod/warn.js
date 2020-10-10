@@ -42,7 +42,7 @@ export default class extends Command {
         if (args[3] === "false") {
           try {
             let form = await dbMsgModel.updateOne({ role: false });
-            message.channel.send("Okay, I'll not put a role.");
+         await message.channel.send("Okay, I'll not put a role.");
           } catch (err) {
             console.log(err);
             return message.channel.send(
@@ -65,7 +65,7 @@ export default class extends Command {
                   roletime: warnings,
                   roleid: roleObj.id
                 });
-                message.channel.send(
+             await message.channel.send(
                   "Now I am going to put the role " +
                   roleObj.name +
                   " to the members that have " +
@@ -92,7 +92,7 @@ export default class extends Command {
         if (args[3] === "false") {
           try {
             let form = await dbMsgModel.updateOne({ kick: false });
-            message.channel.send("I'll not kick anyone.");
+         await message.channel.send("I'll not kick anyone.");
           } catch (err) {
             console.log(err);
             return message.channel.send(
@@ -107,7 +107,7 @@ export default class extends Command {
                 kick: true,
                 kicktime: warnings
               });
-              message.channel.send(
+           await message.channel.send(
                 "Now I'll kick members who have " + warnings + " warnings."
               );
             } catch (err) {
@@ -127,7 +127,7 @@ export default class extends Command {
         if (args[3] === "false") {
           try {
             let form = await dbMsgModel.updateOne({ ban: false });
-            message.channel.send("I'll not kick anyone.");
+         await message.channel.send("I'll not kick anyone.");
           } catch (err) {
             console.log(err);
             return message.channel.send(
@@ -142,7 +142,7 @@ export default class extends Command {
                 ban: true,
                 bantime: warnings
               });
-              message.channel.send(
+           await message.channel.send(
                 "Now I'll ban members who have " + warnings + " warnings."
               );
             } catch (err) {
@@ -158,7 +158,7 @@ export default class extends Command {
           }
         }
       } else {
-        message.channel.send(
+     await message.channel.send(
           "Usage: `warn set <role, kick, ban> <number or false> <role id (only role option)>`"
         );
       }
@@ -198,7 +198,7 @@ export default class extends Command {
               newWarnings +
               " warning(s)."
             );
-            message.channel.send(`I've warned ${member.user.tag} with reason: ${args.slice(2).join(" ")}. They now have ${newWarnings} warnings.`);
+         await message.channel.send(`I've warned ${member.user.tag} with reason: ${args.slice(2).join(" ")}. They now have ${newWarnings} warnings.`);
           } else {
             member.send(
               "You've been warned on " +
@@ -207,7 +207,7 @@ export default class extends Command {
               newWarnings +
               " warning(s)."
             );
-            message.channel.send(`I've warned ${member.user.tag}. They now have ${newWarnings} warnings.`);
+         await message.channel.send(`I've warned ${member.user.tag}. They now have ${newWarnings} warnings.`);
           }
           let {
             role,

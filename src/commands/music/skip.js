@@ -43,7 +43,7 @@ export default class extends Command {
     }
     if (serverQueue.loop) {
       serverQueue.loop = false;
-      message.channel.send("🔁 The song repeat has been disabled.");
+   await message.channel.send("🔁 The song repeat has been disabled.");
     }
     if (!serverQueue.playing) {
       serverQueue.playing = true;

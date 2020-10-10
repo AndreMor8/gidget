@@ -38,7 +38,7 @@ export default class extends Command {
       .addField("• Platform", `\`\`${os.platform()}\`\``, true)
       .setFooter("Gidget stats")
 
-    message.channel.send(embedStats)
+ await message.channel.send(embedStats)
   }
 }
 

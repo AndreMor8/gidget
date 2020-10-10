@@ -33,12 +33,12 @@ export default class extends Command {
             if (source instanceof Discord.User) {
                 source = source.displayAvatarURL({ format: "png", size: 128 });
             }
-            if(source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
+            if (source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
                 const matched = source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
                 source = `https://cdn.discordapp.com/emojis/${matched[2]}.png`;
             }
             const parsed = parser.parse(source);
-            if(parsed.length >= 1) {
+            if (parsed.length >= 1) {
                 source = parsed[0].url;
             }
             if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/gm.test(source)) return message.channel.send("Invalid user, emoji or image!");
@@ -55,7 +55,7 @@ export default class extends Command {
             });
         } catch (error) {
             message.channel.stopTyping(true);
-            message.channel.send("Error: " + error);
+         await message.channel.send("Error: " + error);
         }
     }
 }

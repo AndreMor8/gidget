@@ -5,7 +5,7 @@ export default class extends Command {
         this.description = "Bot test";
     }
     async run(message, args) {
-        message.channel.send("Pong!")
+     await message.channel.send("Pong!")
             .then((msg) => {
                 msg.edit("Ping: " + (Date.now() - msg.createdTimestamp) + 'ms\nPing from the API: ' + this.bot.ws.ping + 'ms');
             });

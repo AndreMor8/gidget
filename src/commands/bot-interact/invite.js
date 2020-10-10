@@ -7,7 +7,7 @@ export default class extends Command {
     this.description = "Receive a link to invite the bot";
   }
   async run(message, args) {
-    message.channel.send(new MessageEmbed()
+    await message.channel.send(new MessageEmbed()
       .setTitle("Invite links!")
       .setColor("#848484")
       .setFooter("Requested by " + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))

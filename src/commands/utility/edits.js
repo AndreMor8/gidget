@@ -28,9 +28,9 @@ export default class extends Command {
         for (let i in edits) {
           embed.addField("Edit " + (i + 1), edits[i].content);
         }
-        message.channel.send(embed);
+        await message.channel.send(embed);
       } catch (err) {
-        message.channel.send("Some error ocurred. Here's a debug: " + err);
+        await message.channel.send("Some error ocurred. Here's a debug: " + err);
       }
     } else {
       if (!args[1])
@@ -55,9 +55,9 @@ export default class extends Command {
         for (let i in edits) {
           embed.addField("Edit " + (parseInt(i) + 1), edits[i].content);
         }
-        message.channel.send(embed);
+        await message.channel.send(embed);
       } catch (err) {
-        message.channel.send("Some error ocurred. Here's a debug: " + err);
+        await message.channel.send("Some error ocurred. Here's a debug: " + err);
       }
     }
   }

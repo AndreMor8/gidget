@@ -18,10 +18,10 @@ export default class extends Command {
       let evaluated = await eval(args.slice(1).join(" "));
       if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
       const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950 });
-      message.channel.send(arr[0], { code: "js" });
+   await message.channel.send(arr[0], { code: "js" });
     } catch (err) {
       const arr = Discord.Util.splitMessage(err.toString(), { maxLength: 1950 });
-      message.channel.send("```js\n" + arr[0] + "```");
+   await message.channel.send("```js\n" + arr[0] + "```");
     }
   }
 }

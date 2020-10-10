@@ -125,19 +125,14 @@ export default class extends Command {
           collector.stop();
         }
       });
-      collector.on("end", collected => {
-        if (
-          message.guild &&
-          message.channel
-            .permissionsFor(message.client.user)
-            .has("MANAGE_MESSAGES")
-        ) {
+      collector.on("end", () => {
+        if (message.guild && message.channel.permissionsFor(message.client.user).has("MANAGE_MESSAGES")) {
           msg.reactions.removeAll();
         }
       });
     } catch (err) {
       message.channel.stopTyping();
-      message.channel.send("Some error ocurred. Here's a debug: " + err);
+      await message.channel.send("Some error ocurred. Here's a debug: " + err);
     }
   }
 }

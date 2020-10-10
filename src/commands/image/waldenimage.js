@@ -17,7 +17,7 @@ export default class extends Command {
     }
   }
   async run(message, args) {
-    image(message);
+    await image(message);
   }
 }
 async function image(message) {
@@ -52,5 +52,5 @@ async function image(message) {
   const embed = new Discord.MessageEmbed()
     .setTitle("Random Walden Image")
     .setImage(rimg);
-  message.channel.send(embed);
+  await message.channel.send(embed);
 }

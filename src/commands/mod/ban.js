@@ -1,42 +1,43 @@
+//Must be tested =D
 import Command from '../../utils/command.js';
 export default class extends Command {
     constructor(options) {
         super(options)
         this.guildonly = true;
-        this.description = "Ban a member from the server";
+        this.description = "Ban members from the server";
         this.permissions = {
             user: [4, 0],
             bot: [4, 0]
         }
     }
     async run(message, args) {
-        let user = message.client.users.cache.get(args[1]) || message.mentions.users.first() || args[1];
-
-        if (user) {
-            var member = await message.guild.members.fetch(user).catch(err => { });
-
-            if (member) {
-                if (!member.bannable) return message.channel.send("I can't ban that user! Make sure I have the correct permission and that the person's role is not greater than mine.");
-                if (args[2]) {
-                    member.ban({ reason: 'Ban command - ' + args.slice(2).join(" ") }).then(() => {
-                        message.reply(`I've banned ${user.tag} <:WidgetBan:610310292286603264> with reason: ` + args.slice(2).join(" "));
-                    }).catch(err => {
-                        message.reply("Sorry I couldn\'t ban that user.");
-                        console.log(err);
-                    });
-                } else {
-                    member.ban({ reason: 'Ban command' }).then(() => {
-                        message.reply(`I've banned ${user.tag} <:WidgetBan:610310292286603264>`);
-                    }).catch(err => {
-                        message.reply("Sorry I couldn\'t ban that user.");
-                        console.log(err);
-                    });
-                }
-            } else {
-                message.reply("member not found. Mention someone or put their ID.");
-            }
-        } else {
-            message.reply("Specify a server member to ban them! <:WidgetBan:610310292286603264>");
+        if (!args[1]) return message.channel.send("Usage: `ban (<user> [reason] || <users>)`")
+        const users = [].concat(message.mentions.members.array());
+        for (const thing of args.slice(1)) {
+            if (thing.length > 19) continue;
+            if (/^<@!?(\d+)>$/.test(thing)) continue;
+            if (isNaN(thing)) continue;
+            const user = message.guild.members.cache.get(thing) || await message.guild.members.fetch(thing).catch(err => { });
+            if (user) {
+                if (user.bannable) {
+                    if (!users.some(e => e.id === user.id)) {
+                        if((message.guild.owner.id === message.member.id) || (user.roles.highest.comparePositionTo(message.member.roles.highest) < 0)) {
+                            users.push(user);
+                        }
+                    } else continue;
+                } else continue;
+            } else continue;
         }
+        if (users.length < 1) return message.channel.send("Invalid user(s). Make sure you have entered the correct IDs or verify that we (me and you) can ban them.");
+        const banned = [];
+        for (const user of users) {
+            try {
+                await user.ban({ reason: (users.length === 1 ? args.slice(2).join(" ") : undefined) });
+                banned.push(user);
+            } catch (err) {
+                await message.channel.send(`User ${user.user.tag} was not banned: ${err}`);
+            }
+        }
+        await message.channel.send(banned.length < 1 ? "No one was banned" : `${banned.map(e => `\`${e.user.tag}\``).join(", ")} ${users.length === 1 ? "was banned" : "have been banned"}`)
     }
 }

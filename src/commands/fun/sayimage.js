@@ -67,6 +67,6 @@ export default class extends Command {
         await fillWithEmoji(ctx, mensaje, 66, 50)
 
         const attach = new Discord.MessageAttachment(canvas.toBuffer(), 'isay.png')
-        message.channel.send(attach)
+        await message.channel.send(attach)
     }
 }
