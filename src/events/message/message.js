@@ -34,8 +34,6 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
     }
     if (message.content.startsWith(PREFIX)) {
       //Command message code
-      if (internalCooldown.has(message.author.id)) return;
-      else internalCooldown.add(message.author.id);
       //Command structure
       //Arguments with spaces
       let args = message.content.substring(PREFIX.length).trimEnd().split(/ +/g);
@@ -61,6 +59,8 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
           if (!botchannelperms.has(command.permissions.bot[1])) return message.channel.send("Sorry, I don't have sufficient permissions to run that command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.bot[1]).has(8)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
         }
         try {
+          if (internalCooldown.has(message.author.id)) return;
+          else internalCooldown.add(message.author.id);
           await command.run(message, args);
         } catch (err) {
           if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
