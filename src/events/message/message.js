@@ -6,6 +6,10 @@ import Levels from "../../utils/discord-xp.js";
 const timer = new Discord.Collection();
 //Only 1 command at a time.
 const internalCooldown = new Set();
+//Some problems
+setTimeout(() => {
+  internalCooldown.clear();
+}, 90000)
 //Start message event
 export default async (bot, message = new Discord.Message(), nolevel = false) => {
   if (message.author.bot) return;
