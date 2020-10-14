@@ -31,7 +31,6 @@
     "discord-ytdl-core": "^4.1.0",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
     "ffmpeg-static": "^4.2.7",
     "gif-encoder": "^0.7.2",
     "google-it": "^1.5.2",

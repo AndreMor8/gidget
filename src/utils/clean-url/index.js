@@ -1,11 +1,10 @@
-import url from 'url';
 import data from './assets/sites.json';
 import isporncallback from 'is-porn';
 import { promisify } from 'util';
 const isPorn = promisify(isporncallback);
 // methods to be exported
 export function checkCleanUrl(urlFromReq) {
-    let parsedUrl = url.parse(urlFromReq);
+    let parsedUrl = new URL(urlFromReq);
     let host = parsedUrl.host || parsedUrl.pathname.trim().split("/")[0];
     if (host in data) return true;
     let thing = host.split(".");
@@ -18,7 +17,7 @@ export function checkCleanUrl(urlFromReq) {
 }
 
 export async function checkSingleCleanURL(urlFromReq) {
-    let parsedUrl = url.parse(urlFromReq);
+    let parsedUrl = new URL(urlFromReq);
     let host = parsedUrl.host || parsedUrl.pathname.trim().split("/")[0];
     if (host in data) return true;
     let thing = host.split(".");
