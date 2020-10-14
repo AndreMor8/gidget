@@ -8,9 +8,9 @@ export default class extends Command {
     }
     async run(message, args) {
         const msg = await message.channel.send("Pong!");
-        const pings = [`Message ping: ${Date.now() - msg.createdTimestamp}ms`, `Ping from the API: ${this.bot.ws.ping}ms`];
+        const pings = [`📨 Message ping: ${Date.now() - msg.createdTimestamp}ms`, `📡 Ping from the API: ${this.bot.ws.ping}ms`];
         const pageping = await ping.promise.probe("gidget.xyz");
-        pings.push(`gidget.xyz ping: ${pageping.time}ms`);
+        pings.push(`🌎 gidget.xyz ping: ${pageping.time}ms`);
         const dbping = await new Promise((s, r) => {
             try {
                 const dates = Date.now();
@@ -22,7 +22,7 @@ export default class extends Command {
                 r(error);
             }
         });
-        pings.push(`DB ping: ${dbping}ms`);
+        pings.push(`🗃️ DB ping: ${dbping}ms`);
         await msg.edit(pings.join("\n\n"));
     }
 }
