@@ -16,7 +16,7 @@ http.createServer((req, res) => {
     res.statusCode = 500
     res.end("Something happened! " + err);
   }
-})
+}).listen(process.env.PORT);
 function deleteCache(guildID) {
   bot.cachedMessageReactions.delete(guildID);
   bot.rrcache.delete(guildID);
