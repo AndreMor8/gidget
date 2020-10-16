@@ -12,6 +12,7 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
+    /*
     const status = {
       online: "Online",
       idle: "Idle",
@@ -40,7 +41,7 @@ export default class extends Command {
       STREAMING: "Streaming ",
       CUSTOM_STATUS: "Custom status:"
     };
-
+    */
     let user = message.mentions.users.first() ||
       bot.users.cache.get(args[1]) ||
       bot.users.cache.find(m => m.tag === args.slice(1).join(" ")) ||
@@ -78,7 +79,8 @@ export default class extends Command {
         finaltext = premiumtext[thing.value];
       }
     }
-    var status2 = "";
+    /*
+    const status2 = "";
     if (user.presence.clientStatus) {
       if (user.presence.clientStatus["web"]) {
         status2 += web[user.presence.clientStatus["web"]] + "\n";
@@ -131,7 +133,7 @@ export default class extends Command {
       }
     } else
       ptext = "None";
-
+    */
     let flagtext = "Without flags";
 
     if (user.flags) {
@@ -180,8 +182,9 @@ export default class extends Command {
         if (!user.bot) {
           embed.addField("Nitro type", finaltext, true);
         }
-        embed.addField("Status", status2, true)
-          .addField("Presence", ptext, true)
+        embed
+        /*.addField("Status", status2, true)
+          .addField("Presence", ptext, true)*/
           .addField("Permissions (General)", `\`${permstext}\``, true)
           .addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
           .addField("Flags", `\`${flagtext}\``, true)
@@ -204,14 +207,15 @@ export default class extends Command {
         await message.channel.send(embed);
       } catch (err) {
         embed
-          .addField("Full Username", user.tag, true)
+          .addField("Full Username", user.tag + "\n" + user.toString(), true)
           .addField("ID", user.id, true)
           .addField("Bot?", user.bot ? "Yes" : "No", true);
         if (!user.bot) {
           embed.addField("Nitro type", finaltext, true);
         }
-        embed.addField("Status", status2, true)
-          .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)
+        embed
+        /*.addField("Status", status2, true)
+          .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)*/
           .addField("Flags", `\`${flagtext}\``, true)
           .addField(
             "Last Message",
@@ -225,14 +229,15 @@ export default class extends Command {
       }
     } else {
       embed
-        .addField("Full Username", user.tag, true)
+        .addField("Full Username", user.tag + "\n" + user.toString(), true)
         .addField("ID", user.id, true)
         .addField("Bot?", user.bot ? "Yes" : "No", true);
       if (!user.bot) {
         embed.addField("Nitro type", finaltext, true);
       }
-      embed.addField("Status", status2, true)
-        .addField("Presence", ptext, true)
+      embed
+      /*.addField("Status", status2, true)
+        .addField("Presence", ptext, true)*/
         .addField("Flags", `\`${flagtext}\``, true)
         .addField(
           "Last Message",
