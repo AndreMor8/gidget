@@ -185,9 +185,9 @@ export default class extends Command {
         embed
         /*.addField("Status", status2, true)
           .addField("Presence", ptext, true)*/
+          .addField("Flags", `\`${flagtext}\``, true)
           .addField("Permissions (General)", `\`${permstext}\``, true)
           .addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
-          .addField("Flags", `\`${flagtext}\``, true)
           .addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");
         if (!user.bot) {
           embed.addField("Boosting?", member.premiumSince ? `Yes, since ${global.botIntl.format(member.premiumSince)}` : "No");
