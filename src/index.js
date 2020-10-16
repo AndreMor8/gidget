@@ -10,7 +10,7 @@ global.botIntl = Intl.DateTimeFormat("en", { dateStyle: "full", timeStyle: "full
 const Discord = require('discord.js');
 import './structures.js';
 global.botCommands = new Discord.Collection();
-const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL }, allowedMentions: { parse: [] } });
+const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: 32511 }, allowedMentions: { parse: [] } });
 import { registerCommands, registerEvents } from './utils/registry.js';
 import puppeteer from "puppeteer";
 import database from "./database/database.js";
