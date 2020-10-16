@@ -13,7 +13,7 @@ export default class extends Command {
     super(options);
     this.description = "A simple notes system :)";
   }
-  async run (message, args) {
+  async run(bot, message, args) {
     if(args[1] === "add") {
       if (!args[2]) return await message.channel.send("Put some text!");
       if(notes.exists(message.author.id)) {

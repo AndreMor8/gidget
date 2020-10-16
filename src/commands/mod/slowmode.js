@@ -12,7 +12,7 @@ export default class extends Command {
     };
 
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) {
       return message.channel.send('Usage: `slowmode <seconds> <channel>`');
     } else {

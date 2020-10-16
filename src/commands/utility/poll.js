@@ -15,7 +15,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Usage: `poll <time> [<emoji1>, <emoji2>, <emoji(n)>] <text>`");
     let time = ms(args[1]);
     if (typeof time !== "number" || time < 40000) return message.channel.send("Invalid time! Must be 40 seconds or more.");
@@ -26,7 +26,7 @@ export default class extends Command {
       var regex = /(<a?:)(\d+)(>)/g;
       if (regex.test(text)) {
         regex.lastIndex = 0;
-        var emojis = this.bot.emojis;
+        var emojis = bot.emojis;
         var entry = null;
         while ((entry = regex.exec(text)) !== null) {
           if (emojis.has(entry[2])) {
@@ -130,7 +130,7 @@ export default class extends Command {
         })
         .then(
           poll => {
-            msg.delete();
+            if(msg.deletable) msg.delete();
             if (reactions.length) {
               reactions.forEach(function (entry) {
                 poll.react(entry).catch(error => {
@@ -147,7 +147,7 @@ export default class extends Command {
               date: new Date(Date.now() + time),
               reactions: reactions.length ? reactions : ["460279003673001985", "612137351166033950"]
             })
-            newMessage.save().then(() => interval(true)).catch(err => msg.channel.send("Could not save the message and the time in database."));
+            newMessage.save().then(() => interval(bot, true)).catch(err => msg.channel.send("Could not save the message and the time in database."));
           },
           error => {
             console.log(error);

@@ -4,7 +4,7 @@ export default class extends Command {
 		super(options);
 		this.description = "Morse";
 	}
-	async run(message, args) {
+	async run(bot, message, args) {
 		if(!args[1]) return message.channel.send("Put something");
 		let i;
 		let alpha = " ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split(""),

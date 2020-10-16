@@ -10,13 +10,13 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!message.guild && !args[1]) return message.channel.send("Put a server ID!");
-    const server = args[1] ? (this.bot.guilds.cache.get(args[1]) ||
-      this.bot.guilds.cache.find(e => e.name === args.slice(1).join(" ")) ||
-      this.bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()) ||
-      await this.bot.guilds.fetch(args[1]).catch(err => { }) ||
-      await this.bot.fetchGuildPreview(args[1]).catch(err => { })) : message.guild;
+    const server = args[1] ? (bot.guilds.cache.get(args[1]) ||
+      bot.guilds.cache.find(e => e.name === args.slice(1).join(" ")) ||
+      bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()) ||
+      await bot.guilds.fetch(args[1]).catch(err => { }) ||
+      await bot.fetchGuildPreview(args[1]).catch(err => { })) : message.guild;
     if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server");
     if ((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
     let servericon = server.iconURL({ dynamic: true, size: 4096 });
@@ -153,7 +153,7 @@ export default class extends Command {
     }
     if (server instanceof Discord.Guild) {
       embed.addField("Server Owner", server.owner.user.tag, true)
-        .addField("Server Create Date", this.bot.intl.format(server.createdAt), true)
+        .addField("Server Create Date", global.botIntl.format(server.createdAt), true)
         .addField("Server Region", server.region, true)
         .addField("Verification Level", server.verificationLevel, true)
       if (server.rulesChannel) {

@@ -15,7 +15,7 @@ export default class extends Command {
       bot: [268435456, 0]
     }
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send('Usage: `temprestrict <time> <member> <reason>`');
     let time = ms(args[1]);
     if (typeof time !== "number") return message.channel.send('Invalid time!');
@@ -36,13 +36,13 @@ export default class extends Command {
             member.roles.add(role, 'Restrict command - ' + args.slice(3).join(" "))
               .then(m => {
                 message.channel.send(`I've restricted ${member.user.tag} for ${ms(time)} with reason: ${args.slice(3).join(" ")}`);
-                tempmute(true);
+                tempmute(bot, true);
               }).catch(err => message.channel.send(`I couldn't restrict that user. Here's a debug: ` + err));
           } else {
             member.roles.add(role, 'Restrict command')
               .then(m => {
                 message.channel.send(`I've restricted ${member.user.tag} for ${ms(time)}`);
-                tempmute(true);
+                tempmute(bot, true);
               }).catch(err => message.channel.send(`I couldn't restrict that user. Here's a debug: ` + err));
           }
         } else {

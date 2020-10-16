@@ -11,10 +11,10 @@ export default class extends Command {
             bot: [0, 16384]
         };
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         let number = !isNaN(args[args.length - 1]) && args[args.length - 1].length < 15 ? parseInt(args[args.length - 1]) : 0;
         if (!isNaN(args[args.length - 1]) && args.length > 1 && args[args.length - 1].length < 15) args.pop();
-        let user = message.mentions.users.first() || this.bot.users.cache.get(args[1]) || this.bot.users.cache.find(e => e.username === args.slice(1).join(" ")) || this.bot.users.cache.find(e => e.tag === args.slice(1).join(" ")) || (message.guild ? (message.guild.members.cache.find(e => e.displayName === args.slice(1).join(" ")) ? message.guild.members.cache.find(e => e.displayName === args.slice(1).join(" ")).user : undefined) : undefined);
+        let user = message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ")) || bot.users.cache.find(e => e.tag === args.slice(1).join(" ")) || (message.guild ? (message.guild.members.cache.find(e => e.displayName === args.slice(1).join(" ")) ? message.guild.members.cache.find(e => e.displayName === args.slice(1).join(" ")).user : undefined) : undefined);
         if (!user) {
             user = message.author;
         }
@@ -28,7 +28,7 @@ export default class extends Command {
             .addField("Name", presence.name, true)
             .addField("Type", presence.type, true);
         if (!isNaN(presence.createdTimestamp) && presence.createdAt) {
-            embed.addField("Created At", this.bot.intl.format(presence.createdAt), true)
+            embed.addField("Created At", global.botIntl.format(presence.createdAt), true)
         }
         if (presence.applicationID) {
             embed.addField("Application ID", presence.applicationID, true)

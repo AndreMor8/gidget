@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     const status = {
       online: "Online",
       idle: "Idle",
@@ -42,9 +42,9 @@ export default class extends Command {
     };
 
     let user = message.mentions.users.first() ||
-      this.bot.users.cache.get(args[1]) ||
-      this.bot.users.cache.find(m => m.tag === args.slice(1).join(" ")) ||
-      this.bot.users.cache.find(m => m.username === args.slice(1).join(" "));
+      bot.users.cache.get(args[1]) ||
+      bot.users.cache.find(m => m.tag === args.slice(1).join(" ")) ||
+      bot.users.cache.find(m => m.username === args.slice(1).join(" "));
     if (!args[1])
       user = message.author;
     if (!user) {
@@ -57,7 +57,7 @@ export default class extends Command {
         ).user;
       } else {
         try {
-          const fetch = await this.bot.users.fetch(args[1]);
+          const fetch = await bot.users.fetch(args[1]);
           user = fetch;
           if (!user)
             return message.channel.send("Invalid member!");
@@ -187,13 +187,13 @@ export default class extends Command {
           .addField("Flags", `\`${flagtext}\``, true)
           .addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");
         if (!user.bot) {
-          embed.addField("Boosting?", member.premiumSince ? `Yes, since ${this.bot.intl.format(member.premiumSince)}` : "No");
+          embed.addField("Boosting?", member.premiumSince ? `Yes, since ${global.botIntl.format(member.premiumSince)}` : "No");
         }
         embed.addField(
           `Joined ${message.guild.name} at`,
-          this.bot.intl.format(member.joinedAt)
+          global.botIntl.format(member.joinedAt)
         )
-          .addField("Joined Discord At", this.bot.intl.format(user.createdAt))
+          .addField("Joined Discord At", global.botIntl.format(user.createdAt))
           .addField(
             "Roles",
             `${member.roles.cache
@@ -219,7 +219,7 @@ export default class extends Command {
           )
           .addField(
             "Joined Discord At",
-            this.bot.intl.format(user.createdAt)
+            global.botIntl.format(user.createdAt)
           );
         await message.channel.send(embed);
       }
@@ -240,7 +240,7 @@ export default class extends Command {
         )
         .addField(
           "Joined Discord At",
-          this.bot.intl.format(user.createdAt)
+          global.botIntl.format(user.createdAt)
         );
       await message.channel.send(embed);
     }

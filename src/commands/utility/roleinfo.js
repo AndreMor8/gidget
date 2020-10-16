@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!message.guild) return message.channel.send('This command only works on servers.')
     async function msg(role) {
       const mng = {

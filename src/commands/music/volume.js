@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [0, 0]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     const serverQueue = message.guild.queue;
     if (serverQueue && serverQueue.inseek)
       return;

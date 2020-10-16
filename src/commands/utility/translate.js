@@ -13,7 +13,7 @@ export default class extends Command {
             bot: [0, 16384]
         };
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (!args[1])
             return message.channel.send("Please include a message to translate!").then(m => m.delete({ timeout: 3000 }))
         //Get language

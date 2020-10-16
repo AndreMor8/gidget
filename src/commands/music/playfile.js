@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [0, 0]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1] && !message.attachments.first())
       return message.channel.send("Please enter a file link or upload an attachment");
     const voiceChannel = message.member.voice.channel;
@@ -19,7 +19,7 @@ export default class extends Command {
       return message.channel.send("You need to be in a voice channel to play music!");
     const serverQueue = message.guild.queue
     if (serverQueue) return message.channel.send("I'm doing another operation");
-    const permissions = voiceChannel.permissionsFor(this.bot.user.id);
+    const permissions = voiceChannel.permissionsFor(bot.user.id);
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
       return message.channel.send("I need the permissions to join and speak in your voice channel!");
     }

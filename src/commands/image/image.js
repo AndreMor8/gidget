@@ -12,7 +12,7 @@ export default class extends Command {
             bot: [0, 16384]
         }
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (!args[1]) return message.channel.send('First give me a search term.')
         await image(message, args);
     }

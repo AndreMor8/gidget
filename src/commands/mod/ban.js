@@ -10,7 +10,7 @@ export default class extends Command {
             bot: [4, 0]
         }
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Usage: `ban (<user> [reason] || <users>)`")
         const users = [].concat(message.mentions.members.array());
         for (const thing of args.slice(1)) {

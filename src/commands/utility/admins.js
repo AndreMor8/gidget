@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     const fetch = message.guild.roles.cache
       .get("402559343540568084")
       .members.map(m => m.user);

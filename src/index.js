@@ -6,26 +6,29 @@ const { require } = commons(import.meta.url);
 // where your node app starts
 
 // init project
+global.botIntl = Intl.DateTimeFormat("en", { dateStyle: "full", timeStyle: "full", timeZone: "America/New_York", hour12: true, timeZoneName: "short" })
 const Discord = require('discord.js');
+global.botCommands = new Discord.Collection();
+import tfjs from '@tensorflow/tfjs-node';
+global.tfjs = tfjs;
 import './structures.js';
-export const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL }, allowedMentions: { parse: [] } });
+const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: Discord.Intents.ALL }, allowedMentions: { parse: [] } });
 import { registerCommands, registerEvents } from './utils/registry.js';
 import puppeteer from "puppeteer";
 export const version = "0.98 Post-Beta";
 import nsfwjs from 'nsfwjs';
-const database = require("./database/database.cjs");
+import database from "./database/database.js";
 
 (async () => {
   //Pre-login
+  global.nsfwjs = await nsfwjs.load();
   //Database
-  await database.then(() => console.log("Connected to the database."));
-  //Command collection
-  bot.commands = new Discord.Collection();
+  await database();
+  //Commands
+  await registerCommands("../commands");
   //Cache system
   bot.cachedMessageReactions = new Discord.Collection();
   bot.rrcache = new Discord.Collection();
-  //Timezone thing
-  bot.intl = Intl.DateTimeFormat("en", { dateStyle: "full", timeStyle: "full", timeZone: "America/New_York", hour12: true, timeZoneName: "short" })
   //Puppeteer
   if (process.env.PUPPETEER !== "NO") {
     bot.browser = await puppeteer.launch({
@@ -35,10 +38,8 @@ const database = require("./database/database.cjs");
       }, args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox"]
     });
   }
-  bot.nsfwjs = await nsfwjs.load();
   //Registers
   await registerEvents(bot, "../events");
-  await registerCommands(bot, "../commands");
   //Login and post-login
   await bot.login();
   bot.user.setPresence({

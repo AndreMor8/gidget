@@ -10,7 +10,7 @@ export default class extends Command {
       bot: [0, 8192]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1] || (isNaN(args[1]) && !args[2]))
       return message.reply('how many messages should I delete? Specify it.');
     let number = args[2] ? parseInt(args[2]) : parseInt(args[1]);

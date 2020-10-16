@@ -10,7 +10,7 @@ export default class extends Command {
       bot: [0, 16384]
     }
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     let form = args.slice(1).join(" ");
     let tochoose = form.split(" | ")
     if(!tochoose[0] || !tochoose[1]) return message.channel.send('Usage: `choose <response1> | <response2> | <response(n)>`')

@@ -15,7 +15,7 @@ export default class extends Command {
             bot: [268435456, 0]
         };
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (args.slice(1).length < 1) {
             let msg = await message.channel.send("Put the message ID");
             await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
@@ -78,7 +78,7 @@ export default class extends Command {
                             dbMsgModel.save()
                                 .then(async m => {
                                     console.log(m);
-                                    this.bot.cachedMessageReactions.delete(fetchedMessage.id);
+                                    bot.cachedMessageReactions.delete(fetchedMessage.id);
                                     await message.channel.send('I\'ve added that to my database.');
                                 })
                                 .catch(err => message.channel.send('Something happened when I tried to save the data to my database. Here\'s a debug: ' + err));

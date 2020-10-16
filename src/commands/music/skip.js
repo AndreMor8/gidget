@@ -5,7 +5,7 @@ export default class extends Command {
     this.description = "Skip songs";
     this.guildonly = true;
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     const serverQueue = message.guild.queue;
     if (serverQueue && serverQueue.inseek)
       return;

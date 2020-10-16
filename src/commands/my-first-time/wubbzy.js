@@ -5,7 +5,7 @@ export default class extends Command {
     super(options);
     this.description = "A little command. Nothing else.";
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     let wubbzy = ["beautiful", "cute", "the best", "our favorite", "awesome"];
     let text = "Wubbzy is ";
     if (args[1]) {

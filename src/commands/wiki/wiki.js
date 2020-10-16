@@ -8,7 +8,7 @@ export default class extends Command {
         this.secret = true;
         this.description = "Search something in a wiki";
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         const algo = "Usage: `wiki <api.php link> <article>`";
         if (!args[1])
             return message.channel.send(algo);

@@ -9,7 +9,7 @@ export default class extends Command {
 			bot: [0, 16384]
 		};
 	}
-	async run(message, args) {
+	async run(bot, message, args) {
 		if(args[1] === "server") {
 			if(!message.guild) return message.channel.send("This sub-command only works on servers");
 			if(!message.guild.icon) return message.channel.send("This server doesn't have an avatar");
@@ -17,7 +17,7 @@ export default class extends Command {
 			.setTitle(`${message.guild.name}'s avatar`)
 			.setImage(message.guild.iconURL({ format: "png", dynamic: true, size: 4096 })));
 		}
-		const user = message.mentions.users.first() || this.bot.users.cache.get(args[1]) || this.bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || (e.tag === args.slice(1).join(" ")))) || (message.guild ? (message.guild.members.cache.find(e => (e.nickname === args.slice(1).join(" ")))) : undefined) || message.author;
+		const user = message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || (e.tag === args.slice(1).join(" ")))) || (message.guild ? (message.guild.members.cache.find(e => (e.nickname === args.slice(1).join(" ")))) : undefined) || message.author;
 		if(user instanceof Discord.GuildMember) {
 			user = user.user;
 		}

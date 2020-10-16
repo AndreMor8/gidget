@@ -16,7 +16,7 @@ export default class extends Command {
       bot: [0, 32768]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if(!args[1]) return message.channel.send("Usage: `qr ['encode'] <text> [-<dot_size>]` or `qr decode [url/attachment]`");
     switch (args[1].toLowerCase()) {
       case 'decode': {

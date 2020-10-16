@@ -11,8 +11,8 @@ export default class extends Command {
       bot: [0, 16384]
     }
   }
-  async run(message, args) {
-    const c = this.bot.commands.clone();
+  async run(bot, message, args) {
+    const c = global.botCommands.clone();
     const arr = []
     for (const o of Object.entries(def)) {
       arr.push({
@@ -37,8 +37,8 @@ export default class extends Command {
         }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0])
         .setTimestamp()
       return message.channel.send(embed)
-    } else if (args[1] && (this.bot.commands.get(args[1].toLowerCase()) || this.bot.commands.find(c => c.aliases.includes(args[1].toLowerCase())))) {
-      const command = this.bot.commands.get(args[1].toLowerCase()) || this.bot.commands.find(c => c.aliases.includes(args[1].toLowerCase()))
+    } else if (args[1] && (global.botCommands.get(args[1].toLowerCase()) || global.botCommands.find(c => c.aliases.includes(args[1].toLowerCase())))) {
+      const command = global.botCommands.get(args[1].toLowerCase()) || global.botCommands.find(c => c.aliases.includes(args[1].toLowerCase()))
       if (!command) return message.channel.send('That command doesn\'t exist or isn\'t loaded.');
       if (command.dev || command.owner) return message.channel.send("Exclusive command for the owner or developers");
       let alias = "Without alias";

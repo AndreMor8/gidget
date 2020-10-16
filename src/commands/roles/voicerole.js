@@ -12,7 +12,7 @@ export default class extends Command {
         };
         this.guildonly = true;
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         let list = await db.findOne({ guildID: { $eq: message.guild.id } });
         if (!list) {
             list = await db.create({

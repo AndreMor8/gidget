@@ -6,7 +6,7 @@ export default class extends Command {
     this.description = "Loops the song";
     this.guildonly = true;
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     const serverQueue = message.guild.queue
     const musicVariables = message.guild.musicVariables;
     if (!message.member.voice.channel) return message.channel.send("You need to be in a voice channel to loop the music!");

@@ -11,7 +11,7 @@ export default class extends Command {
             bot: [0, 32768]
         };
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Put something");
         //Get language
         let lang = args[args.length - 1];

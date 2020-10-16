@@ -10,7 +10,7 @@ export default class extends Command {
       bot: [4, 0]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     try {
       let form = await message.guild.fetchBans();
       var banInfo = await form.get(args[1]) || form.find(ban => ban.user.username == args.slice(1).join(" ")) || form.find(ban => ban.user.tag == args.slice(1).join(" "));

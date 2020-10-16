@@ -12,7 +12,7 @@ export default class extends Command {
       bot: [16, 0]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!message.guild) return message.channel.send('This command only works in servers');
     if (!message.guild.me.hasPermission("MANAGE_CHANNELS")) return message.channel.send("First give me the permission to manage channels, okay?")
     if (message.member.hasPermission("ADMINISTRATOR")) {
@@ -23,7 +23,7 @@ export default class extends Command {
         message.guild.channels.cache.find(c => c.name === args[1]);
       if (!channel) return message.channel.send("Invalid channel!");
       if (channel.type !== "text") return message.channel.send("Invalid channel type!");
-      if (!channel.permissionsFor(this.bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have the `SEND_MESSAGES` and the `EMBED_LINKS` permission in that channel");
+      if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have the `SEND_MESSAGES` and the `EMBED_LINKS` permission in that channel");
       if (!args[2]) return message.channel.send("Put a category channel!")
       let category = message.guild.channels.cache.get(args[2]) ||
         message.guild.channels.cache.find(c => c.name === args[2]);
@@ -42,14 +42,14 @@ export default class extends Command {
           }
         }
       } else {
-        if (!this.bot.emojis.cache.get(inrevision.id)) return message.channel.send("Invalid emoji!");
-        else emoji = this.bot.emojis.cache.get(inrevision.id).id;
+        if (!bot.emojis.cache.get(inrevision.id)) return message.channel.send("Invalid emoji!");
+        else emoji = bot.emojis.cache.get(inrevision.id).id;
       }
       if (!args[4]) return message.channel.send("Put a title for the ticket embed")
       try {
         const embed = new Discord.MessageEmbed()
           .setTitle(args.slice(4).join(" "))
-          .setDescription('React with ' + (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emoji) ? emoji : this.bot.emojis.cache.get(emoji).toString()) + ' to create a ticket.')
+          .setDescription('React with ' + (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emoji) ? emoji : bot.emojis.cache.get(emoji).toString()) + ' to create a ticket.')
           .setColor("BLUE")
           .setFooter('You can only have one ticket at a time');
         let msg = await channel.send(embed)
@@ -78,7 +78,7 @@ export default class extends Command {
       }).catch(err => console.log(err));
       if (msgDocument) {
         let { channelId, emojiId } = msgDocument;
-        await message.channel.send(`To create a ticket, go to <#${channelId}> and react with ${this.bot.emojis.cache.get(emojiId) ? this.bot.emojis.cache.get(emojiId).toString() : emojiId}`)
+        await message.channel.send(`To create a ticket, go to <#${channelId}> and react with ${bot.emojis.cache.get(emojiId) ? bot.emojis.cache.get(emojiId).toString() : emojiId}`)
       } else {
         await message.channel.send('I am not listening to tickets on this server.');
       }

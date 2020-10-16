@@ -6,11 +6,11 @@ export default class extends Command {
     this.aliases = ["fi", "fthinv"]
     this.description = "Get the information from a Discord invite, using natural methods"
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (message.deletable) message.delete();
     if (!args[1]) return message.channel.send("Usage: `fetchinvite <InviteResolvable>`\nAn InviteResolvable can be a URL invite or a invite code");
     try {
-      const invite = await this.bot.fetchInvite(args[1])
+      const invite = await bot.fetchInvite(args[1])
       const embed = new MessageEmbed()
         .setDescription("The API doesn't give me as much information about a Discord invite")
         .setFooter("Requested by: " + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))

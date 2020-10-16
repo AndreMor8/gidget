@@ -7,7 +7,7 @@ export default class extends Command {
     this.description = "It shows the warnings that the user has, by DMs.";
     this.guildonly = true;
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!message.guild)
       return message.channel.send("This command only works on servers.");
     if (args[1]) {

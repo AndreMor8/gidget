@@ -7,7 +7,7 @@ export default class extends Command {
         super(options)
         this.description = "Blurpify some user avatar";
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         let person = message.mentions.users.first() || message.author
         const msg = await message.channel.send("Blurpifying... (this may take a while)")
         const res = await fetch(`https://nekobot.xyz/api/imagegen?type=blurpify&image=${person.displayAvatarURL({ size: 1024, dynamic: true })}`);

@@ -6,7 +6,7 @@ export default class extends Command {
     this.description = "Create a embed";
     this.aliases = ["createembed"];
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     let i = 0;
     let channel;
     if (message.guild) {
@@ -15,7 +15,7 @@ export default class extends Command {
         return message.channel.send("That channel is from another guild");
       if (!["text", "news"].includes(channel.type))
         return message.channel.send("That isn't a text channel!");
-      if (!channel.permissionsFor(this.bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"]))
+      if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"]))
         return message.channel.send("I don't have permissions!");
       if (!channel.permissionsFor(message.author.id).has(["SEND_MESSAGES", "EMBED_LINKS"]))
         return message.channel.send("You don't have permissions!");

@@ -11,7 +11,7 @@ export default class extends Command {
             bot: [0, 0]
         };
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Usage: `seek <time>`\n`seek 1:30`");
         const serverQueue = message.guild.queue;
         if (!serverQueue) return message.channel.send("There is nothing playing.");
@@ -34,6 +34,6 @@ export default class extends Command {
         await message.channel.send("This may take a bit...");
         message.channel.startTyping();
         serverQueue.connection.dispatcher.end();
-        await this.bot.commands.get("play").run(message, ["play", "seek"], reconverted).catch(err => message.channel.send("Error: " + err)).finally(() => message.channel.stopTyping(true))
+        await global.botCommands.get("play").run(bot, message, ["play", "seek"], reconverted).catch(err => message.channel.send("Error: " + err)).finally(() => message.channel.stopTyping(true))
     }
 }

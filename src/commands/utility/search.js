@@ -14,7 +14,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send('You must send something first.')
     if (badwords.isProfane(args.slice(1).join(" ").toLowerCase()) && !message.channel.nsfw) return message.channel.send("To order this content go to an NSFW channel.")
     message.channel.startTyping();

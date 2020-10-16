@@ -12,7 +12,7 @@ export default class extends Command {
       bot: [0, 0]
     }
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if(!args[1]) return message.channel.send("Put someone's ID");
     const msgDocument = MessageModel.findOne({ guildid: message.guild.id, memberid: args[1] });
     if (msgDocument) {

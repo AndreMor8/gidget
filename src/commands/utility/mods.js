@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     const fetch = message.guild.roles.cache.get('617518093480230912').members.map(m => m.user);
     const mods = fetch.join('\n');
     const embed = new MessageEmbed()

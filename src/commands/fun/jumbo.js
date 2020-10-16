@@ -9,10 +9,10 @@ export default class extends Command {
         super(options);
         this.description = "Expand some emoji :)"
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Put some emoji");
         let parsed = parser.parse(args[1]);
-        let cachedemoji = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1]) || this.bot.emojis.cache.get(args[1]) || this.bot.emojis.cache.find(e => e.name === args[1])
+        let cachedemoji = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1]) || bot.emojis.cache.get(args[1]) || bot.emojis.cache.find(e => e.name === args[1])
         if (args[1].match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
             let matched = args[1].match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
             let ext = args[1].startsWith("<a:") ? ("gif") : ("png")

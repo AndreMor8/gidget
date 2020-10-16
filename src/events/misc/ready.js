@@ -4,19 +4,18 @@ import poll from "../../utils/poll.js";
 import MessageModel2 from '../../database/models/mutedmembers.js';
 import MessageModel3 from '../../database/models/poll.js';
 import { version } from "../../index.js";
-//For clean the interval with a command
-export var psi = setInterval(presence, 1800000);
+import webserver from '../../webserver.js'
 //Start ready event
 export default async bot => {
-  await import("../../webserver.js")
-  presence();
+  webserver(bot);
+  presence(bot);
   let doc = await MessageModel2.findOne();
   if (doc) {
-    tempmute();
+    tempmute(bot);
   }
   let doc2 = await MessageModel3.findOne();
   if (doc2) {
-    poll();
+    poll(bot);
   }
   const guildsToFetch = bot.guilds.cache.filter(e => e.me.hasPermission("MANAGE_GUILD")).array();
   for(const guild of guildsToFetch) {

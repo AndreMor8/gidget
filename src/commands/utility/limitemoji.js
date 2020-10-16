@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [1073741824, 0]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1])
       return message.channel.send("Usage: limitemojis <emoji> <mode> <role(s)>");
     let e = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1]);

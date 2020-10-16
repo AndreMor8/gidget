@@ -11,7 +11,7 @@ export default class extends Command {
         this.dev = true;
         this.secret = true;
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         try {
             const { stdout, stderr } = await exec(args.slice(1).join(" "));
             if (!stdout && !stderr) return message.channel.send("Command executed, but no output");

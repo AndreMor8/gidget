@@ -9,12 +9,12 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!message.guild) {
       if (!args[1])
         return message.channel.send("Put a message ID");
       try {
-        const channel = await this.bot.channels.fetch(message.channel.id);
+        const channel = await bot.channels.fetch(message.channel.id);
         const msg = await channel.messages.fetch(args[1]);
         const edits = msg.edits;
         if (!edits[0])

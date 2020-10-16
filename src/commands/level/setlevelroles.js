@@ -12,7 +12,7 @@ export default class extends Command {
             bot: [0, 0]
         };
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Usage: `setlevelroles add <level> <roles> / setlevelroles remove <level>`");
         let mode = args[1];
         if (mode !== "add" && mode !== "remove") return message.channel.send("Invalid mode!");

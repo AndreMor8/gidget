@@ -12,7 +12,7 @@ export default class extends Command {
     };
 
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     const serverQueue = message.guild.queue
     if (!serverQueue) return message.channel.send("There is nothing playing.");
     if (serverQueue && serverQueue.inseek) return;

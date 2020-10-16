@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Put a message ID");
     const msgDocument = await MessageModel.findOne({ guildId: message.guild.id, messageId: args[1] });
     if (!msgDocument) return message.channel.send("I can't find a ticket system in that message.");
@@ -24,7 +24,7 @@ export default class extends Command {
         .addField("Category (category)", message.guild.channels.cache.get(msgDocument.categoryId).name)
         .addField("Roles (setroles)", msgDocument.roles[0] ? msgDocument.roles.map(r => "<@&" + r + ">").join(", ") : "No Roles")
         .addField("Manual closing? (manual)", manual ? "Yes" : "No")
-        .addField("Emoji to react", Number(msgDocument.emojiId) ? (this.bot.emojis.cache.get(msgDocument.emojiId) ? this.bot.emojis.cache.get(msgDocument.emojiId).toString() : "Deleted") : msgDocument.emojiId)
+        .addField("Emoji to react", Number(msgDocument.emojiId) ? (bot.emojis.cache.get(msgDocument.emojiId) ? bot.emojis.cache.get(msgDocument.emojiId).toString() : "Deleted") : msgDocument.emojiId)
         .addField("Perms (perms)", msgDocument.perms[0] ? msgDocument.perms.join(", ") : "?")
         .addField("Welcome (welcomemsg)", msgDocument.welcomemsg ? msgDocument.welcomemsg : "None")
         .addField("Text channel description (desc)", msgDocument.desc ? msgDocument.desc : "None"))

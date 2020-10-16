@@ -1,50 +1,51 @@
-import fs from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 import Command from './command.js';
 import commons from './commons.js';
 const { __dirname } = commons(import.meta.url);
-export async function registerCommands(bot, dir) {
+class ErrorCommand extends Command {
+    constructor(options) {
+        super(options);
+        this.description = "That command is not loaded due to error";
+        this.secret = true;
+        this.error = options.err;
+    }
+    async run(bot, message, args) {
+        await message.channel.send("That command is not loaded due to error: " + this.error);
+    }
+}
+export async function registerCommands(dir) {
     const arr = dir.split("/");
     const category = arr[arr.length - 1];
-    let files = fs.readdirSync(path.join(__dirname, dir));
+    let files = await fs.readdir(path.join(__dirname, dir));
     // Loop through each file.
     for (let file of files) {
-        let stat = fs.lstatSync(path.join(__dirname, dir, file));
+        let stat = await fs.lstat(path.join(__dirname, dir, file));
         if (stat.isDirectory()) // If file is a directory, recursive call recurDir
-            registerCommands(bot, path.join(dir, file));
+            registerCommands(path.join(dir, file));
         else {
             // Check if file is a .js file.
             if (file.endsWith(".js")) {
                 let cmdName = file.substring(0, file.indexOf(".js"));
                 try {
                     let cmdModule = await import("file:///" + path.join(__dirname, dir, file));
-                    let cmdClass = new cmdModule.default({ name: cmdName, category, bot })
-                    bot.commands.set(cmdName, cmdClass);
+                    let cmdClass = new cmdModule.default({ name: cmdName, category })
+                    global.botCommands.set(cmdName, cmdClass);
 
                 }
                 catch (err) {
                     console.error("There was an error initializing the " + cmdName + " command\n", err);
-                    class ErrorCommand extends Command {
-                        constructor(options) {
-                            super(options);
-                            this.description = "That command is not loaded due to error";
-                            this.secret = true;
-                        }
-                        async run(message, args) {
-                            await message.channel.send("That command is not loaded due to error: " + err);
-                        }
-                    }
-                    bot.commands.set(cmdName, new ErrorCommand({ name: cmdName, category, bot }));
+                    global.botCommands.set(cmdName, new ErrorCommand({ name: cmdName, category, err }));
                 }
             }
         }
     }
 }
 export async function registerEvents(bot, dir) {
-    let files = fs.readdirSync(path.join(__dirname, dir));
+    let files = await fs.readdir(path.join(__dirname, dir));
     // Loop through each file.
     for (let file of files) {
-        let stat = fs.lstatSync(path.join(__dirname, dir, file));
+        let stat = await fs.lstat(path.join(__dirname, dir, file));
         if (stat.isDirectory()) // If file is a directory, recursive call recurDir
             registerEvents(bot, path.join(dir, file));
         else {

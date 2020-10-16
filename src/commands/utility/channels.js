@@ -5,7 +5,7 @@ export default class extends Command {
     super(options)
     this.description = "Channel structure for a server....";
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!message.guild)
       return message.channel.send("The only channel I can see here is this.");
     let text = "";

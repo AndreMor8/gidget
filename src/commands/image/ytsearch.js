@@ -12,7 +12,7 @@ export default class extends Command {
       bot: [0, 16384]
     }
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     try {
       message.channel.startTyping();
       let filter1;

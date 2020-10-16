@@ -12,7 +12,7 @@ export default class extends Command {
       bot: [268435456, 0]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send('You haven\'t said anything. The options are `join`, `leave`, `list`. For interact with the database: `add`, `remove`')
     if (args[1] === 'list') {
       let msgDocument = await MessageModel.find({ guildid: message.guild.id }, "word");

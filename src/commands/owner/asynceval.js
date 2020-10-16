@@ -11,7 +11,7 @@ export default class extends Command {
     this.description = "Eval a code via command";
     this.dev = true;
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Put something to evaluate.\nThis allows using async/await without complications\nRemember to put `return` or this will not return anything.");
     try {
       let evaluated = await eval("(async () => { " + args.slice(1).join(" ") + "})();");

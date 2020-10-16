@@ -8,7 +8,7 @@ export default class extends Command {
         bot: [0, 0]
       }
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     // Check if you can delete the message
     if (message.deletable) message.delete();
 

@@ -11,9 +11,9 @@ export default class extends Command {
             bot: [0, 16384]
         }
     }
-    async run(message, args) {
-        let servers = this.bot.guilds.cache.size;
-        let users = this.bot.users.cache.size;
+    async run(bot, message, args) {
+        let servers = bot.guilds.cache.size;
+        let users = bot.users.cache.size;
         let serverEmbed = new MessageEmbed()
             .setDescription("At the moment I'm in **" + servers + "** servers and with **" + users + "** cached online users.", true)
             .setColor(0xf7a7ff)

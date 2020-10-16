@@ -10,7 +10,7 @@ export default class extends Command {
       bot: [0, 16384]
     }
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return await message.reply("Please enter a full question with 2 or more words!");
 
     let replies = [

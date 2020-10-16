@@ -8,8 +8,8 @@ export default class extends Command {
         this.description = 'Reboot the bot to update files';
         this.owner = true;
     }
-    async run(message, args) {
-        if (this.bot.voice.connections.size) {
+    async run(bot, message, args) {
+        if (bot.voice.connections.size) {
             if (!thing.get(message.author.id)) {
                 thing.set(message.author.id, true);
                 setTimeout(() => {

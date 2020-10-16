@@ -39,7 +39,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
       //Arguments with spaces
       let args = message.content.substring(PREFIX.length).trimEnd().split(/ +/g);
       if (!args[0]) return;
-      const command = bot.commands.get(args[0].toLowerCase()) || bot.commands.find(a => a.aliases.includes(args[0].toLowerCase()));
+      const command = global.botCommands.get(args[0].toLowerCase()) || global.botCommands.find(a => a.aliases.includes(args[0].toLowerCase()));
       if (command) {
         if (command.owner && message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
         if (command.dev && message.author.id !== "577000793094488085") {
@@ -61,7 +61,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
         }
         try {
           internalCooldown.add(message.author.id);
-          await command.run(message, args);
+          await command.run(bot, message, args);
         } catch (err) {
           if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
           console.error(err);

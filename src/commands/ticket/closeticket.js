@@ -12,7 +12,7 @@ export default class extends Command {
       bot: [0, 16]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     let msgDocument2 = await MessageModel.findOne({ guildId: message.guild.id, channelId: message.channel.id })
     if (!msgDocument2) return message.channel.send("This isn't a ticket-type chat!")
     let { from } = msgDocument2;

@@ -14,7 +14,7 @@ export default class extends Command {
         bot: [0, 32768]
       }
     }
-    async run(message, args) {
+    async run(bot, message, args) {
       //Fallback
       if (!args[1]) return message.channel.send("Pon algo");
       //Cargamos una fuente. La fuente que acabo de cargar es una fuente por default de JIMP. Este método devuelve promesa con la fuente

@@ -7,7 +7,7 @@ export default class extends Command {
         super(options)
         this.description = "turn someone into a baguette";
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         let person = message.mentions.users.first() || message.author
 
         const msg = await message.channel.send("Generating... (this may take a while)")

@@ -6,9 +6,9 @@ export default class extends Command {
         super(options)
         this.description = "See a deleted message from a channel";
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.filter(e => ["news", "text"].includes(e.type)).get(args[1]) || message.guild.channels.cache.filter(e => ["news", "text"].includes(e.type)).find(e => e.name === args.slice(1).join(" ")) || message.guild.channels.cache.filter(e => ["news", "text"].includes(e.type)).find(e => e.position == args[1]) || message.channel;
-        if (!channel.permissionsFor(this.bot.user).has("VIEW_CHANNEL")) return message.channel.send("I don't have permissions");
+        if (!channel.permissionsFor(bot.user).has("VIEW_CHANNEL")) return message.channel.send("I don't have permissions");
         if (!channel.permissionsFor(message.author).has("VIEW_CHANNEL")) return message.channel.send("You don't have permissions");
         if (!channel.snipe) return message.channel.send("There are no snipes");
         else {

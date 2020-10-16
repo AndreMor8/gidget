@@ -5,7 +5,7 @@ export default class extends Command {
         this.description = "Remove a song from the queue";
         this.guildonly = true;
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Put the song row number to remove it");
         const voiceChannel = message.member.voice.channelID;
         if (!voiceChannel) return message.channel.send("You need to be in a voice channel to remove a song!");

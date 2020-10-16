@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     //https://djsdocs.sorta.moe/v2/embed?src=stable&q=Client
     let src = "";
     let cont = "";

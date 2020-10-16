@@ -15,7 +15,7 @@ export default class extends Command {
         super(options);
         this.description = "Spin some image";
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (message.author.id !== "577000793094488085") {
             if (timer.has(message.author.id)) return message.channel.send("Don't overload this command (20 sec cooldown)");
             else {
@@ -25,7 +25,7 @@ export default class extends Command {
                 }, 20000);
             }
         }
-        let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || this.bot.users.cache.get(args[1]) || this.bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await this.bot.users.fetch(args[1]).catch(err => { }) || args[1]) : message.author)
+        let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await bot.users.fetch(args[1]).catch(err => { }) || args[1]) : message.author)
         if (!source) return message.channel.send("Invalid user, emoji or image!");
         if (source instanceof User) {
             source = source.displayAvatarURL({ format: "png", size: 256 });

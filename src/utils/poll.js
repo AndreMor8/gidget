@@ -3,8 +3,7 @@ import { Util } from "discord.js";
 let i = 0;
 let cache;
 
-export default async (reupdate = false) => {
-  const { bot } = await import("../index.js");
+export default async (bot, reupdate = false) => {
   if (i === 1 && reupdate) {
     i = 0;
     clearInterval(interval);

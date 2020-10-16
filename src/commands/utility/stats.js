@@ -16,7 +16,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     let percent = await p();
     let embedStats = new Discord.MessageEmbed()
       .setTitle("***Stats***")
@@ -24,14 +24,14 @@ export default class extends Command {
       .setDescription('Gidget is alive! - Version ' + version)
       .addField("• RAM", `${memory(os.totalmem() - os.freemem(), false)} / ${memory(os.totalmem())}`, true)
       .addField("• Process RAM usage", memory(process.memoryUsage().rss), true)
-      .addField("• Uptime ", `${moment.duration(Date.now() - this.bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, true)
+      .addField("• Uptime ", `${moment.duration(Date.now() - bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, true)
       .addField("• Discord.js", `v${Discord.version}`, true)
       .addField("• Node.js", `${process.version}`, true)
       .addField("• Hosting service", process.env.HOSTER, true)
       .addField("• Operating system", `\`\`\`md\n${os.version()}\n${os.release()}\`\`\``)
       .addField("• CPU", `\`\`\`md\n${os.cpus().map(i => `${i.model}`)[0]}\`\`\``)
-    if (this.bot.voice.connections.size) {
-      embedStats.addField("Voice connections", this.bot.voice.connections.size.toString())
+    if (bot.voice.connections.size) {
+      embedStats.addField("Voice connections", bot.voice.connections.size.toString())
     }
     embedStats.addField("• CPU usage", `\`${percent.toFixed(2)}%\``, true)
       .addField("• Arch", `\`${os.arch()}\``, true)

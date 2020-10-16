@@ -12,7 +12,7 @@ export default class extends Command {
         super(options);
         this.description = "Generate a text with the House Holiday Sans font, the font that some Wubbzy products and pages used.";
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if(!args[1]) return message.channel.send("Put something");
         if(args.slice(1).join(" ").length > 120) return message.channel.send("There's a 120 characters limit.");
         message.channel.startTyping();

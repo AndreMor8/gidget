@@ -3,8 +3,7 @@ import MessageModel2 from '../database/models/mutedmembers.js';
 let i = 0;
 let cache;
 
-export default async (reupdate = false) => {
-  const { bot } = await import("../index.js");
+export default async (bot, reupdate = false) => {
   if(i === 1 && reupdate) {
     i = 0;
     clearInterval(interval);

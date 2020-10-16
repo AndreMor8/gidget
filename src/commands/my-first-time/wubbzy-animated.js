@@ -6,7 +6,7 @@ export default class extends Command {
     this.aliases = []
     this.description = "Wubbzy in a animated version"
   }
-  async run(message, args) {
+  async run(bot, message, args) {
  await message.channel.send("<a:WubbzyFaceA:612311062611492900>")
   }
 }

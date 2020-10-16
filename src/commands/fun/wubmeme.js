@@ -11,7 +11,7 @@ export default class extends Command {
             bot: [0, 32768]
         }
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (args[1] === "64") {
             await px64(message, args.slice(2));
         } else if (args[1] === "32") {

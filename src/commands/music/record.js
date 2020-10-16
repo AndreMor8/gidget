@@ -14,7 +14,7 @@ export default class extends Command {
     this.description = "I'm going to record your voice (experimental)";
     this.guildonly = true;
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!message.member.voice.channel) return message.channel.send("You have to be in a voice channel!");
     if (!args[1]) return message.channel.send("`dm` to send the file to your direct messages, `play` to play it on the voice channel, `server` to send the file to this channel.");
     let options = {}

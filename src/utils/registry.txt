@@ -26,9 +26,9 @@ async function registerCommands(bot, dir) {
                     if(checkCommandModule(cmdName, cmdModule)) {
                         if(checkProperties(cmdName, cmdModule)) {
                             let { aliases } = cmdModule;
-                            bot.commands.set(cmdName, { run: cmdModule.run, description: cmdModule.description, aliases: aliases });
+                            global.botCommands.set(cmdName, { run: cmdModule.run, description: cmdModule.description, aliases: aliases });
                             if(aliases.length !== 0)
-                                aliases.forEach(alias => bot.commands.set(alias, { run: cmdModule.run, description: cmdModule.description, aliases: aliases }));
+                                aliases.forEach(alias => global.botCommands.set(alias, { run: cmdModule.run, description: cmdModule.description, aliases: aliases }));
                             commandStatus.push(
                                 [`${c.cyan(`${cmdName}`)}`, `${c.bgGreenBright('Success')}`, `${cmdModule.description}`]
                             )

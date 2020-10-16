@@ -12,7 +12,7 @@ export default class extends Command {
             bot: [268435456, 0]
         };
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (args.slice(1).length !== 1) return message.channel.send('Put the message ID.');
         // Check if the message exists.
         const { channel, author } = message;
@@ -35,13 +35,13 @@ export default class extends Command {
                             let addMsgPrompt = await channel.send("Enter an emoji name followed by the corresponding role name, separated with a comma. e.g: WubbzyWalk, A Wubbzy Fan");
                             let collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel);
                             msgModel.updateOne({ emojiRoleMappings: collectorResult }).then(() => {
-                                this.bot.cachedMessageReactions.delete(fetchedMessage.id)
+                                bot.cachedMessageReactions.delete(fetchedMessage.id)
                                 message.channel.send("Updated!").catch(err => {});
                             })
                         }
                         else if (choice.content === "remove") {
                             msgModel.deleteOne().then(async m => {
-                                this.bot.cachedMessageReactions.set(fetchedMessage.id, false);
+                                bot.cachedMessageReactions.set(fetchedMessage.id, false);
                                 await message.channel.send('Ok. Removed.');
                             }).catch(err => message.channel.send('Some error ocurred. Here\'s a debug: ' + err));
                         } else {

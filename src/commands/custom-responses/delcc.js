@@ -10,7 +10,7 @@ export default class extends Command {
       bot: [0, 0]
     }
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Usage: `delcc <id>`\nUse `listcc` for a ID.");
     if (isNaN(args[1])) return message.channel.send("Invalid ID!");
     await message.guild.deleteCustomResponse(parseInt(args[1]));

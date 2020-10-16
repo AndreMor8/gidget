@@ -7,7 +7,7 @@ export default class extends Command {
     this.onlyguild = true;
     this.description = "Who is the best mod?";
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     let mods = message.guild.roles.cache.get("617518093480230912")
     let map = mods.members.map(m => m.user.username);
     let i = mods.members.size;

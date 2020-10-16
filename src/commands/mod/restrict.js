@@ -12,7 +12,7 @@ export default class extends Command {
       bot: [268435456, 0]
     }
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send('Usage: `restrict <member> <reason>`')
     if (args[1] === 'role') {
       if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)

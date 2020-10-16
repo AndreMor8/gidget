@@ -13,7 +13,7 @@ export default class extends Command {
             bot: [0, 32768]
         }
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         const miembro = message.mentions.members.first()
         if (!miembro) return message.channel.send("Mention someone")
         const mensaje = args.slice(2).join(" ")

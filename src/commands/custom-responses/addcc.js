@@ -10,7 +10,7 @@ export default class extends Command {
       bot: [0, 0]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Usage: `addcc <match> | <response>`\nThe cases here are global, insensitive, and multi-line.");
     const realargs = args.slice(1).join(" ").split(" | ");
     if (!realargs[0] || !realargs[1]) return message.channel.send("Usage: `addcc <match> | <response>`\nThe cases here are global, insensitive, and multi-line.");

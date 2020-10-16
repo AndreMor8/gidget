@@ -11,7 +11,7 @@ export default class extends Command {
         this.guildonly = true;
         this.description = "Welcome and goodbye system";
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         const doc = message.guild.cache.welcome ? message.guild.welcome : await message.guild.getWelcome();
         if (!args[1]) {
             const embed = new Discord.MessageEmbed()

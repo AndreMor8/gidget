@@ -10,7 +10,7 @@ export default class extends Command {
       bot: [4, 0]
     }
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send('Put ~~snowflakes~~ user IDs to hackban them.');
     const users = [];
     for (const thing of args.slice(1)) {

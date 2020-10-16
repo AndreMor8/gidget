@@ -1,13 +1,12 @@
 //Needs rewrite
 import Command from '../../utils/command.js';
-import { psi } from "../../events/misc/ready.js";
 
 export default class extends Command {
   constructor(options) {
     super(options);
     this.description = 'Change the status or presence of the bot.';
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if(message.author.id !== "577000793094488085"){
       if(!message.guild) return message.channel.send('Only AndreMor or Wow Wow Discord administrators can use this command.')
       else if(message.guild.id !== "402555684849451028") return message.channel.send('Only AndreMor or Wow Wow Discord administrators can use this command.')
@@ -20,7 +19,7 @@ export default class extends Command {
       } else if (!args[3]) {
         return message.channel.send('Put some text!')
       } else {
-        this.bot.user.setPresence({ activity: { name: args.slice(3).join(" "), type: args[1], url: args[2] } }).catch(console.error);
+        bot.user.setPresence({ activity: { name: args.slice(3).join(" "), type: args[1], url: args[2] } }).catch(console.error);
         return message.channel.send('Presence changed!')
       }
     }
@@ -35,7 +34,7 @@ export default class extends Command {
     }
     if(!args[2] || args[2] === "--clear") {
       if(message.content.endsWith("--clear")) clearInterval(psi);
-      this.bot.user.setPresence({ status: args[1] }).catch(console.error);
+      bot.user.setPresence({ status: args[1] }).catch(console.error);
       if (args[1] == 'invisible'){
         return message.channel.send('Status changed! I\'m not slepping.')
       } else {
@@ -52,11 +51,7 @@ export default class extends Command {
       }
     }
     if(!args[3]) return message.channel.send('Put some text!')
-    if(message.content.endsWith("--clear")) {
-      clearInterval(psi)
-      args.pop();
-    };
-    this.bot.user.setPresence({ activity: { name: args.slice(3).join(" "), type: args[2] }, status: args[1] }).catch(console.error);
+    bot.user.setPresence({ activity: { name: args.slice(3).join(" "), type: args[2] }, status: args[1] }).catch(console.error);
     await message.channel.send('Presence changed!');
   }
 }

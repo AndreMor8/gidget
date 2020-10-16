@@ -15,7 +15,7 @@ export default class extends Command {
     };
 
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     const serverQueue = message.guild.queue;
     const musicVariables = message.guild.musicVariables;
     if (!message.member.voice.channel) return message.channel.send("You must be on a voice channel.");
@@ -69,7 +69,7 @@ export default class extends Command {
           if (number <= i && number >= 1) {
             if (!msg.deleted) await msg.delete();
             collector.stop("Ok!");
-            this.bot.commands.get("play").run(message, ["play", searchResults.items[number - 1].link]);
+            global.botCommands.get("play").run(bot, message, ["play", searchResults.items[number - 1].link]);
           } else if (i < number) {
             message.channel.send("There are only " + i + " results...");
           } else {

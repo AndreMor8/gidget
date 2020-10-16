@@ -13,7 +13,7 @@ export default class extends Command {
     };
 
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Put the message ID of that ticket system!");
     let msgDocument = await MessageModel.findOne({
       guildId: message.guild.id,

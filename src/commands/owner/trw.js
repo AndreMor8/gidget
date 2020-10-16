@@ -9,7 +9,7 @@ export default class extends Command {
         this.owner = true;
         this.description = "The real Wubbzy webhook";
     }
-    async run(message, args) {
+    async run(bot, message, args) {
         if (message.deletable)
             message.delete();
 

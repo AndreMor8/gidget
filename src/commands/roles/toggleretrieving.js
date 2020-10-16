@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [268435456, 0]
     };
   }
-  async run(message, args) {
+  async run(bot, message, args) {
     if (!message.guild) return message.channel.send("This command only works on servers");
     if (!message.member.hasPermission("MANAGE_ROLES")) return message.channel.send("You don't have permission to modify that.")
     if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("I don't have the `MANAGE_ROLES` permission.")
@@ -22,12 +22,12 @@ export default class extends Command {
         enabled: true,
       }).save().then(() => {
         message.channel.send("Now I will re-deliver the roles to the members who return to the server\nUse `mlremove <id>` if you need a user not to retrive the roles.");
-        this.bot.rrcache.delete(message.guild.id);
+        bot.rrcache.delete(message.guild.id);
       })
     } else {
       msgDocument.updateOne({ enabled: !msgDocument.enabled }).then(() => {
         message.channel.send(!msgDocument.enabled ? "Now I will re-deliver the roles to the members who return to the server\nUse `mlremove <id>` if you need a user not to retrive the roles." : "I will no longer re-deliver roles to users");
-        this.bot.rrcache.delete(message.guild.id);
+        bot.rrcache.delete(message.guild.id);
       })
     }
   }

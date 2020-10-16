@@ -6,8 +6,7 @@ export default class extends Command {
     this.description = "See the channel overwrites";
     this.guildonly = true;
   }
-  async run(message, args) {
-    let bot = this.bot
+  async run(bot, message, args) {
     const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || message.channel;
     if (channel.guild.id !== message.guild.id) return message.channel.send("The channel you have put belongs to another server.");
     const rr = channel.permissionOverwrites.filter(m => m.type === "member").map(m => m.id)

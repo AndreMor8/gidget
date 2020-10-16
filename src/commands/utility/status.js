@@ -5,8 +5,8 @@ export default class extends Command {
         super(options)
         this.description = "Client status";
     }
-    async run(message, args) {
-        const user = message.mentions.users.first() || this.bot.users.cache.get(args[1]) || this.bot.users.cache.find(m => m.username === args.slice(1).join(" ")) || message.author;
+    async run(bot, message, args) {
+        const user = message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(m => m.username === args.slice(1).join(" ")) || message.author;
     
         const clientStatus = user.presence.clientStatus;
         const status = {
