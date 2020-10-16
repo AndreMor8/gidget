@@ -2,7 +2,7 @@ import Command from '../../utils/command.js';
 import Discord from "discord.js";
 import { checkSingleCleanURL } from '../../utils/clean-url/index.js';
 const timer = new Set();
-import check from '../../utils/nsfwjs.js';
+import check from '../../utils/nsfw.js';
 
 export default class extends Command {
   constructor(options) {
@@ -15,6 +15,7 @@ export default class extends Command {
       }
   }
   async run(bot, message, args) {
+    if(!global.browser) return message.channel.send("Puppeteer not enabled in this bot instance");
     if (!args[1]) return message.channel.send("Put some URL");
     if (message.author.id !== "577000793094488085") {
       if (!timer.has(message.author.id)) {
@@ -72,7 +73,7 @@ async function pup(message, url, options) {
     setTimeout(() => {
       message.channel.stopTyping(true);
     }, 40000);
-    page = await message.client.browser.newPage();
+    page = await global.browser.newPage();
     page.on("error", async error => {
       message.channel.stopTyping(true);
       await message.channel.send(`There was an error opening a page. Here's a debug: ${error}`).catch(err => { });;
@@ -95,7 +96,7 @@ async function pup(message, url, options) {
     };
     const attachment = new Discord.MessageAttachment(screenshot, "file.png");
     message.channel.stopTyping(true);
-    await message.channel.send("Time: " + (Date.now() - message.createdTimestamp) / 1000 + "s", attachment)
+    await message.channel.send("Time: " + (Date.now() - (form.editedTimestamp || form.createdTimestamp)) / 1000 + "s", attachment)
     await form.delete();
   } catch (error) {
     message.channel.stopTyping(true);
