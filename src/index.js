@@ -14,8 +14,17 @@ const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "G
 import { registerCommands, registerEvents } from './utils/registry.js';
 import puppeteer from "puppeteer";
 import database from "./database/database.js";
+import DBL from 'dblapi.js';
 export const version = "0.98 Post-Beta";
-
+if(process.env.DBL === "yes") {
+  bot.dbl = new DBL(process.env.DBLKEY, bot);
+  bot.dbl.on("posted", () => {
+    console.log("tog.gg: Server count posted!");
+  });
+  bot.dbl.on("error", e => {
+    console.error("top.gg: Error:", err);
+  });
+}
 (async () => {
   //Puppeteer
   if (process.env.PUPPETEER !== "NO") {

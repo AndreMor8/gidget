@@ -4,11 +4,11 @@ import poll from "../../utils/poll.js";
 import MessageModel2 from '../../database/models/mutedmembers.js';
 import MessageModel3 from '../../database/models/poll.js';
 import { version } from "../../index.js";
-import webserver from '../../webserver.js'
+import webserver from '../../webserver.js';
 //Start ready event
 export default async bot => {
-  webserver(bot);
   presence(bot);
+  webserver(bot);
   let doc = await MessageModel2.findOne();
   if (doc) {
     tempmute(bot);

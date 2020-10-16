@@ -59,6 +59,11 @@
     "onlyguild": false,
     "secret": false 
   },
+  "welcome": {
+    "name": "Welcome system",
+    "onlyguild": false,
+    "secret": false 
+  },
   "wiki": {
     "name": "Wiki commands",
     "onlyguild": true,
