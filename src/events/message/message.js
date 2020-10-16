@@ -7,7 +7,7 @@ const timer = new Discord.Collection();
 //Only 1 command at a time.
 const internalCooldown = new Set();
 //Some problems
-setTimeout(() => {
+setInterval(() => {
   internalCooldown.clear();
 }, 90000)
 //Start message event

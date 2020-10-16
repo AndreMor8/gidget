@@ -18,7 +18,7 @@ export default class extends Command {
     if (!args[1]) return message.channel.send('You must send something first.')
     if (badwords.isProfane(args.slice(1).join(" ").toLowerCase()) && !message.channel.nsfw) return message.channel.send("To order this content go to an NSFW channel.")
     message.channel.startTyping();
-    const results = await googleIt({ 'query': args.slice(1).join(" "), 'limit': 7, disableConsole: true })
+    const results = await googleIt({ 'query': args.slice(1).join(" "), 'limit': 7, disableConsole: true });
     if (results.some(e => checkCleanUrl(e.link)) && !message.channel.nsfw) {
       message.channel.stopTyping(true);
       return message.channel.send("Your search includes NSFW content. To order this content go to an NSFW channel.");
