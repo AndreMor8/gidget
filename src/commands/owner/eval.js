@@ -35,8 +35,10 @@ export default class extends Command {
         await message.channel.send(arr[0], { code: "js" });
       }
     } catch (err) {
-      const arr = Discord.Util.splitMessage(err.toString(), { maxLength: 1950 });
-      await message.channel.send("```js\n" + arr[0] + "```");
+      let algo = err;
+      if (typeof algo !== "string") algo = util.inspect(algo, { depth: 0 });
+      const arr = Discord.Util.splitMessage(algo, { maxLength: 1950 });
+      await message.channel.send(arr[0], { code: "js" });
     }
   }
 }
