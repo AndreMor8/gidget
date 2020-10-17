@@ -78,7 +78,7 @@ export default class extends Command {
         .setColor(role.hexColor)
         .setTitle('Information about ' + role.name)
         .addField('ID', role.id, true)
-        .addField('Created At', role.client.intl.format(role.createdAt), true)
+        .addField('Created At', global.botIntl.format(role.createdAt), true)
         .addField('Mention', role.toString() + ' `' + role.toString() + '`', true)
         .addField('Managed?', mng[role.managed], true)
         .addField('Hoisted?', mng[role.hoist], true)
