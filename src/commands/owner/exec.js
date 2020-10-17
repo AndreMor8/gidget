@@ -14,19 +14,24 @@ export default class extends Command {
     async run(bot, message, args) {
         if(!args[1]) return message.channel.send("Put some command to send to the console");
         try {
-            const { stdout, stderr } = await exec(args.slice(1).join(" "));
-            if (!stdout && !stderr) return message.channel.send("Command executed, but no output");
-            if (stdout) {
-                const text = Util.splitMessage(stdout, { maxLength: 1950 });
-                await message.channel.send(text[0], { code: "sh" });
-            }
-            if (stderr) {
-                const text = Util.splitMessage(stderr, { maxLength: 1950 });
-                await message.channel.send(text[0], { code: "sh" });
-            }
+            exec(args.slice(1).join(" ")).then(e => {
+                const { stdout, stderr } = e;
+                if (!stdout && !stderr) return message.channel.send("Command executed, but no output");
+                if (stdout) {
+                    const text = Util.splitMessage(stdout, { maxLength: 1950 });
+                    message.channel.send(text[0], { code: "sh" });
+                }
+                if (stderr) {
+                    const text = Util.splitMessage(stderr, { maxLength: 1950 });
+                    message.channel.send(text[0], { code: "sh" });
+                }
+            }).catch(e => {
+                const text = Util.splitMessage(util.inspect(e, { depth: 0 }), { maxLength: 1950 });
+                message.channel.send(text[0], { code: "sh" });
+            });
         } catch (error) {
-            const text = Util.splitMessage(error, { maxLength: 1950 });
-            await message.channel.send(text[0], { code: "sh" });
+            const text = Util.splitMessage(util.inspect(error, { depth: 0 }), { maxLength: 1950 });
+            message.channel.send(text[0], { code: "sh" });
         }
     }
 }
