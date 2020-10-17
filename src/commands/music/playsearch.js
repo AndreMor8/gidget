@@ -13,7 +13,6 @@ export default class extends Command {
       user: [0, 0],
       bot: [0, 0]
     };
-
   }
   async run(bot, message, args) {
     const serverQueue = message.guild.queue;

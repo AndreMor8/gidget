@@ -18,7 +18,7 @@ export default class extends Command {
     this.description = "Play music from YouTube";
     this.guildonly = true;
   }
-  async run(message, args, seek) {
+  async run(bot, message, args, seek) {
     if (!args[1])
       return message.channel.send("Please enter a YouTube link or search term.");
     const voiceChannel = message.member.voice.channel;
