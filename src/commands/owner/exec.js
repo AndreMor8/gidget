@@ -12,6 +12,7 @@ export default class extends Command {
         this.secret = true;
     }
     async run(bot, message, args) {
+        if(!args[1]) return message.channel.send("Put some command to send to the console");
         try {
             const { stdout, stderr } = await exec(args.slice(1).join(" "));
             if (!stdout && !stderr) return message.channel.send("Command executed, but no output");
@@ -24,7 +25,7 @@ export default class extends Command {
                 await message.channel.send(text[0], { code: "sh" });
             }
         } catch (error) {
-            const text = Util.splitMessage(error.toString(), { maxLength: 1950 });
+            const text = Util.splitMessage(error, { maxLength: 1950 });
             await message.channel.send(text[0], { code: "sh" });
         }
     }
