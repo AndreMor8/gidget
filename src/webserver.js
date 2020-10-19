@@ -7,7 +7,7 @@ export default function (bot) {
       return;
     }
     try {
-      const todelete = new URL(req.url).searchParams.get("delete");
+      const todelete = new URL("http://localhost:8080" + req.url).searchParams.get("delete");
       if (todelete) deleteCache(todelete);
       res.statusCode = 200;
       res.end("Good.");
