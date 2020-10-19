@@ -133,7 +133,7 @@ export default class DiscordXp {
   static async setLevel(userId, guildId, level) {
     if (!userId) throw new TypeError("An user id was not provided.");
     if (!guildId) throw new TypeError("A guild id was not provided.");
-    if (!level) throw new TypeError("A level was not provided.");
+    if (level !== 0 && !level) throw new TypeError("A level was not provided.");
 
     const user = await levels.findOne({ userID: userId, guildID: guildId });
     if (!user) return false;
