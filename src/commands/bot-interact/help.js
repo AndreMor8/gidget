@@ -1,12 +1,8 @@
 import Command from '../../utils/command.js';
 import def from "../../utils/definitions.json";
 import Discord from "discord.js";
-const links = `[Bot's page (in progress)](https://gidget.xyz/) | 
-[Source code](https://github.com/AndreMor955/gidget) | 
-[AndreMor's page](https://wubbzy.gidget.xyz) | 
-[Discord.js documentation](https://discord.js.org/#/docs/)`;
-const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | 
-[top.gg](https://top.gg/bot/694306281736896573)`;
+const links = `[Bot's page (in progress)](https://gidget.xyz/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://wubbzy.gidget.xyz) | [Discord.js documentation](https://discord.js.org/#/docs/)`;
+const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | [top.gg](https://top.gg/bot/694306281736896573)`;
 const image = "https://top.gg/api/widget/694306281736896573.png";
 export default class extends Command {
   constructor(options) {
@@ -33,7 +29,8 @@ export default class extends Command {
     if (args[1] && arr.find(d => d.catname === args[1])) {
       const g = arr.find(d => d.catname === args[1]);
       const embed = new Discord.MessageEmbed()
-        .setImage(image)
+        .attachFiles([new Discord.MessageAttachment(image, "top.gg.png")])
+        .setImage("attachment://top.gg.png")
         .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
         .setColor("#FF8000")
         .addField('Links', links)
@@ -68,7 +65,8 @@ export default class extends Command {
       return message.channel.send(embed);
     } else {
       const embed = new Discord.MessageEmbed()
-        .setImage(image)
+        .attachFiles([new Discord.MessageAttachment(image, "top.gg.png")])
+        .setImage("attachment://top.gg.png")
         .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
         .setColor("#BDBDBD")
         .setTitle("Help command")
