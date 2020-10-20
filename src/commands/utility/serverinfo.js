@@ -35,11 +35,13 @@ export default class extends Command {
     let rroles;
     let ae;
     let emojis;
+    /*
     let online;
     let idle;
     let dnd;
     let offline;
     let active;
+    */
     if (server instanceof Discord.Guild) {
       const cat = server.channels.cache.filter(c => c.type === "category").size;
       console.log(cat);
@@ -94,7 +96,7 @@ export default class extends Command {
         };
         links.push("[Vanity invite URL" + (vanity.uses ? (" (" + vanity.uses + " uses)") : "") + "](https://discord.gg/" + (vanity.code) + ")");
       }
-
+      /*
       bots = server.members.cache.filter(m => m.user.bot === true)
         .size;
 
@@ -128,9 +130,7 @@ export default class extends Command {
       ).size;
 
       active = online + idle + dnd;
-    } else {
-      rmembers = server.approximateMemberCount;
-      active = server.approximatePresenceCount;
+      */
     }
 
     if (server.splashURL()) {
@@ -172,13 +172,11 @@ export default class extends Command {
         embed.addField("System Channel", server.systemChannel.toString(), true);
       }
       embed.addField("Widget Enabled?", embedenabled ? "Yes" + (embedchannel ? ", in " + embedchannel.toString() : "") : "No", true)
-        .addField("Presence Count (" + active + " active on this server)", `**Online:** ${online}\n**Idle**: ${idle}\n**Do Not Disturb:** ${dnd}\n**Offline:** ${offline}`, true);
+        /*.addField("Presence Count (" + active + " active on this server)", `**Online:** ${online}\n**Idle**: ${idle}\n**Do Not Disturb:** ${dnd}\n**Offline:** ${offline}`, true)*/;
       if ((message.guild ? message.guild.id === "402555684849451028" : false) && server.id === "402555684849451028") {
         embed.addField("Ban count", bannumber, true)
           .addField("Invite count", invitenum, true);
       }
-    } else {
-      embed.addField("Approximate member's count", rmembers + "\nOnline: " + active + "\nOffline: " + (rmembers - active), true);
     }
     embed.addField("Features", server.features.join("\n") || "None", true)
       .addField("Links", links.join(", "))
