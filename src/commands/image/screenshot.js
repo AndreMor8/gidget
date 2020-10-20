@@ -89,10 +89,12 @@ async function pup(message, url, options) {
     } else {
       screenshot = await page.screenshot({ type: "png" });
     }
-    const isNSFW = await check(screenshot);
-    if (isNSFW && !message.channel.nsfw) {
-      message.channel.stopTyping(true);
-      return message.channel.send("NSFW content has been detected in the generated image. If you want to see it, ask for it on a NSFW channel.")
+    if (!message.channel.nsfw) {
+      const isNSFW = await check(screenshot);
+      if(isNSFW) {
+        message.channel.stopTyping(true);
+      return message.channel.send("NSFW content has been detected in the generated image. If you want to see it, ask for it on a NSFW channel.");
+      }
     };
     const attachment = new Discord.MessageAttachment(screenshot, "file.png");
     message.channel.stopTyping(true);
