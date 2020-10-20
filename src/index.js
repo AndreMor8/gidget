@@ -6,7 +6,7 @@ const { require } = commons(import.meta.url);
 // where your node app starts
 
 // init project
-global.botIntl = Intl.DateTimeFormat("en", { dateStyle: "full", timeStyle: "full", timeZone: "America/New_York", hour12: true, timeZoneName: "short" })
+global.botIntl = Intl.DateTimeFormat("en", { timeZone: "America/New_York", hour12: true, timeZoneName: "short" })
 const Discord = require('discord.js');
 import './structures.js';
 global.botCommands = new Discord.Collection();
