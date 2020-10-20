@@ -1,7 +1,5 @@
 export default async bot => {
+  bot.destroy();
   console.log("The session has become invalid!");
-  setTimeout(() => {
-    bot.destroy();
-    process.exit(1);
-  }, 250);
+  process.exit(1);
 }

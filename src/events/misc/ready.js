@@ -10,7 +10,7 @@ import discordbl from '../../utils/discordbotlist.js';
 export default async bot => {
   presence(bot);
   discordbl(bot);
-  setInterval(discordbl, 900000, bot);
+  setInterval(discordbl, 1800000, bot);
   setInterval(presence, 900000, bot);
   webserver(bot);
   let doc = await MessageModel2.findOne();
