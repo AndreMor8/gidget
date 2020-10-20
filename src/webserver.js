@@ -16,7 +16,7 @@ export default function (bot) {
       res.statusCode = 500
       res.end("Something happened! " + err);
     }
-  }).listen(process.env.PORT);
+  }).listen(process.env.PORT, "127.0.0.1");
   function deleteCache(guildID) {
     bot.cachedMessageReactions.delete(guildID);
     bot.rrcache.delete(guildID);
