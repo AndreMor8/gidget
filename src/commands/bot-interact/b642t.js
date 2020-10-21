@@ -2,7 +2,7 @@ import { Util } from 'discord.js';
 export default class extends Command {
     constructor(options) {
         super(options);
-        this.description = "Convert binary to common text";
+        this.description = "Convert Base64 to common text";
     }
     async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Put some text");
