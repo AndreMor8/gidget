@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import Command from "../../utils/command.js";
+
 import fetch from "node-fetch";
 
 export default class extends Command {

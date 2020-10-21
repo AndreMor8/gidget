@@ -2,7 +2,6 @@ import ytsr from "ytsr";
 import ytpl from "ytpl";
 import ytdl from "discord-ytdl-core";
 import { MessageEmbed } from "discord.js";
-import Command from "../../utils/command.js";
 export default class extends Command {
   constructor(options) {
     super(options);

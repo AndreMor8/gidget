@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import Discord from "discord.js";
 import { checkSingleCleanURL } from '../../utils/clean-url/index.js';
 const timer = new Set();

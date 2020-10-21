@@ -10,7 +10,6 @@ import moment from "moment";
 import Discord from 'discord.js';
 import times from '../../utils/times.js';
 import "moment-duration-format";
-import Command from '../../utils/command.js';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -82,7 +81,7 @@ export default class extends Command {
       message.channel.startTyping();
       return handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: "https://www.youtube.com/watch?v=" + args[1], handle: true }]).catch(err => {
         message.channel.send("Error: " + err);
-      });;
+      });
     } else if (ytpl.validateID(args[1])) {
       let form1 = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>");
       message.channel.startTyping();

@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import Discord from 'discord.js';
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';

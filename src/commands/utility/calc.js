@@ -1,6 +1,6 @@
 import Discord from "discord.js";
 import math from "math-expression-evaluator";
-import Command from '../../utils/command.js';
+
 export default class extends Command {
   constructor(options) {
     super(options);

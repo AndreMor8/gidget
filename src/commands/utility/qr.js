@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import sharp from 'sharp';
 import Canvas from 'canvas';
 import { MessageAttachment, Util } from "discord.js";
-import Command from "../../utils/command.js";
+
 import jsQR from 'jsqr';
 
 export default class extends Command {

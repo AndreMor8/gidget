@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import parser from 'twemoji-parser';
 import svg2img_callback from 'node-svg2img';
 import { promisify } from 'util';

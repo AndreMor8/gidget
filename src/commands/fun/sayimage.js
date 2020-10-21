@@ -1,5 +1,5 @@
 //Someone asked to put this command...
-import Command from '../../utils/command.js';
+
 import Discord from 'discord.js';
 import algo from 'discord-emoji-canvas';
 const { Canvas, fillWithEmoji } = algo;

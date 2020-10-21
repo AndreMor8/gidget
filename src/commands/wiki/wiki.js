@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import Command from '../../utils/command.js';
+
 import wikijs from 'wikijs';
 
 export default class extends Command {

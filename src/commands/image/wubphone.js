@@ -4,7 +4,7 @@ const { __dirname } = commons(import.meta.url);
 import path from 'path';
 import Canvas from 'canvas';
 import { MessageAttachment, User } from 'discord.js';
-import Command from '../../utils/command.js';
+
 let sprite;
 
 export default class extends Command {

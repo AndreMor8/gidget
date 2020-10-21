@@ -1,12 +1,11 @@
-import Command from '../../utils/command.js';
+
 import Discord from "discord.js";
 import os from 'os';
 import cpuStat from "cpu-stat";
 import moment from "moment";
 import "moment-duration-format";
 import { promisify } from "util";
-import { version } from '../../index.js';
-const p = promisify(cpuStat.usagePercent);
+const usagePercent = promisify(cpuStat.usagePercent);
 export default class extends Command {
   constructor(options) {
     super(options)
@@ -17,11 +16,11 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
-    let percent = await p();
+    let percent = await usagePercent();
     let embedStats = new Discord.MessageEmbed()
       .setTitle("***Stats***")
       .setColor("RANDOM")
-      .setDescription('Gidget is alive! - Version ' + version)
+      .setDescription('Gidget is alive! - Version ' + global.botVersion)
       .addField("• RAM", `${memory(os.totalmem() - os.freemem(), false)} / ${memory(os.totalmem())}`, true)
       .addField("• Process RAM usage", memory(process.memoryUsage().rss), true)
       .addField("• Uptime ", `${moment.duration(Date.now() - bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, true)
@@ -38,7 +37,7 @@ export default class extends Command {
       .addField("• Platform", `\`\`${os.platform()}\`\``, true)
       .setFooter("Gidget stats")
 
- await message.channel.send(embedStats)
+    await message.channel.send(embedStats)
   }
 }
 

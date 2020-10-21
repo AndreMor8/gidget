@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import db from '../../database/models/voicerole.js';
 import { MessageEmbed } from 'discord.js';
 

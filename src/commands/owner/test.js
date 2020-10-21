@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import { MessageAttachment } from 'discord.js';
 //JIMP es un manipulador de imágenes hecho en puro JavaScript. No necesitas construir C++ en node-gyp ni nada de esas cosas
 //JavaScript Image Manipulation Program

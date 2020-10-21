@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import safeRegex from 'safe-regex';
 export default class extends Command {
   constructor(options) {

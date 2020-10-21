@@ -1,3 +1,4 @@
+import { Collection } from 'discord.js';
 import { promises as fs } from 'fs';
 import path from 'path';
 import Command from './command.js';
@@ -15,6 +16,8 @@ class ErrorCommand extends Command {
     }
 }
 export async function registerCommands(dir) {
+    if (!global.botCommands) global.botCommands = new Collection();
+    if (!global.Command) global.Command = (await import("file:///" + path.join(__dirname, "command.js"))).default;
     const arr = dir.split("/");
     const category = arr[arr.length - 1];
     let files = await fs.readdir(path.join(__dirname, dir));

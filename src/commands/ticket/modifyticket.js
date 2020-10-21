@@ -1,6 +1,6 @@
 import MessageModel from "../../database/models/ticket.js";
 import { Permissions, MessageEmbed } from "discord.js";
-import Command from "../../utils/command.js";
+
 export default class extends Command {
   constructor(options) {
     super(options);

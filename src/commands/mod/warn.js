@@ -3,7 +3,7 @@ import Discord from "discord.js";
 import MessageModel from "../../database/models/warn.js";
 
 import MessageModel2 from "../../database/models/warn2.js";
-import Command from "../../utils/command.js";
+
 
 export default class extends Command {
   constructor(options) {

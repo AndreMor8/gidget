@@ -2,7 +2,7 @@ import algo from 'google-translate-open-api';
 const { default: gtranslate, parseMultiple } = algo;
 import { getCode } from "../../utils/languages.js";
 import { MessageEmbed } from "discord.js";
-import Command from '../../utils/command.js';
+
 
 export default class extends Command {
     constructor(options) {

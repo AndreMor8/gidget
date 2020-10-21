@@ -1,6 +1,6 @@
 import Discord from "discord.js";
 import MessageModel from "../../database/models/ticket.js";
-import Command from "../../utils/command.js";
+
 
 export default class extends Command {
   constructor(options) {

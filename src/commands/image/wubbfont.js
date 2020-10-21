@@ -5,7 +5,7 @@ import path from 'path';
 import commons from '../../utils/commons.js';
 const { __dirname } = commons(import.meta.url);
 import Jimp from 'jimp';
-import Command from '../../utils/command.js';
+
 import { MessageAttachment } from 'discord.js';
 export default class extends Command {
     constructor(options) {

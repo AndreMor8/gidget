@@ -1,7 +1,7 @@
 //Needs update
 import commons from '../../utils/commons.js';
 const { __dirname } = commons(import.meta.url);
-import Command from '../../utils/command.js';
+
 import Discord from 'discord.js';
 import MeowDB from 'meowdb';
 const notes = new MeowDB({

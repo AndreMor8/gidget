@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import MessageModel from "../../database/models/roles.js";
 
 export default class extends Command {

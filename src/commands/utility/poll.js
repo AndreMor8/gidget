@@ -2,7 +2,7 @@
 import Discord from "discord.js";
 import ms from "ms";
 import MessageModel from "../../database/models/poll.js";
-import Command from "../../utils/command.js";
+
 import interval from "../../utils/poll.js";
 
 export default class extends Command {

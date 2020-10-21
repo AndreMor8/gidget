@@ -1,6 +1,6 @@
 import MessageModel from '../../database/models/muterole.js';
 import MessageModel2 from '../../database/models/mutedmembers.js';
-import Command from '../../utils/command.js';
+
 
 export default class extends Command {
   constructor(options) {

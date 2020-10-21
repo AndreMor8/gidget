@@ -1,5 +1,5 @@
 //Must be tested =D
-import Command from '../../utils/command.js';
+
 export default class extends Command {
     constructor(options) {
         super(options)

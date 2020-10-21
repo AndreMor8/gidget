@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import MessageModel from "../../database/models/tmembers.js";
 import MessageModel2 from "../../database/models/ticket.js";
 

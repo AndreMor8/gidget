@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import { MessageAttachment } from "discord.js";
 import { getCode } from "../../utils/languages.js";
 

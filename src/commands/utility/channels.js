@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js'
+
 import { Util } from "discord.js";
 export default class extends Command {
   constructor(options) {

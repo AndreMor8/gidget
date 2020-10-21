@@ -1,6 +1,6 @@
 import Discord from 'discord.js';
 import Canvas from 'canvas';
-import Command from '../../utils/command.js';
+
 import petpet from '../../utils/petpet.js';
 import parser from 'twemoji-parser';
 

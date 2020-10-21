@@ -1,5 +1,5 @@
 import MessageModel from "../../database/models/warn2.js";
-import Command from "../../utils/command.js";
+
 export default class extends Command {
   constructor(options) {
     super(options)

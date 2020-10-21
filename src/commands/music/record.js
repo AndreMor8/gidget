@@ -1,4 +1,3 @@
-import Command from '../../utils/command.js';
 import Discord from 'discord.js';
 import { Readable } from 'stream';
 import cosaparaelmp3 from "node-lame";

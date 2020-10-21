@@ -4,7 +4,7 @@ const SIZE = 340;
 const FPS = 16;
 import fetch from 'node-fetch';
 import sharp from 'sharp';
-import Command from '../../utils/command.js';
+
 import parser from 'twemoji-parser';
 import Canvas from 'canvas';
 import GIF from "gif-encoder";

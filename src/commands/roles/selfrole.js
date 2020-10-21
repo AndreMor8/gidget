@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import Command from '../../utils/command.js';
+
 import MessageModel from '../../database/models/selfrole.js';
 
 export default class extends Command {

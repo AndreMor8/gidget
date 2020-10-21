@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import Discord from 'discord.js';
 import googleIt from 'google-it';
 import b from "../../utils/badwords.js";

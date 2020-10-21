@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import Levels from '../../utils/discord-xp.js';
 
 export default class extends Command {

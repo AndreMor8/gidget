@@ -1,4 +1,4 @@
-import Command from '../../utils/command.js';
+
 import def from "../../utils/definitions.json";
 import Discord from "discord.js";
 const links = `[Bot's page (in progress)](https://gidget.xyz/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://wubbzy.gidget.xyz) | [Discord.js documentation](https://discord.js.org/#/docs/)`;

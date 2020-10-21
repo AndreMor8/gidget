@@ -1,21 +1,31 @@
+//Core
 import dotenv from 'dotenv';
-dotenv.config();
 import commons from './utils/commons.js';
-const { require } = commons(import.meta.url);
-// index.js
-// where your node app starts
 
-// init project
-global.botIntl = Intl.DateTimeFormat("en", { timeZone: "America/New_York", hour12: true, timeZoneName: "short" })
-const Discord = require('discord.js');
-import './structures.js';
-global.botCommands = new Discord.Collection();
-const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: 32511 }, allowedMentions: { parse: [] } });
-import { registerCommands, registerEvents } from './utils/registry.js';
-import puppeteer from "puppeteer";
+//Database
 import database from "./database/database.js";
+
+//Registry for commands and events
+import { registerCommands, registerEvents } from './utils/registry.js';
+
+//Other packages
+import puppeteer from "puppeteer";
 import DBL from 'dblapi.js';
-export const version = "0.98 Post-Beta";
+
+//Discord.js extended structures
+import './structures.js';
+
+//Load .env contents
+dotenv.config();
+
+//Retro-compatibility with User extended structure
+const { require } = commons(import.meta.url);
+const Discord = require('discord.js');
+
+//Bot client
+const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: 32511 }, allowedMentions: { parse: [] }, presence: { status: "dnd", activity: { name: "Ready event (Loading...)", type: "LISTENING" } } });
+
+//top.gg
 if(process.env.DBL === "yes") {
   bot.dbl = new DBL(process.env.DBLKEY, bot);
   bot.dbl.on("posted", () => {
@@ -25,6 +35,10 @@ if(process.env.DBL === "yes") {
     console.error("top.gg: Error:", err);
   });
 }
+
+//Global definitions
+global.botIntl = Intl.DateTimeFormat("en", { timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
+global.botVersion = "0.99 RC";
 (async () => {
   //Puppeteer
   if (process.env.PUPPETEER !== "NO") {
@@ -44,12 +58,8 @@ if(process.env.DBL === "yes") {
   bot.rrcache = new Discord.Collection();
   //Registers
   await registerEvents(bot, "../events");
-  //Login and post-login
+  //Login with Discord
   await bot.login();
-  bot.user.setPresence({
-    activity: { name: "Ready event (Loading...)", type: "LISTENING" },
-    status: "dnd"
-  });
 })().catch(err => {
   console.log(err);
   setTimeout(() => process.exit(1), 1000);

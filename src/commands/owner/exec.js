@@ -2,8 +2,6 @@ import util from 'util';
 import ch from "child_process";
 const exec = util.promisify(ch.exec);
 import { Util } from "discord.js";
-import Command from '../../utils/command.js';
-
 export default class extends Command {
     constructor(options) {
         super(options)
