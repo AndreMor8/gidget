@@ -1,6 +1,6 @@
-//Core
+//Load .env contents
 import dotenv from 'dotenv';
-import commons from './utils/commons.js';
+dotenv.config();
 
 //Database
 import database from "./database/database.js";
@@ -12,16 +12,11 @@ import { registerCommands, registerEvents } from './utils/registry.js';
 import puppeteer from "puppeteer";
 import DBL from 'dblapi.js';
 
+//Discord import
+import Discord from 'discord.js';
+
 //Discord.js extended structures
 import './structures.js';
-
-//Load .env contents
-dotenv.config();
-
-//Retro-compatibility with User extended structure
-const { require } = commons(import.meta.url);
-const Discord = require('discord.js');
-
 //Bot client
 const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: 32511 }, allowedMentions: { parse: [] }, presence: { status: "dnd", activity: { name: "Ready event (Loading...)", type: "LISTENING" } } });
 

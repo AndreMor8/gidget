@@ -1,6 +1,6 @@
 //Rewrite
 import Discord from 'discord.js';
-
+import getPremiumType from '../../utils/detectnitro.js';
 
 export default class extends Command {
   constructor(options) {
@@ -68,7 +68,7 @@ export default class extends Command {
       }
     }
     const premiumtext = ["Without Nitro", "Nitro Classic", "***Nitro***"];
-    const thing = !user.bot ? (user.cache.premium_type ? user.premium_type : await user.getPremiumType()) : undefined;
+    const thing = !user.bot ? (await getPremiumType(user)) : undefined;
     let finaltext = "";
     if (!user.bot) {
       if (thing.value < 0) {
