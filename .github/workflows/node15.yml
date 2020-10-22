@@ -21,7 +21,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install npm@6.14.8
-    - run: npm run install-node15
+    - run: npm install -g npm@6.14.8
+    - run: npm run install
     - run: npm run eslint
     - run: npm run test
