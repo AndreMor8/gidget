@@ -1,4 +1,4 @@
-name: Test code
+name: ESLint
 
 on:
   push:
@@ -7,12 +7,12 @@ on:
     branches: [ master ]
 
 jobs:
-  run:
+  eslint:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [12.x, 13.x, 14.x]
+        node-version: [15.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -20,6 +20,5 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: npm ci
-    - run: npm run test
+    - run: npm i -g eslint
+    - run: eslint .
