@@ -3,6 +3,8 @@ name: Test code
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
@@ -20,22 +22,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-      env:
-        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-        ACCESS: ${{ secrets.ACCESS }}
-        TRW_ID: ${{ secrets.TRW_ID }}
-        TRW_TOKEN: ${{ secrets.TRW_TOKEN }}
-        MDB_USER: ${{ secrets.MDB_USER }}
-        MDB_PASS: ${{ secrets.MDB_PASS }}
-        MDB_PATH: ${{ secrets.MDB_PATH }}
-        MDB_DBNAME: ${{ secrets.MDB_DBNAME }}
-        WIKI_NAME: ${{ secrets.WIKI_NAME }}
-        WIKI_PASS: ${{ secrets.WIKI_PASS }}
-        GUILD_ID: ${{ secrets.GUILD_ID }}
-        DEVS: ${{ secrets.DEVS }}
-        HOSTER: ${{ secrets.HOSTER }}
-        VERYS: ${{ secrets.VERYS }}
-        PUPPETEER: ${{ secrets.PUPPETEER }}
-        EXTERNAL: ${{ secrets.EXTERNAL }}
-        DEEPAI: ${{ secrets.DEEPAI }}
-    - run: npm test
+    - run: npm run eslint
+    - run: npm run test

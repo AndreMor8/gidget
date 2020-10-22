@@ -11,7 +11,7 @@ class ErrorCommand extends Command {
         this.secret = true;
         this.error = options.err;
     }
-    
+
     // eslint-disable-next-line no-unused-vars
     async run(bot, message, args) {
         await message.channel.send("That command is not loaded due to error: " + this.error);
@@ -27,7 +27,7 @@ export async function registerCommands(dir) {
     for (let file of files) {
         let stat = await fs.lstat(path.join(__dirname, dir, file));
         if (stat.isDirectory()) // If file is a directory, recursive call recurDir
-            registerCommands(path.join(dir, file));
+            await registerCommands(path.join(dir, file));
         else {
             // Check if file is a .js file.
             if (file.endsWith(".js")) {
@@ -36,6 +36,7 @@ export async function registerCommands(dir) {
                     let cmdModule = await import("file:///" + path.join(__dirname, dir, file));
                     let cmdClass = new cmdModule.default({ name: cmdName, category })
                     global.botCommands.set(cmdName, cmdClass);
+                    if (process.argv[2] === "ci") console.log(`Command ${cmdName} loaded =D`);
                 }
                 catch (err) {
                     process.exitCode = 1;
@@ -52,7 +53,7 @@ export async function registerEvents(bot, dir) {
     for (let file of files) {
         let stat = await fs.lstat(path.join(__dirname, dir, file));
         if (stat.isDirectory()) // If file is a directory, recursive call recurDir
-            registerEvents(bot, path.join(dir, file));
+            await registerEvents(bot, path.join(dir, file));
         else {
             // Check if file is a .js file.
             if (file.endsWith(".js")) {
@@ -60,6 +61,7 @@ export async function registerEvents(bot, dir) {
                 try {
                     let eventModule = await import("file:///" + path.join(__dirname, dir, file));
                     bot.on(eventName, eventModule.default.bind(null, bot));
+                    if (process.argv[2] === "ci") console.log(`Event ${eventName} loaded =D`);
                 }
                 catch (err) {
                     process.exitCode = 1;

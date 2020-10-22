@@ -45,7 +45,7 @@ global.botVersion = "0.99 RC";
     });
   }
   //Database
-  await database();
+  if (process.argv[2] !== "ci") await database();
   //Commands
   await registerCommands("../commands");
   //Cache system
@@ -54,13 +54,9 @@ global.botVersion = "0.99 RC";
   //Registers
   await registerEvents(bot, "../events");
   //Login with Discord
-  await bot.login();
-  if(process.env.CI === "yes") {
-    setTimeout(() => {
-      bot.destroy();
-      process.exit();
-    })
-  }
+  if (process.argv[2] !== "ci") {
+    await bot.login();
+  } else process.exit();
 })().catch(err => {
   console.log(err);
   setTimeout(() => process.exit(1), 1000);

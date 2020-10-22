@@ -3,7 +3,7 @@ import path from 'path';
 import commons from '../../utils/commons.js';
 const { __dirname } = commons(import.meta.url);
 let COOKIE
-if(process.env.CI !== "yes") COOKIE = fs.readFileSync(path.join(__dirname, "/../../../cookies.txt"), "utf-8");
+if(process.argv[2] !== "ci") COOKIE = fs.readFileSync(path.join(__dirname, "/../../../cookies.txt"), "utf-8");
 import ytdl from "discord-ytdl-core";
 import ytsr from "ytsr";
 import ytpl from "ytpl";

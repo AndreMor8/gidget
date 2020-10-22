@@ -16,17 +16,15 @@ export default async bot => {
   setInterval(presence, 900000, bot);
   //Webserver for cache cleaning
   webserver(bot);
-  if (process.env.CI !== "yes") {
-    //"De-restriction" function once the penalty time has expired
-    let doc = await MessageModel2.findOne();
-    if (doc) {
-      tempmute(bot);
-    }
-    //Polls have a limit, with this we edit them so that they mark "Poll completed"
-    let doc2 = await MessageModel3.findOne();
-    if (doc2) {
-      poll(bot);
-    }
+  //"De-restriction" function once the penalty time has expired
+  let doc = await MessageModel2.findOne();
+  if (doc) {
+    tempmute(bot);
+  }
+  //Polls have a limit, with this we edit them so that they mark "Poll completed"
+  let doc2 = await MessageModel3.findOne();
+  if (doc2) {
+    poll(bot);
   }
   //Show the inviter on the welcome message. Luckily, fetch invites do not have a rate-limit
   const guildsToFetch = bot.guilds.cache.filter(e => e.me.hasPermission("MANAGE_GUILD")).array();
