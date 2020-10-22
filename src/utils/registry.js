@@ -33,8 +33,6 @@ export async function registerCommands(dir) {
             if (file.endsWith(".js")) {
                 let cmdName = file.substring(0, file.indexOf(".js"));
                 try {
-                    //Until there are Canvas prebinaries for node 15. Canvas in node 15 can be built normally
-                    if(process.argv[3] === "test15" && ["petpet", "spin", "wubphone", "qr", "rank"])
                     let cmdModule = await import("file:///" + path.join(__dirname, dir, file));
                     let cmdClass = new cmdModule.default({ name: cmdName, category })
                     global.botCommands.set(cmdName, cmdClass);

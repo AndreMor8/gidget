@@ -8,7 +8,6 @@
   "main": "./src/index.js",
   "scripts": {
     "test": "node --experimental-json-modules ./src/index.js ci",
-    "test15": "node --experimental-json-modules ./src/index.js ci test15",
     "eslint": "eslint .",
     "start": "node --experimental-json-modules ./src/index.js"
   },
