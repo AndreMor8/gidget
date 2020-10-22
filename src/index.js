@@ -21,13 +21,13 @@ import './structures.js';
 const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: 32511 }, allowedMentions: { parse: [] }, presence: { status: "dnd", activity: { name: "Ready event (Loading...)", type: "LISTENING" } } });
 
 //top.gg
-if(process.env.DBL === "yes") {
+if(process.env.EXTERNAL === "yes") {
   bot.dbl = new DBL(process.env.DBLKEY, bot);
   bot.dbl.on("posted", () => {
     console.log("tog.gg: Server count posted!");
   });
   bot.dbl.on("error", e => {
-    console.error("top.gg: Error:", err);
+    console.error("top.gg: Error:", e);
   });
 }
 
@@ -55,6 +55,12 @@ global.botVersion = "0.99 RC";
   await registerEvents(bot, "../events");
   //Login with Discord
   await bot.login();
+  if(process.env.CI) {
+    setTimeout(() => {
+      bot.destroy();
+      process.exit();
+    })
+  }
 })().catch(err => {
   console.log(err);
   setTimeout(() => process.exit(1), 1000);

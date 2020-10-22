@@ -1,5 +1,6 @@
 //Rewrite
 import commons from '../../utils/commons.js';
+// eslint-disable-next-line no-unused-vars
 const { require, __dirname, __filename } = commons(import.meta.url);
 import Discord from "discord.js";
 import util from 'util';

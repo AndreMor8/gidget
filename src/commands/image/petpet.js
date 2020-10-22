@@ -28,7 +28,7 @@ export default class extends Command {
             if (!fpsnumber) return message.channel.send("Invalid FPS. Allowable values are 2 to 60 FPS.");
             if (fpsnumber < 2 || fpsnumber > 60) return message.channel.send("Invalid FPS. Allowable values are 2 to 60 FPS.");
             const delay = parseInt(1000 / fpsnumber);
-            let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await bot.users.fetch(args[1]).catch(err => { }) || args[1]) : message.author)
+            let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await bot.users.fetch(args[1]).catch(() => { }) || args[1]) : message.author)
             if (!source) return message.channel.send("Invalid user, emoji or image!");
             if (source instanceof Discord.User) {
                 source = source.displayAvatarURL({ format: "png", size: 128 });
@@ -41,7 +41,7 @@ export default class extends Command {
             if (parsed.length >= 1) {
                 source = parsed[0].url;
             }
-            if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/gm.test(source)) return message.channel.send("Invalid user, emoji or image!");
+            if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm.test(source)) return message.channel.send("Invalid user, emoji or image!");
             message.channel.startTyping();
             const torender = await Canvas.loadImage(source);
             const buf = await petpet(torender, delay);

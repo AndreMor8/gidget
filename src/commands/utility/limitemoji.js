@@ -11,6 +11,7 @@ export default class extends Command {
       bot: [1073741824, 0]
     };
   }
+  // eslint-disable-next-line require-await
   async run(bot, message, args) {
     if (!args[1])
       return message.channel.send("Usage: limitemojis <emoji> <mode> <role(s)>");
@@ -21,8 +22,8 @@ export default class extends Command {
       return cmd_umfrage(message, args.slice(1));
     function cmd_umfrage(msg, args) {
       if (args.length) {
-        var custom = /^<a?:/;
-        var reactions = [];
+        let custom = /^<a?:/;
+        let reactions = [];
         let reaction = args[0];
         if (custom.test(reaction)) {
           reaction = reaction.substring(
@@ -37,6 +38,11 @@ export default class extends Command {
       }
     }
 
+    /**
+     * @param msg
+     * @param args
+     * @param emoji
+     */
     function cmd_sendumfrage(msg, args, emoji) {
       let emojiobj = msg.guild.emojis.cache.get(emoji);
       if (!emojiobj)
@@ -54,13 +60,13 @@ export default class extends Command {
 
       switch (args[0]) {
         case "add":
-          emojiobj.roles.add(roles).then(e => message.channel.send("Ok. I've put the roles correctly")).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
+          emojiobj.roles.add(roles).then(() => message.channel.send("Ok. I've put the roles correctly")).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
           break;
         case "remove":
-          emojiobj.roles.remove(roles).then(e => message.channel.send("Ok. I've put the roles correctly")).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
+          emojiobj.roles.remove(roles).then(() => message.channel.send("Ok. I've put the roles correctly")).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
           break;
         case "set":
-          emojiobj.roles.set(roles).then(e => message.channel.send("Ok. I've put the roles correctly")).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
+          emojiobj.roles.set(roles).then(() => message.channel.send("Ok. I've put the roles correctly")).catch(err => message.channel.send("Some error ocurred! Here's a debug: " + err));
           break;
       }
 

@@ -10,7 +10,7 @@ export default class extends Command {
       bot: [1073741824, 0]
     };
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     let u = timer.get(message.author.id);
     if (!u) {
       if (!message.member.hasPermission("ADMINISTRATOR")) {

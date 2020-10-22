@@ -11,7 +11,7 @@ export default class extends Command {
             const num = parseInt(newBin[i], 2);
             if(!num) return message.channel.send("Are you sure that's binary?")
             binCode.push(String.fromCharCode(num));
-        };
+        }
         await message.channel.send(`\`Output:\` ${Util.splitMessage(binCode.join(""), { char: " ", maxLength: 1900 })[0]}`);
     }
 }

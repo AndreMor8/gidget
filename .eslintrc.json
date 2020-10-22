@@ -4,9 +4,16 @@
         "es2021": true,
         "node": true
     },
-    "extends": ["eslint:recommended", "standard-jsdoc"], 
+    "globals": {
+        "Command": "readonly",
+        "botIntl": "writable",
+        "botVersion": "writable",
+        "browser": "readonly"
+    },
+    "extends": ["eslint:recommended"], 
     "parserOptions": {
-        "ecmaVersion": 12
+        "ecmaVersion": 12,
+        "sourceType": "module"
     },
     "rules": {
         "semi": ["off", "always"],
@@ -16,8 +23,7 @@
         "comma-spacing": ["warn"],
         "no-extra-semi": ["error"],
         "require-await": ["warn"],
-        "no-undefined": ["error"],
         "no-const-assign": ["error"],
-        "no-var": ["warn"]
+        "no-var": ["error"]
     }
 }

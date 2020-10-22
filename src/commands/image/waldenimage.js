@@ -16,12 +16,15 @@ export default class extends Command {
       bot: [0, 16384]
     }
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     await image(message);
   }
 }
+/**
+ * @param message
+ */
 async function image(message) {
-  var options = {
+  let options = {
     method: "GET",
     headers: {
       Accept: "text/html",
@@ -36,9 +39,9 @@ async function image(message) {
   const responseBody = await response.text();
   let $ = cheerio.load(responseBody);
 
-  var links = $(".image a.link");
+  let links = $(".image a.link");
 
-  var urls = new Array(links.length)
+  let urls = new Array(links.length)
     .fill(0)
     .map((v, i) => links.eq(i).attr("href"));
 
@@ -46,7 +49,7 @@ async function image(message) {
     return;
   }
 
-  var rimg = urls[Math.floor(Math.random() * urls.length)];
+  let rimg = urls[Math.floor(Math.random() * urls.length)];
 
   // Send result
   const embed = new Discord.MessageEmbed()

@@ -13,7 +13,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     if (!message.guild) return message.channel.send("This command only works in servers");
     const msgDocument = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig()
     if (!msgDocument) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!")

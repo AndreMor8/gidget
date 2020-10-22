@@ -9,10 +9,10 @@ export default async (bot, reaction, user) => {
 
   //Function for role-reaction
   let addMemberRole = async emojiRoleMappings => {
-    if (emojiRoleMappings.hasOwnProperty(reaction.emoji.id || reaction.emoji.name)) {
+    if (Object.prototype.hasOwnProperty.call(emojiRoleMappings, reaction.emoji.id || reaction.emoji.name)) {
       let roleId = emojiRoleMappings[reaction.emoji.id || reaction.emoji.name];
       let role = reaction.message.guild.roles.cache.get(roleId);
-      let member = reaction.message.guild.members.cache.get(user.id) || await reaction.message.guild.members.fetch(user.id).catch(err => {});
+      let member = reaction.message.guild.members.cache.get(user.id) || await reaction.message.guild.members.fetch(user.id).catch(() => {});
       if (role && member) {
         if(!member.guild.me.hasPermission("MANAGE_ROLES")) return member.send("I don't have permissions, sorry :(\nContact your server administrator.")
         member.roles.add(role, "Reaction-role");
@@ -40,8 +40,8 @@ export default async (bot, reaction, user) => {
       from: reaction.message.id,
       memberId: user.id
     });
-    if (msgDocument3) return user.send("You already have a ticket!").catch(err => {});
-    if(!reaction.message.guild.me.hasPermission("MANAGE_CHANNELS")) return user.send("I don't have permissions, sorry :(\nContact your server administrator.").catch(err => {})
+    if (msgDocument3) return user.send("You already have a ticket!").catch(() => {});
+    if(!reaction.message.guild.me.hasPermission("MANAGE_CHANNELS")) return user.send("I don't have permissions, sorry :(\nContact your server administrator.").catch(() => {})
     let { categoryId, roles } = msgDocument2;
     let cat = reaction.message.guild.channels.cache.get(categoryId);
     let roleperm = [
@@ -85,7 +85,7 @@ export default async (bot, reaction, user) => {
           memberId: user.id,
           from: reaction.message.id
         });
-        dbMsgModel.save().then(m => {
+        dbMsgModel.save().then(() => {
           if (msgDocument2.welcomemsg) {
             let tosend = msgDocument2.welcomemsg.replace(
               /%AUTHOR%/g,
@@ -107,7 +107,7 @@ export default async (bot, reaction, user) => {
     let msgDocument = await MessageModel.findOne({ messageId: id });
     if (msgDocument) {
       bot.cachedMessageReactions.set(id, msgDocument);
-      var { emojiRoleMappings } = msgDocument;
+      let { emojiRoleMappings } = msgDocument;
       addMemberRole(emojiRoleMappings);
     } else {
       bot.cachedMessageReactions.set(id, false);
@@ -116,7 +116,7 @@ export default async (bot, reaction, user) => {
     console.log(err);
   } 
   } else {
-    var { emojiRoleMappings } = cach;
+    let { emojiRoleMappings } = cach;
     addMemberRole(emojiRoleMappings);
   }
 };

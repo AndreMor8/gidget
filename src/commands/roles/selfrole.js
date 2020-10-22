@@ -18,7 +18,7 @@ export default class extends Command {
       let msgDocument = await MessageModel.find({ guildid: message.guild.id }, "word");
       if (typeof msgDocument[0] !== "undefined" && msgDocument[0] !== null) {
         let text = "";
-        var i = 1;
+        let i = 1;
         for (const selfroles of Object.values(msgDocument)) {
           text += i + ". " + selfroles.word + '\n';
           i = i + 1;
@@ -63,7 +63,7 @@ export default class extends Command {
               roleid: roleobj.id,
             });
             await dbMsgModel.save()
-              .then(m => message.channel.send('Self role added correctly.'))
+              .then(() => message.channel.send('Self role added correctly.'))
               .catch(err => message.channel.send('Something bad happened. Here\'s a debug: ' + err));
           }
         }
@@ -86,7 +86,7 @@ export default class extends Command {
       if (!msgDocument) {
         return message.channel.send('That selfrole doesn\'t exist.');
       } else {
-        var { roleid } = msgDocument;
+        let { roleid } = msgDocument;
         await addMemberRole(roleid, 'Selfrole command')
       }
     }
@@ -106,7 +106,7 @@ export default class extends Command {
       if (!msgDocument) {
         return message.channel.send('That selfrole doesn\'t exist.');
       } else {
-        var { roleid } = msgDocument;
+        let { roleid } = msgDocument;
         await removeMemberRole(roleid, 'Selfrole command')
       }
     }

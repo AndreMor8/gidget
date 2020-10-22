@@ -8,9 +8,9 @@ export default class DiscordXp {
     throw new Error("This class can't be instantiated")
   }
   /**
-  * @param {string} [userId] - Discord user id.
-  * @param {string} [guildId] - Discord guild id.
-  */
+   * @param {string} [userId] - Discord user id.
+   * @param {string} [guildId] - Discord guild id.
+   */
 
   static async createUser(userId, guildId) {
     if (!userId) throw new TypeError("An user id was not provided.");
@@ -30,9 +30,9 @@ export default class DiscordXp {
   }
 
   /**
-  * @param {string} [userId] - Discord user id.
-  * @param {string} [guildId] - Discord guild id.
-  */
+   * @param {string} [userId] - Discord user id.
+   * @param {string} [guildId] - Discord guild id.
+   */
 
   static async deleteUser(userId, guildId) {
     if (!userId) throw new TypeError("An user id was not provided.");
@@ -47,10 +47,10 @@ export default class DiscordXp {
   }
 
   /**
-  * @param {string} [userId] - Discord user id.
-  * @param {string} [guildId] - Discord guild id.
-  * @param {number} [xp] - Amount of xp to append.
-  */
+   * @param {string} [userId] - Discord user id.
+   * @param {string} [guildId] - Discord guild id.
+   * @param {number} [xp] - Amount of xp to append.
+   */
 
   static async appendXp(userId, guildId, xp) {
     if (!userId) throw new TypeError("An user id was not provided.");
@@ -67,10 +67,10 @@ export default class DiscordXp {
         level: Math.floor(0.1 * Math.sqrt(xp))
       });
 
-      await newUser.save().catch(e => console.log(`Failed to save new user.`));
+      await newUser.save().catch(e => console.log(`Failed to save new user. ${e}`));
 
       return (Math.floor(0.1 * Math.sqrt(xp)) > 0);
-    };
+    }
 
     user.xp += parseInt(xp, 10);
     user.level = Math.floor(0.1 * Math.sqrt(user.xp));
@@ -81,10 +81,10 @@ export default class DiscordXp {
   }
 
   /**
-  * @param {string} [userId] - Discord user id.
-  * @param {string} [guildId] - Discord guild id.
-  * @param {number} [levels] - Amount of levels to append.
-  */
+   * @param {string} [userId] - Discord user id.
+   * @param {string} [guildId] - Discord guild id.
+   * @param {number} [levels] - Amount of levels to append.
+   */
 
   static async appendLevel(userId, guildId, levelss) {
     if (!userId) throw new TypeError("An user id was not provided.");
@@ -103,10 +103,10 @@ export default class DiscordXp {
   }
 
   /**
-  * @param {string} [userId] - Discord user id.
-  * @param {string} [guildId] - Discord guild id.
-  * @param {number} [xp] - Amount of xp to set.
-  */
+   * @param {string} [userId] - Discord user id.
+   * @param {string} [guildId] - Discord guild id.
+   * @param {number} [xp] - Amount of xp to set.
+   */
 
   static async setXp(userId, guildId, xp) {
     if (!userId) throw new TypeError("An user id was not provided.");
@@ -125,10 +125,10 @@ export default class DiscordXp {
   }
 
   /**
-  * @param {string} [userId] - Discord user id.
-  * @param {string} [guildId] - Discord guild id.
-  * @param {number} [level] - A level to set.
-  */
+   * @param {string} [userId] - Discord user id.
+   * @param {string} [guildId] - Discord guild id.
+   * @param {number} [level] - A level to set.
+   */
 
   static async setLevel(userId, guildId, level) {
     if (!userId) throw new TypeError("An user id was not provided.");
@@ -147,9 +147,9 @@ export default class DiscordXp {
   }
 
   /**
-  * @param {string} [userId] - Discord user id.
-  * @param {string} [guildId] - Discord guild id.
-  */
+   * @param {string} [userId] - Discord user id.
+   * @param {string} [guildId] - Discord guild id.
+   */
 
   static async fetch(userId, guildId) {
     if (!userId) throw new TypeError("An user id was not provided.");
@@ -162,10 +162,10 @@ export default class DiscordXp {
   }
 
   /**
-  * @param {string} [userId] - Discord user id.
-  * @param {string} [guildId] - Discord guild id.
-  * @param {number} [xp] - Amount of xp to subtract.
-  */
+   * @param {string} [userId] - Discord user id.
+   * @param {string} [guildId] - Discord guild id.
+   * @param {number} [xp] - Amount of xp to subtract.
+   */
 
   static async subtractXp(userId, guildId, xp) {
     if (!userId) throw new TypeError("An user id was not provided.");
@@ -185,10 +185,10 @@ export default class DiscordXp {
   }
 
   /**
-  * @param {string} [userId] - Discord user id.
-  * @param {string} [guildId] - Discord guild id.
-  * @param {number} [levels] - Amount of levels to subtract.
-  */
+   * @param {string} [userId] - Discord user id.
+   * @param {string} [guildId] - Discord guild id.
+   * @param {number} [levels] - Amount of levels to subtract.
+   */
 
   static async subtractLevel(userId, guildId, levelss) {
     if (!userId) throw new TypeError("An user id was not provided.");
@@ -207,24 +207,24 @@ export default class DiscordXp {
   }
 
   /**
-  * @param {string} [guildId] - Discord guild id.
-  * @param {number} [limit] - Amount of maximum enteries to return.
-  */
+   * @param {string} [guildId] - Discord guild id.
+   * @param {number} [limit] - Amount of maximum enteries to return.
+   */
 
 
   static async fetchLeaderboard(guildId, limit) {
     if (!guildId) throw new TypeError("A guild id was not provided.");
     if (!limit) throw new TypeError("A limit was not provided.");
 
-    var users = await levels.find({ guildID: guildId }).sort([['xp', 'descending']]).exec();
+    let users = await levels.find({ guildID: guildId }).sort([['xp', 'descending']]).exec();
 
     return users.slice(0, limit);
   }
 
   /**
-  * @param {string} [client] - Your Discord.CLient.
-  * @param {array} [leaderboard] - The output from 'fetchLeaderboard' function.
-  */
+   * @param {string} [client] - Your Discord.CLient.
+   * @param {Array} [leaderboard] - The output from 'fetchLeaderboard' function.
+   */
 
   static computeLeaderboard(client, leaderboard) {
     if (!client) throw new TypeError("A client was not provided.");
@@ -250,8 +250,8 @@ export default class DiscordXp {
   }
 
   /**
-  * @param {number} [targetLevel] - Xp required to reach that level.
-  */
+   * @param {number} [targetLevel] - Xp required to reach that level.
+   */
   static xpFor(targetLevel) {
     if (isNaN(targetLevel) || isNaN(parseInt(targetLevel, 10))) throw new TypeError("Target level should be a valid number.");
     if (isNaN(targetLevel)) targetLevel = parseInt(targetLevel, 10);

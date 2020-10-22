@@ -49,7 +49,7 @@ Structures.extend('Guild', Guild => {
         }
 
         /**
-         * @returns {String} The actual guild prefix
+         * @returns {string} The actual guild prefix.
          */
         async getPrefix() {
             const doc = await prefix.findOne({ guildId: this.id });
@@ -65,8 +65,8 @@ Structures.extend('Guild', Guild => {
         }
         /**
          * 
-         * @param {String} newPrefix The new server prefix
-         * @returns {String} The new prefix
+         * @param {string} newPrefix - The new server prefix.
+         * @returns {string} The new prefix.
          */
         async setPrefix(newPrefix) {
             const doc = await prefix.findOneAndUpdate({ guildId: this.id }, { prefix: newPrefix });
@@ -75,7 +75,7 @@ Structures.extend('Guild', Guild => {
                 this.cache.prefix = true;
                 return newPrefix;
             } else {
-                const algo = await prefix.create({
+                await prefix.create({
                     guildId: this.id,
                     prefix: newPrefix,
                 });
@@ -86,9 +86,9 @@ Structures.extend('Guild', Guild => {
         }
         /**
          * 
-         * @param {String} match The text string to check in each message
-         * @param {Object} message The Discord.js message object to send
-         * @returns {Boolean} Although if there is an error this will just throw it away.
+         * @param {string} match - The text string to check in each message.
+         * @param {object} message - The Discord.js message object to send.
+         * @returns {boolean} Although if there is an error this will just throw it away.
          */
         async addCustomResponse(match, message) {
             const doc = await cr.findOne({ guildId: this.id });
@@ -116,8 +116,8 @@ Structures.extend('Guild', Guild => {
         }
         /**
          * 
-         * @param {Number} index Number of index in the object to delete
-         * @returns {Boolean} Although if there is an error this will just throw it away.
+         * @param {number} index - Number of index in the object to delete.
+         * @returns {boolean} Although if there is an error this will just throw it away.
          */
         async deleteCustomResponse(index) {
             const doc = await cr.findOne({ guildId: this.id });
@@ -130,7 +130,7 @@ Structures.extend('Guild', Guild => {
                 if (!keys.length) throw new StructureError("There are no custom responses on this server...");
                 if (index <= keys.length && index >= 1) {
                     let word = keys[index - 1];
-                    if (doc.responses.hasOwnProperty(word)) {
+                    if (Object.prototype.hasOwnProperty.call(doc.responses, word)) {
                         delete doc.responses[word];
                         const a = Object.keys(doc.responses);
                         if (a.length < 1) {
@@ -173,10 +173,11 @@ Structures.extend('Guild', Guild => {
             }
         }
         /**
+         * Changes the level config.
          * 
-         * @param {String} config Config type 
-         * @param {Boolean} value New value
-         * @returns {Boolean} If the/a document was created/updated
+         * @param {string} config - Config type.
+         * @param {boolean} value - New value.
+         * @returns {boolean} - If the/a document was created/updated.
          */
         async changeLevelConfig(config, value) {
             if (typeof value !== "boolean") return false;
@@ -208,7 +209,7 @@ Structures.extend('Guild', Guild => {
             }
         }
         /**
-         * @returns {Object} The document
+         * @returns {object} The document.
          */
         async getMessageLinksConfig() {
             const doc = await MessageLinksModel.findOne({ guildID: this.id });
@@ -224,8 +225,8 @@ Structures.extend('Guild', Guild => {
         }
         /**
          * 
-         * @param {Boolean} value New value for the document
-         * @returns {Boolean} Always true
+         * @param {boolean} value - New value for the document.
+         * @returns {boolean} Always true.
          */
         async setMessageLinksConfig(value) {
             if (typeof value !== "boolean") throw new Error("'value' isn't a boolean");
@@ -265,9 +266,9 @@ Structures.extend('Guild', Guild => {
         }
         /**
          * 
-         * @param {Number} tochange Thing in the DB to change
-         * @param {Boolean|String} newData The new content
-         * @returns {Boolean} Always true
+         * @param {number} tochange - Thing in the DB to change.
+         * @param {boolean | string} newData - The new content.
+         * @returns {boolean} Always true.
          * @throws {Error} Only in invalid data.
          */
         async setWelcome(tochange, newData) {

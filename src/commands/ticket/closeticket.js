@@ -27,7 +27,7 @@ export default class extends Command {
           await channel.delete("Finished ticket!");
         }
         if (member) {
-          await member.send(staff ? args[1] ? "Your ticket was closed by " + message.author.tag + " with reason: " + args.slice(1).join(" ") : "Your ticket was closed by " + message.author.tag : 'You have successfully closed your ticket.').catch(err => { });
+          await member.send(staff ? args[1] ? "Your ticket was closed by " + message.author.tag + " with reason: " + args.slice(1).join(" ") : "Your ticket was closed by " + message.author.tag : 'You have successfully closed your ticket.').catch(() => { });
         }
         await msgDocument2.deleteOne()
       } catch (err) {

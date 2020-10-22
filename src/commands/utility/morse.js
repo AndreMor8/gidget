@@ -28,6 +28,6 @@ export default class extends Command {
 			}
 			text = text.join(" ");
 		}
-		return message.channel.send("```" + text + "```");
+		await message.channel.send("```" + text + "```");
 	}
 }

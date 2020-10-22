@@ -7,7 +7,7 @@ export default class extends Command {
     this.aliases = [];
     this.description = "Widget fix something";
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     let widget = ["Oops, that's not supposed to happen", "No problemo! <:WidgetWalk:610311126193930240>", "Oops, that wasn't supposed to happen", "I can fix anything <:WidgetFix:626764896184434690>"];
  await message.channel.send(widget[Math.floor(Math.random() * 4)] + ".");
   }

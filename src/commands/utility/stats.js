@@ -15,7 +15,7 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     let percent = await usagePercent();
     let embedStats = new Discord.MessageEmbed()
       .setTitle("***Stats***")
@@ -41,6 +41,10 @@ export default class extends Command {
   }
 }
 
+/**
+ * @param bytes
+ * @param r
+ */
 function memory(bytes = 0, r = true) {
   const gigaBytes = bytes / 1024 ** 3;
   if (gigaBytes > 1) {

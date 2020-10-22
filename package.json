@@ -7,7 +7,7 @@
   "description": "A Discord Bot, for Wow Wow Discord",
   "main": "./src/index.js",
   "scripts": {
-    "test": "eslint .",
+    "test": "eslint . && npm start",
     "start": "node --experimental-json-modules ./src/index.js"
   },
   "type": "module",

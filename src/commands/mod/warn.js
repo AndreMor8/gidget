@@ -1,9 +1,9 @@
-import Discord from "discord.js";
-
+//needs rewrite and structure moving, so...
+/* eslint-disable no-redeclare */
+/* eslint-disable no-var */
 import MessageModel from "../../database/models/warn.js";
 
 import MessageModel2 from "../../database/models/warn2.js";
-
 
 export default class extends Command {
   constructor(options) {
@@ -41,7 +41,7 @@ export default class extends Command {
         if (!args[3]) return message.channel.send('First put the number of warnings to put the role, and then mention the role, write its ID or write its name. Set "false" to not use roles in this system.')
         if (args[3] === "false") {
           try {
-            let form = await dbMsgModel.updateOne({ role: false });
+            await dbMsgModel.updateOne({ role: false });
          await message.channel.send("Okay, I'll not put a role.");
           } catch (err) {
             console.log(err);
@@ -60,7 +60,7 @@ export default class extends Command {
           if (!isNaN(warnings)) {
             if (roleObj) {
               try {
-                let form = await dbMsgModel.updateOne({
+                await dbMsgModel.updateOne({
                   role: true,
                   roletime: warnings,
                   roleid: roleObj.id
@@ -91,7 +91,7 @@ export default class extends Command {
         if (!args[3]) return message.channel.send('Put the number of warnings necessary to kick the member.')
         if (args[3] === "false") {
           try {
-            let form = await dbMsgModel.updateOne({ kick: false });
+            await dbMsgModel.updateOne({ kick: false });
          await message.channel.send("I'll not kick anyone.");
           } catch (err) {
             console.log(err);
@@ -103,7 +103,7 @@ export default class extends Command {
           let warnings = parseInt(args[3]);
           if (!isNaN(warnings)) {
             try {
-              let form = await dbMsgModel.updateOne({
+              await dbMsgModel.updateOne({
                 kick: true,
                 kicktime: warnings
               });
@@ -126,7 +126,7 @@ export default class extends Command {
         if (!args[3]) return message.channel.send('Put the number of warnings necessary to ban the member.')
         if (args[3] === "false") {
           try {
-            let form = await dbMsgModel.updateOne({ ban: false });
+            await dbMsgModel.updateOne({ ban: false });
          await message.channel.send("I'll not kick anyone.");
           } catch (err) {
             console.log(err);
@@ -138,7 +138,7 @@ export default class extends Command {
           let warnings = parseInt(args[3]);
           if (!isNaN(warnings)) {
             try {
-              let form = await dbMsgModel.updateOne({
+              await dbMsgModel.updateOne({
                 ban: true,
                 bantime: warnings
               });
@@ -166,7 +166,7 @@ export default class extends Command {
       if (!dbMsgModel) return console.log("Doesn't exist.");
       let member =
         message.mentions.members.first() ||
-        message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(err => { }) : undefined)
+        message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
       if (!member) return message.channel.send("Invalid member!");
       let document = await MessageModel2.findOne({
         guildid: message.guild.id,
@@ -187,7 +187,7 @@ export default class extends Command {
         try {
           let { warnings } = dbMsgModel2;
           let newWarnings = warnings + 1;
-          let form = await dbMsgModel2.updateOne({ warnings: newWarnings });
+          await dbMsgModel2.updateOne({ warnings: newWarnings });
           if (args[2]) {
             member.send(
               "You've been warned on " +

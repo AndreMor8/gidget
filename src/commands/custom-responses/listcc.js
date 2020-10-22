@@ -10,7 +10,7 @@ export default class extends Command {
             bot: [0, 16384]
         }
     }
-    async run(bot, message, args) {
+    async run(bot, message) {
         const msgDocument = message.guild.cache.customresponses ? message.guild.customresponses : await message.guild.getCustomResponses();
         if (msgDocument && msgDocument.responses) {
             const { responses } = msgDocument;

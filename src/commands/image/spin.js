@@ -25,7 +25,7 @@ export default class extends Command {
                 }, 20000);
             }
         }
-        let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await bot.users.fetch(args[1]).catch(err => { }) || args[1]) : message.author)
+        let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await bot.users.fetch(args[1]).catch(() => { }) || args[1]) : message.author)
         if (!source) return message.channel.send("Invalid user, emoji or image!");
         if (source instanceof User) {
             source = source.displayAvatarURL({ format: "png", size: 256 });
@@ -38,7 +38,8 @@ export default class extends Command {
         if (parsed.length >= 1) {
             source = parsed[0].url;
         }
-        if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/gm.test(source)) return message.channel.send("Invalid user, emoji or image!");
+        if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm.test(source)) return message.channel.send("Invalid user, emoji or image!");
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (s, r) => {
             try {
                 message.channel.startTyping();
@@ -62,7 +63,7 @@ export default class extends Command {
                     const buf = Buffer.concat(chunks);
                     const att = new MessageAttachment(buf, "spin.gif");
                     message.channel.stopTyping(true);
-                    await message.channel.send(att).catch(err => {});
+                    await message.channel.send(att).catch(() => {});
                     s();
                 })
                 for (let i = 0; i < parseInt(360 / DEGREES); i++) {
@@ -95,7 +96,11 @@ export default class extends Command {
     }
 }
 
-/** Remove partially transparent & #00ff00 (bg color) green pixels */
+/**
+ * Remove partially transparent & #00ff00 (bg color) green pixels.
+ *
+ * @param data
+ */
 function optimizeFrameColors(data) {
     for (let i = 0; i < data.length; i += 4) {
         // clamp greens to avoid pure greens from turning transparent
@@ -105,6 +110,9 @@ function optimizeFrameColors(data) {
     }
 }
 
+/**
+ * @param url
+ */
 async function resize(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error("Status code: " + res.status);

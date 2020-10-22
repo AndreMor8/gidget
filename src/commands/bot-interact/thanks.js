@@ -4,7 +4,7 @@ export default class extends Command {
         super(options);
         this.description = "Thanks";
     }
-    async run(bot, message, args) {
+    async run(bot, message) {
         const att = new MessageAttachment("https://contributors-img.web.app/image?repo=AndreMor955/gidget", "contributors.png");
         const embed = new MessageEmbed()
         .attachFiles([att])

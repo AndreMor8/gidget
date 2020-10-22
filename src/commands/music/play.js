@@ -2,11 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import commons from '../../utils/commons.js';
 const { __dirname } = commons(import.meta.url);
-const COOKIE = fs.readFileSync(path.join(__dirname, "/../../../cookies.txt"), "utf-8");
+let COOKIE
+if(process.env.CI !== "yes") COOKIE = fs.readFileSync(path.join(__dirname, "/../../../cookies.txt"), "utf-8");
 import ytdl from "discord-ytdl-core";
 import ytsr from "ytsr";
 import ytpl from "ytpl";
 import moment from "moment";
+//Autocomplete
+// eslint-disable-next-line no-unused-vars
 import Discord from 'discord.js';
 import times from '../../utils/times.js';
 import "moment-duration-format";
@@ -112,7 +115,7 @@ export default class extends Command {
           message.guild.musicVariables = null;
         message.channel.stopTyping(true);
         message.channel.send("I couldn't queue your playlist. Here's a debug: " + err)
-          .then(m => form1.delete()).catch(err => { });
+          .then(() => form1.delete()).catch(() => { });
       }
     } else {
       let filter;
@@ -157,8 +160,9 @@ export default class extends Command {
 
 /**
  * Get the necessary YouTube video info. Don't use this if another API is helping you on that.
- * @param {String} URL The YouTube video URL.
- * @returns {Object} The video object ready to push to the queue.
+ *
+ * @param {string} URL - The YouTube video URL.
+ * @returns {object} The video object ready to push to the queue.
  */
 async function handleVideo(URL) {
   const songInfo = await ytdl.getBasicInfo(URL, {
@@ -179,12 +183,12 @@ async function handleVideo(URL) {
 }
 
 /**
- * 
- * @param {Object} serverQueue 
- * @param {Discord.TextChannel} textChannel 
- * @param {Discord.VoiceChannel} voiceChannel 
- * @param {Object[]} songs 
- * @param {Boolean} playlist
+ * @param {object} serverQueue
+ * @param {Discord.TextChannel} textChannel
+ * @param {Discord.VoiceChannel} voiceChannel
+ * @param {object[]} songs
+ * @param pre_songs
+ * @param {boolean} playlist
  * @returns {Promise<void>}
  */
 async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_songs, playlist = false) {
@@ -224,7 +228,7 @@ async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_son
         setTimeout(() => {
           voiceChannel.leave();
         }, 10000);
-        connection.channel.guild.queue = null;;
+        connection.channel.guild.queue = null;
         connection.channel.guild.musicVariables = null;
         textChannel.stopTyping();
         textChannel.send("Sorry, but I'm muted. Contact an admin to unmute me.");
@@ -255,6 +259,11 @@ async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_son
   return;
 }
 
+/**
+ * @param guild
+ * @param song
+ * @param seek
+ */
 async function play(guild, song, seek = 0) {
   const serverQueue = guild.queue;
 
@@ -280,13 +289,13 @@ async function play(guild, song, seek = 0) {
       filter: "audioonly",
       highWaterMark: 1 << 25
     }), { type: "opus" });
-    dispatcher.on("start", async () => {
+    dispatcher.on("start", () => {
       dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
       if (serverQueue.inseek) {
         serverQueue.inseek = false
         serverQueue.textChannel.stopTyping();
         return serverQueue.textChannel.send("Position moved to " + moment.duration(seek, "seconds").format());
-      };
+      }
       if (!serverQueue.loop)
         serverQueue.textChannel.send(
           `<:JukeboxRobot:610310184484732959> Now playing: **${song.title}**`
@@ -300,7 +309,7 @@ async function play(guild, song, seek = 0) {
       if (!serverQueue.playing) serverQueue.playing = true;
       await play(guild, serverQueue.songs[0]);
     });
-    dispatcher.on("close", async () => {
+    dispatcher.on("close", () => {
       if (serverQueue.inseek) return;
       if (!guild.me.voice.channel) {
         clearTimeout(musicVariables.time);

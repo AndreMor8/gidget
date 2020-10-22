@@ -28,7 +28,7 @@ export default class extends Command {
     message.guild.musicVariables = { other: true };
     musicVariables = message.guild.musicVariables;
     const voiceChannel = message.member.voice.channel;
-    voiceChannel.join().then(async (connection) => {
+    await voiceChannel.join().then(async (connection) => {
       await connection.play(new Silence(), { type: "opus" });
       await message.channel.send('Start talking. I will record **what you say** until you finish speaking.');
       const audio = connection.receiver.createStream(message.author, options);
@@ -52,7 +52,7 @@ export default class extends Command {
           if (args[1] === "play") {
             const dispatcher = connection.play(audio, { type: "opus" })
             dispatcher.on("start", () => {
-              message.channel.send("I'm playing your recording.").catch(err => { });
+              message.channel.send("I'm playing your recording.").catch(() => { });
             })
             dispatcher.on("finish", async () => {
               await voiceChannel.leave();
@@ -64,7 +64,7 @@ export default class extends Command {
             dispatcher.on("error", (err) => {
               voiceChannel.leave();
               message.guild.musicVariables = null;
-              message.channel.send("Some error ocurred in the dispatcher! Here's a debug: " + err).catch(err => { });
+              message.channel.send("Some error ocurred in the dispatcher! Here's a debug: " + err).catch(() => { });
             })
           } else {
             message.channel.startTyping();
@@ -87,23 +87,23 @@ export default class extends Command {
                 const buf = res.getBuffer();
                 const attachment = new Discord.MessageAttachment(buf, 'audio.mp3');
                 if (args[1] === "server") await message.channel.send("Here's your recording.", attachment).catch(err => {
-                  if (err.code === 40005) message.channel.send("The file is very large. I can't send you that.").catch(err => { });
+                  if (err.code === 40005) message.channel.send("The file is very large. I can't send you that.").catch(() => { });
                 });
                 else await message.member.send("Here's your recording.", attachment).catch(async err => {
                   switch (err.code) {
                     case 40005:
-                      await message.channel.send("The file is very large. I can't send you that.").catch(err => { });
+                      await message.channel.send("The file is very large. I can't send you that.").catch(() => { });
                       break;
                     case 50007:
-                      await message.channel.send("I can't send you DMs :(").catch(err => { });
+                      await message.channel.send("I can't send you DMs :(").catch(() => { });
                       break;
                     default:
                       console.log(err);
-                      await message.channel.send("Error when sending the file: " + err).catch(err => { });
+                      await message.channel.send("Error when sending the file: " + err).catch(() => { });
                   }
                 });
               }).catch(async err => {
-                await message.channel.send("Error when converting the PCM buffer: " + err).catch(err => { });
+                await message.channel.send("Error when converting the PCM buffer: " + err).catch(() => { });
               }).finally(() => {
                 voiceChannel.leave();
                 message.guild.musicVariables = null;

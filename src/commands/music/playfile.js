@@ -38,7 +38,7 @@ export default class extends Command {
       musicVariables = message.guild.musicVariables
     }
     const file = message.attachments.first() ? message.attachments.first().url : args[1]
-    if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/.test(file)) return message.channel.send("Invalid URL!")
+    if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(file)) return message.channel.send("Invalid URL!")
     musicVariables.connection = await voiceChannel.join()
     if (musicVariables.connection.voice.mute) {
       setTimeout(async () => {
@@ -52,6 +52,10 @@ export default class extends Command {
   }
 }
 
+/**
+ * @param file
+ * @param guild
+ */
 async function playFile(file, guild) {
   const musicVariables = guild.musicVariables;
   const dispatcher = await musicVariables.connection.play(file, { highWaterMark: 1 << 25 });
@@ -74,9 +78,9 @@ async function playFile(file, guild) {
   dispatcher.on("error", async err => {
     await musicVariables.voiceChannel.leave();
     guild.musicVariables = null;
- await message.channel.send("Some error ocurred! Here's a debug: ")
+    await musicVariables.textChannel.send("Some error ocurred! Here's a debug: " + err)
   });
-  dispatcher.on("start", async () => {
+  dispatcher.on("start", () => {
     if (musicVariables.loop) return;
     musicVariables.textChannel.send("Don't worry if the music starts to sound weird at first. Unfortunately I had to set up a workaround so that the music doesn't stop too soon.\nhttps://github.com/discordjs/discord.js/issues/3362").then(m => { m.suppressEmbeds(); m.delete({ timeout: 10000 }) });
   });

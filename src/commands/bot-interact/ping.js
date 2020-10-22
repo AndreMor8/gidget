@@ -6,7 +6,7 @@ export default class extends Command {
         super(options);
         this.description = "Bot test";
     }
-    async run(bot, message, args) {
+    async run(bot, message) {
         const msg = await message.channel.send("Pong!");
         const pings = [`📨 Message ping: ${Date.now() - msg.createdTimestamp}ms`, `📡 Ping from the API: ${bot.ws.ping}ms`];
         const pageping = await ping.promise.probe("gidget.xyz");

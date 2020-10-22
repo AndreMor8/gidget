@@ -27,7 +27,7 @@ export default class extends Command {
         if (tosay.length > 200) return message.channel.send("Must be less than 200 characters")
         message.channel.startTyping();
         const att = new MessageAttachment(`https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=64&client=tw-ob&q=${encodeURIComponent(tosay)}&tl=${encodeURIComponent(reallang)}`, "tts.mp3");
-        await message.channel.send(att).catch(err => { });
+        await message.channel.send(att).catch(() => { });
         message.channel.stopTyping(true);
     }
 }

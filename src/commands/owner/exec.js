@@ -29,7 +29,7 @@ export default class extends Command {
             });
         } catch (error) {
             const text = Util.splitMessage(util.inspect(error, { depth: 0 }), { maxLength: 1950 });
-            message.channel.send(text[0], { code: "sh" });
+            await message.channel.send(text[0], { code: "sh" });
         }
     }
 }

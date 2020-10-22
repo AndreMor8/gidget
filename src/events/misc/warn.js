@@ -1,3 +1,3 @@
-export default async (bot, w) => {
+export default (bot, w) => {
   console.warn(w);
 }

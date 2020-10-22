@@ -1,4 +1,3 @@
-
 import safeRegex from 'safe-regex';
 export default class extends Command {
   constructor(options) {
@@ -21,4 +20,4 @@ export default class extends Command {
     })
     await message.channel.send("Custom response set correctly");
   }
-};
+}

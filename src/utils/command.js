@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Discord from 'discord.js';
 
 export default class Command {
@@ -19,10 +20,11 @@ export default class Command {
         this.secret = false;
     }
     /**
-     * Command code
-     * @param {Discord.Client} bot Discord.js client.
-     * @param {Discord.Message} message The Discord.js message object
-     * @param {String[]} args The pre-converted args
+     * Command code.
+     *
+     * @param {Discord.Client} bot - Discord.js client.
+     * @param {Discord.Message} message - The Discord.js message object.
+     * @param {string[]} args - The pre-converted args.
      * @returns {Promise<void>} In most of the cases, void.
      */
     async run(bot, message, args) {

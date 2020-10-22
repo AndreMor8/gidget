@@ -26,8 +26,8 @@ export default class extends Command {
       try {
         await message.guild.members.ban(user, { reason: (users.length === 1 ? args.slice(2).join(" ") : undefined) });
       } catch (err) {
-        if (err.code === 50035) await message.channel.send("Invalid ID!").catch(err => {});
-        else await message.channel.send(`I couldn't hackban ${user}: ${err}`).catch(err => {});
+        if (err.code === 50035) await message.channel.send("Invalid ID!").catch(() => {});
+        else await message.channel.send(`I couldn't hackban ${user}: ${err}`).catch(() => {});
       }
     }
     await message.channel.send("Operation completed.");

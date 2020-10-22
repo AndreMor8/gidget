@@ -21,7 +21,7 @@ export default async (bot, member) => {
             toadd.push(role.id);
           }
         }
-        await member.roles.add(toadd, "Retrieving roles").catch(err => { });
+        await member.roles.add(toadd, "Retrieving roles").catch(() => { });
       }
       msgDocument.deleteOne();
     }
@@ -40,7 +40,7 @@ export default async (bot, member) => {
           if (invitesBefore[inviter] === (invitesAfter[inviter] - 1)) {
             inviterMention = (inviter === member.guild.id) ? "System" : ("<@!" + inviter + ">");
             if (inviter !== member.guild.id) {
-              const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(err => { });
+              const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(() => { });
               if (t) inviterTag = t;
             } else {
               inviterTag = "System";
@@ -59,12 +59,12 @@ export default async (bot, member) => {
         const channel = member.guild.channels.cache.get(welcome.channelID);
         if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
           let finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag);
-          await channel.send(finalText || "?").catch(err => { });
+          await channel.send(finalText || "?").catch(() => { });
         }
       }
       if (welcome.dmenabled && welcome.dmtext) {
         let finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag);
-        await member.send(finalText || "?").catch(err => { });
+        await member.send(finalText || "?").catch(() => { });
       }
     }
   }
@@ -95,5 +95,5 @@ export default async (bot, member) => {
     )
     .setFooter("Thanks for joining!")
     .setTimestamp();
-  await member.send(embed).catch(err => { });
+  await member.send(embed).catch(() => { });
 };

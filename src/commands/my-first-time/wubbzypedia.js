@@ -5,7 +5,7 @@ export default class extends Command {
     this.description = "Link to Wubbzypedia"
     this.onlyguild = true
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     await message.channel.send('Wubbzypedia is the best wiki for all the information of the series Wow! Wow! Wubbzy!, the characters, episodes, merchandise and much more! Here is the link: https://wubbzy.fandom.com/')
   }
 }

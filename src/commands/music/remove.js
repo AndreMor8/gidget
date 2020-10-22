@@ -23,6 +23,6 @@ export default class extends Command {
         if (songs.length < number) return message.channel.send("Invalid number. Use `queue` to see the current queue");
         const realnumber = number - 1;
         songs.splice(realnumber, 1);
-        return message.channel.send("Song #" + number + " removed from the queue");
+        await message.channel.send("Song #" + number + " removed from the queue");
     }
 }

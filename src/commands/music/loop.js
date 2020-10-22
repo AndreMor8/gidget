@@ -6,7 +6,7 @@ export default class extends Command {
     this.description = "Loops the song";
     this.guildonly = true;
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     const serverQueue = message.guild.queue
     const musicVariables = message.guild.musicVariables;
     if (!message.member.voice.channel) return message.channel.send("You need to be in a voice channel to loop the music!");
@@ -20,15 +20,14 @@ export default class extends Command {
       }
     }
     if (!serverQueue || !musicVariables) return message.channel.send("There is nothing playing.");
-    if (serverQueue.voiceChannel.id !== message.member.voice.channel.id)
-      return message.channel.send("I'm on another voice channel!");
+    if (serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send("I'm on another voice channel!");
 
     if (!serverQueue.loop) {
       serverQueue.loop = true;
-      return message.channel.send("🔁 The song repeat has been enabled.");
+      await message.channel.send("🔁 The song repeat has been enabled.");
     } else {
       serverQueue.loop = false;
-      return message.channel.send("🔁 The song repeat has been disabled.");
+      await message.channel.send("🔁 The song repeat has been disabled.");
     }
   }
 }

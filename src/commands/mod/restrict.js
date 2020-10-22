@@ -35,12 +35,12 @@ export default class extends Command {
           muteroleid: roleobj.id,
         });
         await dbMsgModel.save()
-          .then(m => message.channel.send('I\'ve successfully registered the role'))
+          .then(() => message.channel.send('I\'ve successfully registered the role'))
           .catch(err => message.channel.send('I was unable to register the role. Here\'s a debug: ' + err));
       }
     } else {
       if (!args[1]) return message.channel.send('Please mention the user or enter their ID.')
-      let member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(err => { }) : undefined)
+      let member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
       if (!member) return message.channel.send('Invalid member!')
       let addMemberRole = async (muteroleid, member, args) => {
         let role = message.guild.roles.cache.get(muteroleid)
@@ -63,7 +63,7 @@ export default class extends Command {
         .findOne({ guildid: message.guild.id })
         .catch(err => console.log(err));
       if (MsgDocument) {
-        var { muteroleid } = MsgDocument;
+        let { muteroleid } = MsgDocument;
         await addMemberRole(muteroleid, member, args)
       } else {
         return message.channel.send('You must first register a role for restrict')

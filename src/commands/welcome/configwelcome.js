@@ -122,6 +122,6 @@ export default class extends Command {
                 await message.channel.send("Invalid mode!");
         }
         if (message.guild.me.hasPermission("MANAGE_GUILD"))
-            message.guild.inviteCount = await message.guild.getInviteCount().catch(err => { return {}; });
+            message.guild.inviteCount = await message.guild.getInviteCount().catch(() => { return {}; });
     }
 }

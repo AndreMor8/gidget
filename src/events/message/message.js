@@ -24,7 +24,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
           return await message.reply("swearing is not allowed in this server!");
         }
       }
-    };
+    }
     let PREFIX;
     if (message.guild) {
       PREFIX = message.guild.cache.prefix ? message.guild.prefix : await message.guild.getPrefix();
@@ -63,9 +63,9 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
           internalCooldown.add(message.author.id);
           await command.run(bot, message, args);
         } catch (err) {
-          if (err.name === "StructureError") return message.channel.send(err.message).catch(err => { });
+          if (err.name === "StructureError") return message.channel.send(err.message).catch(() => { });
           console.error(err);
-          await message.channel.send("Something happened! Here's a debug: " + err).catch(err => { });
+          await message.channel.send("Something happened! Here's a debug: " + err).catch(() => { });
         } finally {
           internalCooldown.delete(message.author.id);
         }
@@ -83,7 +83,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
             for (let i in arr) {
               const regex = new RegExp(arr[i][0], "gmi");
               if (regex.test(message.content) && message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
-                await message.channel.send(arr[i][1]).catch(err => { });
+                await message.channel.send(arr[i][1]).catch(() => { });
               }
             }
           }
@@ -116,7 +116,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
                 const user = await Levels.fetch(message.author.id, message.guild.id);
                 await message.channel.send(
                   `${message.author}, congratulations! You have leveled up to **${user.level}**. :tada:`
-                ).catch(err => { });
+                ).catch(() => { });
               }
             }
           }
@@ -132,7 +132,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
             const [channelid, messageid] = urlobj.pathname.split("/").slice(3);
             const channel = bot.channels.cache.get(channelid);
             if (channel && channel.permissionsFor(message.author).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-              const msg = channel.messages.cache.filter(e => !e.partial).get(messageid) || (messageid ? (await channel.messages.fetch(messageid).catch(err => { })) : undefined)
+              const msg = channel.messages.cache.filter(e => !e.partial).get(messageid) || (messageid ? (await channel.messages.fetch(messageid).catch(() => { })) : undefined)
               if (msg) {
                 const embed = new Discord.MessageEmbed()
                   .setAuthor(msg.author.tag, msg.author.displayAvatarURL({ format: "png", dynamic: true }))

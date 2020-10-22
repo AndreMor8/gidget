@@ -31,10 +31,11 @@ export default class extends Command {
 }
 
 /**
- * Obtener un texto con los saltos de linea correctos cuando una sóla palabra excede el límite especificado
- * @param {String} text El texto a revisar
- * @param {Number} maxWordLength Longitud que debe tener la palabra antes de dividirla y hacer salto de linea
- * @param {Number} maxTextLength Si el texto resultante es mayor a esta longuitud, detener el bucle
+ * Obtener un texto con los saltos de linea correctos cuando una sóla palabra excede el límite especificado.
+ *
+ * @param {string} text - El texto a revisar.
+ * @param {number} maxWordLength - Longitud que debe tener la palabra antes de dividirla y hacer salto de linea.
+ * @param {Number} maxTextLength - Si el texto resultante es mayor a esta longuitud, detener el bucle.
  * @returns {String} El texto a imprimir
  */
 function getWellText(text, maxWordLength, maxTextLength = Infinity) {

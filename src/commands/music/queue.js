@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [0, 0]
     };
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     const serverQueue = message.guild.queue
     const musicVariables = message.guild.musicVariables;
     if (!serverQueue || !musicVariables) return message.channel.send("There is nothing playing.");

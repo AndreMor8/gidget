@@ -7,17 +7,17 @@ export default class Main {
         whitelist: []
     }) {
         this.options = options;
-        arr = arr.filter((item, index, arr) => {
+        arr = arr.filter((item) => {
             return !this.options.whitelist.includes(item);
         })
         return this;
     }
     /**
      * Returns whether or not a string contains profane
-     * language
+     * language.
      *
-     * @param {string} str
-     * @returns {Boolean} whether or not it is profane
+     * @param {string} str - Text to check.
+     * @returns {boolean} Whether or not it is profane.
      */
     isProfane(str) {
         let string = str.trim().split(/ +/g);
@@ -27,10 +27,10 @@ export default class Main {
         return false;
     }
     /**
-     * Clears a string off profane language
+     * Clears a string off profane language.
      *
-     * @param {string} str
-     * @returns {Boolean}
+     * @param {string} str - Text to clean.
+     * @returns {string} Cleaned string.
      */
     clear(str) {
         let r = str;

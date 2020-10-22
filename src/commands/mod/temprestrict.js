@@ -19,7 +19,7 @@ export default class extends Command {
     if (!args[1]) return message.channel.send('Usage: `temprestrict <time> <member> <reason>`');
     let time = ms(args[1]);
     if (typeof time !== "number") return message.channel.send('Invalid time!');
-    let member = message.mentions.members.first() || message.guild.members.cache.get(args[2]) || message.guild.members.cache.find(m => m.displayName === args[2]) || message.guild.members.cache.find(m => m.user.username === args[2]) || (args[2] ? await message.guild.members.fetch(args[2]).catch(err => { }) : undefined)
+    let member = message.mentions.members.first() || message.guild.members.cache.get(args[2]) || message.guild.members.cache.find(m => m.displayName === args[2]) || message.guild.members.cache.find(m => m.user.username === args[2]) || (args[2] ? await message.guild.members.fetch(args[2]).catch(() => { }) : undefined)
     if (!member) return message.channel.send('Invalid member!');
     let addMemberRole = async (muteroleid, member, time, args) => {
       let MsgDocument = await MessageModel2.findOne({ guildid: message.guild.id, memberId: member.id }).catch(err => console.log(err));
@@ -34,13 +34,13 @@ export default class extends Command {
         if (role && member) {
           if (args[3]) {
             member.roles.add(role, 'Restrict command - ' + args.slice(3).join(" "))
-              .then(m => {
+              .then(() => {
                 message.channel.send(`I've restricted ${member.user.tag} for ${ms(time)} with reason: ${args.slice(3).join(" ")}`);
                 tempmute(bot, true);
               }).catch(err => message.channel.send(`I couldn't restrict that user. Here's a debug: ` + err));
           } else {
             member.roles.add(role, 'Restrict command')
-              .then(m => {
+              .then(() => {
                 message.channel.send(`I've restricted ${member.user.tag} for ${ms(time)}`);
                 tempmute(bot, true);
               }).catch(err => message.channel.send(`I couldn't restrict that user. Here's a debug: ` + err));

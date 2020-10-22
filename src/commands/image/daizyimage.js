@@ -16,7 +16,7 @@ export default class extends Command {
       bot: [0, 16384]
     }
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     await image(message);
   }
 }
