@@ -55,7 +55,7 @@ global.botVersion = "0.99 RC";
   await registerEvents(bot, "../events");
   //Login with Discord
   await bot.login();
-  if(process.env.CI) {
+  if(process.env.CI === "yes") {
     setTimeout(() => {
       bot.destroy();
       process.exit();
