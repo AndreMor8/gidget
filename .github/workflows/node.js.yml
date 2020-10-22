@@ -1,9 +1,7 @@
-name: ESLint
+name: Test code
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
     branches: [ master ]
 
 jobs:
@@ -18,6 +16,24 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
+      env:
+        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        ACCESS: ${{ secrets.ACCESS }}
+        TRW_ID: ${{ secrets.TRW_ID }}
+        TRW_TOKEN: ${{ secrets.TRW_TOKEN }}
+        MDB_USER: ${{ secrets.MDB_USER }}
+        MDB_PASS: ${{ secrets.MDB_PASS }}
+        MDB_PATH: ${{ secrets.MDB_PATH }}
+        MDB_DBNAME: ${{ secrets.MDB_DBNAME }}
+        WIKI_NAME: ${{ secrets.WIKI_NAME }}
+        WIKI_PASS: ${{ secrets.WIKI_PASS }}
+        GUILD_ID: ${{ secrets.GUILD_ID }}
+        DEVS: ${{ secrets.DEVS }}
+        HOSTER: ${{ secrets.HOSTER }}
+        VERYS: ${{ secrets.VERYS }}
+        PUPPETEER: ${{ secrets.PUPPETEER }}
+        EXTERNAL: ${{ secrets.EXTERNAL }}
+        DEEPAI: ${{ secrets.DEEPAI }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
