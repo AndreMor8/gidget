@@ -22,8 +22,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install -g npm@6.14.8
-    - run: apt-get install libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
-    - run: npm -v && npm install
+    - run: npm -v && npm uninstall canvas && npm install
     - run: npm ci
     - run: npm run eslint
-    - run: npm run test
+    - run: npm run test15
