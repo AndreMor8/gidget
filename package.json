@@ -7,7 +7,6 @@
   "description": "A Discord Bot, for Wow Wow Discord",
   "main": "./src/index.js",
   "scripts": {
-    "install-node15": "npm ci",
     "test": "node --experimental-json-modules ./src/index.js ci",
     "eslint": "eslint .",
     "start": "node --experimental-json-modules ./src/index.js"
