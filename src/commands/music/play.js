@@ -5,7 +5,7 @@ const { __dirname } = commons(import.meta.url);
 let COOKIE
 if(process.argv[2] !== "ci") COOKIE = fs.readFileSync(path.join(__dirname, "/../../../cookies.txt"), "utf-8");
 import ytdl from "discord-ytdl-core";
-import ytsr from "ytsr";
+import usetube from 'usetube';
 import ytpl from "ytpl";
 import moment from "moment";
 //Autocomplete
@@ -118,36 +118,11 @@ export default class extends Command {
           .then(() => form1.delete()).catch(() => { });
       }
     } else {
-      let filter;
       try {
         message.channel.startTyping();
-        const filters = await ytsr.getFilters(args.slice(1).join(" "));
-        filter = filters.get("Type").find(o => o.name === "Video");
-        let options = {
-          safeSearch: true,
-          limit: 1,
-          nextpageRef: filter.ref
-        };
-        const searchResults = await ytsr(null, options);
-        if (serverQueue) {
-          if (serverQueue.loop) {
-            serverQueue.loop = false;
-            message.channel.send("🔁 The song repeat has been disabled.");
-          }
-        }
-        if (!searchResults) {
-          message.channel.stopTyping(true);
-          return message.reply(
-            `I didn't find any video. Check your term and try again.`
-          );
-        }
-        if (!searchResults.items[0]) {
-          message.channel.stopTyping(true);
-          return message.reply(
-            `I didn't find any video. Check your term and try again.`
-          );
-        }
-        await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: searchResults.items[0].link, title: searchResults.items[0].title, duration: times(searchResults.items[0].duration) / 1000, seektime: 0, age_restricted: false }]);
+        const { tracks } = await usetube.searchVideo(args.slice(1).join(" "));
+        if(!tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
+        await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: `https://www.youtube.com/watch?v=${tracks[0].id}`, title: tracks[0].original_title, duration: tracks[0].duration, seektime: 0, age_restricted: false }]);
       } catch (err) {
         if (!serverQueue)
           message.guild.musicVariables = null;
@@ -259,11 +234,6 @@ async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_son
   return;
 }
 
-/**
- * @param guild
- * @param song
- * @param seek
- */
 async function play(guild, song, seek = 0) {
   const serverQueue = guild.queue;
 
@@ -294,12 +264,12 @@ async function play(guild, song, seek = 0) {
       if (serverQueue.inseek) {
         serverQueue.inseek = false
         serverQueue.textChannel.stopTyping();
-        return serverQueue.textChannel.send("Position moved to " + moment.duration(seek, "seconds").format());
+        return serverQueue.textChannel.send("Position moved to " + moment.duration(seek, "seconds").format()).catch(() => {});
       }
       if (!serverQueue.loop)
         serverQueue.textChannel.send(
           `<:JukeboxRobot:610310184484732959> Now playing: **${song.title}**`
-        );
+        ).catch(() => {});
       serverQueue.textChannel.stopTyping(true);
     });
     dispatcher.on("finish", async () => {
@@ -329,7 +299,7 @@ async function play(guild, song, seek = 0) {
       serverQueue.songs.shift();
       await serverQueue.textChannel
         .send("An error occurred with the dispatcher. Here's a debug: " + err)
-        .catch(err => console.log(err));
+        .catch(() => {});
       if (!serverQueue.playing) serverQueue.playing = true;
       await play(guild, serverQueue.songs[0]);
     });

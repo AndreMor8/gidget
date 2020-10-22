@@ -1,7 +1,8 @@
-import ytsr from "ytsr";
+import usetube from 'usetube';
 import ytpl from "ytpl";
 import ytdl from "discord-ytdl-core";
 import { MessageEmbed } from "discord.js";
+import ms from 'ms';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -19,39 +20,25 @@ export default class extends Command {
     if (!message.member.voice.channel) return message.channel.send("You must be on a voice channel.");
     if (serverQueue && serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send("I'm on another voice channel! I cannot be on two channels at the same time.");
     if (musicVariables && musicVariables.other) return message.channel.send("I'm doing another operation");
-    if (!args[1]) return message.channel.send("Put a search term")
+    if (!args[1]) return message.channel.send("Put a search term");
+    if (args.slice(1).join(" ").length > 250) return message.channel.send("The maximum size of the search term is 250 characters.");
     if (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(args[1])) return message.channel.send("YouTube links should go in the `play` command");
     if (ytdl.validateID(args[1]) || ytpl.validateID(args[1])) return message.channel.send("YouTube IDs should go in the `play` command");
-    let filter;
     try {
       message.channel.startTyping();
-      const filters = await ytsr.getFilters(args.slice(1).join(" "));
-      filter = filters.get("Type").find(o => o.name === "Video");
-      let options = {
-        safeSearch: true,
-        limit: 10,
-        nextpageRef: filter.ref
-      };
-      const searchResults = await ytsr(null, options);
-      if (!searchResults) {
-        message.channel.stopTyping(true);
-        return message.reply(`I didn't find any video. Check your term and try again.`);
-      }
-      if (!searchResults.items[0]) {
-        message.channel.stopTyping(true);
-        return message.reply(`I didn't find any video. Check your term and try again.`);
-      }
+      const { tracks } = await usetube.searchVideo(args.slice(1).join(" "));
+      if(!tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
       let text = '';
       let i = 0;
-      for (const elements of Object.values(searchResults.items)) {
-        i++
-        if (text.length < 1600) {
-          text += `${i}. **${elements.title}**\nChannel: ${elements.author.name} ${elements.author.verified ? "(Verified)" : ""}\n${elements.views} views, uploaded ${elements.uploaded_at}\nDuration: ${elements.duration}\n\n`
+      for (const elements of tracks) {
+        if (text.length < 1750) {
+          text += `${i + 1}. **${elements.original_title}**\nUploaded ${elements.publishedAt}\nDuration: ${ms(elements.duration * 1000, { long: true })}\n\n`
         } else break;
+        i++;
       }
 
       const embed = new MessageEmbed()
-        .setTitle("Search results for " + searchResults.query)
+        .setTitle(`Search results for ${args.slice(1).join(" ")}`)
         .setDescription(text)
         .setFooter(i + " results, say a number to play that music, you can say \"stop\" to stop selecting")
         .setColor("RANDOM")
@@ -67,7 +54,7 @@ export default class extends Command {
           if (number <= i && number >= 1) {
             if (!msg.deleted) await msg.delete();
             collector.stop("Ok!");
-            global.botCommands.get("play").run(bot, message, ["play", searchResults.items[number - 1].link]);
+            global.botCommands.get("play").run(bot, message, ["play", tracks[number - 1].id]);
           } else if (i < number) {
             message.channel.send("There are only " + i + " results...");
           } else {
