@@ -56,7 +56,9 @@
     "twemoji-parser": "^13.0.0",
     "wikijs": "^6.0.1",
     "ytpl": "^1.0.1",
-    "ytsr": "^1.0.4"
+    "ytsr": "^1.0.4",
+    "eslint-config-standard-jsdoc": "^9.3.0",
+    "eslint-plugin-jsdoc": "^30.7.3"
   },
    "devDependencies": {
    "eslint": "^7.11.0"
