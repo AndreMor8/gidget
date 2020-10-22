@@ -11,6 +11,8 @@ class ErrorCommand extends Command {
         this.secret = true;
         this.error = options.err;
     }
+    
+    // eslint-disable-next-line no-unused-vars
     async run(bot, message, args) {
         await message.channel.send("That command is not loaded due to error: " + this.error);
     }
@@ -34,9 +36,9 @@ export async function registerCommands(dir) {
                     let cmdModule = await import("file:///" + path.join(__dirname, dir, file));
                     let cmdClass = new cmdModule.default({ name: cmdName, category })
                     global.botCommands.set(cmdName, cmdClass);
-
                 }
                 catch (err) {
+                    process.exitCode = 1;
                     console.error("There was an error initializing the " + cmdName + " command\n", err);
                     global.botCommands.set(cmdName, new ErrorCommand({ name: cmdName, category, err }));
                 }
@@ -60,6 +62,7 @@ export async function registerEvents(bot, dir) {
                     bot.on(eventName, eventModule.default.bind(null, bot));
                 }
                 catch (err) {
+                    process.exitCode = 1;
                     console.error("There was an error initializing the " + eventName + " event\n", err);
                 }
             }

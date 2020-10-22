@@ -14,7 +14,7 @@ export default class extends Command {
       message.guild.members.cache.find(m => m.nickname === args.slice(1).join(" ")) ||
       message.guild.members.cache.find(m => m.user ? (m.user.tag === args.slice(1).join(" ")) : false) ||
       message.guild.members.cache.find(m => m.user ? (m.user.tag === args.slice(1).join(" ")) : false) ||
-      (args[1] ? await message.guild.members.fetch(args[1]).catch(err => { }) : undefined) ||
+      (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined) ||
       message.mentions.roles.first() ||
       message.guild.roles.cache.get(args[1]) ||
       message.guild.roles.cache.find(e => e.name === args.slice(1).join(" "));
@@ -30,7 +30,7 @@ export default class extends Command {
     if (wocat.size >= 1) {
       text += textnp.map(advancedmap).join("\n");
       text += voicenp.map(advancedmap).join("\n");
-    };
+    }
     let cats = Util.discordSort(col.filter(c => c.type === "category"));
     cats.each(c => {
       const children = c.children.intersect(col);
@@ -47,6 +47,9 @@ export default class extends Command {
   }
 }
 
+/**
+ * @param c
+ */
 function advancedmap(c) {
   let r = "";
   switch (c.type) {

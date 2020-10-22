@@ -11,7 +11,7 @@ export default class extends Command {
       bot: [268435456, 0]
     };
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     if (!message.guild) return message.channel.send("This command only works on servers");
     if (!message.member.hasPermission("MANAGE_ROLES")) return message.channel.send("You don't have permission to modify that.")
     if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("I don't have the `MANAGE_ROLES` permission.")

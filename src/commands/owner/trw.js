@@ -17,6 +17,6 @@ export default class extends Command {
 
         if (!args[1]) return message.reply(`Nothing to say?`).then(message => message.delete({ timeout: 5000 }));
 
-        hook.send(args.slice(1).join(" "));
+        await hook.send(args.slice(1).join(" "));
     }
 }

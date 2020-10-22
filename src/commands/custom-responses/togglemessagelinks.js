@@ -9,7 +9,7 @@ export default class extends Command {
             bot: [0, 0]
         }
     }
-    async run(bot, message, args) {
+    async run(bot, message) {
         const thing = message.guild.cache.messagelinksconfig ? message.guild.messagelinksconfig : await message.guild.getMessageLinksConfig();
         await message.guild.setMessageLinksConfig(!thing.enabled);
         await message.channel.send("You have " + (!thing.enabled ? "enabled" : "disabled") + " the message link detection system");

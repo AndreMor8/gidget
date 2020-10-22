@@ -21,9 +21,9 @@ export default async (bot, message) => {
 
   const channel = message.guild.channels.cache.get("656991277291667506");
   if (channel) {
-    var auditlog;
+    let auditlog;
 
-    var info;
+    let info;
 
     try {
       const al = await message.guild.fetchAuditLogs({

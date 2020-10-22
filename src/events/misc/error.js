@@ -1,3 +1,3 @@
-export default async (bot, e) => {
+export default (bot, e) => {
   console.error("Error:", e);
 }

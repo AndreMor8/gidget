@@ -5,7 +5,7 @@ export default class extends Command {
     this.description = "Show all guild emojis";
     this.guildonly = true;
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     if (!message.guild)
       return message.channel.send('This command only works on servers.');
 

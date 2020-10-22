@@ -15,8 +15,8 @@ export default class extends Command {
     const server = args[1] ? (bot.guilds.cache.get(args[1]) ||
       bot.guilds.cache.find(e => e.name === args.slice(1).join(" ")) ||
       bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()) ||
-      await bot.guilds.fetch(args[1]).catch(err => { }) ||
-      await bot.fetchGuildPreview(args[1]).catch(err => { })) : message.guild;
+      await bot.guilds.fetch(args[1]).catch(() => { }) ||
+      await bot.fetchGuildPreview(args[1]).catch(() => { })) : message.guild;
     if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server");
     if ((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
     let servericon = server.iconURL({ dynamic: true, size: 4096 });
@@ -50,7 +50,7 @@ export default class extends Command {
       } else {
         catname += cat + " categories";
       }
-      let embeddata = await server.fetchWidget().catch(err => { });
+      let embeddata = await server.fetchWidget().catch(() => { });
       if (embeddata) {
         embedenabled = embeddata.enabled;
         embedchannel = embeddata.channel;
@@ -86,7 +86,7 @@ export default class extends Command {
           `[Widget](https://discord.com/widget?id=${server.id}), [Widget Image](https://discord.com/api/v7/guilds/${server.id}/widget.png)`
         );
       }
-      const vanity = await server.fetchVanityData().catch(err => { });
+      const vanity = await server.fetchVanityData().catch(() => { });
       if (vanity && vanity.code) {
         links.push("[Vanity invite URL" + (vanity.uses ? (" (" + vanity.uses + " uses)") : "") + "](https://discord.gg/" + (vanity.code) + ")");
       } else if(server.vanityURLCode) {

@@ -5,7 +5,7 @@ export default async (bot, member) => {
   //const date = new Date();
 
   /* Temp-mute function - Delete the member if they left the server */
-  await MessageModel3.findOneAndDelete({ guildId: member.guild.id, memberId: member.id }).catch(err => { });
+  await MessageModel3.findOneAndDelete({ guildId: member.guild.id, memberId: member.id }).catch(() => { });
 
   /* Retrieving-roles function */
   //I don't want errors..
@@ -50,9 +50,9 @@ export default async (bot, member) => {
   if (welcome && welcome.leaveenabled && welcome.leavetext) {
     const channel = member.guild.channels.cache.get(welcome.leavechannelID);
     if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
-      const memberTag = member.user.tag || await bot.users.fetch(member.id).then(e => e.tag).catch(err => { }) || "Unknown";
+      const memberTag = member.user.tag || await bot.users.fetch(member.id).then(e => e.tag).catch(() => { }) || "Unknown";
       let finalText = welcome.leavetext.replace(/%MEMBER%/gmi, member.toString()).replace(/%SERVER%/gmi, member.guild.name).replace(/%MEMBERTAG%/gmi, memberTag);
-      await channel.send(finalText || "?").catch(err => { });
+      await channel.send(finalText || "?").catch(() => { });
     }
   }
 };

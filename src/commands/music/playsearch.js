@@ -20,7 +20,7 @@ export default class extends Command {
     if (serverQueue && serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send("I'm on another voice channel! I cannot be on two channels at the same time.");
     if (musicVariables && musicVariables.other) return message.channel.send("I'm doing another operation");
     if (!args[1]) return message.channel.send("Put a search term")
-    if (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/.test(args[1])) return message.channel.send("YouTube links should go in the `play` command");
+    if (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(args[1])) return message.channel.send("YouTube links should go in the `play` command");
     if (ytdl.validateID(args[1]) || ytpl.validateID(args[1])) return message.channel.send("YouTube IDs should go in the `play` command");
     let filter;
     try {

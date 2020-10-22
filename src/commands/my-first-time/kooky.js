@@ -5,7 +5,7 @@ export default class extends Command {
     this.aliases = ["kookykid"];
     this.description = "Kooky Kid";
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
  await message.channel.send("<a:KookyA1:631611151402139688><:Kooky2:631649171396493312><a:KookyA2:631611175817183252>")
   }
 }

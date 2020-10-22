@@ -1,7 +1,6 @@
 import Discord from "discord.js";
 import ytsr from "ytsr";
 
-
 export default class extends Command {
   constructor(options) {
     super(options);

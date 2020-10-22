@@ -15,10 +15,10 @@ export default class extends Command {
     async run(bot, message, args) {
         if (!sprite) sprite = await Canvas.loadImage(path.join(__dirname + "/../../utils/wubphone.png"));
         const mentions = message.mentions.users.first(4);
-        const source1 = mentions[0] || bot.users.cache.get(args[1]) || await bot.users.fetch(args[1]).catch(err => { }) || message.author;
-        const source2 = mentions[1] || bot.users.cache.get(args[2]) || await bot.users.fetch(args[2]).catch(err => { });
-        const source3 = mentions[2] || bot.users.cache.get(args[3]) || await bot.users.fetch(args[3]).catch(err => { });
-        const source4 = mentions[3] || bot.users.cache.get(args[4]) || await bot.users.fetch(args[4]).catch(err => { });
+        const source1 = mentions[0] || bot.users.cache.get(args[1]) || await bot.users.fetch(args[1]).catch(() => { }) || message.author;
+        const source2 = mentions[1] || bot.users.cache.get(args[2]) || await bot.users.fetch(args[2]).catch(() => { });
+        const source3 = mentions[2] || bot.users.cache.get(args[3]) || await bot.users.fetch(args[3]).catch(() => { });
+        const source4 = mentions[3] || bot.users.cache.get(args[4]) || await bot.users.fetch(args[4]).catch(() => { });
         const sources = [source1, source2, source3, source4];
         const realsources = [];
         for (let i in sources) {

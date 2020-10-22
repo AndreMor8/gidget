@@ -1,4 +1,5 @@
 import commons from '../../utils/commons.js';
+// eslint-disable-next-line no-unused-vars
 const { require, __dirname, __filename } = commons(import.meta.url);
 import Discord from "discord.js";
 import util from 'util';
@@ -28,7 +29,7 @@ export default class extends Command {
       let cosa = err;
       if (typeof cosa !== "string") cosa = util.inspect(cosa, { depth: 0 });
       const arr = Discord.Util.splitMessage(cosa, { maxLength: 1950 });
-      message.channel.send(arr[0], { code: "js" });
+      await message.channel.send(arr[0], { code: "js" });
     }
   }
 }

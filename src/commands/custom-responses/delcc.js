@@ -1,4 +1,3 @@
-
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -16,4 +15,4 @@ export default class extends Command {
     await message.guild.deleteCustomResponse(parseInt(args[1]));
     await message.channel.send("Custom response deleted correctly");
   }
-};
+}

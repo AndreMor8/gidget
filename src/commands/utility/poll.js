@@ -15,19 +15,23 @@ export default class extends Command {
       bot: [0, 16384]
     };
   }
+  // eslint-disable-next-line require-await
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Usage: `poll <time> [<emoji1>, <emoji2>, <emoji(n)>] <text>`");
     let time = ms(args[1]);
     if (typeof time !== "number" || time < 40000) return message.channel.send("Invalid time! Must be 40 seconds or more.");
     return cmd_umfrage(message, args.slice(2));
 
+    /**
+     * @param args
+     */
     function toEmojis(args) {
-      var text = args.join(" ");
-      var regex = /(<a?:)(\d+)(>)/g;
+      let text = args.join(" ");
+      let regex = /(<a?:)(\d+)(>)/g;
       if (regex.test(text)) {
         regex.lastIndex = 0;
-        var emojis = bot.emojis;
-        var entry = null;
+        let emojis = bot.emojis;
+        let entry = null;
         while ((entry = regex.exec(text)) !== null) {
           if (emojis.has(entry[2])) {
             text = text.replaceSave(entry[0], emojis.get(entry[2]).toString());
@@ -42,22 +46,28 @@ export default class extends Command {
       } else return args;
     }
 
+    /**
+     * @param msg
+     * @param args
+     */
     function cmd_umfrage(msg, args) {
-      var imgs = [];
+      let imgs = [];
       if (msg.guild.me.hasPermission("ATTACH_FILES"))
         imgs = msg.attachments.map(function (img) {
           return { attachment: img.url, name: img.filename };
         });
       if (args.length || imgs.length) {
-        var text = args.join(" ").split("\n");
+        let text = args.join(" ").split("\n");
         args = text.shift().split(" ");
         if (text.length) args.push("\n" + text.join("\n"));
-        var reactions = [];
+        let reactions = [];
         args = toEmojis(args);
         for (let i = 0; i < args.length || imgs.length; i++) {
-          var reaction = args[i];
-          var custom = /^<a?:/;
-          var pattern = /^[\u0000-\u1FFF]{1,4}$/;
+          let reaction = args[i];
+          let custom = /^<a?:/;
+          // idk
+          // eslint-disable-next-line no-control-regex
+          let pattern = /^[\u0000-\u1FFF]{1,4}$/;
           if (
             !custom.test(reaction) &&
             (reaction.length > 4 || pattern.test(reaction))
@@ -99,6 +109,12 @@ export default class extends Command {
       }
     }
 
+    /**
+     * @param msg
+     * @param text
+     * @param reactions
+     * @param imgs
+     */
     function cmd_sendumfrage(msg, text, reactions, imgs) {
       if (!text) {
         text = "Image";
@@ -147,7 +163,7 @@ export default class extends Command {
               date: new Date(Date.now() + time),
               reactions: reactions.length ? reactions : ["460279003673001985", "612137351166033950"]
             })
-            newMessage.save().then(() => interval(bot, true)).catch(err => msg.channel.send("Could not save the message and the time in database."));
+            newMessage.save().then(() => interval(bot, true)).catch(() => msg.channel.send("Could not save the message and the time in database."));
           },
           error => {
             console.log(error);

@@ -1,4 +1,8 @@
 import http from 'http';
+/**
+ * 
+ * @param {object} bot - Discord Client. 
+ */
 export default function (bot) {
   const listener = http.createServer((req, res) => {
     if (req.headers.pass !== process.env.ACCESS) {
@@ -15,10 +19,14 @@ export default function (bot) {
       console.log(err);
       res.statusCode = 500;
       res.end("Something happened! " + err);
-    };
+    }
   }).listen(process.env.PORT, "127.0.0.1", () => {
     console.log(`Your app is listening on port ${listener.address().port}`);
   });
+  /**
+   * @param {string} guildID - Server ID to delete cache.
+   * @returns {boolean} Always true.
+   */
   function deleteCache(guildID) {
     bot.cachedMessageReactions.delete(guildID);
     bot.rrcache.delete(guildID);
@@ -27,5 +35,5 @@ export default function (bot) {
       guild.noCache();
       return true;
     } else return false;
-  };
-};
+  }
+}

@@ -3,13 +3,15 @@ import { Util } from "discord.js";
 let i = 0;
 let cache;
 
-export default async (bot, reupdate = false) => {
+export default (bot, reupdate = false) => {
   if (i === 1 && reupdate) {
     i = 0;
     clearInterval(interval);
   }
   if (i === 0) {
     i++;
+    //Still untested
+    // eslint-disable-next-line no-var
     var interval = setInterval(async () => {
       let msgDocument;
       if (cache && !reupdate) {
@@ -29,17 +31,17 @@ export default async (bot, reupdate = false) => {
             if (channel) {
               let message = await channel.messages
                 .fetch(msgDocument[i].messageId)
-                .catch(err => { });
+                .catch(() => { });
               if (message) {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
                   message.reactions.cache.each(r => {
                     let tosee = r.emoji.id || r.emoji.name;
-                    if(!msgDocument[i].reactions.includes(tosee)) return;
+                    if (!msgDocument[i].reactions.includes(tosee)) return;
                     if (r.partial) {
                       r.fetch().then(r => {
                         text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
-                      }).catch(err => { });
+                      }).catch(() => { });
                     } else {
                       text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
                     }

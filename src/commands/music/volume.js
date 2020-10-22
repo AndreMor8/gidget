@@ -33,9 +33,9 @@ export default class extends Command {
     if (args[1] <= 5 && args[1] >= 0) {
       serverQueue.volume = args[1];
       serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 5);
-      return message.channel.send(`Volume set to ${args[1]}`);
+      await message.channel.send(`Volume set to ${args[1]}`);
     } else {
-      return message.channel.send(
+      await message.channel.send(
         "Invalid number. The allowed range is 0 to 5."
       );
     }

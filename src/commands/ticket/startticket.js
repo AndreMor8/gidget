@@ -68,7 +68,7 @@ export default class extends Command {
         });
         await dbMsgModel
           .save()
-          .then(m => message.channel.send("I'm listening!"));
+          .then(() => message.channel.send("I'm listening!"));
       } catch (err) {
         await message.channel.send("Some error ocurred. Here's a debug: " + err);
       }

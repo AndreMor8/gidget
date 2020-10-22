@@ -63,11 +63,16 @@ export default class extends Command {
   }
 }
 
+/**
+ * @param message
+ * @param url
+ * @param options
+ */
 async function pup(message, url, options) {
   const result = await checkSingleCleanURL(url);
   if (result && !message.channel.nsfw) return message.channel.send("To view inappropriate pages use a NSFW channel");
-  var form = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>").catch(err => { });
-  message.channel.startTyping().catch(err => { });
+  let form = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>").catch(() => { });
+  message.channel.startTyping().catch(() => { });
   let page;
   try {
     setTimeout(() => {
@@ -76,8 +81,8 @@ async function pup(message, url, options) {
     page = await global.browser.newPage();
     page.on("error", async error => {
       message.channel.stopTyping(true);
-      await message.channel.send(`There was an error opening a page. Here's a debug: ${error}`).catch(err => { });;
-      await form.delete().catch(err => { });;
+      await message.channel.send(`There was an error opening a page. Here's a debug: ${error}`).catch(() => { });
+      await form.delete().catch(() => { });
     });
     if (!page) return;
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -95,15 +100,15 @@ async function pup(message, url, options) {
         message.channel.stopTyping(true);
       return message.channel.send("NSFW content has been detected in the generated image. If you want to see it, ask for it on a NSFW channel.");
       }
-    };
+    }
     const attachment = new Discord.MessageAttachment(screenshot, "file.png");
     message.channel.stopTyping(true);
     await message.channel.send("Time: " + (Date.now() - (form.editedTimestamp || form.createdTimestamp)) / 1000 + "s", attachment)
     await form.delete();
   } catch (error) {
     message.channel.stopTyping(true);
-    await message.channel.send(`Some error ocurred. Here's a debug: ${error}`).catch(err => { });
-    await form.delete().catch(err => { });
+    await message.channel.send(`Some error ocurred. Here's a debug: ${error}`).catch(() => { });
+    await form.delete().catch(() => { });
   } finally {
     try {
       if (page && page.close && page.close instanceof Function) {

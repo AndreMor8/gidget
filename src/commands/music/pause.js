@@ -4,7 +4,7 @@ export default class extends Command {
     this.description = "Pause the music";
     this.guildonly = true;
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     const serverQueue = message.guild.queue
     if (serverQueue && serverQueue.inseek) return;
     const musicVariables = message.guild.musicVariables;
@@ -19,6 +19,6 @@ export default class extends Command {
     if (!serverQueue.playing) return message.channel.send(`I've already paused the music.`);
     serverQueue.playing = false;
     serverQueue.connection.dispatcher.pause();
-    return message.channel.send(`**Paused!**`);
+    await message.channel.send(`**Paused!**`);
   }
 }

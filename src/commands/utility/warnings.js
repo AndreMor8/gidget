@@ -31,17 +31,17 @@ export default class extends Command {
         if (warnings < 1) {
           member
             .send("You don't have any warning.")
-            .then(m => message.channel.send("I have sent that information to your DM.")
+            .then(() => message.channel.send("I have sent that information to your DM.")
             )
-            .catch(err => message.channel.send("Make sure your DMs are open!"));
+            .catch(() => message.channel.send("Make sure your DMs are open!"));
         } else {
           member
             .send(
               `You have ${warnings} warnings. Contact an admin to find out how to be pardoned.`
             )
-            .then(m => message.channel.send("I have sent that information to your DM.")
+            .then(() => message.channel.send("I have sent that information to your DM.")
             )
-            .catch(err => message.channel.send("Make sure your DMs are open!"));
+            .catch(() => message.channel.send("Make sure your DMs are open!"));
         }
       } else {
         let { warnings } = document;
@@ -55,9 +55,8 @@ export default class extends Command {
       if (!args[1]) {
         member
           .send("You don't have any warning.")
-          .then(m => message.channel.send("I have sent that information to your DM.")
-          )
-          .catch(err => message.channel.send("Make sure your DMs are open!"));
+          .then(() => message.channel.send("I have sent that information to your DM."))
+          .catch(() => message.channel.send("Make sure your DMs are open!"));
       } else {
      await message.channel.send(`${member.user.tag} has no warnings`);
       }

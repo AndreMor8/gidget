@@ -25,7 +25,7 @@ function printTestInfo(url, expected, output) {
 
 console.log('The Urls are tested with checkCleanUrl function exposed by this module');
 
-console.log("Starting  Test Module");
+console.log("Starting Test Module");
 for(let i of test) {
     printTestInfo(i[0], i[1], checkCleanUrl(i[0]));
 }

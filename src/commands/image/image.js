@@ -18,9 +18,13 @@ export default class extends Command {
     }
 }
 
+/**
+ * @param message
+ * @param args
+ */
 async function image(message, args) {
 
-    var options = {
+    let options = {
         method: "GET",
         headers: {
             "Accept": "text/html",
@@ -32,9 +36,9 @@ async function image(message, args) {
     const responseBody = await response.text()
     let $ = cheerio.load(responseBody);
 
-    var links = $(".image a.link");
+    let links = $(".image a.link");
 
-    var urls = new Array(links.length).fill(0).map((v, i) => links.eq(i).attr("href"));
+    let urls = new Array(links.length).fill(0).map((v, i) => links.eq(i).attr("href"));
 
     if (!urls.length) {
         return message.channel.send("I didn't find anything.");
@@ -89,4 +93,4 @@ async function image(message, args) {
     collector.on('end', () => {
         if (message.guild && message.channel.permissionsFor(message.client.user).has("MANAGE_MESSAGES")) { msg.reactions.removeAll() }
     });
-};
+}

@@ -12,7 +12,8 @@ export default class extends Command {
     };
 
   }
-  async run(bot, message, args) {
+  // eslint-disable-next-line require-await
+  async run(bot, message) {
     const serverQueue = message.guild.queue
     if (serverQueue && serverQueue.inseek) return;
     const musicVariables = message.guild.musicVariables;

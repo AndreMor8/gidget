@@ -22,7 +22,7 @@ export default class extends Command {
     } else {
       channel = message.channel;
     }
-    const linkregex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/g;
+    const linkregex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&/\\/=]*)/g;
     let questions = ["To get out of here put `exit`\nTo omit something say `none` (except in the fields)\n\nTell me the content of the message that will not be in the embed.", "Tell me the embed author", "Tell me a link o upload a attachment for the author image", "Tell me the author link", "Tell me the title", "Tell me the embed link", "Tell me a description", "Tell me a thumbnail link or upload a attachment", "Tell me a image link or upload a attachment", "Tell me a footer text", "Tell me a footer image link or upload a attachment", "Tell me the color to put it on the embed", "Do you want fields?"];
     await message.channel.send(questions[0]);
     let msgContent = "";
@@ -198,7 +198,7 @@ export default class extends Command {
           break;
       }
     });
-    collector.on("end", async (collected, reason) => {
+    collector.on("end", (collected, reason) => {
       if (reason === "Exited") {
         message.channel.send("It seems you don't want an embed.");
       } else if (reason === "field") {
@@ -208,7 +208,7 @@ export default class extends Command {
           if (reason === "idle") {
             message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
           } else {
-            message.channel.send("Collector ended with reason: " + reason).catch(err => { });
+            message.channel.send("Collector ended with reason: " + reason).catch(() => { });
           }
         });
       }
@@ -217,7 +217,7 @@ export default class extends Command {
       } else if (reason === "idle") {
         message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
       } else {
-        message.channel.send("Collector ended with reason: " + reason).catch(err => { });
+        message.channel.send("Collector ended with reason: " + reason).catch(() => { });
       }
     });
   }

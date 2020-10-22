@@ -57,11 +57,11 @@ export default class extends Command {
                             return;
                         }
                         fetchedMessage.react(emoji)
-                            .then(emoji => console.log("Reacted."))
+                            .then(() => console.log("Reacted."))
                             .catch(err => console.log(err));
                         emojiRoleMappings.set((emoji.id || emoji), role.id);
                     });
-                    collector.on('end', async (collected, reason) => {
+                    collector.on('end', async () => {
                         let findMsgDocument = await MessageModel
                             .findOne({ messageId: fetchedMessage.id, guildId: message.guild.id })
                             .catch(err => console.log(err));

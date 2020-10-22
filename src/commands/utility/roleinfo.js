@@ -25,9 +25,9 @@ export default class extends Command {
       const fullmembers = role.members.size;
       const bots = role.members.filter(m => m.user.bot).size;
       const members = fullmembers - bots;
-      var mtext = '';
-      var htxt = '';
-      var btxt = '';
+      let mtext = '';
+      let htxt = '';
+      let btxt = '';
 
       if (bots == 1) {
         btxt += ' bot';
@@ -49,11 +49,11 @@ export default class extends Command {
       }
 
       const perms = role.permissions.toArray();
-
+      let permstext = "";
       if (perms.indexOf('ADMINISTRATOR') === -1) {
-        var permstext = perms.join(', ') || "Without permissions.";
+        permstext = perms.join(', ') || "Without permissions.";
       } else {
-        var permstext = 'ADMINISTRATOR (This role has all the permissions)';
+        permstext = 'ADMINISTRATOR (This role has all the permissions)';
       }
 
       let channel = args[args.length - 1];

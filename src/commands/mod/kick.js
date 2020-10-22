@@ -17,7 +17,7 @@ export default class extends Command {
             if (thing.length > 19) continue;
             if (/^<@!?(\d+)>$/.test(thing)) continue;
             if (isNaN(thing)) continue;
-            const user = message.guild.members.cache.get(thing) || await message.guild.members.fetch(thing).catch(err => { });
+            const user = message.guild.members.cache.get(thing) || await message.guild.members.fetch(thing).catch(() => { });
             if (user) {
                 if (user.kickable) {
                     if (!users.some(e => e.id === user.id)) {
@@ -38,6 +38,6 @@ export default class extends Command {
                 await message.channel.send(`User ${user.user.tag} was not kicked: ${err}`);
             }
         }
-        await message.channel.send(kicked.length < 1 ? "No one was kicked" : `${banned.map(e => `\`${e.user.tag}\``).join(", ")} ${users.length === 1 ? "was kicked" : "have been kicked"}`)
+        await message.channel.send(kicked.length < 1 ? "No one was kicked" : `${kicked.map(e => `\`${e.user.tag}\``).join(", ")} ${users.length === 1 ? "was kicked" : "have been kicked"}`)
     }
 }

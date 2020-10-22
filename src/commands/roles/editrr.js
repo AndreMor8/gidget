@@ -24,21 +24,21 @@ export default class extends Command {
                 if (msgModel) {
                     // Prompt the user for configurations.
                     let filter = m => m.author.id === author.id && (m.content.toLowerCase() === 'add' || m.content.toLowerCase() === 'remove');
-                    let tempMsg = channel.send('If you are going to add more reaction-roles to that message, put `add`. To remove the configuration say `remove`');
+                    channel.send('If you are going to add more reaction-roles to that message, put `add`. To remove the configuration say `remove`');
                     try {
                         let awaitMsgOps = { max: 1, time: 20000, errors: ['time'] };
                         let choice = (await channel.awaitMessages(filter, awaitMsgOps)).first();
                         if (choice.content === "add") {
                             if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?")
-                            let addMsgPrompt = await channel.send("Enter an emoji name followed by the corresponding role name, separated with a comma. e.g: WubbzyWalk, A Wubbzy Fan");
+                            await channel.send("Enter an emoji name followed by the corresponding role name, separated with a comma. e.g: WubbzyWalk, A Wubbzy Fan");
                             let collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel);
                             msgModel.updateOne({ emojiRoleMappings: collectorResult }).then(() => {
                                 bot.cachedMessageReactions.delete(fetchedMessage.id)
-                                message.channel.send("Updated!").catch(err => {});
+                                message.channel.send("Updated!").catch(() => {});
                             })
                         }
                         else if (choice.content === "remove") {
-                            msgModel.deleteOne().then(async m => {
+                            msgModel.deleteOne().then(async () => {
                                 bot.cachedMessageReactions.set(fetchedMessage.id, false);
                                 await message.channel.send('Ok. Removed.');
                             }).catch(err => message.channel.send('Some error ocurred. Here\'s a debug: ' + err));
@@ -59,8 +59,14 @@ export default class extends Command {
         }
     }
 }
+/**
+ * @param fetchedMessage
+ * @param author
+ * @param channel
+ * @param msgModel
+ */
 function handleCollector(fetchedMessage, author, channel, msgModel) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         let collectorFilter = (m) => m.author.id === author.id;
         let collector = new MessageCollector(channel, collectorFilter);
         let emojiRoleMappings = new Map(Object.entries(msgModel.emojiRoleMappings));

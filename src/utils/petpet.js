@@ -53,7 +53,9 @@ const getFrame = (i) =>
     },
   ][i];
 
-/** Remove partially transparent & #00ff00 (bg color) green pixels */
+/**
+ * Remove partially transparent & #00ff00 (bg color) green pixels.
+ */
 function optimizeFrameColors(data) {
   for (let i = 0; i < data.length; i += 4) {
     // clamp greens to avoid pure greens from turning transparent
@@ -64,16 +66,17 @@ function optimizeFrameColors(data) {
 }
 
 /**
- * Render gif
+ * Render gif.
+ *
  * @param {Canvas.Image} sprite 
  * @param {Canvas.Image} character 
  * @param {Array} frames 
- * @param {Number} size 
- * @param {Number} delay
+ * @param {number} size 
+ * @param {number} delay
  * @returns {Promise<Buffer>} The new Petpet GIF 
  */
 function render(sprite, character, frames, size, delay) {
-  return new Promise((s, r) => {
+  return new Promise((s) => {
     // canvas used to render the frames for the gif
     const renderCanvas = Canvas.createCanvas(size, size);
     const renderCtx = renderCanvas.getContext("2d");

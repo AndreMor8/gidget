@@ -17,7 +17,7 @@ export default class extends Command {
             if (thing.length > 19) continue;
             if (/^<@!?(\d+)>$/.test(thing)) continue;
             if (isNaN(thing)) continue;
-            const user = message.guild.members.cache.get(thing) || await message.guild.members.fetch(thing).catch(err => { });
+            const user = message.guild.members.cache.get(thing) || await message.guild.members.fetch(thing).catch(() => { });
             if (user) {
                 if (user.bannable) {
                     if (!users.some(e => e.id === user.id)) {

@@ -16,10 +16,13 @@ export default class extends Command {
       bot: [0, 16384]
     }
   }
-  async run(bot, message, args) {
+  async run(bot, message) {
     await image(message);
   }
 }
+/**
+ * @param message
+ */
 async function image(message) {
   const options = {
     method: "GET",

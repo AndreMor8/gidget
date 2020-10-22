@@ -28,7 +28,7 @@ export default class extends Command {
         .addField("Perms (perms)", msgDocument.perms[0] ? msgDocument.perms.join(", ") : "?")
         .addField("Welcome (welcomemsg)", msgDocument.welcomemsg ? msgDocument.welcomemsg : "None")
         .addField("Text channel description (desc)", msgDocument.desc ? msgDocument.desc : "None"))
-    };
+    }
     switch (args[2]) {
       case "perms":
         try {
@@ -36,10 +36,10 @@ export default class extends Command {
           let perms = new Permissions(args.slice(2));
           msgDocument.updateOne({ perms: perms.toArray() }).then(() => message.channel.send("Permissions to close tickets, saved correctly. *Better use roles*"));
         } catch (err) {
-       await message.channel.send("Error: " + err);
+          await message.channel.send("Error: " + err);
         }
         break;
-      case "setroles":
+      case "setroles": {
         if (!args[3]) return message.channel.send("Put some roles (Remember that you will overwrite the previous roles!)");
         if (args[3] === "delete") {
           return msgDocument.updateOne({ roles: [] }).then(() => message.channel.send("No one will be able to close tickets unless they have the stipulated permissions."));
@@ -52,41 +52,45 @@ export default class extends Command {
           let toput = [];
           for (let i in roles) {
             if (!message.guild.roles.cache.has(roles[i])) {
-           await message.channel.send("The role " + roles[i] + " isn't valid!");
+              await message.channel.send("The role " + roles[i] + " isn't valid!");
             } else {
               toput.push(roles[i]);
             }
           }
           msgDocument.updateOne({ roles: toput }).then(() => message.channel.send("Roles updated correctly"))
         }
+      }
         break;
       case "manual":
         msgDocument.updateOne({ manual: !manual }).then(() => message.channel.send(!manual ? "Now the people who created the tickets can close them themselves." : "Now only those with the permissions or roles set will be able to close tickets."));
         break;
-      case "category":
+      case "category": {
         let channel = message.guild.channels.cache.get(args[3]);
         if (!channel) return message.channel.send("Invalid channel.")
         if (channel.type !== "category") return message.channel.send("Invalid channel type");
         msgDocument.updateOne({ categoryId: channel.id }).then(() => message.channel.send("Category channel updated correctly."));
+      }
         break;
-      case "welcomemsg":
+      case "welcomemsg": {
         let tomodify = "";
         if (!args[3]) return message.channel.send("Put something. You can put `none` for disable the message. For mention the ticket author, put `%AUTHOR%` in your message");
         if (args[3] !== "none") {
           tomodify = args.slice(3).join(" ");
         }
         msgDocument.updateOne({ welcomemsg: tomodify }).then(() => message.channel.send(tomodify ? "Welcome message for the ticket changed correctly" : "Welcome message disabled"));
+      }
         break;
-      case "desc":
+      case "desc": {
         let tomodify2 = "";
         if (!args[3]) return message.channel.send("Put something. You can put `none` for disable the description. For mention the ticket author, put `%AUTHOR%` in your description");
         if (args[3] !== "none") {
           tomodify2 = args.slice(3).join(" ");
         }
         msgDocument.updateOne({ desc: tomodify2 }).then(() => message.channel.send(tomodify2 ? "Description for the ticket changed correctly" : "Text channel description disabled"));
+      }
         break;
       default:
-     await message.channel.send("Invalid mode!");
+        await message.channel.send("Invalid mode!");
     }
   }
 }

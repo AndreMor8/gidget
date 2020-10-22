@@ -22,7 +22,7 @@ export default class extends Command {
       case 'decode': {
         const source = message.attachments.first() ? message.attachments.first().url : args[2];
         if(!source) return message.channel.send("Usage: `qr decode [url/attachment]`");
-        if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/gm.test(source)) return message.channel.send("Invalid image or URL!");
+        if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm.test(source)) return message.channel.send("Invalid image or URL!");
         try {
           message.channel.startTyping();
           const buf = await resize(source);
@@ -39,7 +39,7 @@ export default class extends Command {
           } else {
             message.channel.stopTyping(true);
          await message.channel.send("I couldn't read any QR code. Try again")
-          };
+          }
         } catch (err) {
           message.channel.stopTyping(true);
        await message.channel.send(err.toString());
@@ -79,6 +79,9 @@ export default class extends Command {
   }
 }
 
+/**
+ * @param url
+ */
 async function resize(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error("Status code: " + res.status);

@@ -31,7 +31,6 @@ export default class extends Command {
       }
     }
     if(!args[2] || args[2] === "--clear") {
-      if(message.content.endsWith("--clear")) clearInterval(psi);
       bot.user.setPresence({ status: args[1] }).catch(console.error);
       if (args[1] == 'invisible'){
         return message.channel.send('Status changed! I\'m not slepping.')

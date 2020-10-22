@@ -57,7 +57,7 @@ export default class extends Command {
                     guildId: message.guild.id,
                     levelnotif: false,
                     levelsystem: false,
-                    roles: arr
+                    roles: []
                 }).save().then(async () => {
                     message.guild.cache.levelconfig = false;
                     await message.channel.send("Updated");
@@ -76,9 +76,9 @@ export default class extends Command {
         if (mode === "add") {
             let roles = message.mentions.roles.first() ? message.mentions.roles.map(e => e.id) : args.slice(3);
             if (!roles.every(e => message.guild.roles.cache.has(e))) return message.channel.send("Invalid roles!");
-            add(args[2], roles);
+            await add(args[2], roles);
         } else if (mode === "remove") {
-            remove(args[2]);
+            await remove(args[2]);
         }
     }
 }

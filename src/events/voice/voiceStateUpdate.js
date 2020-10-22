@@ -13,7 +13,7 @@ export default async (bot, oldState, newState) => {
         if (!member.roles.cache.has(thing1.roleID)) {
           const algo = newState.guild.roles.cache.get(thing1.roleID);
           if (algo && algo.editable && !algo.managed) {
-            await member.roles.add(thing1.roleID).catch(err => { });
+            await member.roles.add(thing1.roleID).catch(() => { });
           }
         }
       } else if (thing1 && thing2) {
@@ -21,13 +21,13 @@ export default async (bot, oldState, newState) => {
         if (!member.roles.cache.has(thing1.roleID)) {
           const algo = newState.guild.roles.cache.get(thing1.roleID);
           if (algo && algo.editable && !algo.managed) {
-            await member.roles.add(thing1.roleID).catch(err => { });
+            await member.roles.add(thing1.roleID).catch(() => { });
           }
         }
         if (member.roles.cache.has(thing2.roleID)) {
           const algo = newState.guild.roles.cache.get(thing2.roleID);
           if (algo && algo.editable && !algo.managed) {
-            await member.roles.remove(thing2.roleID).catch(err => { });
+            await member.roles.remove(thing2.roleID).catch(() => { });
           }
 
         }
@@ -35,7 +35,7 @@ export default async (bot, oldState, newState) => {
         if (member.roles.cache.has(thing2.roleID)) {
           const algo = newState.guild.roles.cache.get(thing2.roleID);
           if (algo && algo.editable && !algo.managed) {
-            await member.roles.remove(thing2.roleID).catch(err => { });
+            await member.roles.remove(thing2.roleID).catch(() => { });
           }
         }
       }
@@ -84,7 +84,7 @@ export default async (bot, oldState, newState) => {
       serverQueue.connection.dispatcher.resume();
       serverQueue.textChannel.send("Okay, I'm back to playing the music.")
       musicVariables.i = 0;
-    };
+    }
     if (newState.member.id === bot.user.id) {
       if (newState.mute && musicVariables.o === 0) {
         serverQueue.playing = false;
