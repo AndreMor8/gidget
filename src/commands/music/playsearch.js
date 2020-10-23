@@ -28,7 +28,7 @@ export default class extends Command {
       message.channel.startTyping();
       const { tracks:pre_tracks } = await usetube.searchVideo(args.slice(1).join(" "));
       const tracks = pre_tracks.filter(e => e && ytdl.validateID(e.id))
-      if(!tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
+      if(!tracks || !tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
       let text = '';
       let i = 0;
       for (const elements of tracks) {

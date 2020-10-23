@@ -122,7 +122,7 @@ export default class extends Command {
         message.channel.startTyping();
         const { tracks:pre_tracks } = await usetube.searchVideo(args.slice(1).join(" "));
         const tracks = pre_tracks.filter(e => e && ytdl.validateID(e.id));
-        if(!tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
+        if(!tracks || !tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
         await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: `https://www.youtube.com/watch?v=${tracks[0].id}`, title: tracks[0].original_title, duration: tracks[0].duration, seektime: 0, age_restricted: false }]);
       } catch (err) {
         if (!serverQueue)
@@ -257,7 +257,6 @@ async function play(guild, song, seek = 0) {
     const dispatcher = serverQueue.connection.play(ytdl(song.url, {
       opusEncoded: true,
       seek: seek,
-      filter: "audioonly",
       highWaterMark: 1 << 25
     }), { type: "opus" });
     dispatcher.on("start", () => {
