@@ -96,22 +96,22 @@ export default class extends Command {
         };
         links.push("[Vanity invite URL" + (vanity.uses ? (" (" + vanity.uses + " uses)") : "") + "](https://discord.gg/" + (vanity.code) + ")");
       }
-      /*
-      bots = server.members.cache.filter(m => m.user.bot === true)
-        .size;
+      
+      ae = server.emojis.cache.filter(e => e.animated === true).size;
 
-      rmembers = server.memberCount - bots;
-
+      emojis = server.emojis.cache.size - ae;
+      
       roles = server.roles.cache.size;
 
       mroles = server.roles.cache.filter(r => r.managed === true)
         .size;
 
       rroles = roles - mroles;
+      /*
+      bots = server.members.cache.filter(m => m.user.bot === true)
+        .size;
 
-      ae = server.emojis.cache.filter(e => e.animated === true).size;
-
-      emojis = server.emojis.cache.size - ae;
+      rmembers = server.memberCount - bots;
 
       online = server.members.cache.filter(
         m => m.user.presence.status === "online"
@@ -162,7 +162,7 @@ export default class extends Command {
       if (server.publicUpdatesChannel) {
         embed.addField("Discord private updates", server.publicUpdatesChannel.toString(), true);
       }
-      embed.addField("Member Count", `${server.memberCount}\nHumans: ${rmembers}\n Bots: ${bots}`, true)
+      embed.addField("Member Count", server.memberCount.toString(), true)
         .addField("Channel Count", `${server.channels.cache.filter(c => c.type === "text" || c.type === "voice").size} (${catname})\nText = ${server.channels.cache.filter(c => c.type === "text").size}\nVoice = ${server.channels.cache.filter(c => c.type === "voice").size}`, true)
         .addField("Emojis", `${server.emojis.cache.size}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
         .addField("Roles", `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, true)
