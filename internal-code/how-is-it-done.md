@@ -38,7 +38,7 @@ The bot also uses some packages that need additional installation on the operati
 
 The dashboard is made in JavaScript with Node.js, using Express, EJS and passport \(with passport-discord\)
 
-Unlike the bot, it still uses CommonJS as syntax to import and export modules. 
+Unlike the bot, it still uses CommonJS as syntax to import and export modules.
 
 For the front-end, Bulma is used as the CSS framework, and Vanilla JavaScript for scripting \(native JavaScript DOM in few words\).
 

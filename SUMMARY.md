@@ -8,7 +8,9 @@
 
 ## Features
 
-* [Messages](features/messages.md)
+* [Messages](features/messages/README.md)
+  * [Message links](features/messages/message-links.md)
+  * [Level system](features/messages/level-system.md)
 
 ## External links
 
