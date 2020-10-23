@@ -26,7 +26,8 @@ export default class extends Command {
     if (ytdl.validateID(args[1]) || ytpl.validateID(args[1])) return message.channel.send("YouTube IDs should go in the `play` command");
     try {
       message.channel.startTyping();
-      const { tracks } = await usetube.searchVideo(args.slice(1).join(" "));
+      const { pre_tracks } = await usetube.searchVideo(args.slice(1).join(" "));
+      const tracks = pre_tracks.filter(e => ytdl.validateID(e.id))
       if(!tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
       let text = '';
       let i = 0;
