@@ -28,14 +28,14 @@ export default class extends Command {
     let catname = "";
     let invitenum = "";
     let bannumber = "";
-    let bots;
-    let rmembers;
     let roles;
     let mroles;
     let rroles;
     let ae;
     let emojis;
     /*
+    let bots;
+    let rmembers;
     let online;
     let idle;
     let dnd;
