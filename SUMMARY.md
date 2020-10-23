@@ -9,6 +9,7 @@
 ## Features
 
 * [Messages](features/messages/README.md)
+  * [Custom responses](features/messages/custom-responses.md)
   * [Message links](features/messages/message-links.md)
   * [Level system](features/messages/level-system.md)
 

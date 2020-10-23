@@ -4,6 +4,10 @@ description: Mention messages with the bot
 
 # Message links
 
+{% hint style="warning" %}
+You will need the `ADMINISTRATOR` permission to activate this
+{% endhint %}
+
 This function is activated with the `g%togglemessagelinks` command
 
 When activated, Gidget will detect all messages where it can read, and if it detects a message link like this:

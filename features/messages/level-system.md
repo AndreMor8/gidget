@@ -18,7 +18,7 @@ To modify the system, you will need the `ADMINISTRATOR` permission
 
 ### Enabling
 
-{% hint style="info" %}
+{% hint style="success" %}
 The same options are available on the dashboard in the Level system section: [https://gidget.xyz/dashboard](https://gidget.xyz/dashboard).
 {% endhint %}
 

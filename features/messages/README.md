@@ -12,5 +12,9 @@ Put the link to a message and the bot will show its content, without the need fo
 
 Use the messages that users send as an activity meter, via a level system. You can also give them roles when they reach a certain level.
 
+### Custom responses
+
+Make the bot reply to messages when they coincide with a special match.
+
 
 
