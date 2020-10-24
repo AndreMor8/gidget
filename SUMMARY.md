@@ -18,9 +18,3 @@
   * [Message links](features/messages/message-links.md)
   * [Level system](features/messages/level-system.md)
 
-## External links
-
-* [Dashboard](https://gidget.xyz/dashboard)
-* [GitHub repository \(Discord bot\)](https://github.com/AndreMor955/gidget)
-* [GitHub repository \(Dashboard\)](https://github.com/AndreMor955/dashboard)
-
