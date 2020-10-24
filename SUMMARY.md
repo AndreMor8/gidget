@@ -8,6 +8,11 @@
 
 ## Features
 
+* [Roles](features/roles/README.md)
+  * [Retrieving roles](features/roles/retrieving-roles.md)
+  * [Voice-role](features/roles/voice-role.md)
+* [Reactions](features/reactions/README.md)
+  * [Reaction-roles](features/reactions/reaction-roles.md)
 * [Messages](features/messages/README.md)
   * [Custom responses](features/messages/custom-responses.md)
   * [Message links](features/messages/message-links.md)
