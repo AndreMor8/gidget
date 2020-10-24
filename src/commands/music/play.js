@@ -245,11 +245,10 @@ async function play(guild, song, seek = 0) {
   }
   try {
     const ytstream = ytdl(song.url, { opusEncoded: true, seek: seek, highWaterMark: 1 << 25 });
-    const dispatcher = serverQueue.connection.play(ytstream, { type: "opus" });
-    ytstream.on("error", (err) => {
+    const dispatcher = serverQueue.connection.play(ytstream.on("error", (err) => {
       serverQueue.textChannel.send("An error ocurred with the stream: " + err);
-      dispatcher.end();
-    });
+      if(dispatcher) dispatcher.end();
+    }), { type: "opus" });
     dispatcher.on("error", async err => {
       musicVariables.memberVoted = [];
       serverQueue.songs.shift();
