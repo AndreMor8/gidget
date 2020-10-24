@@ -8,7 +8,7 @@ import ytdl from "discord-ytdl-core";
 import usetube from 'usetube';
 import ytpl from "ytpl";
 import moment from "moment";
-//Autocomplete
+// Autocomplete
 // eslint-disable-next-line no-unused-vars
 import Discord from 'discord.js';
 import times from '../../utils/times.js';
@@ -103,8 +103,7 @@ export default class extends Command {
             url: e.url_simple,
             title: e.title,
             duration: times(e.duration) / 1000,
-            seektime: 0,
-            age_restricted: false
+            seektime: 0
           };
         });
         await handleServerQueue(serverQueue, message.channel, voiceChannel, songs, true);
@@ -123,7 +122,7 @@ export default class extends Command {
         const { tracks:pre_tracks } = await usetube.searchVideo(args.slice(1).join(" "));
         const tracks = pre_tracks.filter(e => e && ytdl.validateID(e.id));
         if(!tracks || !tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
-        await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: `https://www.youtube.com/watch?v=${tracks[0].id}`, title: tracks[0].original_title, duration: tracks[0].duration, seektime: 0, age_restricted: false }]);
+        await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: `https://www.youtube.com/watch?v=${tracks[0].id}`, title: tracks[0].original_title, duration: tracks[0].duration, seektime: 0 }]);
       } catch (err) {
         if (!serverQueue)
           message.guild.musicVariables = null;
@@ -152,8 +151,7 @@ async function handleVideo(URL) {
     title: songInfo.videoDetails.title,
     url: songInfo.videoDetails.video_url,
     duration: songInfo.videoDetails.lengthSeconds,
-    seektime: 0,
-    age_restricted: songInfo.videoDetails.age_restricted,
+    seektime: 0
   };
   return song;
 }
@@ -162,8 +160,7 @@ async function handleVideo(URL) {
  * @param {object} serverQueue
  * @param {Discord.TextChannel} textChannel
  * @param {Discord.VoiceChannel} voiceChannel
- * @param {object[]} songs
- * @param pre_songs
+ * @param {object[]} pre_songs
  * @param {boolean} playlist
  * @returns {Promise<void>}
  */
@@ -174,13 +171,6 @@ async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_son
     let song = pre_song
     if (pre_song.handle) {
       song = await handleVideo(pre_song.url);
-    }
-    if (song.age_restricted && !textChannel.nsfw) {
-      if (!playlist) {
-        textChannel.send("To listen to inappropriate content ask for this video on an NSFW channel.");
-        return;
-      }
-      else continue;
     }
     songs.push(song);
   }
