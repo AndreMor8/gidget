@@ -244,11 +244,21 @@ async function play(guild, song, seek = 0) {
     return;
   }
   try {
-    const dispatcher = serverQueue.connection.play(ytdl(song.url, {
-      opusEncoded: true,
-      seek: seek,
-      highWaterMark: 1 << 25
-    }), { type: "opus" });
+    const ytstream = ytdl(song.url, { opusEncoded: true, seek: seek, highWaterMark: 1 << 25 });
+    const dispatcher = serverQueue.connection.play(ytstream, { type: "opus" });
+    ytstream.on("error", (err) => {
+      serverQueue.textChannel.send("An error ocurred with the stream: " + err);
+      dispatcher.end();
+    });
+    dispatcher.on("error", async err => {
+      musicVariables.memberVoted = [];
+      serverQueue.songs.shift();
+      await serverQueue.textChannel
+        .send("An error occurred with the dispatcher. " + err)
+        .catch(() => { });
+      if (!serverQueue.playing) serverQueue.playing = true;
+      await play(guild, serverQueue.songs[0]);
+    });
     dispatcher.on("start", () => {
       dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
       if (serverQueue.inseek) {
@@ -283,15 +293,6 @@ async function play(guild, song, seek = 0) {
         guild.musicVariables = null;
         return;
       }
-    });
-    dispatcher.on("error", async err => {
-      musicVariables.memberVoted = [];
-      serverQueue.songs.shift();
-      await serverQueue.textChannel
-        .send("An error occurred with the dispatcher. Here's a debug: " + err)
-        .catch(() => {});
-      if (!serverQueue.playing) serverQueue.playing = true;
-      await play(guild, serverQueue.songs[0]);
     });
   } catch (err) {
     console.log(err);
