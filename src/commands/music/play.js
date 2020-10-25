@@ -3,8 +3,8 @@ import path from 'path';
 import commons from '../../utils/commons.js';
 const { __dirname } = commons(import.meta.url);
 let COOKIE
-if(process.argv[2] !== "ci") COOKIE = fs.readFileSync(path.join(__dirname, "/../../../cookies.txt"), "utf-8");
-import ytdl from "discord-ytdl-core";
+if (process.argv[2] !== "ci") COOKIE = fs.readFileSync(path.join(__dirname, "/../../../cookies.txt"), "utf-8");
+import ytdl from "ytdl-core-discord";
 import usetube from 'usetube';
 import ytpl from "ytpl";
 import moment from "moment";
@@ -60,7 +60,7 @@ export default class extends Command {
       };
       musicVariables = message.guild.musicVariables;
     }
-  
+
     if (typeof seek === "number") {
       return await play(message.guild, serverQueue.songs[0], seek);
     } else if (ytdl.validateURL(args[1])) {
@@ -119,9 +119,9 @@ export default class extends Command {
     } else {
       try {
         message.channel.startTyping();
-        const { tracks:pre_tracks } = await usetube.searchVideo(args.slice(1).join(" "));
+        const { tracks: pre_tracks } = await usetube.searchVideo(args.slice(1).join(" "));
         const tracks = pre_tracks.filter(e => e && ytdl.validateID(e.id));
-        if(!tracks || !tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
+        if (!tracks || !tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
         await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: `https://www.youtube.com/watch?v=${tracks[0].id}`, title: tracks[0].original_title, duration: tracks[0].duration, seektime: 0 }]);
       } catch (err) {
         if (!serverQueue)
@@ -244,11 +244,8 @@ async function play(guild, song, seek = 0) {
     return;
   }
   try {
-    const ytstream = ytdl(song.url, { opusEncoded: true, seek: seek, highWaterMark: 1 << 25 });
-    const dispatcher = serverQueue.connection.play(ytstream.on("error", (err) => {
-      serverQueue.textChannel.send("An error ocurred with the stream: " + err);
-      if(dispatcher) dispatcher.end();
-    }), { type: "opus" });
+    const ytstream = await ytdl(song.url, { highWaterMark: 1 << 25 });
+    const dispatcher = serverQueue.connection.play(ytstream, { type: "opus" });
     dispatcher.on("error", async err => {
       musicVariables.memberVoted = [];
       serverQueue.songs.shift();
@@ -263,12 +260,12 @@ async function play(guild, song, seek = 0) {
       if (serverQueue.inseek) {
         serverQueue.inseek = false
         serverQueue.textChannel.stopTyping();
-        return serverQueue.textChannel.send("Position moved to " + moment.duration(seek, "seconds").format()).catch(() => {});
+        return serverQueue.textChannel.send("Position moved to " + moment.duration(seek, "seconds").format()).catch(() => { });
       }
       if (!serverQueue.loop)
         serverQueue.textChannel.send(
           `<:JukeboxRobot:610310184484732959> Now playing: **${song.title}**`
-        ).catch(() => {});
+        ).catch(() => { });
       serverQueue.textChannel.stopTyping(true);
     });
     dispatcher.on("finish", async () => {
@@ -294,13 +291,12 @@ async function play(guild, song, seek = 0) {
       }
     });
   } catch (err) {
-    console.log(err);
     musicVariables.memberVoted = [];
     serverQueue.songs.shift();
     if (serverQueue.textChannel) {
       serverQueue.textChannel.stopTyping();
       await serverQueue.textChannel
-        .send("An error occurred. Here's a debug: " + err)
+        .send("An error ocurred with the YouTube stream: " + err)
         .catch(err => console.log(err));
     }
     if (!serverQueue.playing) serverQueue.playing = true;
