@@ -1,6 +1,6 @@
 import usetube from 'usetube';
 import ytpl from "ytpl";
-import ytdl from "discord-ytdl-core";
+import ytdl from "ytdl-core-discord";
 import { MessageEmbed } from "discord.js";
 import ms from 'ms';
 export default class extends Command {
