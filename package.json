@@ -29,7 +29,7 @@
     "dblapi.js": "^2.4.1",
     "deepai": "^1.0.16",
     "discord-emoji-canvas": "^1.4.0",
-    "discord.js": "^12.4.0",
+    "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
     "eslint-config-standard-jsdoc": "^9.3.0",
     "eslint-plugin-jsdoc": "^30.7.3",
