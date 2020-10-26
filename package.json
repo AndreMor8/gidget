@@ -19,7 +19,7 @@
   "homepage": "https://gidget.xyz/",
   "license": "Apache-2.0",
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
+    "@discordjs/opus": "^0.3.3",
     "@sindresorhus/to-milliseconds": "^1.2.0",
     "badwords.js": "^0.1.6",
     "canvas": "^2.6.1",
