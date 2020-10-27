@@ -41,7 +41,6 @@ export default class extends Command {
       return message.channel.send(embed)
     } else if (args[1] && (global.botCommands.get(args[1].toLowerCase()) || global.botCommands.find(c => c.aliases.includes(args[1].toLowerCase())))) {
       const command = global.botCommands.get(args[1].toLowerCase()) || global.botCommands.find(c => c.aliases.includes(args[1].toLowerCase()))
-      if (!command) return message.channel.send('That command doesn\'t exist or isn\'t loaded.');
       if (command.dev || command.owner) return message.channel.send("Exclusive command for the owner or developers");
       let alias = "Without alias";
       if (command.aliases.length !== 0) {
