@@ -2,8 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import commons from '../../utils/commons.js';
 const { __dirname } = commons(import.meta.url);
-let COOKIE
-if (process.argv[2] !== "ci") COOKIE = fs.readFileSync(path.join(__dirname, "/../../../cookies.txt"), "utf-8");
+const COOKIE = process.env.COOKIETEXT;
 import ytdl from "ytdl-core-discord";
 import usetube from 'usetube';
 import ytpl from "ytpl";
