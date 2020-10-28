@@ -20,7 +20,7 @@ export default function (bot) {
       res.statusCode = 500;
       res.end("Something happened! " + err);
     }
-  }).listen(process.env.PORT, "127.0.0.1", () => {
+  }).listen(process.env.PORT, () => {
     console.log(`Your app is listening on port ${listener.address().port}`);
   });
   /**
