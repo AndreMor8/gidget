@@ -6,7 +6,7 @@ import http from 'http';
 export default function (bot) {
   const listener = http.createServer((req, res) => {
     if (req.headers.pass !== process.env.ACCESS) {
-      res.statusCode = 403;
+      res.statusCode = 200;
       res.end("You don't have authorization");
       return;
     }
