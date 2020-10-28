@@ -30,7 +30,7 @@ export default class extends Command {
                         let choice = (await channel.awaitMessages(filter, awaitMsgOps)).first();
                         if (choice.content === "add") {
                             if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?")
-                            await channel.send("Enter an emoji name followed by the corresponding role name, separated with a comma. e.g: WubbzyWalk, A Wubbzy Fan");
+                            await channel.send("Enter an emoji name followed by the corresponding role name, separated with a comma. e.g: WubbzyWalk, A Wubbzy Fan\nType `?done` when you finish");
                             let collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel);
                             msgModel.updateOne({ emojiRoleMappings: collectorResult }).then(() => {
                                 bot.cachedMessageReactions.delete(fetchedMessage.id)

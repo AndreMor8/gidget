@@ -126,7 +126,7 @@ export default class extends Command {
         .setFooter("Made by: " + msg.author.tag + ", finish date:", msg.author.displayAvatarURL({ dynamic: true }))
         .setColor("RANDOM")
         .setTimestamp(new Date(Date.now() + time));
-      if (msg.member.hasPermission("MENTION_EVERYONE")) {
+      if (msg.member.hasPermission("ADMINISTRATOR")) {
         if (msg.mentions.everyone) {
           if (msg.content.includes("@everyone")) {
             mentions += "@everyone ";

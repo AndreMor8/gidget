@@ -27,7 +27,7 @@ export default class extends Command {
             try {
                 let fetchedMessage = await message.channel.messages.fetch(args[1]);
                 if (fetchedMessage) {
-                    await message.channel.send("Please provide all of the emoji names with the role name, one by one, separated with a comma.\ne.g: WubbzyWalk, A Wubbzy Fan, where the emoji name comes first, role name comes second.");
+                    await message.channel.send("Please provide all of the emoji names with the role name, one by one, separated with a comma.\ne.g: WubbzyWalk, A Wubbzy Fan, where the emoji name comes first, role name comes second.\nType `?done` when you finish.");
                     let collector = new MessageCollector(message.channel, msgCollectorFilter.bind(null, message));
                     let emojiRoleMappings = new Map();
                     collector.on('collect', msg => {
