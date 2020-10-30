@@ -1,7 +1,6 @@
 const SIZE = 512
 import qrenc from 'qr';
 import fetch from 'node-fetch';
-import sharp from 'sharp';
 import Canvas from 'canvas';
 import { MessageAttachment, Util } from "discord.js";
 
@@ -86,6 +85,15 @@ async function resize(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error("Status code: " + res.status);
   const buf = await res.buffer();
-  const newbuf = await sharp(buf).resize(SIZE, SIZE).png().toBuffer();
-  return newbuf;
+  if (process.platform === "win32") {
+      const Jimp = await import("jimp");
+      const pre_buf = await Jimp.read(buf);
+      pre_buf.resize(SIZE, SIZE);
+      const newbuf = await pre_buf.getBufferAsync(Jimp.MIME_PNG);
+      return newbuf;
+  } else {
+      const sharp = await import("sharp");
+      const newbuf = await sharp(buf).resize(SIZE, SIZE).png().toBuffer();
+      return newbuf;
+  }
 }
