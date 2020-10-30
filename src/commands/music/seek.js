@@ -1,4 +1,4 @@
-import ms from "ms";
+//import ms from "ms";
 
 export default class extends Command {
     constructor(options) {
