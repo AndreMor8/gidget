@@ -1,7 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-import commons from '../../utils/commons.js';
-const { __dirname } = commons(import.meta.url);
 const COOKIE = process.env.COOKIETEXT;
 import ytdl from "ytdl-core-discord";
 import usetube from 'usetube';
