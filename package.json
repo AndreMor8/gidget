@@ -33,7 +33,7 @@
     "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
     "eslint-config-standard-jsdoc": "^9.3.0",
-    "eslint-plugin-jsdoc": "^30.7.3",
+    "eslint-plugin-jsdoc": "^30.7.6",
     "ffmpeg-static": "^4.2.7",
     "gif-encoder": "^0.7.2",
     "google-it": "^1.5.3",
