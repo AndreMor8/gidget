@@ -86,13 +86,13 @@ async function resize(url) {
   if (!res.ok) throw new Error("Status code: " + res.status);
   const buf = await res.buffer();
   if (process.platform === "win32") {
-      const Jimp = await import("jimp");
+      const Jimp = (await import("jimp")).default;
       const pre_buf = await Jimp.read(buf);
       pre_buf.resize(SIZE, SIZE);
       const newbuf = await pre_buf.getBufferAsync(Jimp.MIME_PNG);
       return newbuf;
   } else {
-      const sharp = await import("sharp");
+      const sharp = (await import("sharp")).default;
       const newbuf = await sharp(buf).resize(SIZE, SIZE).png().toBuffer();
       return newbuf;
   }
