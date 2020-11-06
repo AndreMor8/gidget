@@ -44,7 +44,6 @@ export default class extends Command {
     */
     if (server instanceof Discord.Guild) {
       const cat = server.channels.cache.filter(c => c.type === "category").size;
-      console.log(cat);
       if (cat == 1) {
         catname += "1 category";
       } else {

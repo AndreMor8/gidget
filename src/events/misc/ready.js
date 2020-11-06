@@ -5,6 +5,7 @@ import MessageModel2 from '../../database/models/mutedmembers.js';
 import MessageModel3 from '../../database/models/poll.js';
 import webserver from '../../webserver.js';
 import discordbl from '../../utils/discordbotlist.js';
+import discordboats from '../../utils/discordboats.js';
 //Start ready event
 export default async bot => {
   //Intervals
@@ -12,6 +13,8 @@ export default async bot => {
   if (process.env.EXTERNAL === "yes") {
     discordbl(bot);
     setInterval(discordbl, 1800000, bot);
+    discordboats(bot);
+    setInterval(discordboats, 1800000, bot);
   }
   setInterval(presence, 900000, bot);
   //Webserver for cache cleaning
