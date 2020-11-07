@@ -20,5 +20,11 @@ Gidget is still in beta, it means that this bot will do reboots depending on the
 For the end user \(the one who uses the public bot in Discord\), join this [support](https://discord.gg/KDy4gJ7) server, any report or question will be answered here.
 {% endhint %}
 
+{% hint style="success" %}
+`<>` =&gt; Required
+
+`[]` =&gt; Optional
+{% endhint %}
+
 Hope you enjoy this bot =D
 

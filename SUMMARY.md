@@ -13,6 +13,7 @@
   * [Voice-role](features/roles/voice-role.md)
 * [Reactions](features/reactions/README.md)
   * [Reaction-roles](features/reactions/reaction-roles.md)
+  * [Tickets](features/reactions/tickets.md)
 * [Messages](features/messages/README.md)
   * [Custom responses](features/messages/custom-responses.md)
   * [Message links](features/messages/message-links.md)

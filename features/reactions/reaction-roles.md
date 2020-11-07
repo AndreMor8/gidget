@@ -8,6 +8,8 @@ Basically reaction-roles are to deliver roles when a user reacts with an emoji t
 
 {% hint style="warning" %}
 You will need the `ADMINISTRATOR` permission to modify this.
+
+The bot needs the `MANAGE_ROLES` permission.
 {% endhint %}
 
 ### Adding messages
