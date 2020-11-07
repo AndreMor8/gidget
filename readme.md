@@ -13,7 +13,8 @@ You are also welcome to invite the bot here: https://discordapp.com/api/oauth2/a
 Join the support server: https://discord.gg/KDy4gJ7
 
 Note that self-hosting is not dynamic, you will need to change some parts of the code for Gidget to suit you.
-_I know, I haven't put an example of the .env file yet, you will have to search the code for the necessary variables. :(_
+
+If you don't know anything about programming, I recommend using the public bot. You will not have problems if you do that.
 
 ## Some details
 
