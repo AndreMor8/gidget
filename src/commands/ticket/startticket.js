@@ -13,8 +13,6 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
-    if (!message.guild) return message.channel.send('This command only works in servers');
-    if (!message.guild.me.hasPermission("MANAGE_CHANNELS")) return message.channel.send("First give me the permission to manage channels, okay?")
     if (message.member.hasPermission("ADMINISTRATOR")) {
       if (!args[1]) return message.channel.send("Put a text channel");
       let channel =
