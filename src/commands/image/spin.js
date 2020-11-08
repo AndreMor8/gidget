@@ -1,9 +1,9 @@
 const timer = new Set();
 const DEGREES = 20;
-const SIZE = 340;
+const SIZE = 256;
 const FPS = 16;
 import fetch from 'node-fetch';
-
+import gifResize from '@gumlet/gif-resize';
 import parser from 'twemoji-parser';
 import Canvas from 'canvas';
 import GIF from "gif-encoder";
@@ -27,7 +27,7 @@ export default class extends Command {
         let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await bot.users.fetch(args[1]).catch(() => { }) || args[1]) : message.author)
         if (!source) return message.channel.send("Invalid user, emoji or image!");
         if (source instanceof User) {
-            source = source.displayAvatarURL({ format: "png", size: 256 });
+            source = source.displayAvatarURL({ format: "png", size: SIZE });
         }
         if (source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
             const matched = source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
@@ -59,7 +59,8 @@ export default class extends Command {
                     chunks.push(b)
                 });
                 gif.on("end", async () => {
-                    const buf = Buffer.concat(chunks);
+                    const pre_buf = Buffer.concat(chunks);
+                    const buf = await gifResize({ width: 512, height: 512, stretch: true })(pre_buf);
                     const att = new MessageAttachment(buf, "spin.gif");
                     message.channel.stopTyping(true);
                     await message.channel.send(att).catch(() => { });
