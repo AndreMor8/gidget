@@ -35,7 +35,7 @@ async function render(url) {
     const pre_buf = await res.buffer();
     const type = FileType(pre_buf);
     if(type.mime === "image/gif") {
-        const buffer = await gifResize({ width: 48, resize_method: "sample" })(pre_buf);
+        const buffer = await gifResize({ width: 48 })(pre_buf);
         return buffer;
     } else {
         if(process.platform === "win32") {
