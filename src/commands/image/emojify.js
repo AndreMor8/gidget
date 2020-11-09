@@ -41,12 +41,12 @@ async function render(url) {
         if(process.platform === "win32") {
             const Jimp = (await import("jimp")).default;
             const img = await Jimp.read(pre_buf);
-            img.resize(48, 48);
+            img.resize(48);
             const buffer = await img.getBufferAsync(Jimp.MIME_PNG);
             return buffer;
         } else {
             const sharp = (await import("sharp")).default;
-            const buffer = await sharp(pre_buf).resize(48, 48).png().toBuffer();
+            const buffer = await sharp(pre_buf).resize(48).png().toBuffer();
             return buffer;
         }
     }
