@@ -34,6 +34,7 @@ async function render(url) {
     if(!res.ok) throw new Error(`Status code returned ${res.status} (${res.statusText})`);
     const pre_buf = await res.buffer();
     const type = FileType(pre_buf);
+    if(!type) throw new Error("Invalid image!")
     if(type.mime === "image/gif") {
         const buffer = await gifResize({ width: 48 })(pre_buf);
         return buffer;
