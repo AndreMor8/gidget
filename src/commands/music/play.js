@@ -15,33 +15,31 @@ export default class extends Command {
     this.description = "Play music from YouTube";
     this.guildonly = true;
   }
-  async run(bot, message, args, seek) {
-    if (!args[1])
-      return message.channel.send("Please enter a YouTube link or search term.");
+  async run(bot, message, args/*, seek*/) {
+    //No arguments
+    if (!args[1]) return message.channel.send("Please enter a YouTube link or search term.");
+
+    //In where the bot is going to connect?
     const voiceChannel = message.member.voice.channel;
-    if (!voiceChannel)
-      return message.channel.send(
-        "You need to be in a voice channel to play music!"
-      );
+    if (!voiceChannel) return message.channel.send("You need to be in a voice channel to play music!");
+
+    //See if a music system is already executing
     const serverQueue = message.guild.queue;
     if (serverQueue) {
-      if (serverQueue.voiceChannel.id !== voiceChannel.id)
-        return message.channel.send(
-          "I'm on another voice channel! I cannot be on two channels at the same time."
-        );
+      //If that's the case check if voice channels are equal
+      if (serverQueue.voiceChannel.id !== voiceChannel.id) return message.channel.send("I'm on another voice channel! I cannot be on two channels at the same time.");
     }
+
     const permissions = voiceChannel.permissionsFor(bot.user.id);
-    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
-      return message.channel.send(
-        "I need the permissions to join and speak in your voice channel!"
-      );
-    }
-    if (message.guild.afkChannelID === voiceChannel.id) {
-      return message.channel.send("I cannot play music on an AFK channel.");
-    }
+
+    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) return message.channel.send("I need the permissions to join and speak in your voice channel!");
+
+    if (message.guild.afkChannelID === voiceChannel.id) return message.channel.send("I cannot play music on an AFK channel.");
+
     let musicVariables = message.guild.musicVariables;
-    if (musicVariables && musicVariables.other)
-      return message.channel.send("I'm doing another operation");
+
+    if (musicVariables && musicVariables.other) return message.channel.send("I'm doing another operation");
+
     if (!musicVariables) {
       message.guild.musicVariables = {
         perror: 0,
@@ -53,12 +51,14 @@ export default class extends Command {
         time1: null,
         other: false
       };
+
       musicVariables = message.guild.musicVariables;
     }
 
-    if (typeof seek === "number") {
+    /*if (typeof seek === "number") {
+      //Only for seek command, disabled actually...
       return await play(message.guild, serverQueue.songs[0], seek);
-    } else if (ytdl.validateURL(args[1])) {
+    } else*/ if (ytdl.validateURL(args[1])) {
       if (serverQueue) {
         if (serverQueue.loop) {
           serverQueue.loop = false;
@@ -114,13 +114,14 @@ export default class extends Command {
     } else {
       try {
         message.channel.startTyping();
-        const { tracks: pre_tracks } = await usetube.searchVideo(args.slice(1).join(" "));
+        const res = await usetube.searchVideo(encodeURIComponent(args.slice(1).join(" ")));
+        if (!res) return message.channel.send("I didn't find any video. Please try again with another term.");
+        const { tracks: pre_tracks } = res;
         const tracks = pre_tracks.filter(e => e && ytdl.validateID(e.id));
         if (!tracks || !tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
         await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: `https://www.youtube.com/watch?v=${tracks[0].id}`, title: tracks[0].original_title, duration: tracks[0].duration, seektime: 0 }]);
       } catch (err) {
-        if (!serverQueue)
-          message.guild.musicVariables = null;
+        if (!serverQueue) message.guild.musicVariables = null;
         message.channel.stopTyping(true);
         message.channel.send("Some error ocurred. Here's a debug: " + err);
       }
@@ -239,7 +240,7 @@ async function play(guild, song, seek = 0) {
     return;
   }
   try {
-    const ytstream = await ytdl(song.url, { highWaterMark: 1 << 25 });
+    const ytstream = await ytdl(song.url, { highWaterMark: 1 << 25, requestOptions: { headers: { cookie: COOKIE } } });
     const dispatcher = serverQueue.connection.play(ytstream, { type: "opus" });
     dispatcher.on("error", async err => {
       musicVariables.memberVoted = [];
@@ -287,12 +288,14 @@ async function play(guild, song, seek = 0) {
     });
   } catch (err) {
     musicVariables.memberVoted = [];
-    serverQueue.songs.shift();
-    if (serverQueue.textChannel) {
-      serverQueue.textChannel.stopTyping();
-      await serverQueue.textChannel
-        .send("An error ocurred with the YouTube stream: " + err)
-        .catch(err => console.log(err));
+    if (!err.toString().includes("Unable to retrieve video metadata")) {
+      serverQueue.songs.shift();
+      if (serverQueue.textChannel) {
+        serverQueue.textChannel.stopTyping();
+        await serverQueue.textChannel
+          .send("An error ocurred with the YouTube stream: " + err)
+          .catch(err => console.log(err));
+      }
     }
     if (!serverQueue.playing) serverQueue.playing = true;
     await play(guild, serverQueue.songs[0]);
