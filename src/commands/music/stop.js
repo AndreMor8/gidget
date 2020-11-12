@@ -42,7 +42,7 @@ export default class extends Command {
     if (serverQueue.voiceChannel.id !== message.member.voice.channelID)
       return message.channel.send("I'm on another voice channel!");
     if (!message.member.hasPermission("MANAGE_CHANNELS")) {
-      if (message.member.voice.channel.members.size > 2) {
+      if (message.member.voice.channel.members.filter(e => !e.user.bot).size > 1) {
         return message.channel.send(
           "Only a member with permission to manage channels can stop queuing. Being alone also works."
         );
