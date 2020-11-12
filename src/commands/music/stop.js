@@ -25,7 +25,7 @@ export default class extends Command {
       return message.channel.send("There is nothing playing that I could stop.");
     if (musicVariables && musicVariables.other) {
       if (!message.member.hasPermission("MANAGE_CHANNELS")) {
-        if (message.member.voice.channel.members.size > 2) {
+        if (message.member.voice.channel.members.filter(e => !e.user.bot).size > 1) {
           return message.channel.send(
             "Only a member with permission to manage channels can stop queuing. Being alone also works."
           );
