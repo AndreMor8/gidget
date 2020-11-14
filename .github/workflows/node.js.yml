@@ -22,7 +22,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Installing APT dependencies
       run: sudo apt-get update && sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev lame qrencode
-    - name: Installing NPM v6.14.8 because no problems on v7
+    - name: Installing NPM v6.14.8 because problems on v7
       run: npm i -g npm@6.14.8
     - name: Installing project dependencies
       run: npm install
