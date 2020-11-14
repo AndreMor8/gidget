@@ -17,7 +17,7 @@ export default class extends Command {
         try {
             if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/g.test(args[1]))
                 return message.channel.send("Send a normal link to the `api.php` of the wiki where you want to search information");
-            const wiki = wikijs({
+            const wiki = wikijs.default({
                 apiUrl: args[1]
             });
             let page_data = await wiki.page(args.slice(2).join(" "));
