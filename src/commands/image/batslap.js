@@ -1,5 +1,7 @@
 
 import Command from "../../utils/command.js";
+import Discord from "discord.js";
+import Canvas from "canvas";
 
 export default class extends Command {
     constructor(options) {
@@ -7,10 +9,7 @@ export default class extends Command {
         this.description = "the classic meme of batman and robin";
     }
     async run(bot, message, args) {
-        let user = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || message.member;
-        const Discord = require('discord.js');
-        const Canvas = require('canvas');
-     
+        let user = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || message.member;    
         const canvas = Canvas.createCanvas(770, 433);
         const ctx = canvas.getContext('2d');
      
