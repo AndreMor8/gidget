@@ -1,3 +1,4 @@
+import fetch from 'node-fetch';
 import ytdl from 'discord-ytdl-core';
 export default class extends Command {
   constructor(options) {
@@ -26,7 +27,10 @@ export default class extends Command {
       return message.channel.send("I cannot play music on an AFK channel.");
     }
     const file = message.attachments.first() ? message.attachments.first().url : args[1]
-    if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(file)) return message.channel.send("Invalid URL!")
+    if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(file)) return message.channel.send("Invalid URL!");
+    const res = await fetch(file);
+    if(!res.ok) return message.channel.send("Error: Status code returned " + res.status + " (" + res.statusText + ")");
+    const stream = res.body;
     let musicVariables = message.guild.musicVariables;
     if (musicVariables) return message.channel.send("I'm doing another operation");
     if (!musicVariables) {
@@ -49,7 +53,7 @@ export default class extends Command {
       message.channel.stopTyping();
       return message.channel.send("Sorry, but I'm muted. Contact an admin to unmute me.");
     }
-    await playFile(file, message.guild);
+    await playFile(stream, message.guild);
   }
 }
 
