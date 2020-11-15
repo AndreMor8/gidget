@@ -56,7 +56,7 @@ export default class extends Command {
 async function playFile(file, guild) {
   const musicVariables = guild.musicVariables;
   try {
-    const stream = ytdl.arbitraryStream(file, { highWaterMark: 1 << 25, opusEncoded: true });
+    const stream = ytdl.arbitraryStream(file, { opusEncoded: true });
     const dispatcher = await musicVariables.connection.play(stream, { type: "opus" });
     dispatcher.on("finish", async () => {
       if (!musicVariables.loop) {
