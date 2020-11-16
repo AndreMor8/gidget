@@ -1,4 +1,3 @@
-
 import Discord from "discord.js";
 import os from 'os';
 import cpuStat from "cpu-stat";
@@ -16,13 +15,15 @@ export default class extends Command {
     };
   }
   async run(bot, message) {
-    let percent = await usagePercent();
-    let embedStats = new Discord.MessageEmbed()
+    const percent = await usagePercent();
+    const mem = process.memoryUsage();
+    const memoryU = `Resident Set: ${memory(mem.rss)}\nTotal heap size: ${memory(mem.heapTotal)}\nUsed heap: ${memory(mem.heapUsed)}\nExternal objects: ${memory(mem.external)}`;
+    const embedStats = new Discord.MessageEmbed()
       .setTitle("***Stats***")
       .setColor("RANDOM")
       .setDescription('Gidget is alive! - Version ' + global.botVersion)
       .addField("• RAM", `${memory(os.totalmem() - os.freemem(), false)} / ${memory(os.totalmem())}`, true)
-      .addField("• Process RAM usage", memory(process.memoryUsage().rss), true)
+      .addField("• Process RAM usage", memoryU, true)
       .addField("• Uptime ", `${moment.duration(Date.now() - bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, true)
       .addField("• Discord.js", `v${Discord.version}`, true)
       .addField("• Node.js", `${process.version}`, true)
@@ -42,8 +43,8 @@ export default class extends Command {
 }
 
 /**
- * @param bytes
- * @param r
+ * @param {Number} bytes
+ * @param {Boolean} r
  */
 function memory(bytes = 0, r = true) {
   const gigaBytes = bytes / 1024 ** 3;
