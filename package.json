@@ -55,7 +55,7 @@
     "node-lame": "^1.2.2",
     "node-svg2img": "^1.1.0",
     "ping": "^0.3.0",
-    "puppeteer": "^5.4.1",
+    "puppeteer": "^5.5.0",
     "qr": "^0.2.4",
     "safe-regex": "^2.1.1",
     "sharp": "^0.26.2",
