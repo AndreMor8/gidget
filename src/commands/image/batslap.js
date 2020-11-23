@@ -1,5 +1,3 @@
-
-import Command from "../../utils/command.js";
 import Discord from "discord.js";
 import Canvas from "canvas";
 
@@ -20,7 +18,7 @@ export default class extends Command {
           
         const avatarmen = await Canvas.loadImage(user.user.displayAvatarURL({format: 'png'}));
      
-        ctx.drawImage(avatar,270, 50, 160, 160);
+        ctx.drawImage(avatar, 270, 50, 160, 160);
         ctx.drawImage(avatarmen, 452, 205, 160, 160);
      
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'btslap.png');
