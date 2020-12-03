@@ -22,7 +22,8 @@ export default class extends Command {
             lang = "en"
         }
         const reallang = getCode(lang);
-        if (!reallang) return message.channel.send("Invalid language!\nhttps://github.com/AndreMor955/gidget/blob/master/src/utils/languages.js")
+        if (!reallang) return message.channel.send("Invalid language!\nhttps://github.com/AndreMor955/gidget/blob/master/src/utils/languages.js");
+        if (!args[1]) return message.channel.send("Put something");
         const tosay = args.slice(1).join(" ");
         if (tosay.length > 200) return message.channel.send("Must be less than 200 characters")
         message.channel.startTyping();
