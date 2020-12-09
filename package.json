@@ -62,7 +62,7 @@
     "twemoji-parser": "^13.0.0",
     "usetube": "^1.1.5",
     "wikijs": "^6.0.1",
-    "ytdl-core": "^4.1.1",
+    "ytdl-core": "^4.1.4",
     "ytdl-core-discord": "^1.2.4",
     "ytpl": "^1.0.1"
   },
