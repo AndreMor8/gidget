@@ -1,8 +1,7 @@
-import usetube from 'usetube';
-import ytpl from "ytpl";
-import ytdl from "ytdl-core-discord";
+import yts from 'yt-search';
+import { validateID } from '../../utils/playlistID.js';
+import ytdl from "ytdl-core";
 import { MessageEmbed } from "discord.js";
-import ms from 'ms';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -23,23 +22,21 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Put a search term");
     if (args.slice(1).join(" ").length > 250) return message.channel.send("The maximum size of the search term is 250 characters.");
     if (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(args[1])) return message.channel.send("YouTube links should go in the `play` command");
-    if (ytdl.validateID(args[1]) || ytpl.validateID(args[1])) return message.channel.send("YouTube IDs should go in the `play` command");
+    if (ytdl.validateID(args[1]) || validateID(args[1])) return message.channel.send("YouTube IDs should go in the `play` command");
     try {
       message.channel.startTyping();
-      const res = await usetube.searchVideo(encodeURIComponent(args.slice(1).join(" ")));
+      const res = await yts({ query: args.slice(1).join(" ") });
       if (!res) return message.channel.send("I didn't find any video. Please try again with another term.");
-      const { tracks: pre_tracks } = res;
-      const tracks = pre_tracks.filter(e => e && ytdl.validateID(e.id))
-      if (!tracks || !tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
+      const { videos } = res;
+      if (!videos[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
       let text = '';
       let i = 0;
-      for (const elements of tracks) {
+      for (const elements of videos) {
         if (text.length < 1750) {
-          text += `${i + 1}. **${elements.original_title}**\nUploaded ${elements.publishedAt}\nDuration: ${ms(elements.duration * 1000, { long: true })}\n\n`
+          text += `${i + 1}. **${elements.title}**\nUploaded ${elements.ago}\nDuration: ${elements.timestamp}\n\n`
         } else break;
         i++;
       }
-
       const embed = new MessageEmbed()
         .setTitle(`Search results for ${args.slice(1).join(" ")}`)
         .setDescription(text)
@@ -57,7 +54,7 @@ export default class extends Command {
           if (number <= i && number >= 1) {
             if (!msg.deleted) await msg.delete();
             collector.stop("Ok!");
-            global.botCommands.get("play").run(bot, message, ["play", tracks[number - 1].id]);
+            global.botCommands.get("play").run(bot, message, ["play", videos[number - 1].url]);
           } else if (i < number) {
             message.channel.send("There are only " + i + " results...");
           } else {

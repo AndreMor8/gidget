@@ -1,12 +1,12 @@
 const COOKIE = process.env.COOKIETEXT;
+import otherYtdl from 'ytdl-core';
 import ytdl from "ytdl-core-discord";
-import usetube from 'usetube';
-import ytpl from "ytpl";
+import yts from 'yt-search';
+import { validateID, getPlaylistID } from '../../utils/playlistID.js';
 import moment from "moment";
 // Autocomplete
 // eslint-disable-next-line no-unused-vars
 import Discord from 'discord.js';
-import times from '../../utils/times.js';
 import "moment-duration-format";
 export default class extends Command {
   constructor(options) {
@@ -80,46 +80,45 @@ export default class extends Command {
       return handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: "https://www.youtube.com/watch?v=" + args[1], handle: true }]).catch(err => {
         message.channel.send("Error: " + err);
       });
-    } else if (ytpl.validateID(args[1])) {
-      let form1 = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>");
+    } else if (validateID(args[1])) {
       message.channel.startTyping();
       try {
-        const playlist = await ytpl(args[1]);
-        const videos = playlist.items;
-        message.channel.startTyping(playlist.items.length - 1);
+        const playlist = await yts({ listId: getPlaylistID(args[1]) });
+        if(!playlist) return message.channel.send("Playlist not found.");
+        const { videos } = playlist;
+        if(!videos[0]) return message.channel.send("This playlist has no videos");
         if (serverQueue) {
           if (serverQueue.loop) {
             serverQueue.loop = false;
             message.channel.send("🔁 The song repeat has been disabled.");
           }
         }
-        let songs = Object.values(videos).map(e => {
+        let songs = videos.map(e => {
           return {
-            url: e.url_simple,
+            url: "https://www.youtube.com/watch?v=" + e.videoId,
             title: e.title,
-            duration: times(e.duration) / 1000,
+            duration: 0,
             seektime: 0
           };
         });
         await handleServerQueue(serverQueue, message.channel, voiceChannel, songs, true);
         message.channel.stopTyping(true);
-        message.channel.send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.items.length} songs)!`);
+        message.channel.send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.videos.length} songs)!\n\nWhen using a playlist, the duration of the videos inside will not be shown.`);
       } catch (err) {
         if (!serverQueue)
           message.guild.musicVariables = null;
         message.channel.stopTyping(true);
-        message.channel.send("I couldn't queue your playlist. Here's a debug: " + err)
-          .then(() => form1.delete()).catch(() => { });
+        message.channel.send("I couldn't queue your playlist. Here's a debug: " + err);
       }
     } else {
       try {
         message.channel.startTyping();
-        const res = await usetube.searchVideo(encodeURIComponent(args.slice(1).join(" ")));
+        const res = await yts({ query: args.slice(1).join(" ") });
         if (!res) return message.channel.send("I didn't find any video. Please try again with another term.");
-        const { tracks: pre_tracks } = res;
-        const tracks = pre_tracks.filter(e => e && ytdl.validateID(e.id));
-        if (!tracks || !tracks[0]) return message.channel.send("I didn't find any video. Please try again with another term.");
-        await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: `https://www.youtube.com/watch?v=${tracks[0].id}`, title: tracks[0].original_title, duration: tracks[0].duration, seektime: 0 }]);
+        const vids = res.videos;
+        const video = vids[0];
+        if (!video) return message.channel.send("I didn't find any video. Please try again with another term.");
+        await handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: video.url, title: video.title, duration: video.duration.seconds, seektime: 0 }]);
       } catch (err) {
         if (!serverQueue) message.guild.musicVariables = null;
         message.channel.stopTyping(true);
@@ -136,7 +135,7 @@ export default class extends Command {
  * @returns {object} The video object ready to push to the queue.
  */
 async function handleVideo(URL) {
-  const songInfo = await ytdl.getBasicInfo(URL, {
+  const songInfo = await otherYtdl.getBasicInfo(URL, {
     requestOptions: {
       headers: {
         cookie: COOKIE
