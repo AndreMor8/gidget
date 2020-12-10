@@ -16,7 +16,7 @@ export default class extends Command {
 			.setTitle(`${message.guild.name}'s avatar`)
 			.setImage(message.guild.iconURL({ format: "png", dynamic: true, size: 4096 })));
 		}
-		let user = message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || (e.tag === args.slice(1).join(" ")))) || (message.guild ? (message.guild.members.cache.find(e => (e.nickname === args.slice(1).join(" ")))) : undefined) || (args[1] ? await bot.users.fetch(args[1]) : undefined) || message.author;
+		let user = message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || (e.tag === args.slice(1).join(" ")))) || (message.guild ? (message.guild.members.cache.find(e => (e.nickname === args.slice(1).join(" ")))) : undefined) || (args[1] ? await bot.users.fetch(args[1]).catch(() => {}) : undefined) || message.author;
 		if (user instanceof Discord.GuildMember) {
 			user = user.user;
 		}
