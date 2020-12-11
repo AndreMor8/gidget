@@ -1,6 +1,5 @@
 const COOKIE = process.env.COOKIETEXT;
-import otherYtdl from 'ytdl-core';
-import ytdl from "ytdl-core-discord";
+import ytdl from "discord-ytdl-core";
 import yts from 'yt-search';
 import { validateID, getPlaylistID } from '../../utils/playlistID.js';
 import moment from "moment";
@@ -55,10 +54,10 @@ export default class extends Command {
       musicVariables = message.guild.musicVariables;
     }
 
-    /*if (typeof seek === "number") {
+    if (typeof seek === "number") {
       //Only for seek command, disabled actually...
       return await play(message.guild, serverQueue.songs[0], seek);
-    } else*/ if (ytdl.validateURL(args[1])) {
+    } else if (ytdl.validateURL(args[1])) {
       if (serverQueue) {
         if (serverQueue.loop) {
           serverQueue.loop = false;
@@ -135,7 +134,7 @@ export default class extends Command {
  * @returns {object} The video object ready to push to the queue.
  */
 async function handleVideo(URL) {
-  const songInfo = await otherYtdl.getBasicInfo(URL, {
+  const songInfo = await ytdl.getBasicInfo(URL, {
     requestOptions: {
       headers: {
         cookie: COOKIE
@@ -239,7 +238,7 @@ async function play(guild, song, seek = 0) {
     return;
   }
   try {
-    const ytstream = await ytdl(song.url, { highWaterMark: 1 << 25, requestOptions: { headers: { cookie: COOKIE } } });
+    const ytstream = ytdl(song.url, { opusEncoded: true, highWaterMark: 1 << 25, seek, requestOptions: { headers: { cookie: COOKIE } } });
     const dispatcher = serverQueue.connection.play(ytstream, { type: "opus" });
     dispatcher.on("error", async err => {
       musicVariables.memberVoted = [];
