@@ -24,7 +24,8 @@ export default class extends Command {
         const reconverted = (ms(hrs + "h") / 1000) + (ms(min + "m") / 1000) + (ms(sec + "s") / 1000);
         if (isNaN(reconverted) || (typeof reconverted !== "number")) return message.channel.send("Invalid value!");
 
-        if (!serverQueue || !serverQueue.songs[0] || !serverQueue.songs[0].duration) return;
+        if (!serverQueue || !serverQueue.songs[0]) return;
+        if (!serverQueue.songs[0].duration) return message.channel.send("It's impossible for me to seek without a certain duration, sorry.");
 
         if (serverQueue.songs[0].duration <= (reconverted + 2)) return message.channel.send("The song is too short for the specified time!");
 
