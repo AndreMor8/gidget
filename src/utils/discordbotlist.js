@@ -10,7 +10,7 @@ export default async function (bot) {
         body: JSON.stringify({
             guilds: bot.guilds.cache.size,
             users: bot.users.cache.size,
-            voice: bot.voice.connections.size
+            voice_connections: bot.voice.connections.size
         })
     });
     if(!res.ok) console.error(await res.text());

@@ -55,7 +55,7 @@ export default class extends Command {
     }
 
     if (typeof seek === "number") {
-      //Only for seek command, disabled actually...
+      //Only for seek command...
       return await play(message.guild, serverQueue.songs[0], seek);
     } else if (ytdl.validateURL(args[1])) {
       if (serverQueue) {
