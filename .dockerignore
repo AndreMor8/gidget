@@ -1,0 +1,6 @@
+node_modules/
+.env.example
+package-lock.json
+Procfile
+.vscode
+.github
