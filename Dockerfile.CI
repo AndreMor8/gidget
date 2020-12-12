@@ -32,5 +32,5 @@ COPY . .
 # Exposing private API
 ENV PORT=8080
 EXPOSE 8080
-# CMD ["node", "--experimental-json-modules", "."]
-CMD ["npm", "start"]
+CMD ["node", "--experimental-json-modules", ".", "ci"]
+# CMD ["npm", "start"]

@@ -41,7 +41,8 @@ global.botVersion = "0.99 RC";
       headless: true, defaultViewport: {
         width: 1440,
         height: 900
-      }, args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox"]
+      }, args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+      executablePath: process.env.CHROME_BIN || null
     });
   }
   //Database
