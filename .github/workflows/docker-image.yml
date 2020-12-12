@@ -18,5 +18,5 @@ jobs:
       run: docker build . --file Dockerfile.CI --tag andremor/gidget
     - name: Running bot CI script
       run: docker run andremor/gidget
-    - name: \"docker images\" to see image size
-      run: docker images
+    - name: See image size
+      run: docker images | grep "andremor/gidget"
