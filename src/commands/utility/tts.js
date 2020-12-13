@@ -1,6 +1,7 @@
 
 import { MessageAttachment } from "discord.js";
-import { getCode } from "../../utils/languages.js";
+import { languages } from '@vkedwardli/google-translate-api';
+const { getCode } = languages;
 
 export default class extends Command {
     constructor(options) {
