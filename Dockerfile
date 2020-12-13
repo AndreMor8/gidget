@@ -4,7 +4,7 @@ ENV CHROME_BIN="/usr/bin/chromium-browser"
 ENV NODE_ENV="production"
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true"
 # See below
-RUN apk add --no-cache curl bash
+RUN apk add --no-cache curl bash git
 # Commands => qr, record
 RUN apk add --no-cache libqrencode lame
 # Build C++/Python addons (Canvas, gifsicle, @discordjs/opus)
@@ -21,11 +21,10 @@ RUN set -x \
 RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
 # Installing project dependencies
 COPY package.json .
-RUN npm i -g npm@6.14.8
-RUN npm install --only=production
+RUN npm install --only=production --legacy-peer-deps
 # Free space
 RUN /usr/local/bin/node-prune
-RUN apk del --no-cache build-base autoconf automake libtool make gcc g++ python binutils-gold gnupg libstdc++ curl bash libpng libpng-dev jpeg-dev pango-dev cairo-dev \
+RUN apk del git build-base autoconf automake libtool make gcc g++ python binutils-gold gnupg libstdc++ curl bash libpng libpng-dev jpeg-dev pango-dev cairo-dev \
     && rm -rf /usr/include \
     && rm -rf /var/cache/apk/* /usr/share/man /tmp/*
 # Copying bot code
