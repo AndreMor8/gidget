@@ -69,6 +69,6 @@ process.on("unhandledRejection", error => {
 process.on("uncaughtException", async err => {
   global.browser ? await global.browser.close() : undefined;
   bot.destroy();
-  console.error("Uncaught exception: ", err);
+  console.error("Uncaught exception:", err);
   process.exit(1);
 });

@@ -162,7 +162,7 @@ async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_son
   const musicVariables = voiceChannel.guild.musicVariables;
   const songs = [];
   for (const pre_song of pre_songs) {
-    let song = pre_song
+    let song = pre_song;
     if (pre_song.handle) {
       song = await handleVideo(pre_song.url);
     }
@@ -238,8 +238,8 @@ async function play(guild, song, seek = 0) {
     return;
   }
   try {
-    const ytstream = ytdl(song.url, { opusEncoded: true, highWaterMark: 1 << 25, seek, requestOptions: { headers: { cookie: COOKIE } } });
-    const dispatcher = serverQueue.connection.play(ytstream, { type: "opus" });
+    const ytstream = ytdl(song.url, { filter: 'audioonly', opusEncoded: true, highWaterMark: 1 << 25, seek, /*requestOptions: { headers: { cookie: COOKIE } } */});
+    const dispatcher = serverQueue.connection.play(ytstream, { type: "opus", bitrate: 'auto' });
     dispatcher.on("error", async err => {
       musicVariables.memberVoted = [];
       serverQueue.songs.shift();
