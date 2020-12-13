@@ -24,7 +24,7 @@ COPY package.json .
 RUN npm install --only=production --legacy-peer-deps
 # Free space
 RUN /usr/local/bin/node-prune
-RUN apk del build-base autoconf automake libtool make gcc g++ libstdc++ curl bash libpng libpng-dev jpeg-dev pango-dev cairo-dev \
+RUN apk del git build-base autoconf automake libtool make gcc g++ libstdc++ curl bash libpng libpng-dev jpeg-dev pango-dev cairo-dev \
     && rm -rf /usr/include \
     && rm -rf /var/cache/apk/* /usr/share/man /tmp/*
 # Copying bot code
