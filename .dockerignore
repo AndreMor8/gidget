@@ -4,3 +4,4 @@ package-lock.json
 Procfile
 .vscode
 .github
+Dockerfile.CI

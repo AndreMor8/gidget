@@ -3,7 +3,7 @@ export default class extends Command {
         super(options);
         this.description = "This messes up the song array (including the first song). Inreversible action.";
     }
-    async run(bot, message, args) {
+    async run(bot, message) {
         const serverQueue = message.guild.queue;
         if (serverQueue && serverQueue.inseek) return;
         const musicVariables = message.guild.musicVariables;

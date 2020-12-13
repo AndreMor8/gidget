@@ -158,7 +158,6 @@ async function handleVideo(URL) {
  * @returns {Promise<void>}
  */
 async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_songs, playlist = false) {
-  const musicVariables = voiceChannel.guild.musicVariables;
   const songs = [];
   for (const pre_song of pre_songs) {
     let song = pre_song;
