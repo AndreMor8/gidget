@@ -151,12 +151,17 @@ export default class DiscordXp {
    * @param {string} [guildId] - Discord guild id.
    */
 
-  static async fetch(userId, guildId) {
+  static async fetch(userId, guildId, fetchPosition = false) {
     if (!userId) throw new TypeError("An user id was not provided.");
     if (!guildId) throw new TypeError("A guild id was not provided.");
 
     const user = await levels.findOne({ userID: userId, guildID: guildId });
     if (!user) return false;
+
+    if (fetchPosition === true) {
+      const leaderboard = await this.fetchLeaderboard(guildId);
+      user.position = leaderboard.findIndex(i => i.userID === userId) + 1;
+    }
 
     return user;
   }
@@ -211,30 +216,27 @@ export default class DiscordXp {
    * @param {number} [limit] - Amount of maximum enteries to return.
    */
 
-
   static async fetchLeaderboard(guildId, limit) {
     if (!guildId) throw new TypeError("A guild id was not provided.");
-    if (!limit) throw new TypeError("A limit was not provided.");
 
     let users = await levels.find({ guildID: guildId }).sort([['xp', 'descending']]).exec();
 
-    return users.slice(0, limit);
+    return (limit && (typeof limit === "number")) ? users.slice(0, limit) : users;
   }
 
   /**
-   * @param {string} [client] - Your Discord.CLient.
+   * @param {string} [client] - Your Discord.js client.
    * @param {Array} [leaderboard] - The output from 'fetchLeaderboard' function.
    */
 
   static computeLeaderboard(client, leaderboard) {
-    if (!client) throw new TypeError("A client was not provided.");
+    if (!client) throw new TypeError("A Discord.js client was not provided.");
     if (!leaderboard) throw new TypeError("A leaderboard id was not provided.");
 
     if (leaderboard.length < 1) return [];
 
-    const computedArray = [];
-
-    leaderboard.map(key => computedArray.push({
+    const computedArray = leaderboard.map(key => {
+      return {
       guildID: key.guildID,
       userID: key.userID,
       xp: key.xp,
@@ -242,9 +244,10 @@ export default class DiscordXp {
       position: (leaderboard.findIndex(i => i.guildID === key.guildID && i.userID === key.userID) + 1),
       username: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).username : "Unknown",
       discriminator: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).discriminator : "0000",
-      mention: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).toString() : "Unknown",
-      tag: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).tag : "Unknown"
-    }));
+      mention: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).toString() : `<@!` + key.userID + `>`,
+      tag: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).tag : "Unknown (" + key.userID + ")",
+    }
+    });
 
     return computedArray;
   }
@@ -256,5 +259,17 @@ export default class DiscordXp {
     if (isNaN(targetLevel) || isNaN(parseInt(targetLevel, 10))) throw new TypeError("Target level should be a valid number.");
     if (isNaN(targetLevel)) targetLevel = parseInt(targetLevel, 10);
     return targetLevel * targetLevel * 100;
+  }
+
+  /**
+   * 
+   * @param {string} [guildId] 
+   * @param {number} [level]
+   */
+  static async removeFromLevel(guildID, level) {
+    if (!guildID) throw new TypeError("A guild id was not provided.");
+    if (typeof level !== "number") throw new TypeError("A level was not provided.");
+    if (level < 0) throw new TypeError("A level was not provided.");
+    return await levels.deleteMany({ guildID, level: { $lte: parseInt(level) } });
   }
 }

@@ -1,4 +1,3 @@
-
 import MessageModel from "../../database/models/levelconfig.js";
 //I don't think on rewrite this.
 export default class extends Command {
