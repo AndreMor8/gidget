@@ -12,13 +12,14 @@ export default class extends Command {
         if (!channel.permissionsFor(message.author).has("VIEW_CHANNEL")) return message.channel.send("You don't have permissions");
         if (!channel.snipe) return message.channel.send("There are no snipes");
         else {
+            const realtext = Discord.Util.splitMessage(channel.snipe.content, { maxLength: 1000 })[0];
             const attachmenttext = Discord.Util.splitMessage(channel.snipe.attachments.map((e) => `${e.name} => [Link](${e.url}) | [Proxy URL](${e.proxyURL})`).join("\n"), { maxLength: 1000 })[0];
             const reactiontext = Discord.Util.splitMessage(channel.snipe.reactions.cache.map(e => e.emoji.toString() + " => " + e.users.cache.size).join(", "), { maxLength: 1000 })[0];
             const embed = new Discord.MessageEmbed()
                 .setTitle("Snipe")
                 .setColor("RANDOM")
                 .setAuthor(channel.snipe.author.tag, channel.snipe.author.displayAvatarURL({ dynamic: true, format: "png" }))
-                .addField("Content", channel.snipe.content || "*Without content...*")
+                .addField("Content", realtext || "*Without content...*")
                 .addField("Embeds", channel.snipe.embeds.length.toString())
                 .addField("Attachments", attachmenttext || "*Without attachments...*")
                 .addField("Reactions", reactiontext || "*Without reactions...*")

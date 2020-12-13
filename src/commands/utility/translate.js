@@ -1,8 +1,6 @@
-import algo from 'google-translate-open-api';
-const { default: gtranslate, parseMultiple } = algo;
-import { getCode } from "../../utils/languages.js";
+import { default as gtranslate, languages } from '@vkedwardli/google-translate-api';
+const { getCode } = languages;
 import { MessageEmbed } from "discord.js";
-
 
 export default class extends Command {
     constructor(options) {
@@ -34,20 +32,18 @@ export default class extends Command {
             await message.channel.send("The message is too long!!").then(m => m.delete({ timeout: 3000 }))
             return;
         }
-
-        let ptext = text;
-        text = text.split(/(?=[?!.])/gi);
-        text.push(" ");
         const result = await gtranslate(text, { to: reallang });
-        const translated = result.data[0];
-        const res = parseMultiple(translated);
+        console.log(result)
         let embed = new MessageEmbed()
             .setTitle("Translate")
             .setColor("RANDOM")
-            .addField('Input', `\`\`\`css\n${ptext}\`\`\``)
+            .addField('Input', `\`\`\`css\n${text}\`\`\``)
             .addField('Lang', `\`\`\`css\n${reallang}\`\`\``)
-            .addField('Output', `\`\`\`css\n${"" + res.join(" ")}\`\`\``)
-            .setTimestamp()
+            .addField(`Output ${result.from.text.autoCorrected ? "(autocorrected)" : ""}`, `\`\`\`css\n${"" + result.text}\`\`\``)
+            .setTimestamp();
+        if(result.from.text.didYouMean) {
+            embed.addField("Did you mean?", `\`\`\`css\n${result.from.text.value}\`\`\``);
+        }
         await message.channel.send(embed);
     }
 }
