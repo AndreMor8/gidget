@@ -21,7 +21,8 @@ RUN set -x \
 RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
 # Installing project dependencies
 COPY package.json .
-RUN npm install --only=production --legacy-peer-deps
+RUN npm i -g npm@6.14.8
+RUN npm install --only=production
 # Free space
 RUN /usr/local/bin/node-prune
 RUN apk del --no-cache build-base autoconf automake libtool make gcc g++ python binutils-gold gnupg libstdc++ curl bash libpng libpng-dev jpeg-dev pango-dev cairo-dev \
