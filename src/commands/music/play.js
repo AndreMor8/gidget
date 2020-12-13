@@ -42,7 +42,6 @@ export default class extends Command {
     if (!musicVariables) {
       message.guild.musicVariables = {
         perror: 0,
-        py: 0,
         memberVoted: [],
         i: 0,
         o: 0,
@@ -195,7 +194,6 @@ async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_son
         return;
       }
       queueConstruct.connection = connection;
-      musicVariables.py = 1;
       await play(connection.channel.guild, queueConstruct.songs[0]);
       textChannel.stopTyping();
     } catch (error) {
@@ -238,7 +236,12 @@ async function play(guild, song, seek = 0) {
     return;
   }
   try {
-    const ytstream = ytdl(song.url, { filter: 'audioonly', opusEncoded: true, highWaterMark: 1 << 25, seek, /*requestOptions: { headers: { cookie: COOKIE } } */});
+    if(!song.duration) {
+      let thing = await handleVideo(song.url);
+      serverQueue.songs[0] = thing;
+      song = thing;
+    }
+    const ytstream = ytdl(song.url, { filter: 'audioonly', opusEncoded: true, highWaterMark: 1 << 25, seek, requestOptions: { headers: { cookie: COOKIE } } });
     const dispatcher = serverQueue.connection.play(ytstream, { type: "opus", bitrate: 'auto' });
     dispatcher.on("error", async err => {
       musicVariables.memberVoted = [];
