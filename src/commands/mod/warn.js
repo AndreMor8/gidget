@@ -22,7 +22,7 @@ export default class extends Command {
       return message.channel.send(
         "You haven't said anything. Put a member or `set`"
       );
-    let msgDocument = await MessageModel.findOne({
+    const msgDocument = await MessageModel.findOne({
       guildid: message.guild.id
     }).catch(err => console.log(err));
     if (!msgDocument) {
@@ -50,8 +50,8 @@ export default class extends Command {
             );
           }
         } else {
-          let warnings = parseInt(args[3]);
-          let roleObj =
+          const warnings = parseInt(args[3]);
+          const roleObj =
             message.mentions.roles.first() ||
             message.guild.roles.cache.get(args[4]) ||
             message.guild.roles.cache.find(
@@ -100,7 +100,7 @@ export default class extends Command {
             );
           }
         } else {
-          let warnings = parseInt(args[3]);
+          const warnings = parseInt(args[3]);
           if (!isNaN(warnings)) {
             try {
               await dbMsgModel.updateOne({
@@ -135,7 +135,7 @@ export default class extends Command {
             );
           }
         } else {
-          let warnings = parseInt(args[3]);
+          const warnings = parseInt(args[3]);
           if (!isNaN(warnings)) {
             try {
               await dbMsgModel.updateOne({
@@ -164,17 +164,17 @@ export default class extends Command {
       }
     } else {
       if (!dbMsgModel) return console.log("Doesn't exist.");
-      let member =
+      const member =
         message.mentions.members.first() ||
         message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
       if (!member) return message.channel.send("Invalid member!");
-      let document = await MessageModel2.findOne({
+      const document = await MessageModel2.findOne({
         guildid: message.guild.id,
         memberid: member.id
       }).catch(err => console.log(err));
       if (!document) {
         try {
-          let dbMsg = await new MessageModel2({ guildid: message.guild.id, memberid: member.id, warnings: 0 });
+          const dbMsg = await new MessageModel2({ guildid: message.guild.id, memberid: member.id, warnings: 0 });
           var dbMsgModel2 = await dbMsg.save();
         } catch (err) {
           console.log(err);
@@ -185,8 +185,8 @@ export default class extends Command {
       console.log(dbMsgModel2);
       if (dbMsgModel2) {
         try {
-          let { warnings } = dbMsgModel2;
-          let newWarnings = warnings + 1;
+          const { warnings } = dbMsgModel2;
+          const newWarnings = warnings + 1;
           await dbMsgModel2.updateOne({ warnings: newWarnings });
           if (args[2]) {
             member.send(
@@ -209,7 +209,7 @@ export default class extends Command {
             );
          await message.channel.send(`I've warned ${member.user.tag}. They now have ${newWarnings} warnings.`);
           }
-          let {
+          const {
             role,
             roletime,
             roleid,

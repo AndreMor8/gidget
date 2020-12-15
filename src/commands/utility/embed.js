@@ -23,7 +23,7 @@ export default class extends Command {
       channel = message.channel;
     }
     const linkregex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&/\\/=]*)/g;
-    let questions = ["To get out of here put `exit`\nTo omit something say `none` (except in the fields)\n\nTell me the content of the message that will not be in the embed.", "Tell me the embed author", "Tell me a link o upload a attachment for the author image", "Tell me the author link", "Tell me the title", "Tell me the embed link", "Tell me a description", "Tell me a thumbnail link or upload a attachment", "Tell me a image link or upload a attachment", "Tell me a footer text", "Tell me a footer image link or upload a attachment", "Tell me the color to put it on the embed", "Do you want fields?"];
+    const questions = ["To get out of here put `exit`\nTo omit something say `none` (except in the fields)\n\nTell me the content of the message that will not be in the embed.", "Tell me the embed author", "Tell me a link o upload a attachment for the author image", "Tell me the author link", "Tell me the title", "Tell me the embed link", "Tell me a description", "Tell me a thumbnail link or upload a attachment", "Tell me a image link or upload a attachment", "Tell me a footer text", "Tell me a footer image link or upload a attachment", "Tell me the color to put it on the embed", "Do you want fields?"];
     await message.channel.send(questions[0]);
     let msgContent = "";
     let author = "";
@@ -31,7 +31,7 @@ export default class extends Command {
     let authorlink = "";
     let footer = "";
     const embed = new MessageEmbed();
-    let collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 120000 });
+    const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 120000 });
     collector.on("collect", async (m) => {
       if (m.content === "exit")
         return collector.stop("Exited");
@@ -224,13 +224,13 @@ export default class extends Command {
 }
 function fields(message, embed) {
   return new Promise((resolve, reject) => {
-    let o = 1;
+    const o = 1;
     let i = 0;
     let title = "";
     let des = "";
-    let arr = ["Tell me the field name", "Tell me the field value", "Want this to be a inline field?", "Want another field?"];
+    const arr = ["Tell me the field name", "Tell me the field value", "Want this to be a inline field?", "Want another field?"];
     message.channel.send(arr[i]);
-    let collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 120000 });
+    const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 120000 });
     collector.on("collect", m => {
       switch (i) {
         case 0:

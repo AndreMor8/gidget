@@ -2,7 +2,7 @@ import { MessageCollector } from 'discord.js';
 import MessageModel from '../../database/models/message.js';
 
 
-let msgCollectorFilter = (newMsg, originalMsg) => newMsg.author.id === originalMsg.author.id;
+const msgCollectorFilter = (newMsg, originalMsg) => newMsg.author.id === originalMsg.author.id;
 
 export default class extends Command {
     constructor(options) {
@@ -17,26 +17,26 @@ export default class extends Command {
     }
     async run(bot, message, args) {
         if (args.slice(1).length < 1) {
-            let msg = await message.channel.send("Put the message ID");
+            const msg = await message.channel.send("Put the message ID");
             await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
         } else if (args.slice(1).length > 1) {
-            let msg = await message.channel.send("Too many arguments!");
+            const msg = await message.channel.send("Too many arguments!");
             await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
         }
         else {
             try {
-                let fetchedMessage = await message.channel.messages.fetch(args[1]);
+                const fetchedMessage = await message.channel.messages.fetch(args[1]);
                 if (fetchedMessage) {
                     await message.channel.send("Please provide all of the emoji names with the role name, one by one, separated with a comma.\ne.g: WubbzyWalk, A Wubbzy Fan, where the emoji name comes first, role name comes second.\nType `?done` when you finish.");
-                    let collector = new MessageCollector(message.channel, msgCollectorFilter.bind(null, message));
-                    let emojiRoleMappings = new Map();
+                    const collector = new MessageCollector(message.channel, msgCollectorFilter.bind(null, message));
+                    const emojiRoleMappings = new Map();
                     collector.on('collect', msg => {
-                        let { cache } = msg.guild.emojis;
+                        const { cache } = msg.guild.emojis;
                         if (msg.content.toLowerCase() === '?done') {
                             collector.stop('done command was issued.');
                             return;
                         }
-                        let [emojiName, roleName] = msg.content.split(/,\s+/);
+                        const [emojiName, roleName] = msg.content.split(/,\s+/);
                         if (!emojiName && !roleName) return;
                         let emoji = cache.find(emoji => (emoji.toString() === emojiName) || (emoji.name.toLowerCase() === emojiName.toLowerCase()));
                         if (!emoji) {
@@ -49,7 +49,7 @@ export default class extends Command {
                                 return;
                             }
                         }
-                        let role = msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
+                        const role = msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                         if (!role) {
                             msg.channel.send("Role does not exist. Try again.")
                                 .then(msg => msg.delete({ timeout: 2000 }))
@@ -62,7 +62,7 @@ export default class extends Command {
                         emojiRoleMappings.set((emoji.id || emoji), role.id);
                     });
                     collector.on('end', async () => {
-                        let findMsgDocument = await MessageModel
+                        const findMsgDocument = await MessageModel
                             .findOne({ messageId: fetchedMessage.id, guildId: message.guild.id })
                             .catch(err => console.log(err));
                         if (findMsgDocument) {
@@ -70,7 +70,7 @@ export default class extends Command {
                             await message.channel.send("A role reaction set up exists for this message already...");
                         }
                         else {
-                            let dbMsgModel = new MessageModel({
+                            const dbMsgModel = new MessageModel({
                                 guildId: message.guild.id,
                                 messageId: fetchedMessage.id,
                                 emojiRoleMappings: emojiRoleMappings
@@ -88,7 +88,7 @@ export default class extends Command {
             }
             catch (err) {
                 console.log(err);
-                let msg = await message.channel.send("Invalid ID. Message was not found :(");
+                const msg = await message.channel.send("Invalid ID. Message was not found :(");
                 await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
             }
         }

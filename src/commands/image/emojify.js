@@ -13,13 +13,13 @@ export default class extends Command {
         }
     }
     async run(bot, message, args) {
-        if(!args[1] && !message.attachments.first()) return message.channel.send("Usage: emojify <url/attachment/emoji>");
+        if (!args[1] && !message.attachments.first()) return message.channel.send("Usage: emojify <url/attachment/emoji>");
         let url;
-        if(message.attachments.first()) {
+        if (message.attachments.first()) {
             url = message.attachments.first().url;
         } else if (args[1].match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
-            let matched = args[1].match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
-            let ext = args[1].startsWith("<a:") ? ("gif") : ("png");
+            const matched = args[1].match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
+            const ext = args[1].startsWith("<a:") ? ("gif") : ("png");
             url = `https://cdn.discordapp.com/emojis/${matched[2]}.${ext}`;
         } else if (/tenor\.com\/view/.test(args[1]) || /tenor.com\/.+\.gif/.test(args[1]) || /giphy\.com\/gifs/.test(args[1])) {
             url = await mediaExtractor.resolve(args[1]);
@@ -34,15 +34,15 @@ export default class extends Command {
 
 async function render(url) {
     const res = await fetch(url);
-    if(!res.ok) throw new Error(`Status code returned ${res.status} (${res.statusText})`);
+    if (!res.ok) throw new Error(`Status code returned ${res.status} (${res.statusText})`);
     const pre_buf = await res.buffer();
     const type = await FileType.fromBuffer(pre_buf);
-    if(!type) throw new Error("Invalid image!");
-    if(type.mime === "image/gif") {
+    if (!type) throw new Error("Invalid image!");
+    if (type.mime === "image/gif") {
         const buffer = await gifResize({ width: 48 })(pre_buf);
         return buffer;
     } else {
-        if(process.platform === "win32") {
+        if (process.platform === "win32") {
             const Jimp = (await import("jimp")).default;
             const img = await Jimp.read(pre_buf);
             img.resize(48, Jimp.AUTO);

@@ -30,11 +30,11 @@ async function px32(message, args) {
   if (args.join(" ").length > 80)
     return message.channel.send("There's a 80 characters limit.");
   message.channel.startTyping();
-  let font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-  let meme = await Jimp.read(
+  const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
+  const meme = await Jimp.read(
     "https://cdn.glitch.com/9215ce3e-8f9b-4577-9468-e5a34523fe98%2Fwalden-says-5d018d79327df.png?v=1590048195907"
   );
-  let pre_text = args.join(" ").split("");
+  const pre_text = args.join(" ").split("");
   let realtext = "";
   let post_text = "";
   for (let i = 0; i < pre_text.length; i++) {
@@ -57,7 +57,7 @@ async function px32(message, args) {
     alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
   }, 263, 249);
 
-  let render = await meme.getBufferAsync(Jimp.MIME_PNG);
+  const render = await meme.getBufferAsync(Jimp.MIME_PNG);
 
   const attachment = new Discord.MessageAttachment(render, "walden.png");
   await message.channel.send(attachment);
@@ -70,11 +70,11 @@ async function px64(message, args) {
   if (args.join(" ").length > 16)
     return message.channel.send("There's a 16 characters limit.");
   message.channel.startTyping();
-  let font = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
-  let meme = await Jimp.read(
+  const font = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
+  const meme = await Jimp.read(
     "https://cdn.glitch.com/9215ce3e-8f9b-4577-9468-e5a34523fe98%2Fwalden-says-5d018d79327df.png?v=1590048195907"
   );
-  let pre_text = args.join(" ").split("");
+  const pre_text = args.join(" ").split("");
   let realtext = "";
   let post_text = "";
   for (let i = 0; i < pre_text.length; i++) {
@@ -97,7 +97,7 @@ async function px64(message, args) {
     alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
   }, 300, 260);
 
-  let render = await meme.getBufferAsync(Jimp.MIME_PNG);
+  const render = await meme.getBufferAsync(Jimp.MIME_PNG);
 
   const attachment = new Discord.MessageAttachment(render, "walden.png");
   await message.channel.send(attachment);

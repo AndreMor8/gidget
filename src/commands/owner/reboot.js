@@ -1,5 +1,5 @@
 
-let thing = new Map();
+const thing = new Map();
 export default class extends Command {
     constructor(options) {
         super(options);

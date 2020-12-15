@@ -11,7 +11,7 @@ export default class extends Command {
     };
   }
   async run(bot, message) {
-    let u = timer.get(message.author.id);
+    const u = timer.get(message.author.id);
     if (!u) {
       if (!message.member.hasPermission("ADMINISTRATOR")) {
         timer.set(message.author.id, true);
@@ -27,7 +27,7 @@ export default class extends Command {
       return message.channel.send("There are no emojis to update");
 
     col.each(e => {
-      let c = e.roles.cache;
+      const c = e.roles.cache;
       e.edit({ roles: c });
     });
  await message.channel.send("Done, new role members should now be able to use the emoji");

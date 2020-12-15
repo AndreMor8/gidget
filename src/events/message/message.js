@@ -37,7 +37,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
       //Command message code
       //Command structure
       //Arguments with spaces
-      let args = message.content.substring(PREFIX.length).trimEnd().split(/ +/g);
+      const args = message.content.substring(PREFIX.length).trimEnd().split(/ +/g);
       if (!args[0]) return;
       const command = global.botCommands.get(args[0].toLowerCase()) || global.botCommands.find(a => a.aliases.includes(args[0].toLowerCase()));
       if (command) {
@@ -75,12 +75,12 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
       //For the moment, guild-only things
       if (message.guild) {
         // Autoresponses
-        let msgDocument = message.guild.cache.customresponses ? message.guild.customresponses : await message.guild.getCustomResponses();
+        const msgDocument = message.guild.cache.customresponses ? message.guild.customresponses : await message.guild.getCustomResponses();
         if (msgDocument) {
           const { responses } = msgDocument;
           if (responses) {
             const arr = Object.entries(responses);
-            for (let i in arr) {
+            for (const i in arr) {
               const regex = new RegExp(arr[i][0], "gmi");
               if (regex.test(message.content) && message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
                 await message.channel.send(arr[i][1]).catch(() => { });
@@ -91,7 +91,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
 
         // Level system
         if (!nolevel) {
-          let msgDocument2 = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig();
+          const msgDocument2 = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig();
           if (msgDocument2 && msgDocument2.levelsystem) {
             if (!timer.get(message.author.id)) {
               timer.set(message.author.id, true);
@@ -106,9 +106,9 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
               );
               if (hasLeveledUp) {
                 const user = await Levels.fetch(message.author.id, message.guild.id);
-                let { roles } = msgDocument2;
+                const { roles } = msgDocument2;
                 if (roles[user.level - 1]) {
-                  let toadd = roles[user.level - 1].filter(e => message.guild.roles.cache.has(e) && message.guild.roles.cache.get(e).editable && !message.guild.roles.cache.get(e).managed)
+                  const toadd = roles[user.level - 1].filter(e => message.guild.roles.cache.has(e) && message.guild.roles.cache.get(e).editable && !message.guild.roles.cache.get(e).managed)
                   message.member.roles.add(toadd);
                 }
               }

@@ -63,7 +63,7 @@ export default async (bot, message) => {
       .addField("Audit Log Info (Not perfect)", info)
       .setTimestamp();
 
-    let urls = [];
+    const urls = [];
     let i = 0;
 
     if (message.attachments.first()) {

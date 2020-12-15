@@ -19,7 +19,7 @@ export default class extends Command {
     let emoji = bot.emojis.cache.get(args[1]) ||
       bot.emojis.cache.find(e => e.name === args[1]);
     if (!emoji) {
-      let e = Util.parseEmoji(args[1]);
+      const e = Util.parseEmoji(args[1]);
       if (!e.id)
         emoji = bot.emojis.cache.find(a => a.name === e.name);
       else

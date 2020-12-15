@@ -91,7 +91,7 @@ export default class extends Command {
             message.channel.send("🔁 The song repeat has been disabled.");
           }
         }
-        let songs = videos.map(e => {
+        const songs = videos.map(e => {
           return {
             url: "https://www.youtube.com/watch?v=" + e.videoId,
             title: e.title,
@@ -181,7 +181,7 @@ async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_son
     voiceChannel.guild.queue = queueConstruct;
 
     try {
-      let connection = await voiceChannel.join();
+      const connection = await voiceChannel.join();
       if (connection.voice.mute) {
         setTimeout(() => {
           voiceChannel.leave();
@@ -236,7 +236,7 @@ async function play(guild, song, seek = 0) {
   }
   try {
     if(!song.duration) {
-      let thing = await handleVideo(song.url);
+      const thing = await handleVideo(song.url);
       serverQueue.songs[0] = thing;
       song = thing;
     }

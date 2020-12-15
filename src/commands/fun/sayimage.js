@@ -45,7 +45,7 @@ export default class extends Command {
         ctx.strokeText(miembro.nickname || miembro.user.username, 66, 27)
         ctx.fillText(miembro.nickname || miembro.user.username, 66, 27)
 
-        let largo = ctx.measureText(miembro.nickname || miembro.user.username).width
+        const largo = ctx.measureText(miembro.nickname || miembro.user.username).width
         ctx.font = "11.2px Sans Serif"
         ctx.fillStyle = "#72767d"
 

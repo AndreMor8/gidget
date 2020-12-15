@@ -129,7 +129,7 @@ Structures.extend('Guild', Guild => {
                 const keys = Object.keys(doc.responses);
                 if (!keys.length) throw new StructureError("There are no custom responses on this server...");
                 if (index <= keys.length && index >= 1) {
-                    let word = keys[index - 1];
+                    const word = keys[index - 1];
                     if (Object.prototype.hasOwnProperty.call(doc.responses, word)) {
                         delete doc.responses[word];
                         const a = Object.keys(doc.responses);

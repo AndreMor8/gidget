@@ -13,7 +13,7 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1] || (isNaN(args[1]) && !args[2]))
       return message.reply('how many messages should I delete? Specify it.');
-    let number = args[2] ? parseInt(args[2]) : parseInt(args[1]);
+    const number = args[2] ? parseInt(args[2]) : parseInt(args[1]);
   
     if (!isNaN(number) && (number <= 100) && (number >= 1)) {
       await message.delete();
@@ -27,7 +27,7 @@ export default class extends Command {
           }, false);
           messages.sweep(m => !authors.includes(m.author.id));
           await message.channel.bulkDelete(messages, true);
-          let thing = await message.channel.send(messages.size + " messages were successfully deleted");
+          const thing = await message.channel.send(messages.size + " messages were successfully deleted");
           thing.delete({ timeout: 5000 });
         }
           break;
@@ -37,7 +37,7 @@ export default class extends Command {
           }, false);
           messages.sweep(m => !m.author.bot);
           await message.channel.bulkDelete(messages, true);
-          let thing = await message.channel.send(messages.size + " messages were successfully deleted");
+          const thing = await message.channel.send(messages.size + " messages were successfully deleted");
           thing.delete({ timeout: 5000 });
         }
           break;
@@ -47,7 +47,7 @@ export default class extends Command {
           }, false);
           messages.sweep(m => !m.attachments.first());
           await message.channel.bulkDelete(messages, true);
-          let thing = await message.channel.send(messages.size + " messages were successfully deleted");
+          const thing = await message.channel.send(messages.size + " messages were successfully deleted");
           thing.delete({ timeout: 5000 });
         }
           break;
@@ -57,7 +57,7 @@ export default class extends Command {
           }, false);
           messages.sweep(m => !m.embeds[0]);
           await message.channel.bulkDelete(messages, true);
-          let thing = await message.channel.send(messages.size + " messages were successfully deleted");
+          const thing = await message.channel.send(messages.size + " messages were successfully deleted");
           thing.delete({ timeout: 5000 });
         }
           break;
@@ -67,7 +67,7 @@ export default class extends Command {
           }, false);
           messages.sweep(m => !(new RegExp(args.slice(3).join(" "), "gmi").test(m.content)));
           await message.channel.bulkDelete(messages, true);
-          let thing = await message.channel.send(messages.size + " messages were successfully deleted");
+          const thing = await message.channel.send(messages.size + " messages were successfully deleted");
           thing.delete({ timeout: 5000 });
         }
           break;

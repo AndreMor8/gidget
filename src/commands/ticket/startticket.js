@@ -15,7 +15,7 @@ export default class extends Command {
   async run(bot, message, args) {
     if (message.member.hasPermission("ADMINISTRATOR")) {
       if (!args[1]) return message.channel.send("Put a text channel");
-      let channel =
+      const channel =
         message.mentions.channels.first() ||
         message.guild.channels.cache.get(args[1]) ||
         message.guild.channels.cache.find(c => c.name === args[1]);
@@ -23,13 +23,13 @@ export default class extends Command {
       if (channel.type !== "text") return message.channel.send("Invalid channel type!");
       if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have the `SEND_MESSAGES` and the `EMBED_LINKS` permission in that channel");
       if (!args[2]) return message.channel.send("Put a category channel!")
-      let category = message.guild.channels.cache.get(args[2]) ||
+      const category = message.guild.channels.cache.get(args[2]) ||
         message.guild.channels.cache.find(c => c.name === args[2]);
       if (!category) return message.channel.send("Invalid channel! (arg 2)");
       if (category.type !== "category") return message.channel.send("Invalid channel type! (arg 2)");
       if (!args[3]) return message.channel.send("Put a emoji!");
       let emoji;
-      let inrevision = Discord.Util.parseEmoji(args[3]);
+      const inrevision = Discord.Util.parseEmoji(args[3]);
       if (!inrevision.id) {
         if (!message.guild.emojis.cache.find(e => e.name === inrevision.name) && !/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(inrevision.name)) return message.channel.send("Invalid emoji!");
         else {
@@ -50,9 +50,9 @@ export default class extends Command {
           .setDescription('React with ' + (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emoji) ? emoji : bot.emojis.cache.get(emoji).toString()) + ' to create a ticket.')
           .setColor("BLUE")
           .setFooter('You can only have one ticket at a time');
-        let msg = await channel.send(embed)
+        const msg = await channel.send(embed)
         await msg.react(emoji)
-        let dbMsgModel = new MessageModel({
+        const dbMsgModel = new MessageModel({
           guildId: message.guild.id,
           channelId: channel.id,
           messageId: msg.id,
@@ -71,11 +71,11 @@ export default class extends Command {
         await message.channel.send("Some error ocurred. Here's a debug: " + err);
       }
     } else {
-      let msgDocument = await MessageModel.findOne({
+      const msgDocument = await MessageModel.findOne({
         guildId: message.guild.id
       }).catch(err => console.log(err));
       if (msgDocument) {
-        let { channelId, emojiId } = msgDocument;
+        const { channelId, emojiId } = msgDocument;
         await message.channel.send(`To create a ticket, go to <#${channelId}> and react with ${bot.emojis.cache.get(emojiId) ? bot.emojis.cache.get(emojiId).toString() : emojiId}`)
       } else {
         await message.channel.send('I am not listening to tickets on this server.');

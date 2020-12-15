@@ -15,7 +15,7 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Put a message ID");
     const msgDocument = await MessageModel.findOne({ guildId: message.guild.id, messageId: args[1] });
     if (!msgDocument) return message.channel.send("I can't find a ticket system in that message.");
-    let { manual } = msgDocument;
+    const { manual } = msgDocument;
     if (!args[2]) {
       return message.channel.send(new MessageEmbed()
         .setTitle(message.guild.name + " ticket config")
@@ -33,7 +33,7 @@ export default class extends Command {
       case "perms":
         try {
           if (!args[3]) return message.channel.send("Put some permissions!");
-          let perms = new Permissions(args.slice(2));
+          const perms = new Permissions(args.slice(2));
           msgDocument.updateOne({ perms: perms.toArray() }).then(() => message.channel.send("Permissions to close tickets, saved correctly. *Better use roles*"));
         } catch (err) {
           await message.channel.send("Error: " + err);
@@ -44,13 +44,13 @@ export default class extends Command {
         if (args[3] === "delete") {
           return msgDocument.updateOne({ roles: [] }).then(() => message.channel.send("No one will be able to close tickets unless they have the stipulated permissions."));
         }
-        let roles = message.mentions.roles.first() ? message.mentions.roles : args.slice(3);
+        const roles = message.mentions.roles.first() ? message.mentions.roles : args.slice(3);
         if (message.mentions.roles.first()) {
-          let toput = roles.filter(r => !r.deleted && r.guild.id === message.guild.id).map(r => r.id);
+          const toput = roles.filter(r => !r.deleted && r.guild.id === message.guild.id).map(r => r.id);
           msgDocument.updateOne({ roles: toput }).then(() => message.channel.send("Roles updated correctly"))
         } else {
-          let toput = [];
-          for (let i in roles) {
+          const toput = [];
+          for (const i in roles) {
             if (!message.guild.roles.cache.has(roles[i])) {
               await message.channel.send("The role " + roles[i] + " isn't valid!");
             } else {
@@ -65,7 +65,7 @@ export default class extends Command {
         msgDocument.updateOne({ manual: !manual }).then(() => message.channel.send(!manual ? "Now the people who created the tickets can close them themselves." : "Now only those with the permissions or roles set will be able to close tickets."));
         break;
       case "category": {
-        let channel = message.guild.channels.cache.get(args[3]);
+        const channel = message.guild.channels.cache.get(args[3]);
         if (!channel) return message.channel.send("Invalid channel.")
         if (channel.type !== "category") return message.channel.send("Invalid channel type");
         msgDocument.updateOne({ categoryId: channel.id }).then(() => message.channel.send("Category channel updated correctly."));

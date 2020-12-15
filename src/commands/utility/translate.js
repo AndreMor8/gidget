@@ -27,14 +27,13 @@ export default class extends Command {
         if (!reallang) return message.channel.send("Invalid language!\nhttps://github.com/AndreMor955/gidget/blob/master/src/utils/languages.js")
 
         //Get text
-        let text = args.slice(1).join(" ");
+        const text = args.slice(1).join(" ");
         if (text.length > 700) {
             await message.channel.send("The message is too long!!").then(m => m.delete({ timeout: 3000 }))
             return;
         }
         const result = await gtranslate(text, { to: reallang });
-        console.log(result)
-        let embed = new MessageEmbed()
+        const embed = new MessageEmbed()
             .setTitle("Translate")
             .setColor("RANDOM")
             .addField('Input', `\`\`\`css\n${text}\`\`\``)

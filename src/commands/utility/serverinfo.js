@@ -1,4 +1,3 @@
-
 import Discord from "discord.js";
 export default class extends Command {
   constructor(options) {
@@ -11,17 +10,24 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
+    let broadcastedServer;
     if (!message.guild && !args[1]) return message.channel.send("Put a server ID!");
-    const server = args[1] ? (bot.guilds.cache.get(args[1]) ||
+    let server = args[1] ? (bot.guilds.cache.get(args[1]) ||
       bot.guilds.cache.find(e => e.name === args.slice(1).join(" ")) ||
-      bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()) ||
-      await bot.guilds.fetch(args[1]).catch(() => { }) ||
-      await bot.fetchGuildPreview(args[1]).catch(() => { })) : message.guild;
+      bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()))
+      : message.guild;
+    if(!server) {
+      broadcastedServer = args[1] ? (await bot.shard.fetchClientValues(`guilds.cache.map(e => e.toJSON())`)).find(e => e.find(a => a.name === args.slice(1).join(" ") || a.name.toLowerCase() === args.slice(1).join(" ").toLowerCase() || a.id === args[1]))?.find(a => a.name === args.slice(1).join(" ") || a.name.toLowerCase() === args.slice(1).join(" ").toLowerCase() || a.id === args[1]) : undefined;
+      server = broadcastedServer ? (await bot.guilds.fetch(broadcastedServer.id, false).catch(() => {})) : undefined;
+    }
+    if(!server) {
+      server = await bot.fetchGuildPreview(args[1]).catch(() => {});
+    }
     if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server");
-    if ((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
-    let servericon = server.iconURL({ dynamic: true, size: 4096 });
+    //if ((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
+    const servericon = server.iconURL({ dynamic: true, size: 4096 });
     //¯\_(ツ)_/¯
-    let links = [`[Guild](https://discord.com/channels/${server.id})`];
+    const links = [`[Guild](https://discord.com/channels/${server.id})`];
     if (servericon) links.push(`[Server icon](${servericon})`);
     let embedenabled;
     let embedchannel;
@@ -49,7 +55,7 @@ export default class extends Command {
       } else {
         catname += cat + " categories";
       }
-      let embeddata = await server.fetchWidget().catch(() => { });
+      const embeddata = await server.fetchWidget().catch(() => { });
       if (embeddata) {
         embedenabled = embeddata.enabled;
         embedchannel = embeddata.channel;
@@ -161,7 +167,7 @@ export default class extends Command {
       if (server.publicUpdatesChannel) {
         embed.addField("Discord private updates", server.publicUpdatesChannel.toString(), true);
       }
-      embed.addField("Member Count", server.memberCount.toString(), true)
+      embed.addField("Member Count", server.memberCount?.toString() || (broadcastedServer ? broadcastedServer.memberCount?.toString() || "?" : "?"), true)
         .addField("Channel Count", `${server.channels.cache.filter(c => c.type === "text" || c.type === "voice").size} (${catname})\nText = ${server.channels.cache.filter(c => c.type === "text").size}\nVoice = ${server.channels.cache.filter(c => c.type === "voice").size}`, true)
         .addField("Emojis", `${server.emojis.cache.size}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
         .addField("Roles", `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, true)
@@ -184,8 +190,8 @@ export default class extends Command {
       .setColor("#FF00FF")
       .setTimestamp();
     if ((message.guild ? message.guild.id === "402555684849451028" : false) && server.id === "402555684849451028") {
-      let fetch = server.roles.cache.get("402559343540568084").members.map(m => m.user);
-      let admins = fetch.join("\n");
+      const fetch = server.roles.cache.get("402559343540568084").members.map(m => m.user);
+      const admins = fetch.join("\n");
       embed.addField("Admin List", admins);
    await message.channel.send(embed);
     } else {

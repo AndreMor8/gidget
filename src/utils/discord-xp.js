@@ -219,7 +219,7 @@ export default class DiscordXp {
   static async fetchLeaderboard(guildId, limit) {
     if (!guildId) throw new TypeError("A guild id was not provided.");
 
-    let users = await levels.find({ guildID: guildId }).sort([['xp', 'descending']]).exec();
+    const users = await levels.find({ guildID: guildId }).sort([['xp', 'descending']]).exec();
 
     return (limit && (typeof limit === "number")) ? users.slice(0, limit) : users;
   }

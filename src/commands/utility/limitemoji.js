@@ -15,15 +15,15 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1])
       return message.channel.send("Usage: limitemojis <emoji> <mode> <role(s)>");
-    let e = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1]);
+    const e = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1]);
     if (e)
       return cmd_sendumfrage(message, args.slice(2), e.id);
     else
       return cmd_umfrage(message, args.slice(1));
     function cmd_umfrage(msg, args) {
       if (args.length) {
-        let custom = /^<a?:/;
-        let reactions = [];
+        const custom = /^<a?:/;
+        const reactions = [];
         let reaction = args[0];
         if (custom.test(reaction)) {
           reaction = reaction.substring(
@@ -44,19 +44,19 @@ export default class extends Command {
      * @param emoji
      */
     function cmd_sendumfrage(msg, args, emoji) {
-      let emojiobj = msg.guild.emojis.cache.get(emoji);
+      const emojiobj = msg.guild.emojis.cache.get(emoji);
       if (!emojiobj)
         return message.channel.send("That emoji isn't on the server");
       if (!args[0]) {
         if (!emojiobj.roles.cache.first())
           return message.channel.send("That emoji can be used by anyone");
-        let text = emojiobj.roles.cache.map(e => e.toString()).join("\n");
+        const text = emojiobj.roles.cache.map(e => e.toString()).join("\n");
         const embed = new MessageEmbed()
           .setTitle("List of roles they can use " + emojiobj.name)
           .setDescription(text);
         return message.channel.send(embed);
       }
-      let roles = msg.mentions.roles.first() ? msg.mentions.roles : args.slice(1);
+      const roles = msg.mentions.roles.first() ? msg.mentions.roles : args.slice(1);
 
       switch (args[0]) {
         case "add":

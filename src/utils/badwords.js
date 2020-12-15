@@ -20,7 +20,7 @@ export default class Main {
      * @returns {boolean} Whether or not it is profane.
      */
     isProfane(str) {
-        let string = str.trim().split(/ +/g);
+        const string = str.trim().split(/ +/g);
         for (let i = 0; i < string.length; i++) {
             if (arr.includes(string[i])) return true;
         }
@@ -33,7 +33,7 @@ export default class Main {
      * @returns {string} Cleaned string.
      */
     clear(str) {
-        let r = str;
+        const r = str;
         for (let i = 0; i < arr.length; i++) {
             let s = "";
             for (let j = 0; j <= arr[i].length; i++) {

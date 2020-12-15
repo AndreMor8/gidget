@@ -91,7 +91,7 @@ function render(sprite, character, frames, size, delay) {
     gif.setDelay(delay);
     gif.setTransparent(0x00ff00);
     gif.setRepeat(0);
-    let chunks = [];
+    const chunks = [];
     gif.on("data", (b) => {
       chunks.push(b)
     })

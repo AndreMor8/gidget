@@ -15,15 +15,15 @@ export default class extends Command {
 
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send('Please mention the user or enter their ID.')
-    let member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
+    const member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
     if (!member) return message.channel.send('Invalid member!')
-    let removeMemberRole = async (muteroleid, member, args) => {
-      let role = message.guild.roles.cache.get(muteroleid)
+    const removeMemberRole = async (muteroleid, member, args) => {
+      const role = message.guild.roles.cache.get(muteroleid)
       if (role && member) {
         if (args[2]) {
           member.roles.remove(role, 'Unrestrict command' + args.slice(2).join(" "))
             .then(async () => {
-              let msg = await MessageModel2.findOne({ guildId: message.guild.id, memberId: member.id });
+              const msg = await MessageModel2.findOne({ guildId: message.guild.id, memberId: member.id });
               if (msg) {
                 msg.deleteOne();
               }
@@ -33,7 +33,7 @@ export default class extends Command {
         } else {
           member.roles.remove(role, 'Unrestrict command')
             .then(async () => {
-              let msg = await MessageModel2.findOne({ guildId: message.guild.id, memberId: member.id });
+              const msg = await MessageModel2.findOne({ guildId: message.guild.id, memberId: member.id });
               if (msg) {
                 msg.deleteOne();
               }
@@ -45,11 +45,11 @@ export default class extends Command {
      await message.channel.send('Something happened.')
       }
     }
-    let MsgDocument = await MessageModel
+    const MsgDocument = await MessageModel
       .findOne({ guildid: message.guild.id })
       .catch(err => console.log(err));
     if (MsgDocument) {
-      let { muteroleid } = MsgDocument;
+      const { muteroleid } = MsgDocument;
       removeMemberRole(muteroleid, member, args)
     } else {
       return message.channel.send('You must first register a role for unrestrict')

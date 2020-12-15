@@ -7,16 +7,16 @@ export default async (bot, member) => {
     verify = await MessageModel2.findOne({ guildId: member.guild.id });
   }
   if (verify && verify.enabled) {
-    let msgDocument = await MessageModel.findOne({
+    const msgDocument = await MessageModel.findOne({
       guildid: member.guild.id,
       memberid: member.user.id
     });
     if (msgDocument) {
       if (member.guild.me.hasPermission("MANAGE_ROLES")) {
-        let { roles } = msgDocument;
-        let toadd = [];
+        const { roles } = msgDocument;
+        const toadd = [];
         for (const r of roles) {
-          let role = member.guild.roles.cache.get(r);
+          const role = member.guild.roles.cache.get(r);
           if (role && !role.deleted && role.editable && !role.managed) {
             toadd.push(role.id);
           }
@@ -58,12 +58,12 @@ export default async (bot, member) => {
       if (welcome.enabled && welcome.text) {
         const channel = member.guild.channels.cache.get(welcome.channelID);
         if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
-          let finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag);
+          const finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag);
           await channel.send(finalText || "?").catch(() => { });
         }
       }
       if (welcome.dmenabled && welcome.dmtext) {
-        let finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag);
+        const finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag);
         await member.send(finalText || "?").catch(() => { });
       }
     }

@@ -15,23 +15,23 @@ export default class extends Command {
         // Check if the message exists.
         const { channel, author } = message;
         try {
-            let fetchedMessage = channel.messages.cache.get(args[1]) || await channel.messages.fetch(args[1]);
+            const fetchedMessage = channel.messages.cache.get(args[1]) || await channel.messages.fetch(args[1]);
             if (!fetchedMessage)
                 channel.send("Message not found.");
             else {
                 // Check if the message exists in the DB.
-                let msgModel = await MessageModel.findOne({ messageId: fetchedMessage.id, guildId: message.guild.id });
+                const msgModel = await MessageModel.findOne({ messageId: fetchedMessage.id, guildId: message.guild.id });
                 if (msgModel) {
                     // Prompt the user for configurations.
-                    let filter = m => m.author.id === author.id && (m.content.toLowerCase() === 'add' || m.content.toLowerCase() === 'remove');
+                    const filter = m => m.author.id === author.id && (m.content.toLowerCase() === 'add' || m.content.toLowerCase() === 'remove');
                     channel.send('If you are going to add more reaction-roles to that message, put `add`. To remove the configuration say `remove`');
                     try {
-                        let awaitMsgOps = { max: 1, time: 20000, errors: ['time'] };
-                        let choice = (await channel.awaitMessages(filter, awaitMsgOps)).first();
+                        const awaitMsgOps = { max: 1, time: 20000, errors: ['time'] };
+                        const choice = (await channel.awaitMessages(filter, awaitMsgOps)).first();
                         if (choice.content === "add") {
                             if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?")
                             await channel.send("Enter an emoji name followed by the corresponding role name, separated with a comma. e.g: WubbzyWalk, A Wubbzy Fan\nType `?done` when you finish");
-                            let collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel);
+                            const collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel);
                             msgModel.updateOne({ emojiRoleMappings: collectorResult }).then(() => {
                                 bot.cachedMessageReactions.delete(fetchedMessage.id)
                                 message.channel.send("Updated!").catch(() => {});
@@ -67,17 +67,17 @@ export default class extends Command {
  */
 function handleCollector(fetchedMessage, author, channel, msgModel) {
     return new Promise((resolve) => {
-        let collectorFilter = (m) => m.author.id === author.id;
-        let collector = new MessageCollector(channel, collectorFilter);
-        let emojiRoleMappings = new Map(Object.entries(msgModel.emojiRoleMappings));
+        const collectorFilter = (m) => m.author.id === author.id;
+        const collector = new MessageCollector(channel, collectorFilter);
+        const emojiRoleMappings = new Map(Object.entries(msgModel.emojiRoleMappings));
         collector.on('collect', msg => {
             if (msg.content.toLowerCase() === '?done') {
                 collector.stop();
                 resolve();
             }
             else {
-                let { cache } = msg.guild.emojis;
-                let [emojiName, roleName] = msg.content.split(/,\s+/);
+                const { cache } = msg.guild.emojis;
+                const [emojiName, roleName] = msg.content.split(/,\s+/);
                 if (!emojiName && !roleName) return;
                 let emoji = cache.find(emoji => (emoji.toString() === emojiName) || (emoji.name.toLowerCase() === emojiName.toLowerCase()));
                 if (!emoji) {
@@ -90,7 +90,7 @@ function handleCollector(fetchedMessage, author, channel, msgModel) {
                         return;
                     }
                 }
-                let role = msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
+                const role = msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                 if (!role) {
                     msg.channel.send("Role does not exist. Try again.")
                         .then(msg => msg.delete({ timeout: 2000 }))

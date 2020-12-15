@@ -1,5 +1,3 @@
-
-
 import Discord from 'discord.js';
 
 import cheerio from 'cheerio';
@@ -34,7 +32,7 @@ async function image(message) {
     options
   );
   const responseBody = await response.text();
-  let $ = cheerio.load(responseBody);
+  const $ = cheerio.load(responseBody);
 
   const links = $(".image a.link");
 

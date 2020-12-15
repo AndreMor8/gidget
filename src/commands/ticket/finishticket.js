@@ -12,7 +12,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Put the message ID of that ticket system!");
-    let msgDocument = await MessageModel.findOne({
+    const msgDocument = await MessageModel.findOne({
       guildId: message.guild.id,
       messageId: args[1]
     }).catch(err => console.log(err));

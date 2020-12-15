@@ -17,17 +17,17 @@ export default class extends Command {
         );
       }
     }
-    let member =
+    const member =
       message.mentions.members.first() ||
       message.guild.members.cache.get(args[1]) ||
       message.member;
-    let document = await MessageModel.findOne({
+    const document = await MessageModel.findOne({
       guildid: message.guild.id,
       memberid: member.id
     }).catch(err => console.log(err));
     if (document) {
       if (!args[1]) {
-        let { warnings } = document;
+        const { warnings } = document;
         if (warnings < 1) {
           member
             .send("You don't have any warning.")
@@ -44,7 +44,7 @@ export default class extends Command {
             .catch(() => message.channel.send("Make sure your DMs are open!"));
         }
       } else {
-        let { warnings } = document;
+        const { warnings } = document;
         if (warnings < 1) {
        await message.channel.send(`${member.user.tag} has no warnings`);
         } else {

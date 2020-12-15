@@ -13,7 +13,7 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
-    let page = (args[1] && (!isNaN(args[1]))) ? parseInt(args[1]) : 1;
+    const page = (args[1] && (!isNaN(args[1]))) ? parseInt(args[1]) : 1;
     if(page < 1) return message.channel.send("Invalid number!");
     const msgDocument = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig();
     if (!msgDocument) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!");

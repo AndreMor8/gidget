@@ -32,7 +32,7 @@ export default class extends Command {
       await connection.play(new Silence(), { type: "opus" });
       await message.channel.send('Start talking. I will record **what you say** until you finish speaking.');
       const audio = connection.receiver.createStream(message.author, options);
-      let col = message.channel.createMessageCollector((m) => m.author.id === message.author.id && m.content.toLowerCase() === "stop");
+      const col = message.channel.createMessageCollector((m) => m.author.id === message.author.id && m.content.toLowerCase() === "stop");
       col.on("collect", () => {
         col.stop();
         audio.destroy();
@@ -68,12 +68,12 @@ export default class extends Command {
             })
           } else {
             message.channel.startTyping();
-            let chunks = [];
+            const chunks = [];
             audio.on("data", (c) => {
               chunks.push(c);
             });
             audio.on("end", () => {
-              let buf = Buffer.concat(chunks);
+              const buf = Buffer.concat(chunks);
               const encoder = new cosaparaelmp3.Lame({
                 "output": "buffer",
                 "bitrate": 192,

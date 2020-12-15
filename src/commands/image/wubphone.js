@@ -11,6 +11,10 @@ export default class extends Command {
     constructor(options) {
         super(options);
         this.description = "The Wubphone :)";
+        this.permissions = {
+            user: [0, 0],
+            bot: [0, 32768]
+        }
     }
     async run(bot, message, args) {
         if (!sprite) sprite = await Canvas.loadImage(path.join(__dirname + "/../../utils/wubphone.png"));
@@ -21,19 +25,19 @@ export default class extends Command {
         const source4 = mentions[3] || bot.users.cache.get(args[4]) || await bot.users.fetch(args[4]).catch(() => { });
         const sources = [source1, source2, source3, source4];
         const realsources = [];
-        for (let i in sources) {
+        for (const i in sources) {
             if (sources[i] && sources[i] instanceof User) {
                 realsources[i] = sources[i].displayAvatarURL({ size: 64, format: "png" });
             }
         }
         const canvasimages = [];
-        for (let i in realsources) {
+        for (const i in realsources) {
             canvasimages[i] = await Canvas.loadImage(realsources[i]);
         }
         const canvas = Canvas.createCanvas(1280, 720);
         const ctx = canvas.getContext("2d");
         ctx.drawImage(sprite, 0, 0)
-        for (let i in canvasimages) {
+        for (const i in canvasimages) {
             if (parseInt(i) > 3) break;
             if (i == 0) ctx.setTransform(1.4, 0, 0.465, 1, 0, 0);
             if (i == 2) ctx.setTransform(1.4, 0, 0.53, 1, 0, 0);

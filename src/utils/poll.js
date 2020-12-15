@@ -17,26 +17,26 @@ export default (bot, reupdate = false) => {
       if (cache && !reupdate) {
         msgDocument = cache;
       } else {
-        let all = await MessageModel.find();
+        const all = await MessageModel.find();
         msgDocument = all.filter(e => bot.channels.cache.has(e.channelId));
         cache = msgDocument;
         reupdate = false;
       }
-      let test = msgDocument[0];
+      const test = msgDocument[0];
       if (test) {
-        for (let i in msgDocument) {
-          let date = msgDocument[i].date.getTime();
+        for (const i in msgDocument) {
+          const date = msgDocument[i].date.getTime();
           if (new Date().getTime() >= date) {
-            let channel = bot.channels.cache.get(msgDocument[i].channelId);
+            const channel = bot.channels.cache.get(msgDocument[i].channelId);
             if (channel) {
-              let message = await channel.messages
+              const message = await channel.messages
                 .fetch(msgDocument[i].messageId)
                 .catch(() => { });
               if (message) {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
                   message.reactions.cache.each(r => {
-                    let tosee = r.emoji.id || r.emoji.name;
+                    const tosee = r.emoji.id || r.emoji.name;
                     if (!msgDocument[i].reactions.includes(tosee)) return;
                     if (r.partial) {
                       r.fetch().then(r => {
@@ -47,7 +47,7 @@ export default (bot, reupdate = false) => {
                     }
                   });
                   await Util.delayFor(1000)
-                  let embed = message.embeds[0];
+                  const embed = message.embeds[0];
                   embed.setDescription(text).setTitle("Poll completed");
                   await message.edit(embed);
                   if (message.guild.me.hasPermission("MANAGE_MESSAGES")) {

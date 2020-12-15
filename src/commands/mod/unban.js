@@ -13,7 +13,7 @@ export default class extends Command {
   async run(bot, message, args) {
     let banInfo;
     try {
-      let form = await message.guild.fetchBans();
+      const form = await message.guild.fetchBans();
       banInfo = await form.get(args[1]) || form.find(ban => ban.user.username == args.slice(1).join(" ")) || form.find(ban => ban.user.tag == args.slice(1).join(" "));
       if (!banInfo) {
         return message.channel.send('User not found.');

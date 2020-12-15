@@ -13,6 +13,10 @@ export default class extends Command {
     constructor(options) {
         super(options);
         this.description = "Spin some image";
+        this.permissions = {
+            user: [0, 0],
+            bot: [0, 32768]
+        }
     }
     async run(bot, message, args) {
         if (message.author.id !== "577000793094488085") {
@@ -54,7 +58,7 @@ export default class extends Command {
                 gif.setRepeat(0);
                 gif.setDelay((1000 / FPS));
                 gif.setTransparent(0x00ff00);
-                let chunks = [];
+                const chunks = [];
                 gif.on("data", (b) => {
                     chunks.push(b)
                 });

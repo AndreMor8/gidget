@@ -1,4 +1,3 @@
-
 import Discord from 'discord.js';
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
@@ -24,7 +23,7 @@ export default class extends Command {
  */
 async function image(message, args) {
 
-    let options = {
+    const options = {
         method: "GET",
         headers: {
             "Accept": "text/html",
@@ -34,18 +33,18 @@ async function image(message, args) {
 
     const response = await fetch("http://results.dogpile.com/serp?qc=images&q=" + args.slice(1).join(" "), options)
     const responseBody = await response.text()
-    let $ = cheerio.load(responseBody);
+    const $ = cheerio.load(responseBody);
 
-    let links = $(".image a.link");
+    const links = $(".image a.link");
 
-    let urls = new Array(links.length).fill(0).map((v, i) => links.eq(i).attr("href"));
+    const urls = new Array(links.length).fill(0).map((v, i) => links.eq(i).attr("href"));
 
     if (!urls.length) {
         return message.channel.send("I didn't find anything.");
     }
 
     let i = 0;
-    let max = urls.length - 1;
+    const max = urls.length - 1;
     const embed = new Discord.MessageEmbed()
         .setTitle("Image search: " + args.slice(1).join(" "))
         .setDescription(`Use the reactions to move from one image to another`)
@@ -56,12 +55,12 @@ async function image(message, args) {
     const filter = (reaction, user) => {
         return ['◀️', '▶️', '⏹️'].includes(reaction.emoji.name) && user.id === message.author.id;
     };
-    let msg = await message.channel.send(embed);
+    const msg = await message.channel.send(embed);
     await msg.react('◀️');
     await msg.react('▶️');
     await msg.react('⏹️');
 
-    let collector = msg.createReactionCollector(filter, { idle: 20000 });
+    const collector = msg.createReactionCollector(filter, { idle: 20000 });
     collector.on('collect', async (reaction, user) => {
         if (reaction.emoji.name === '▶️') {
 

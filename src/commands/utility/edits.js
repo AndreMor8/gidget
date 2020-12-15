@@ -1,5 +1,6 @@
 
 import Discord from 'discord.js';
+import { Util } from 'discord.js';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -25,8 +26,8 @@ export default class extends Command {
           .setFooter("Requested by: " + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
           .setColor("BLUE")
           .addField("Message author", msg.author.tag + " (" + msg.author.id + ")");
-        for (let i in edits) {
-          embed.addField("Edit " + (i + 1), edits[i].content);
+        for (const i in edits) {
+          embed.addField("Edit " + (i + 1), Util.splitMessage(edits[i].content, { maxLength: 1000, char: "" }));
         }
         await message.channel.send(embed);
       } catch (err) {
@@ -52,7 +53,7 @@ export default class extends Command {
           .setFooter("Requested by: " + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
           .setColor("BLUE")
           .addField("Message author", msg.author.tag + " (" + msg.author.id + ")");
-        for (let i in edits) {
+        for (const i in edits) {
           embed.addField("Edit " + (parseInt(i) + 1), edits[i].content);
         }
         await message.channel.send(embed);

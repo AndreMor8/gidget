@@ -4,9 +4,9 @@ export default class extends Command {
     this.description = "Coin flip";
   }
   async run(bot, message) {
-    let options = ['Heads', 'Tails'];
+    const options = ['Heads', 'Tails'];
 
-    let output = options[Math.floor(Math.random() * options.length)];
+    const output = options[Math.floor(Math.random() * options.length)];
 
     await message.channel.send(`You got: **${output}**!`);
   }

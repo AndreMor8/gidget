@@ -21,19 +21,19 @@ export default (bot, reupdate = false) => {
         cache = msgDocument;
         reupdate = false;
       }
-      let test = msgDocument[0];
+      const test = msgDocument[0];
       if (test) {
-        for (let i in msgDocument) {
-          let date = msgDocument[i].date.getTime();
+        for (const i in msgDocument) {
+          const date = msgDocument[i].date.getTime();
           if (new Date().getTime() >= date) {
-            let another = await MessageModel.findOne({
+            const another = await MessageModel.findOne({
               guildid: msgDocument[i].guildId
             });
             if (another) {
-              let guild = bot.guilds.cache.get(msgDocument[i].guildId);
+              const guild = bot.guilds.cache.get(msgDocument[i].guildId);
               if (guild) {
-                let role = guild.roles.cache.get(another.muteroleid);
-                let member = guild.members.cache.get(msgDocument[i].memberId) || msgDocument[i].memberId ? await guild.members.fetch(msgDocument[i].memberId).catch(() => { }) : undefined;
+                const role = guild.roles.cache.get(another.muteroleid);
+                const member = guild.members.cache.get(msgDocument[i].memberId) || msgDocument[i].memberId ? await guild.members.fetch(msgDocument[i].memberId).catch(() => { }) : undefined;
                 if (role && member) {
                   member.roles.remove(role, "Temprestrict - Time over.");
                 }

@@ -11,12 +11,12 @@ export default class extends Command {
     }
     async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Put some emoji");
-        let parsed = parser.parse(args[1]);
-        let cachedemoji = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1]) || bot.emojis.cache.get(args[1]) || bot.emojis.cache.find(e => e.name === args[1])
+        const parsed = parser.parse(args[1]);
+        const cachedemoji = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1]) || bot.emojis.cache.get(args[1]) || bot.emojis.cache.find(e => e.name === args[1])
         if (args[1].match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
-            let matched = args[1].match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
-            let ext = args[1].startsWith("<a:") ? ("gif") : ("png")
-            let img = `https://cdn.discordapp.com/emojis/${matched[2]}.${ext}`
+            const matched = args[1].match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
+            const ext = args[1].startsWith("<a:") ? ("gif") : ("png")
+            const img = `https://cdn.discordapp.com/emojis/${matched[2]}.${ext}`
             const att = new MessageAttachment(img, matched[2] + "." + ext) 
             await message.channel.send(att);
         } else if (parsed.length >= 1) {

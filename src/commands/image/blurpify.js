@@ -6,14 +6,18 @@ export default class extends Command {
     constructor(options) {
         super(options)
         this.description = "Blurpify some user avatar";
+        this.permissions = {
+            user: [0, 0],
+            bot: [0, 16384]
+        }
     }
     async run(bot, message) {
-        let person = message.mentions.users.first() || message.author;
+        const person = message.mentions.users.first() || message.author;
         const msg = await message.channel.send("Blurpifying... (this may take a while)")
         const res = await fetch(`https://nekobot.xyz/api/imagegen?type=blurpify&image=${person.displayAvatarURL({ size: 1024, dynamic: true })}`);
         if (res.ok) {
             const body = await res.json();
-            let embed = new MessageEmbed()
+            const embed = new MessageEmbed()
                 .setTitle(`${person.username} got blurpified`)
                 .setImage(body.message)
                 .setColor("RANDOM")

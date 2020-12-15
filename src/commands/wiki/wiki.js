@@ -20,9 +20,9 @@ export default class extends Command {
             const wiki = wikijs.default({
                 apiUrl: args[1]
             });
-            let page_data = await wiki.page(args.slice(2).join(" "));
-            let esto = await page_data.summary();
-            let arr = Discord.Util.splitMessage(esto);
+            const page_data = await wiki.page(args.slice(2).join(" "));
+            const esto = await page_data.summary();
+            const arr = Discord.Util.splitMessage(esto);
          await message.channel.send(arr[0]);
         } catch (err) {
             console.log(err);

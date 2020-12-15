@@ -22,19 +22,19 @@ export async function registerCommands(dir) {
     if (!global.Command) global.Command = (await import("file:///" + path.join(__dirname, "command.js"))).default;
     const arr = dir.split("/");
     const category = arr[arr.length - 1];
-    let files = await fs.readdir(path.join(__dirname, dir));
+    const files = await fs.readdir(path.join(__dirname, dir));
     // Loop through each file.
-    for (let file of files) {
-        let stat = await fs.lstat(path.join(__dirname, dir, file));
+    for (const file of files) {
+        const stat = await fs.lstat(path.join(__dirname, dir, file));
         if (stat.isDirectory()) // If file is a directory, recursive call recurDir
             await registerCommands(path.join(dir, file));
         else {
             // Check if file is a .js file.
             if (file.endsWith(".js")) {
-                let cmdName = file.substring(0, file.indexOf(".js"));
+                const cmdName = file.substring(0, file.indexOf(".js"));
                 try {
-                    let cmdModule = await import("file:///" + path.join(__dirname, dir, file));
-                    let cmdClass = new cmdModule.default({ name: cmdName, category })
+                    const cmdModule = await import("file:///" + path.join(__dirname, dir, file));
+                    const cmdClass = new cmdModule.default({ name: cmdName, category })
                     global.botCommands.set(cmdName, cmdClass);
                     if (process.argv[2] === "ci") console.log(`Command ${cmdName} loaded =D`);
                 }
@@ -48,18 +48,18 @@ export async function registerCommands(dir) {
     }
 }
 export async function registerEvents(bot, dir) {
-    let files = await fs.readdir(path.join(__dirname, dir));
+    const files = await fs.readdir(path.join(__dirname, dir));
     // Loop through each file.
-    for (let file of files) {
-        let stat = await fs.lstat(path.join(__dirname, dir, file));
+    for (const file of files) {
+        const stat = await fs.lstat(path.join(__dirname, dir, file));
         if (stat.isDirectory()) // If file is a directory, recursive call recurDir
             await registerEvents(bot, path.join(dir, file));
         else {
             // Check if file is a .js file.
             if (file.endsWith(".js")) {
-                let eventName = file.substring(0, file.indexOf(".js"));
+                const eventName = file.substring(0, file.indexOf(".js"));
                 try {
-                    let eventModule = await import("file:///" + path.join(__dirname, dir, file));
+                    const eventModule = await import("file:///" + path.join(__dirname, dir, file));
                     bot.on(eventName, eventModule.default.bind(null, bot));
                     if (process.argv[2] === "ci") console.log(`Event ${eventName} loaded =D`);
                 }

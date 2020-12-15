@@ -25,7 +25,7 @@ export default class extends Command {
     if (serverQueue.voiceChannel.id !== message.member.voice.channel.id)
       return message.channel.send("I'm on another voice channel!");
     if (!message.member.hasPermission("MANAGE_CHANNELS")) {
-      let memberRequired = Math.floor(
+      const memberRequired = Math.floor(
         ((message.member.voice.channel.members.filter(s => !s.user.bot).size) / 100) * 75
       );
       if (memberRequired > 1) {

@@ -11,8 +11,8 @@ export default class extends Command {
     }
   }
   async run(bot, message, args) {
-    let form = args.slice(1).join(" ");
-    let tochoose = form.split(" | ")
+    const form = args.slice(1).join(" ");
+    const tochoose = form.split(" | ")
     if(!tochoose[0] || !tochoose[1]) return message.channel.send('Usage: `choose <response1> | <response2> | <response(n)>`')
     const embed = new Discord.MessageEmbed()
     .setTitle('Choose!')

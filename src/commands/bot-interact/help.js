@@ -65,7 +65,7 @@ export default class extends Command {
         .setTitle("Help command")
         .addField('Links', links)
         .addField("Bot lists", botlists)
-      let text = "Use `help <category>` to obtain the category's commands\n\n" + Discord.Util.splitMessage(arr.filter(s => {
+      const text = "Use `help <category>` to obtain the category's commands\n\n" + Discord.Util.splitMessage(arr.filter(s => {
         if (s.secret) return false
         if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false
         return true

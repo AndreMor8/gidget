@@ -9,7 +9,7 @@ export default class extends Command {
     if (!message.guild)
       return message.channel.send("The only channel I can see here is this.");
     let text = "";
-    let member = message.mentions.members.first() ||
+    const member = message.mentions.members.first() ||
       message.guild.members.cache.get(args[1]) ||
       message.guild.members.cache.find(m => m.nickname === args.slice(1).join(" ")) ||
       message.guild.members.cache.find(m => m.user ? (m.user.tag === args.slice(1).join(" ")) : false) ||
@@ -31,7 +31,7 @@ export default class extends Command {
       text += textnp.map(advancedmap).join("\n");
       text += voicenp.map(advancedmap).join("\n");
     }
-    let cats = Util.discordSort(col.filter(c => c.type === "category"));
+    const cats = Util.discordSort(col.filter(c => c.type === "category"));
     cats.each(c => {
       const children = c.children.intersect(col);
       const textp = children.filter(c => ['text', 'store', 'news'].includes(c.type));
@@ -41,7 +41,7 @@ export default class extends Command {
       text += voicep.size ? ("\n\t" + Util.discordSort(voicep).map(advancedmap).join("\n\t")) : "";
     });
     const split = Util.splitMessage(text);
-    for (let i in split) {
+    for (const i in split) {
       await message.channel.send("Channel structure of " + message.guild.name + (member ? (" for " + (member.user ? member.user.tag : member.name)) : "") + "\n" + split[i], { code: true });
     }
   }

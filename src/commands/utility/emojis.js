@@ -1,4 +1,3 @@
-
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -9,25 +8,25 @@ export default class extends Command {
     if (!message.guild)
       return message.channel.send('This command only works on servers.');
 
-    let fullN = message.guild.emojis.cache.size;
+    const fullN = message.guild.emojis.cache.size;
 
     if (fullN < 1)
       return message.reply('I don\'t see any emoji here.');
 
-    let commonN = message.guild.emojis.cache.filter(e => e.available && !e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size >= 1 : true)).size;
+    const commonN = message.guild.emojis.cache.filter(e => e.available && !e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size >= 1 : true)).size;
 
-    let animatedN = message.guild.emojis.cache.filter(e => e.available && e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size >= 1 : true)).size;
+    const animatedN = message.guild.emojis.cache.filter(e => e.available && e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size >= 1 : true)).size;
 
-    let cantuse = message.guild.emojis.cache.filter(e => e.available && e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size < 1 : false).size;
+    const cantuse = message.guild.emojis.cache.filter(e => e.available && e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size < 1 : false).size;
 
-    let atext = message.guild.emojis.cache.filter(e => e.available && e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size >= 1 : true)).map(e => e.toString()).join(" ");
+    const atext = message.guild.emojis.cache.filter(e => e.available && e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size >= 1 : true)).map(e => e.toString()).join(" ");
 
-    let ntext = message.guild.emojis.cache.filter(e => e.available && !e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size >= 1 : true)).map(e => e.toString()).join(" ");
+    const ntext = message.guild.emojis.cache.filter(e => e.available && !e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size >= 1 : true)).map(e => e.toString()).join(" ");
 
-    let ctext = message.guild.emojis.cache.filter(e => e.available && e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size < 1 : false).map(e => e.name).join(", ");
+    const ctext = message.guild.emojis.cache.filter(e => e.available && e.roles.cache.size >= 1 ? e.roles.cache.intersect(message.guild.me.roles.cache).size < 1 : false).map(e => e.name).join(", ");
 
-    let utext = message.guild.emojis.cache.filter(e => !e.available).map(e => e.name).join(", ");
-    let unavailable = message.guild.emojis.cache.filter(e => !e.available).size;
+    const utext = message.guild.emojis.cache.filter(e => !e.available).map(e => e.name).join(", ");
+    const unavailable = message.guild.emojis.cache.filter(e => !e.available).size;
 
     let realtext = "";
 

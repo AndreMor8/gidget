@@ -13,26 +13,26 @@ export default class extends Command {
     }
     async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Usage: `setlevelroles add <level> <roles> / setlevelroles remove <level>`");
-        let mode = args[1];
+        const mode = args[1];
         if (mode !== "add" && mode !== "remove") return message.channel.send("Invalid mode!");
         if (!args[2]) return message.channel.send("Put a level!");
         if (isNaN(args[2])) return message.channel.send("Invalid level!");
         if (mode === "add" && !args[3]) return message.channel.send("Put the roles to be delivered when the level is reached");
 
-        let add = async (leve, toadd) => {
+        const add = async (leve, toadd) => {
             const level = parseInt(leve);
             if (!level) return;
             if (level < 1) return message.channel.send("Invalid number");
             const msgDocument = await MessageModel.findOne({ guildId: message.guild.id });
             if (msgDocument) {
-                let { roles } = msgDocument;
+                const { roles } = msgDocument;
                 roles[level - 1] = toadd;
                 await msgDocument.updateOne({ roles: roles }).then(async () => {
                     message.guild.cache.levelconfig = false;
                     await message.channel.send("Updated");
                 }).catch(err => message.channel.send("Some error ocurred! " + err));
             } else {
-                let arr = [];
+                const arr = [];
                 arr[level - 1] = toadd;
                 await new MessageModel({
                     guildId: message.guild.id,
@@ -45,7 +45,7 @@ export default class extends Command {
                 }).catch(err => message.channel.send("Some error ocurred! " + err));
             }
         };
-        let remove = async (leve) => {
+        const remove = async (leve) => {
             const level = parseInt(leve);
             if (!level) return;
             if (level < 1) return message.channel.send("Invalid number");
@@ -62,7 +62,7 @@ export default class extends Command {
                     await message.channel.send("Updated");
                 }).catch(err => message.channel.send("Some error ocurred! " + err));
             } else {
-                let { roles } = msgDocument;
+                const { roles } = msgDocument;
                 if (!roles[level - 1]) return message.channel.send("There are no records of that level");
                 roles[level - 1] = undefined;
                 await msgDocument.updateOne({ roles: roles }).then(async () => {
@@ -73,7 +73,7 @@ export default class extends Command {
         };
 
         if (mode === "add") {
-            let roles = message.mentions.roles.first() ? message.mentions.roles.map(e => e.id) : args.slice(3);
+            const roles = message.mentions.roles.first() ? message.mentions.roles.map(e => e.id) : args.slice(3);
             if (!roles.every(e => message.guild.roles.cache.has(e))) return message.channel.send("Invalid roles!");
             await add(args[2], roles);
         } else if (mode === "remove") {

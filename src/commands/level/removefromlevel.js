@@ -13,7 +13,7 @@ export default class extends Command {
     }
     async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Usage: `removefromlevel <level>`\n\n**Inreversible action.**")
-        let level = parseInt(args[1]);
+        const level = parseInt(args[1]);
         if (level !== 0 && !level) return message.channel.send("Invalid level");
         if (level < 0) return message.channel.send("Invalid number!");
         const msgDocument = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig();

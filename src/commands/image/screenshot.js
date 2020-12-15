@@ -1,5 +1,5 @@
-
 import Discord from "discord.js";
+import puppeteer from 'puppeteer';
 import { checkSingleCleanURL } from '../../utils/clean-url/index.js';
 const timer = new Set();
 import check from '../../utils/nsfw.js';
@@ -15,7 +15,6 @@ export default class extends Command {
       }
   }
   async run(bot, message, args) {
-    if(!global.browser) return message.channel.send("Puppeteer not enabled in this bot instance");
     if (!args[1]) return message.channel.send("Put some URL");
     if (message.author.id !== "577000793094488085") {
       if (!timer.has(message.author.id)) {
@@ -28,7 +27,7 @@ export default class extends Command {
       }
     }
     if (args[3]) {
-      let options = {
+      const options = {
         y: parseInt(args[2]),
         x: parseInt(args[3])
       };
@@ -40,7 +39,7 @@ export default class extends Command {
         options
       );
     } else if (args[2]) {
-      let options = {
+      const options = {
         y: parseInt(args[2]),
         x: 0
       };
@@ -64,21 +63,28 @@ export default class extends Command {
 }
 
 /**
- * @param message
- * @param url
- * @param options
+ * @param message {Discord.Message}
+ * @param url {string}
+ * @param options {object}
  */
 async function pup(message, url, options) {
   const result = await checkSingleCleanURL(url);
   if (result && !message.channel.nsfw) return message.channel.send("To view inappropriate pages use a NSFW channel");
-  let form = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>").catch(() => { });
+  const form = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>").catch(() => { });
   message.channel.startTyping().catch(() => { });
-  let page;
+  let browser;
   try {
     setTimeout(() => {
       message.channel.stopTyping(true);
-    }, 40000);
-    page = await global.browser.newPage();
+    }, 50000);
+    browser = await puppeteer.launch({
+      headless: true, defaultViewport: {
+        width: 1440,
+        height: 900
+      }, args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+      executablePath: process.env.CHROME_BIN || null
+    });
+    const page = await browser.newPage();
     page.on("error", async error => {
       message.channel.stopTyping(true);
       await message.channel.send(`There was an error opening a page. Here's a debug: ${error}`).catch(() => { });
@@ -96,9 +102,9 @@ async function pup(message, url, options) {
     }
     if (!message.channel.nsfw) {
       const isNSFW = await check(screenshot);
-      if(isNSFW) {
+      if (isNSFW) {
         message.channel.stopTyping(true);
-      return message.channel.send("NSFW content has been detected in the generated image. If you want to see it, ask for it on a NSFW channel.");
+        return message.channel.send("NSFW content has been detected in the generated image. If you want to see it, ask for it on a NSFW channel.");
       }
     }
     const attachment = new Discord.MessageAttachment(screenshot, "file.png");
@@ -111,9 +117,7 @@ async function pup(message, url, options) {
     await form.delete().catch(() => { });
   } finally {
     try {
-      if (page && page.close && page.close instanceof Function) {
-        await page.close();
-      }
+      await browser?.close()
     } catch (error) {
       console.log(error);
     }

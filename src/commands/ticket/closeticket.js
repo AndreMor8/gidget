@@ -13,16 +13,16 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
-    let msgDocument2 = await MessageModel.findOne({ guildId: message.guild.id, channelId: message.channel.id })
+    const msgDocument2 = await MessageModel.findOne({ guildId: message.guild.id, channelId: message.channel.id })
     if (!msgDocument2) return message.channel.send("This isn't a ticket-type chat!")
-    let { from } = msgDocument2;
-    let msgDocument = await MessageModel2.findOne({ guildId: message.guild.id, messageId: from });
+    const { from } = msgDocument2;
+    const msgDocument = await MessageModel2.findOne({ guildId: message.guild.id, messageId: from });
     if (!msgDocument) return message.channel.send("There is no ticket system here.")
-    let finish = async (staff = false) => {
+    const finish = async (staff = false) => {
       try {
-        let { memberId, channelId } = msgDocument2;
-        let channel = message.guild.channels.cache.get(channelId);
-        let member = message.guild.members.cache.get(memberId);
+        const { memberId, channelId } = msgDocument2;
+        const channel = message.guild.channels.cache.get(channelId);
+        const member = message.guild.members.cache.get(memberId);
         if (channel) {
           await channel.delete("Finished ticket!");
         }
@@ -34,12 +34,12 @@ export default class extends Command {
         console.log(err);
       }
     }
-    let { manual, roles, perms } = msgDocument;
+    const { manual, roles, perms } = msgDocument;
     let s = 0;
     if (message.member.hasPermission(perms)) {
       finish(true);
     } else {
-      for (let i in roles) {
+      for (const i in roles) {
         if (message.member.roles.cache.has(roles[i])) {
           s++;
           break;
@@ -47,7 +47,7 @@ export default class extends Command {
       }
       if (s === 0) {
         if (manual) {
-          let { memberId } = msgDocument2;
+          const { memberId } = msgDocument2;
           if (memberId === message.member.id) {
             finish();
           } else message.channel.send("You do not have sufficient permissions to close a ticket.");

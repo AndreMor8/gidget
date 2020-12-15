@@ -1,5 +1,3 @@
-
-
 import Discord from 'discord.js';
 
 import cheerio from 'cheerio';
@@ -24,7 +22,7 @@ export default class extends Command {
  * @param message
  */
 async function image(message) {
-  let options = {
+  const options = {
     method: "GET",
     headers: {
       Accept: "text/html",
@@ -37,11 +35,11 @@ async function image(message) {
     options
   );
   const responseBody = await response.text();
-  let $ = cheerio.load(responseBody);
+  const $ = cheerio.load(responseBody);
 
-  let links = $(".image a.link");
+  const links = $(".image a.link");
 
-  let urls = new Array(links.length)
+  const urls = new Array(links.length)
     .fill(0)
     .map((v, i) => links.eq(i).attr("href"));
 
@@ -49,7 +47,7 @@ async function image(message) {
     return;
   }
 
-  let rimg = urls[Math.floor(Math.random() * urls.length)];
+  const rimg = urls[Math.floor(Math.random() * urls.length)];
 
   // Send result
   const embed = new Discord.MessageEmbed()

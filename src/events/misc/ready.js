@@ -3,29 +3,22 @@ import tempmute from "../../utils/tempmute.js";
 import poll from "../../utils/poll.js";
 import MessageModel2 from '../../database/models/mutedmembers.js';
 import MessageModel3 from '../../database/models/poll.js';
-import webserver from '../../webserver.js';
 import discordbl from '../../utils/discordbotlist.js';
-import discordboats from '../../utils/discordboats.js';
 //Start ready event
 export default async bot => {
   //Intervals
-  presence(bot);
+  setInterval(presence, 900000, bot);
   if (process.env.EXTERNAL === "yes") {
     discordbl(bot);
     setInterval(discordbl, 1800000, bot);
-    discordboats(bot);
-    setInterval(discordboats, 1800000, bot);
   }
-  setInterval(presence, 900000, bot);
-  //Webserver for cache cleaning
-  webserver(bot);
   //"De-restriction" function once the penalty time has expired
-  let doc = await MessageModel2.findOne();
+  const doc = await MessageModel2.findOne();
   if (doc) {
     tempmute(bot);
   }
   //Polls have a limit, with this we edit them so that they mark "Poll completed"
-  let doc2 = await MessageModel3.findOne();
+  const doc2 = await MessageModel3.findOne();
   if (doc2) {
     poll(bot);
   }
@@ -39,5 +32,6 @@ export default async bot => {
   }
 
   //All internal operations ended
-  console.log(`Gidget is alive! Version ` + global.botVersion);
+  presence(bot);
+  console.log(`Gidget is alive! Version ${global.botVersion} from shard ${bot.shard.id}`);
 };

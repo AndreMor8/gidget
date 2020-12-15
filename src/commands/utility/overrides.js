@@ -1,5 +1,3 @@
-
-
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -11,7 +9,7 @@ export default class extends Command {
     const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || message.channel;
     if (channel.guild.id !== message.guild.id) return message.channel.send("The channel you have put belongs to another server.");
     const rr = channel.permissionOverwrites.filter(m => m.type === "member").map(m => m.id)
-    for (let i in rr) {
+    for (const i in rr) {
       await message.guild.members.fetch(rr[i]);
     }
     const permissions = channel.permissionOverwrites.map(m => {

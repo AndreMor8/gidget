@@ -33,7 +33,7 @@ export default class extends Command {
       i++
       text += `${i}. [${elements.title}](${elements.link})\n${elements.snippet}\n\n`
     }
-    let embed = new Discord.MessageEmbed()
+    const embed = new Discord.MessageEmbed()
       .setAuthor(message.author.username, message.author.displayAvatarURL({ dynamic: true }))
       .setColor('RANDOM')
       .setTitle('Google Search Results')

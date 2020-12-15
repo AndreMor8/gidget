@@ -17,9 +17,9 @@ export default class extends Command {
     if (args[1] === 'role') {
       if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
       if (!args[2]) return message.channel.send('Please mention the role or enter the role ID.')
-      let roleobj = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]);
+      const roleobj = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]);
       if (!roleobj) return message.channel.send('That role isn\'t valid.')
-      let MsgDocument = await MessageModel
+      const MsgDocument = await MessageModel
         .findOne({ guildid: message.guild.id })
         .catch(err => console.log(err));
       if (MsgDocument) {
@@ -30,7 +30,7 @@ export default class extends Command {
           return message.channel.send('I was unable to update the role in my database. Here\'s a debug: ' + err);
         }
       } else {
-        let dbMsgModel = new MessageModel({
+        const dbMsgModel = new MessageModel({
           guildid: message.guild.id,
           muteroleid: roleobj.id,
         });
@@ -40,10 +40,10 @@ export default class extends Command {
       }
     } else {
       if (!args[1]) return message.channel.send('Please mention the user or enter their ID.')
-      let member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
+      const member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
       if (!member) return message.channel.send('Invalid member!')
-      let addMemberRole = async (muteroleid, member, args) => {
-        let role = message.guild.roles.cache.get(muteroleid)
+      const addMemberRole = async (muteroleid, member, args) => {
+        const role = message.guild.roles.cache.get(muteroleid)
         if (role && member) {
           if (args[2]) {
             if (member.guild.id === "402555684849451028") member.roles.remove(["669767097512886285", "599424187227963403", "608624771382378507", "689821345714143251", "674162651265499136"]);
@@ -59,11 +59,11 @@ export default class extends Command {
           await message.channel.send('Something happened.')
         }
       }
-      let MsgDocument = await MessageModel
+      const MsgDocument = await MessageModel
         .findOne({ guildid: message.guild.id })
         .catch(err => console.log(err));
       if (MsgDocument) {
-        let { muteroleid } = MsgDocument;
+        const { muteroleid } = MsgDocument;
         await addMemberRole(muteroleid, member, args)
       } else {
         return message.channel.send('You must first register a role for restrict')

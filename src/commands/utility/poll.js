@@ -18,7 +18,7 @@ export default class extends Command {
   // eslint-disable-next-line require-await
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Usage: `poll <time> [<emoji1>, <emoji2>, <emoji(n)>] <text>`");
-    let time = ms(args[1]);
+    const time = ms(args[1]);
     if (typeof time !== "number" || time < 40000) return message.channel.send("Invalid time! Must be 40 seconds or more.");
     return cmd_umfrage(message, args.slice(2));
 
@@ -27,10 +27,10 @@ export default class extends Command {
      */
     function toEmojis(args) {
       let text = args.join(" ");
-      let regex = /(<a?:)(\d+)(>)/g;
+      const regex = /(<a?:)(\d+)(>)/g;
       if (regex.test(text)) {
         regex.lastIndex = 0;
-        let emojis = bot.emojis;
+        const emojis = bot.emojis;
         let entry = null;
         while ((entry = regex.exec(text)) !== null) {
           if (emojis.has(entry[2])) {
@@ -57,17 +57,17 @@ export default class extends Command {
           return { attachment: img.url, name: img.filename };
         });
       if (args.length || imgs.length) {
-        let text = args.join(" ").split("\n");
+        const text = args.join(" ").split("\n");
         args = text.shift().split(" ");
         if (text.length) args.push("\n" + text.join("\n"));
-        let reactions = [];
+        const reactions = [];
+        const toreact = [];
         args = toEmojis(args);
+        const custom = /^<a?:/;
+        // eslint-disable-next-line no-control-regex
+        const pattern = /^[\u0000-\u1FFF]{1,4}$/;
         for (let i = 0; i < args.length || imgs.length; i++) {
           let reaction = args[i];
-          let custom = /^<a?:/;
-          // idk
-          // eslint-disable-next-line no-control-regex
-          let pattern = /^[\u0000-\u1FFF]{1,4}$/;
           if (
             !custom.test(reaction) &&
             (reaction.length > 4 || pattern.test(reaction))
@@ -79,17 +79,19 @@ export default class extends Command {
                 .join(" ")
                 .replace(/^\n| (\n)/, "$1"),
               reactions,
-              imgs
+              imgs,
+              toreact
             );
             break;
           } else if (reaction !== "") {
             if (custom.test(reaction)) {
+              toreact.push(reaction);
               reaction = reaction.substring(
                 reaction.lastIndexOf(":") + 1,
                 reaction.length - 1
               );
             }
-            reactions[i] = reaction;
+            reactions.push(reaction);
             if (i === args.length - 1) {
               cmd_sendumfrage(
                 msg,
@@ -98,7 +100,8 @@ export default class extends Command {
                   .join(" ")
                   .replace(/^\n| (\n)/, "$1"),
                 reactions,
-                imgs
+                imgs,
+                toreact
               );
               break;
             }
@@ -115,7 +118,7 @@ export default class extends Command {
      * @param reactions
      * @param imgs
      */
-    function cmd_sendumfrage(msg, text, reactions, imgs) {
+    function cmd_sendumfrage(msg, text, reactions, imgs, toreact) {
       if (!text) {
         text = "Image";
       }
@@ -146,18 +149,18 @@ export default class extends Command {
         })
         .then(
           poll => {
-            if(msg.deletable) msg.delete();
+            if (msg.deletable) msg.delete();
             if (reactions.length) {
-              reactions.forEach(function (entry) {
+              toreact.forEach(function (entry) {
                 poll.react(entry).catch(error => {
                   console.log(error);
                 });
               });
             } else {
-              poll.react("460279003673001985");
-              poll.react("612137351166033950");
+              poll.react(":Perfecto:460279003673001985");
+              poll.react(":Perfecto:612137351166033950");
             }
-            let newMessage = new MessageModel({
+            const newMessage = new MessageModel({
               messageId: poll.id,
               channelId: poll.channel.id,
               date: new Date(Date.now() + time),

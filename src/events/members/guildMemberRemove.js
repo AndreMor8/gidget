@@ -16,13 +16,13 @@ export default async (bot, member) => {
       verify = await MessageModel2.findOne({ guildId: member.guild.id })
     }
     if (verify && verify.enabled) {
-      let msgDocument = await MessageModel.findOne({
+      const msgDocument = await MessageModel.findOne({
         guildid: member.guild.id,
         memberid: member.user.id
       });
 
       //List roles
-      let roles = member.roles.cache
+      const roles = member.roles.cache
         .filter(r => !r.deleted && !r.managed && r.id !== member.guild.id)
         .map(r => r.id);
 
@@ -31,7 +31,7 @@ export default async (bot, member) => {
         if (msgDocument) {
           msgDocument.updateOne({ roles: roles }).catch(console.error);
         } else {
-          let dbMsgModel = new MessageModel({
+          const dbMsgModel = new MessageModel({
             guildid: member.guild.id,
             memberid: member.user.id,
             roles: roles
@@ -51,7 +51,7 @@ export default async (bot, member) => {
     const channel = member.guild.channels.cache.get(welcome.leavechannelID);
     if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
       const memberTag = member.user.tag || await bot.users.fetch(member.id).then(e => e.tag).catch(() => { }) || "Unknown";
-      let finalText = welcome.leavetext.replace(/%MEMBER%/gmi, member.toString()).replace(/%SERVER%/gmi, member.guild.name).replace(/%MEMBERTAG%/gmi, memberTag);
+      const finalText = welcome.leavetext.replace(/%MEMBER%/gmi, member.toString()).replace(/%SERVER%/gmi, member.guild.name).replace(/%MEMBERTAG%/gmi, memberTag);
       await channel.send(finalText || "?").catch(() => { });
     }
   }

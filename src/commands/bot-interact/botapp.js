@@ -7,7 +7,7 @@ export default class extends Command {
     this.description = "This fetches the actual bot application on Discord";
   }
   async run(bot, message) {
-    let info = await bot.fetchApplication()
+    const info = await bot.fetchApplication()
     const embed = new MessageEmbed()
     .setTitle("Client app information")
     .setThumbnail(info.iconURL({ format: "png" }))

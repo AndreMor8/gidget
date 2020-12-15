@@ -16,7 +16,7 @@ export default class extends Command {
             const { responses } = msgDocument;
             const arr = Object.entries(responses);
             let text = "";
-            for (let i in arr) {
+            for (const i in arr) {
                 if (text.length < 1800) {
                     text += `**${parseInt(i) + 1}**. ${arr[i][0]} => ${arr[i][1].content}\n\n`
                 }

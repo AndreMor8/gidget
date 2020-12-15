@@ -49,7 +49,7 @@ export default class extends Command {
       const collector = message.channel.createMessageCollector(m => m.author.id === message.author.id, { time: 35000, idle: 15000 })
 
       collector.on("collect", async message => {
-        let number = parseInt(message.content);
+        const number = parseInt(message.content);
         if (!isNaN(number)) {
           if (number <= i && number >= 1) {
             if (!msg.deleted) await msg.delete();

@@ -15,7 +15,7 @@ export default class extends Command {
     }
     async run(bot, message, args) {
         try {
-            let post = args[1] ? true : (message.attachments.first() ? true : false);
+            const post = args[1] ? true : (message.attachments.first() ? true : false);
             let fps = args[args.length - 1];
             if (fps.charAt(0) == '-') {
                 fps = fps.substring(1);

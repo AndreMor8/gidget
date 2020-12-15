@@ -24,6 +24,7 @@
         "no-extra-semi": ["error"],
         "require-await": ["warn"],
         "no-const-assign": ["error"],
-        "no-var": ["error"]
+        "no-var": ["error"],
+        "prefer-const": ["error"]
     }
 }

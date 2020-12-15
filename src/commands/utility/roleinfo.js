@@ -1,4 +1,3 @@
-
 import Discord from 'discord.js';
 
 export default class extends Command {
@@ -93,10 +92,10 @@ export default class extends Command {
     }
 
     if (!args[1]) {
-      let role = message.member.roles.highest;
+      const role = message.member.roles.highest;
       await msg(role);
     } else {
-      let role = message.mentions.roles.first() || message.guild.roles.cache.get(args[1]) || message.guild.roles.cache.find(r => r.name === args.slice(1).join(" "));
+      const role = message.mentions.roles.first() || message.guild.roles.cache.get(args[1]) || message.guild.roles.cache.find(r => r.name === args.slice(1).join(" "));
       if (!role) return message.channel.send('That\'s not a valid role. Mention the role, type its name or put the ID.');
       await msg(role);
     }
