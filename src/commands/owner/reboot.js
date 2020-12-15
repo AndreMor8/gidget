@@ -9,7 +9,7 @@ export default class extends Command {
         this.owner = true;
     }
     async run(bot, message) {
-        if (bot.voice.connections.size) {
+        if ((await bot.shard.fetchClientValues("voice.connections.size")).reduce((a, c) => a + c, 0)) {
             if (!thing.get(message.author.id)) {
                 thing.set(message.author.id, true);
                 setTimeout(() => {
@@ -19,6 +19,6 @@ export default class extends Command {
             }
         }
         await message.channel.send('I\'m rebooting. Check the log to see if I\'m active.');
-        process.exit(0);
+        bot.shard.masterEval("process.exit(0)");
     }
 }
