@@ -33,7 +33,7 @@ export default class extends Command {
       .addField("• CPU", `\`\`\`md\n${os.cpus().map(i => `${i.model}`)[0]}\`\`\``)
       .addField("• Shards", bot.shard.shardCount, true)
       .addField("• Clusters/Cores used", bot.shard.clusterCount, true)
-    if (bot.voice.connections.size) {
+    if (vcs) {
       embedStats.addField("• Voice connections", vcs, true)
     }
     embedStats.addField("• CPU usage", `\`${percent.toFixed(2)}%\``, true)
