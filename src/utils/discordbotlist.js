@@ -11,7 +11,7 @@ export default async function (bot) {
             guilds: bot.guilds.cache.size,
             users: bot.users.cache.size,
             voice_connections: bot.voice.connections.size,
-            shard_id: bot.shard.id
+            shard_id: bot.shard.id || bot.shard.ids[0]
         })
     });
     if(!res.ok) console.error(await res.text());

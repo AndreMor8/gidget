@@ -19,6 +19,10 @@ export default class extends Command {
             }
         }
         await message.channel.send('I\'m rebooting. Check the log to see if I\'m active.');
-        bot.shard.masterEval("process.exit(0)");
+        if(bot.shard.masterEval) {
+            await bot.shard.masterEval("process.exit(0)");
+        } else {
+            await process.exit(0);
+        }
     }
 }

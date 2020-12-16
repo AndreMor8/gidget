@@ -9,9 +9,8 @@ import { ShardingManager } from 'kurasuta';
 import path from 'path';
 import webserver from './webserver.js';
 import discordboats from './utils/discordboats.js';
-const sharder = new ShardingManager(path.join(__dirname, 'bot.js'), {
+const sharder = new ShardingManager(path.join(__dirname, 'kurasuta-bot.js'), {
     token: process.env.DISCORD_TOKEN,
-    nodeArgs: ["--experimental-json-modules"],
     clientOptions: { partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: 32511 }, allowedMentions: { parse: [] }, presence: { status: "dnd", activity: { name: "Ready event (Loading...)", type: "LISTENING" } } }
 });
 sharder.on('ready', c => console.log(`Launched cluster ${c.id}`));

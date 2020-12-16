@@ -22,17 +22,19 @@ export default class extends Command {
     const embedStats = new Discord.MessageEmbed()
       .setTitle("***Stats***")
       .setColor("RANDOM")
-      .setDescription(`Gidget is alive! - Version ${global.botVersion} from shard ${bot.shard.id}`)
+      .setDescription(`Gidget is alive! - Version ${global.botVersion} from shard ${bot.shard.id || bot.shard.ids[0]}`)
       .addField("• RAM", `${memory(os.totalmem() - os.freemem(), false)} / ${memory(os.totalmem())}`, true)
-      .addField(`• Bot RAM usage (shard ${bot.shard.id})`, memoryU, true)
+      .addField(`• Bot RAM usage (shard ${bot.shard.id || bot.shard.ids[0]})`, memoryU, true)
       .addField("• Uptime ", `${moment.duration(Date.now() - bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, true)
       .addField("• Discord.js", `v${Discord.version}`, true)
       .addField("• Node.js", `${process.version}`, true)
       .addField("• Hosting service", process.env.HOSTER, true)
       .addField("• Operating system", `\`\`\`md\n${os.version()}\n${os.release()}\`\`\``)
       .addField("• CPU", `\`\`\`md\n${os.cpus().map(i => `${i.model}`)[0]}\`\`\``)
-      .addField("• Shards", bot.shard.shardCount, true)
-      .addField("• Clusters/Cores used", bot.shard.clusterCount, true)
+      .addField("• Shards", bot.shard.shardCount || bot.shard.count, true)
+      if(bot.shard.clusterCount) {
+        embedStats.addField("• Clusters/Cores used", bot.shard.clusterCount, true)
+      }
     if (vcs) {
       embedStats.addField("• Voice connections", vcs, true)
     }

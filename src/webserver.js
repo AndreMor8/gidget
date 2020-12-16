@@ -35,7 +35,7 @@ export default function (sharder) {
   });
   /**
    * @param {string} guildID - Server ID to delete cache.
-   * @returns {boolean} Always true.
+   * @returns {boolean} Always true (when the server is found).
    */
   async function deleteCache(guildID) {
     if(isNaN(guildID)) return false;

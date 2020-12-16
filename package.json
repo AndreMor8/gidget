@@ -6,11 +6,11 @@
     "npm": "6.14.8"
   },
   "description": "A Discord Bot, for Wow Wow Discord",
-  "main": "./src/index.js",
+  "main": "./src/default-index.js",
   "scripts": {
-    "test": "node --experimental-json-modules ./src/test.js ci",
+    "test": "node --experimental-json-modules ./src/default-bot.js ci",
     "eslint": "eslint .",
-    "start": "node --experimental-json-modules ./src/index.js"
+    "start": "node --experimental-json-modules ./src/default-index.js"
   },
   "type": "module",
   "repository": {
