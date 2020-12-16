@@ -1,6 +1,6 @@
 import yts from 'yt-search';
-import { validateID } from '../../utils/playlistID.js';
 import ytdl from "ytdl-core";
+import ytpl from 'ytpl';
 import { MessageEmbed } from "discord.js";
 export default class extends Command {
   constructor(options) {
@@ -22,7 +22,7 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Put a search term");
     if (args.slice(1).join(" ").length > 250) return message.channel.send("The maximum size of the search term is 250 characters.");
     if (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(args[1])) return message.channel.send("YouTube links should go in the `play` command");
-    if (ytdl.validateID(args[1]) || validateID(args[1])) return message.channel.send("YouTube IDs should go in the `play` command");
+    if (ytdl.validateID(args[1]) || ytpl.validateID(args[1])) return message.channel.send("YouTube IDs should go in the `play` command");
     try {
       message.channel.startTyping();
       const res = await yts({ query: args.slice(1).join(" ") });
