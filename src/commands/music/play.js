@@ -265,7 +265,9 @@ async function play(guild, song, seek = 0) {
     dispatcher.on("finish", async () => {
       if (serverQueue.inseek) return;
       musicVariables.memberVoted = [];
-      if (!serverQueue.loop) serverQueue.songs.shift();
+      if(serverQueue.loop) {
+        if(serverQueue.loop?.shuffle) serverQueue.loop = false;
+      } else serverQueue.songs.shift();
       if (!serverQueue.playing) serverQueue.playing = true;
       await play(guild, serverQueue.songs[0]);
     });
@@ -286,14 +288,12 @@ async function play(guild, song, seek = 0) {
     });
   } catch (err) {
     musicVariables.memberVoted = [];
-    if (!err.toString().includes("Unable to retrieve video metadata")) {
-      serverQueue.songs.shift();
-      if (serverQueue.textChannel) {
-        serverQueue.textChannel.stopTyping();
-        await serverQueue.textChannel
-          .send("An error ocurred with the YouTube stream: " + err)
-          .catch(err => console.log(err));
-      }
+    serverQueue.songs.shift();
+    if (serverQueue.textChannel) {
+      serverQueue.textChannel.stopTyping();
+      await serverQueue.textChannel
+        .send("An error ocurred with the YouTube stream: " + err)
+        .catch(err => console.log(err));
     }
     if (!serverQueue.playing) serverQueue.playing = true;
     await play(guild, serverQueue.songs[0]);

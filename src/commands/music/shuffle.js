@@ -11,9 +11,8 @@ export default class extends Command {
         if (!musicVariables || !serverQueue) return message.channel.send("There is nothing playing that I could stop.");
         if (serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send("I'm on another voice channel!");
         serverQueue.songs.sort(() => Math.random() - 0.5);
-        serverQueue.songs.loop = true;
+        serverQueue.loop = { shuffle: true };
         serverQueue.connection.dispatcher.end();
-        serverQueue.songs.loop = false;
         await message.channel.send("All the songs have been randomly shuffled.\nUse `g%queue` to see the new order");
     }
 }
