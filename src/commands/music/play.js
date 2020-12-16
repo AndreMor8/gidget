@@ -1,7 +1,7 @@
 const COOKIE = process.env.COOKIETEXT;
 import ytdl from "discord-ytdl-core";
 import yts from 'yt-search';
-import { validateID, getPlaylistID } from '../../utils/playlistID.js';
+import ytpl from 'ytpl';
 import moment from "moment";
 // Autocomplete
 // eslint-disable-next-line no-unused-vars
@@ -78,33 +78,31 @@ export default class extends Command {
       return handleServerQueue(serverQueue, message.channel, voiceChannel, [{ url: "https://www.youtube.com/watch?v=" + args[1], handle: true }]).catch(err => {
         message.channel.send("Error: " + err);
       });
-    } else if (validateID(args[1])) {
+    } else if (ytpl.validateID(args[1])) {
       message.channel.startTyping();
       try {
-        const playlist = await yts({ listId: getPlaylistID(args[1]) });
-        if(!playlist) return message.channel.send("Playlist not found.");
-        const { videos } = playlist;
-        if(!videos[0]) return message.channel.send("This playlist has no videos");
+        const playlist = await ytpl(args[1]);
+        const videos = playlist.items;
+        message.channel.startTyping(playlist.items.length - 1);
         if (serverQueue) {
           if (serverQueue.loop) {
             serverQueue.loop = false;
             message.channel.send("🔁 The song repeat has been disabled.");
           }
         }
-        const songs = videos.map(e => {
+        const songs = videos.filter(e => e.isPlayable).map(e => {
           return {
-            url: "https://www.youtube.com/watch?v=" + e.videoId,
+            url: e.shortUrl,
             title: e.title,
-            duration: 0,
+            duration: e.durationSec,
             seektime: 0
           };
         });
         await handleServerQueue(serverQueue, message.channel, voiceChannel, songs, true);
         message.channel.stopTyping(true);
-        message.channel.send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.videos.length} songs)!\n\nWhen using a playlist, the duration of the videos inside will not be shown.`);
+        message.channel.send(`Playlist: **${playlist.title}** has been added to the queue (${playlist.items.length} songs)!`);
       } catch (err) {
-        if (!serverQueue)
-          message.guild.musicVariables = null;
+        if (!serverQueue) message.guild.musicVariables = null;
         message.channel.stopTyping(true);
         message.channel.send("I couldn't queue your playlist. Here's a debug: " + err);
       }
@@ -235,7 +233,7 @@ async function play(guild, song, seek = 0) {
     return;
   }
   try {
-    if(!song.duration) {
+    if (!song.duration) {
       const thing = await handleVideo(song.url);
       serverQueue.songs[0] = thing;
       song = thing;

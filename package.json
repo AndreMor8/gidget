@@ -63,7 +63,8 @@
     "twemoji-parser": "^13.0.0",
     "wikijs": "^6.0.1",
     "yt-search": "^2.5.1",
-    "ytdl-core": "^4.1.6"
+    "ytdl-core": "^4.1.6",
+    "ytpl": "^2.0.3"
   },
   "devDependencies": {
     "eslint": "^7.15.0"
