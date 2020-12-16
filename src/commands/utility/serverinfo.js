@@ -17,7 +17,7 @@ export default class extends Command {
       bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()))
       : message.guild;
     if(!server) {
-      broadcastedServer = args[1] ? (await bot.shard.fetchClientValues(`guilds.cache.map(e => e.toJSON())`)).find(e => e.find(a => a.name === args.slice(1).join(" ") || a.name.toLowerCase() === args.slice(1).join(" ").toLowerCase() || a.id === args[1]))?.find(a => a.name === args.slice(1).join(" ") || a.name.toLowerCase() === args.slice(1).join(" ").toLowerCase() || a.id === args[1]) : undefined;
+      broadcastedServer = args[1] ? (await bot.shard.fetchClientValues(bot.shard.id ? `guilds.cache.map(e => e && e.toJSON())` : `guilds.cache`)).find(e => e.find(a => a.name === args.slice(1).join(" ") || a.name.toLowerCase() === args.slice(1).join(" ").toLowerCase() || a.id === args[1]))?.find(a => a.name === args.slice(1).join(" ") || a.name.toLowerCase() === args.slice(1).join(" ").toLowerCase() || a.id === args[1]) : undefined;
       server = broadcastedServer ? (await bot.guilds.fetch(broadcastedServer.id, false).catch(() => {})) : undefined;
     }
     if(!server) {
