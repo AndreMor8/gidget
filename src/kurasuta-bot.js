@@ -29,6 +29,7 @@ export default class extends BaseCluster {
     //Cache system
     this.client.cachedMessageReactions = new Discord.Collection();
     this.client.rrcache = new Discord.Collection();
+    this.client.doneBanners = new Discord.Collection();
     //Registers
     await registerEvents(this.client, "../events");
     //Login with Discord

@@ -1,6 +1,7 @@
 import presence from "../../utils/presences.js";
 import tempmute from "../../utils/tempmute.js";
 import poll from "../../utils/poll.js";
+import banners from '../../utils/banner.js';
 import MessageModel2 from '../../database/models/mutedmembers.js';
 import MessageModel3 from '../../database/models/poll.js';
 import discordbl from '../../utils/discordbotlist.js';
@@ -22,6 +23,7 @@ export default async bot => {
   if (doc2) {
     poll(bot);
   }
+  if(bot.guilds.cache.get("402555684849451028")) banners(bot);
   //Show the inviter on the welcome message. Luckily, fetch invites do not have a rate-limit
   const guildsToFetch = bot.guilds.cache.filter(e => e.me.hasPermission("MANAGE_GUILD")).array();
   for (const guild of guildsToFetch) {

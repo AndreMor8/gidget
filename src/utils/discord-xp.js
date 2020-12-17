@@ -5,7 +5,7 @@ import levels from "../database/models/levels.js";
 
 export default class DiscordXp {
   constructor() {
-    throw new Error("This class can't be instantiated")
+    throw new Error("This class can't be instantiated");
   }
   /**
    * @param {string} [userId] - Discord user id.

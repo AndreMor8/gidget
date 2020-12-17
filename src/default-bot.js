@@ -37,6 +37,7 @@ global.botVersion = "0.99 RC";
   //Cache system
   bot.cachedMessageReactions = new Discord.Collection();
   bot.rrcache = new Discord.Collection();
+  bot.doneBanners = new Discord.Collection();
   //Registers
   await registerEvents(bot, "../events");
   //Login with Discord
