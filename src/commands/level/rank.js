@@ -9,8 +9,8 @@ export default class extends Command {
     this.description = "Rank";
     this.guildonly = true;
     this.permissions = {
-      user: [8, 0],
-      bot: [0, 0]
+      user: [0, 0],
+      bot: [0, 32768]
     };
   }
   async run(bot, message, args) {
