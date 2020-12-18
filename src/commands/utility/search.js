@@ -1,4 +1,3 @@
-
 import Discord from 'discord.js';
 import googleIt from 'google-it';
 import b from "../../utils/badwords.js";
@@ -9,6 +8,7 @@ export default class extends Command {
   constructor(options) {
     super(options)
     this.description = "Search in Google";
+    this.aliases = ["google"];
     this.permissions = {
       user: [0, 0],
       bot: [0, 16384]

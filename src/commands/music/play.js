@@ -10,7 +10,7 @@ import "moment-duration-format";
 export default class extends Command {
   constructor(options) {
     super(options);
-    this.aliases = ["join"];
+    this.aliases = ["join", "p"];
     this.description = "Play music from YouTube";
     this.guildonly = true;
   }

@@ -1,7 +1,9 @@
 import Discord from 'discord.js';
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
-
+import b from "../../utils/badwords.js";
+const badwords = new b();
+badwords.setOptions({ whitelist: ["crap"] });
 export default class extends Command {
     constructor(options) {
         super(options);
@@ -12,7 +14,8 @@ export default class extends Command {
         }
     }
     async run(bot, message, args) {
-        if (!args[1]) return message.channel.send('First give me a search term.')
+        if (!args[1]) return message.channel.send('First give me a search term.');
+        if (badwords.isProfane(args.slice(1).join(" ").toLowerCase()) && !message.channel.nsfw) return message.channel.send("You can't search for that on a non-NSFW channel!");
         await image(message, args);
     }
 }
