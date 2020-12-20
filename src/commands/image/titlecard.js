@@ -5,7 +5,7 @@ export default class extends Command {
     constructor(options) {
         super(options);
         this.aliases = ['tt'];
-        this.description = "Shows a title card from the Wubbzy show";
+        this.description = "Shows a title card from the Wubbzy show!";
         this.permissions = {
             user: [0, 0],
             bot: [0, 32768]
