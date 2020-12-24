@@ -1,8 +1,6 @@
-import Discord from "discord.js";
-import puppeteer from 'puppeteer';
-import { checkSingleCleanURL } from '../../utils/clean-url/index.js';
+import { MessageAttachment } from "discord.js";
+import fetch from 'node-fetch';
 const timer = new Set();
-import check from '../../utils/nsfw.js';
 
 export default class extends Command {
   constructor(options) {
@@ -68,58 +66,27 @@ export default class extends Command {
  * @param options {object}
  */
 async function pup(message, url, options) {
-  const result = await checkSingleCleanURL(url);
-  if (result && !message.channel.nsfw) return message.channel.send("To view inappropriate pages use a NSFW channel");
-  const form = await message.channel.send("Hang on! <:WaldenRead:665434370022178837>").catch(() => { });
-  message.channel.startTyping().catch(() => { });
-  let browser;
+  const form = message.channel.send("Hang on! <:WaldenRead:665434370022178837>");
   try {
-    setTimeout(() => {
-      message.channel.stopTyping(true);
-    }, 50000);
-    browser = await puppeteer.launch({
-      headless: true, defaultViewport: {
-        width: 1440,
-        height: 900
-      }, args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-      executablePath: process.env.CHROME_BIN || null
+    const res = await fetch(process.env.PUPPETEER_API, {
+      method: "POST",
+      headers: {
+        "auth-token": process.env.PUPPETEER_TOKEN,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        url, x: options?.x, y: options?.y, nsfw: message.channel.nsfw
+      })
     });
-    const page = await browser.newPage();
-    page.on("error", async error => {
-      message.channel.stopTyping(true);
-      await message.channel.send(`There was an error opening a page. Here's a debug: ${error}`).catch(() => { });
-      await form.delete().catch(() => { });
-    });
-    if (!page) return;
-    await page.goto(url, { waitUntil: "networkidle2" });
-    let screenshot;
-    if (options && !isNaN(options.x) && !isNaN(options.y)) {
-      screenshot = await page.screenshot({
-        clip: { x: options.x, y: options.y, width: 1440, height: 900 }
-      });
-    } else {
-      screenshot = await page.screenshot({ type: "png" });
+    if (!res.ok) return message.channel.send(await res.text() || (res.status + " " + res.statusText));
+    else {
+      const att = new MessageAttachment(await res.buffer(), "capture.png");
+      const time = "Time: " + (Date.now() - (message.editedTimestamp || message.createdTimestamp)) / 1000 + "s";
+      await message.channel.send(time, att);
     }
-    if (!message.channel.nsfw) {
-      const isNSFW = await check(screenshot);
-      if (isNSFW) {
-        message.channel.stopTyping(true);
-        return message.channel.send("NSFW content has been detected in the generated image. If you want to see it, ask for it on a NSFW channel.");
-      }
-    }
-    const attachment = new Discord.MessageAttachment(screenshot, "file.png");
-    message.channel.stopTyping(true);
-    await message.channel.send("Time: " + (Date.now() - (form.editedTimestamp || form.createdTimestamp)) / 1000 + "s", attachment)
-    await form.delete();
-  } catch (error) {
-    message.channel.stopTyping(true);
-    await message.channel.send(`Some error ocurred. Here's a debug: ${error}`).catch(() => { });
-    await form.delete().catch(() => { });
+  } catch (err) {
+    message.channel.send("Error: " + err.toString());
   } finally {
-    try {
-      await browser?.close()
-    } catch (error) {
-      console.log(error);
-    }
+    (await form).delete();
   }
 }
