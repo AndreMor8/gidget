@@ -67,6 +67,7 @@ export default class extends Command {
  */
 async function pup(message, url, options) {
   const form = message.channel.send("Hang on! <:WaldenRead:665434370022178837>");
+  message.channel.startTyping();
   try {
     const res = await fetch(process.env.PUPPETEER_API, {
       method: "POST",
@@ -88,5 +89,6 @@ async function pup(message, url, options) {
     message.channel.send("Error: " + err.toString());
   } finally {
     (await form).delete();
+    message.channel.stopTyping(true);
   }
 }
