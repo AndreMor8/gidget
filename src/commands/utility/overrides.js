@@ -3,7 +3,7 @@ export default class extends Command {
     super(options);
     this.description = "See the channel overwrites";
     this.guildonly = true;
-    this.aliases = "overwrites";
+    this.aliases = ["overwrites"];
   }
   async run(bot, message, args) {
     const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || message.channel;
