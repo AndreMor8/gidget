@@ -40,7 +40,7 @@ global.botVersion = "0.99 RC";
   bot.doneBanners = new Discord.Collection();
   //Registers
   await registerEvents(bot, "../events");
-  await registerWsEvents(bot, "../events");
+  await registerWsEvents(bot, "../ws-events");
   //Login with Discord
   if (process.argv[2] !== "ci") {
     await bot.login();
