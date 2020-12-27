@@ -71,3 +71,28 @@ export async function registerEvents(bot, dir) {
         }
     }
 }
+
+export async function registerWsEvents(bot, dir) {
+    const files = await fs.readdir(path.join(__dirname, dir));
+    // Loop through each file.
+    for (const file of files) {
+        const stat = await fs.lstat(path.join(__dirname, dir, file));
+        if (stat.isDirectory()) // If file is a directory, recursive call recurDir
+            await registerEvents(bot, path.join(dir, file));
+        else {
+            // Check if file is a .js file.
+            if (file.endsWith(".js")) {
+                const eventName = file.substring(0, file.indexOf(".js"));
+                try {
+                    const eventModule = await import("file:///" + path.join(__dirname, dir, file));
+                    bot.ws.on(eventName, eventModule.default.bind(null, bot));
+                    if (process.argv[2] === "ci") console.log(`Event ${eventName} loaded =D`);
+                }
+                catch (err) {
+                    process.exitCode = 1;
+                    console.error("There was an error initializing the " + eventName + " event\n", err);
+                }
+            }
+        }
+    }
+}

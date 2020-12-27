@@ -2,7 +2,7 @@
 import database from "./database/database.js";
 
 //Registry for commands and events
-import { registerCommands, registerEvents } from './utils/registry.js';
+import { registerCommands, registerEvents, registerWsEvents } from './utils/registry.js';
 
 //Other packages
 import DBL from 'dblapi.js';
@@ -40,6 +40,7 @@ global.botVersion = "0.99 RC";
   bot.doneBanners = new Discord.Collection();
   //Registers
   await registerEvents(bot, "../events");
+  await registerWsEvents(bot, "../events");
   //Login with Discord
   if (process.argv[2] !== "ci") {
     await bot.login();
