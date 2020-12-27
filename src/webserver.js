@@ -4,9 +4,6 @@ import express from 'express';
  */
 export default function (sharder) {
   const app = express();
-  app.get("/ping", (req, res) => {
-    res.send("Good!");
-  });
   app.use((req, res, next) => {
     if (req.headers["pass"] !== process.env.ACCESS) {
       res.status(200).send("You don't have authorization");
