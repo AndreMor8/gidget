@@ -334,10 +334,15 @@ Structures.extend('Guild', Guild => {
 
         noCache() {
             this.cache.customresponses = false;
+            this.customresponses = {};
             this.cache.prefix = false;
+            this.prefix = {};
             this.cache.levelconfig = false;
+            this.cache.levelconfig = {};
             this.cache.messagelinksconfig = false;
+            this.messagelinksconfig = {};
             this.cache.welcome = false;
+            this.welcome = {};
             return true;
         }
     };

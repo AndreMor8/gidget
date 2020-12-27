@@ -1,46 +1,52 @@
-import http from 'http';
+import express from 'express';
 /**
- * 
- * @param {object} bot - Discord Client. 
+ * @param {object} bot - Discord Client.
  */
 export default function (sharder) {
-  const listener = http.createServer(async (req, res) => {
-    if (req.headers.pass !== process.env.ACCESS) {
-      res.statusCode = 200;
-      res.end("You don't have authorization");
-      return;
-    }
+  const app = express();
+  app.get("/ping", (req, res) => {
+    res.send("Good!");
+  });
+  app.use((req, res, next) => {
+    if (req.headers["pass"] !== process.env.ACCESS) {
+      res.status(200).send("You don't have authorization");
+    } else next();
+  });
+  app.get("/", async (req, res) => {
     try {
-      const todelete = new URL("http://localhost:8080" + req.url).searchParams.get("delete");
+      const todelete = req.query["delete"];
       if (todelete) {
         const post = await deleteCache(todelete);
         if (post) {
-          res.statusCode = 200;
-          res.end("Good.");
+          res.status(200).send("Good.");
         } else {
-          res.statusCode = 404;
-          res.end("Something's bad. Maybe server ID doesn't exist");
+          res.status(404).send("Something's bad. Maybe server ID doesn't exist");
         }
       } else {
-        res.statusCode = 200;
-        res.end("Good.");
+        res.status(200).send("Good.");
       }
     } catch (err) {
       console.log(err);
-      res.statusCode = 500;
-      res.end("Something happened! " + err);
+      res.status(500).send("Something happened! " + err);
     }
-  }).listen(process.env.PORT, () => {
-    console.log(`Your app is listening on port ${listener.address().port}`);
+  });
+
+  app.get("/guilds", async (req, res) => {
+    const servers = await sharder.broadcastEval("this.guilds.cache.map(e => e.id)");
+    const merged = Array.prototype.concat.apply([], servers);
+    return res.json(merged);
+  });
+  const listener = app.listen(process.env.PORT, () => {
+    console.log("Your app is listening on port " + listener.address().port);
   });
   /**
    * @param {string} guildID - Server ID to delete cache.
-   * @returns {boolean} Always true (when the server is found).
+   * @returns {Promise<boolean>} Always true (when the server is found).
    */
   async function deleteCache(guildID) {
-    if(isNaN(guildID)) return false;
-    const res = await sharder.fetchClientValues(`guilds.cache.get('${guildID}')?.noCache()`);
-    if(res.find(e => Boolean(e))) return true;
+    if (isNaN(guildID)) return false;
+    const res = await sharder.broadcastEval(`this.guilds.cache.get('${guildID}')?.noCache()`);
+    if (res.find(e => Boolean(e))) return true;
     else return false;
   }
 }
