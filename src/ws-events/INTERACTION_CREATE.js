@@ -1,6 +1,9 @@
 export default async function (bot, interaction) {
-    if (interaction.type === 2) {  
-        if (interaction.id === "792783462078742538") {
+    console.log(interaction)
+    if (interaction.type === 2) {
+        console.log("1")  
+        if (interaction.data.name === "wubbzy") {
+            console.log("2")
             await bot.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
                     type: 4,
