@@ -48,7 +48,6 @@ export default class extends Command {
           s();
         });
         stream.on('progress', (a, b) => {
-          console.log(a);
           if (b == 3) {
             stream.destroy();
             file.close();
