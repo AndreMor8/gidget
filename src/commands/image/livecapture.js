@@ -31,6 +31,7 @@ export default class extends Command {
         return message.channel.send("Don't overload this command! (1 min cooldown)");
       }
     }
+    message.channel.startTyping();
     const info = await ytdl.getBasicInfo(args[1]);
     if (info.videoDetails.lengthSeconds != 0) return message.channel.send("This isn't a live stream video!");
     const name = crypto.randomBytes(20).toString('hex');
@@ -49,6 +50,7 @@ export default class extends Command {
             await message.channel.send(att);
             await fs.promises.unlink(join(__dirname, '../../tmp', `/${name}.png`));
             await fs.promises.unlink(join(__dirname, '../../tmp', `/${name}.mp4`));
+            message.channel.stopTyping(true);
             s();
           });
         }
