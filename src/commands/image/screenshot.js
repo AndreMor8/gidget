@@ -16,7 +16,7 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Put some URL");
     if (message.author.id !== "577000793094488085") {
       if (!timer.has(message.author.id)) {
-        timer.add(message.author.id)
+        timer.add(message.author.id);
         setTimeout(() => {
           timer.delete(message.author.id);
         }, 25000); //Hm
