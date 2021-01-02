@@ -34,7 +34,7 @@ export default class extends Command {
     const info = await ytdl.getBasicInfo(args[1]);
     if (info.videoDetails.lengthSeconds != 0) return message.channel.send("This isn't a live stream video!");
     try {
-      const stream = ytdl(args[1], { quality: "highest" });
+      const stream = ytdl(args[1], { filter: "videoandaudio" });
       return new Promise((s, r) => {
         const name = crypto.randomBytes(20).toString('hex');
         const path = join(__dirname, '../../tmp', `/${name}.mp4`);
