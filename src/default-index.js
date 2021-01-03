@@ -6,7 +6,8 @@ import { ShardingManager } from 'discord.js';
 const manager = new ShardingManager('./src/default-bot.js', {
     token: process.env.DISCORD_TOKEN,
     totalShards: 2,
-    execArgv: ["--experimental-json-modules"]
+    //Change this depending on the machine.
+    execArgv: ["--experimental-json-modules", "--optimize_for_size", "--max_old_space_size=600"]
 });
 manager.on('shardCreate', shard => console.log(`Launched shard ${shard.id}`));
 manager.spawn().then(() => {
