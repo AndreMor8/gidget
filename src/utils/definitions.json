@@ -40,7 +40,7 @@
     "secret": false 
   },
   "owner":{
-    "name": "Owner commmands",
+    "name": "Owner commands",
     "onlyguild": false,
     "secret": true
   },
