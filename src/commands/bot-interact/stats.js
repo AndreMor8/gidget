@@ -30,7 +30,7 @@ export default class extends Command {
       .addField("• Node.js", `${process.version}`, true)
       .addField("• Hosting service", process.env.HOSTER, true)
       .addField("• Operating system", `\`\`\`md\n${os.version()}\n${os.release()}\`\`\``)
-      .addField("• CPU", `\`\`\`md\n${os.cpus().map(i => `${i.model}`)[0]}\`\`\``)
+      .addField("• CPU", `\`\`\`md\n${os.cpus()[0].model}\`\`\``)
       .addField("• Shards", bot.shard.shardCount || bot.shard.count, true)
       if(bot.shard.clusterCount) {
         embedStats.addField("• Clusters/Cores used", bot.shard.clusterCount, true)
@@ -41,7 +41,7 @@ export default class extends Command {
     embedStats.addField("• CPU usage", `\`${percent.toFixed(2)}%\``, true)
       .addField("• Arch", `\`${os.arch()}\``, true)
       .addField("• Platform", `\`\`${os.platform()}\`\``, true)
-      .setFooter("Gidget stats")
+      .setFooter("Gidget stats");
 
     await message.channel.send(embedStats)
   }
@@ -50,6 +50,7 @@ export default class extends Command {
 /**
  * @param {Number} bytes
  * @param {Boolean} r
+ * @returns {string}
  */
 function memory(bytes = 0, r = true) {
   const gigaBytes = bytes / 1024 ** 3;
