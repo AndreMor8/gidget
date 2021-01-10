@@ -1,6 +1,5 @@
 import Discord from 'discord.js';
 
-
 export default class extends Command {
     constructor(options) {
         super(options)

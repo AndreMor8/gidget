@@ -37,7 +37,7 @@ export default class extends Command {
         }
       }
       embed.addField("Inviter", invite.inviter ? invite.inviter.tag + "\n" + invite.inviter.toString() : "None", true)
-   await message.channel.send(embed);
+      await message.channel.send(embed);
     } catch (err) {
       if (err.message === "Unknown Invite") return message.channel.send("The API says that invitation is unknown.");
       else return message.channel.send("Something happened when I was trying to collect the information. Here's a debug: " + err);

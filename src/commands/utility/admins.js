@@ -18,6 +18,6 @@ export default class extends Command {
     const embed = new Discord.MessageEmbed()
       .setTitle("List of Admins")
       .setDescription(admins);
- await message.channel.send(embed);
+    await message.channel.send(embed);
   }
 }

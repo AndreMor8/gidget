@@ -1,5 +1,4 @@
-
-const timer = new Map();
+const timer = new Set();
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -11,10 +10,10 @@ export default class extends Command {
     };
   }
   async run(bot, message) {
-    const u = timer.get(message.author.id);
+    const u = timer.has(message.author.id);
     if (!u) {
       if (!message.member.hasPermission("ADMINISTRATOR")) {
-        timer.set(message.author.id, true);
+        timer.add(message.author.id);
         setTimeout(() => {
           timer.delete(message.author.id);
         }, 21600000);
@@ -30,6 +29,6 @@ export default class extends Command {
       const c = e.roles.cache;
       e.edit({ roles: c });
     });
- await message.channel.send("Done, new role members should now be able to use the emoji");
+    await message.channel.send("Done, new role members should now be able to use the emoji");
   }
 }

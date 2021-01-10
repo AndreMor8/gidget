@@ -40,7 +40,7 @@ export default class extends Command {
             .addField('Lang', `\`\`\`css\n${reallang}\`\`\``)
             .addField(`Output ${result.from.text.autoCorrected ? "(autocorrected)" : ""}`, `\`\`\`css\n${"" + result.text}\`\`\``)
             .setTimestamp();
-        if(result.from.text.didYouMean) {
+        if (result.from.text.didYouMean) {
             embed.addField("Did you mean?", `\`\`\`css\n${result.from.text.value}\`\`\``);
         }
         await message.channel.send(embed);

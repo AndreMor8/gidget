@@ -1,4 +1,3 @@
-
 import { MessageAttachment } from "discord.js";
 import { languages } from '@vkedwardli/google-translate-api';
 const { getCode } = languages;

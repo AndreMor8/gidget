@@ -17,18 +17,18 @@ export default class extends Command {
       eval("(async () => { " + args.slice(1).join(" ") + "})();").then(e => {
         let evaluated = e;
         if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
-        const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950 });
+        const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
         message.channel.send(arr[0], { code: "js" });
       }).catch(e => {
         let evaluated = e;
         if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
-        const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950 });
+        const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
         message.channel.send(arr[0], { code: "js" });
       })
     } catch (err) {
       let cosa = err;
       if (typeof cosa !== "string") cosa = util.inspect(cosa, { depth: 0 });
-      const arr = Discord.Util.splitMessage(cosa, { maxLength: 1950 });
+      const arr = Discord.Util.splitMessage(cosa, { maxLength: 1950, char: "" });
       await message.channel.send(arr[0], { code: "js" });
     }
   }

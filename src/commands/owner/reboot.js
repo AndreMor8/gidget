@@ -1,5 +1,4 @@
-
-const thing = new Map();
+const thing = new Set();
 export default class extends Command {
     constructor(options) {
         super(options);
@@ -10,8 +9,8 @@ export default class extends Command {
     }
     async run(bot, message) {
         if ((await bot.shard.fetchClientValues("voice.connections.size")).reduce((a, c) => a + c, 0)) {
-            if (!thing.get(message.author.id)) {
-                thing.set(message.author.id, true);
+            if (!thing.has(message.author.id)) {
+                thing.add(message.author.id);
                 setTimeout(() => {
                     thing.delete(message.author.id);
                 }, 15000);
@@ -22,7 +21,7 @@ export default class extends Command {
         if(bot.shard.masterEval) {
             await bot.shard.masterEval("process.exit(0)");
         } else {
-            await process.exit(0);
+            process.exit(0);
         }
     }
 }

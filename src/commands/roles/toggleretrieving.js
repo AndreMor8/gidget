@@ -1,4 +1,3 @@
-
 import MessageModel from "../../database/models/retreiveconfig.js";
 
 export default class extends Command {

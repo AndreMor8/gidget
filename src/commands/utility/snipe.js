@@ -23,7 +23,7 @@ export default class extends Command {
                 .addField("Attachments", attachmenttext || "*Without attachments...*")
                 .addField("Reactions", reactiontext || "*Without reactions...*")
                 .addField("Flags", channel.snipe.flags.toArray().join(", ") || "*Without flags*")
-         await message.channel.send(embed);
+            await message.channel.send(embed);
         }
     }
 }

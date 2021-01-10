@@ -1,7 +1,6 @@
 import { MessageCollector } from 'discord.js';
 import MessageModel from '../../database/models/message.js';
 
-
 const msgCollectorFilter = (newMsg, originalMsg) => newMsg.author.id === originalMsg.author.id;
 
 export default class extends Command {

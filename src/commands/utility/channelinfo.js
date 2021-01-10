@@ -10,8 +10,7 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
-    if (!message.guild)
-      return message.channel.send("Yes, I know this is a channel, but there are no interesting things I can show you.");
+    if (!message.guild) return message.channel.send("Yes, I know this is a channel, but there are no interesting things I can show you.");
     const obj = {
       text: "Text channel",
       voice: "Voice channel",
