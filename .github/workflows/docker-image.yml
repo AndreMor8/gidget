@@ -14,9 +14,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile.CI --tag andremor/gidget
-    - name: Running bot CI script
-      run: docker run andremor/gidget
+    - name: Build the Docker image and testing CI script
+      run: docker build . --tag andremor/gidget
     - name: See image size
       run: docker images | grep "andremor/gidget"
