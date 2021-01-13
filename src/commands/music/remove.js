@@ -15,10 +15,10 @@ export default class extends Command {
             if (serverQueue.voiceChannel.id !== voiceChannel)
                 return message.channel.send("I'm on another voice channel!");
         }
-        if (args[1] == "1") return message.channel.send("You cannot remove the current song. Use `skip` for that");
         const number = parseInt(args[1]);
         if (!number) return message.channel.send("Invalid number");
         if (number < 1) return message.channel.send("Invalid number");
+        if (number == 1) return message.channel.send("You cannot remove the current song. Use `skip` for that");
         const songs = serverQueue.songs;
         if (songs.length < number) return message.channel.send("Invalid number. Use `queue` to see the current queue");
         const realnumber = number - 1;
