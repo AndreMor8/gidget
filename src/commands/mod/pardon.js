@@ -19,7 +19,7 @@ export default class extends Command {
       );
     const member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
     if (!member) return message.channel.send('Invalid member');
-    const msgDocument = await MessageModel.findOne({ guildid: message.guild.id, memberid: args[1] }).catch(err => console.log(err));
+    const msgDocument = await MessageModel.findOne({ guildid: message.guild.id, memberid: member.id }).catch(err => console.log(err));
     if (!msgDocument) return message.channel.send('I don\'t have that member registered.')
     try {
       const { warnings } = msgDocument;
