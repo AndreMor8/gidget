@@ -36,7 +36,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.2.7",
-    "file-type": "^16.1.0",
+    "file-type": "^16.2.0",
     "gif-encoder": "^0.7.2",
     "google-it": "^1.6.0",
     "jimp": "^0.16.1",
