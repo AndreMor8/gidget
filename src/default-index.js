@@ -7,7 +7,7 @@ const execArgv = ["--experimental-json-modules", "--expose-gc"];
 if(process.env.OLDMEMORY) execArgv.push("--optimize_for_size", ("--max_old_space_size=" + process.env.OLDMEMORY));
 const manager = new ShardingManager('./src/default-bot.js', {
     token: process.env.DISCORD_TOKEN,
-    totalShards: 2,
+    totalShards: 1,
     execArgv
 });
 manager.on('shardCreate', shard => console.log(`Launched shard ${shard.id}`));

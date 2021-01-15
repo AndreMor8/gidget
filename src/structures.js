@@ -26,6 +26,7 @@ Structures.extend('Guild', Guild => {
             this.levelconfig = {};
             this.messagelinksconfig = {};
             this.inviteCount = {};
+            this.connect4 = null;
             this.cache = {
                 prefix: false,
                 customresponses: false,
