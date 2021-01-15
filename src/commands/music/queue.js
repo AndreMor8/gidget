@@ -3,7 +3,7 @@ import "moment-duration-format";
 export default class extends Command {
   constructor(options) {
     super(options);
-    this.aliases = [];
+    this.aliases = ['q'];
     this.description = "Show the queue";
     this.guildonly = true;
     this.permissions = {
@@ -20,6 +20,6 @@ export default class extends Command {
     serverQueue.songs.forEach(e => {
       fullduration = fullduration + Number(e.duration);
     });
- await message.channel.send(`**Song queue:**\n\n${serverQueue.songs.map((song, i) => `**${parseInt(i) + 1}** ${song.title} (${moment.duration(song.duration, "seconds").format()})`).join(`\n`)}\n\nTotal duration: **${moment.duration(fullduration, "seconds").format()}**\n\n**Now playing:** ${serverQueue.songs[0].title} (${moment.duration(serverQueue.connection.dispatcher.streamTime + (serverQueue.songs[0].seektime * 1000), "ms").format()} / ${moment.duration(serverQueue.songs[0].duration, "seconds").format()})`, { split: true }).catch(err => console.log(err));
+    await message.channel.send(`**Song queue:**\n\n${serverQueue.songs.map((song, i) => `**${parseInt(i) + 1}** ${song.title} (${moment.duration(song.duration, "seconds").format()})`).join(`\n`)}\n\nTotal duration: **${moment.duration(fullduration, "seconds").format()}**\n\n**Now playing:** ${serverQueue.songs[0].title} (${moment.duration(serverQueue.connection.dispatcher.streamTime + (serverQueue.songs[0].seektime * 1000), "ms").format()} / ${moment.duration(serverQueue.songs[0].duration, "seconds").format()})`, { split: true }).catch(err => console.log(err));
   }
 }
