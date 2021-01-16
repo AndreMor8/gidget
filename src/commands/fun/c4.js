@@ -49,6 +49,7 @@ export default class extends Command {
                 }
                 msg.guild.game.play(parseInt(msg.content) - 1);
                 if (msg.guild.game.gameStatus().gameOver && msg.guild.game.gameStatus().solution) {
+                    console.log(message.guild.game.gameStatus());
                     const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), msg.guild.game);
                     message.channel.send({
                         content: `${message.author.toString()} won this game!`,
@@ -62,6 +63,7 @@ export default class extends Command {
                 }
                 msg.guild.game.playAI(difficulty);
                 if (msg.guild.game.gameStatus().gameOver && msg.guild.game.gameStatus().solution) {
+                    console.log(message.guild.game.gameStatus());
                     const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), msg.guild.game);
                     message.channel.send({
                         content: `${bot.user.toString()} won this game!`,
@@ -91,10 +93,10 @@ export default class extends Command {
                         files: [{ attachment: res, name: "connect4.gif" }],
                         allowedMentions: { parse: ["users"] }
                     });
-                } else if (r === "time") {
+                } else if (r === "idle") {
                     message.channel.send("Waiting time is over (1m)! Bye.");
                 }
-            })
+            });
         } else {
             await message.channel.send(`Hey ${user.toString()}, do you want to play Connect4 with ${message.author.toString()}?\nY for Yes\nN for No.`, { allowedMentions: { parse: ["users"] } });
             const col = message.channel.createMessageCollector((m) => m.author.id === user.id, { time: 60000 });
@@ -147,7 +149,7 @@ export default class extends Command {
                                 files: [{ attachment: res, name: "connect4.gif" }],
                                 allowedMentions: { parse: ["users"] }
                             });
-                        } else if (r === "time") {
+                        } else if (r === "idle") {
                             message.channel.send("Waiting time is over (1m)! Bye.");
                         }
                     })

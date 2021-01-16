@@ -21,7 +21,7 @@ export default class extends Command {
             const matched = args[1].match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
             const ext = args[1].startsWith("<a:") ? ("gif") : ("png");
             url = `https://cdn.discordapp.com/emojis/${matched[2]}.${ext}`;
-        } else if (/tenor\.com\/view/.test(args[1]) || /tenor.com\/.+\.gif/.test(args[1]) || /giphy\.com\/gifs/.test(args[1])) {
+        } else if ((/tenor\.com\/view/.test(args[1]) || /tenor.com\/.+\.gif/.test(args[1]) || /giphy\.com\/gifs/.test(args[1])) && await mediaExtractor.resolve(args[1])) {
             url = await mediaExtractor.resolve(args[1]);
         } else if (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm.test(args[1])) {
             url = args[1];
