@@ -23,14 +23,18 @@ export default async bot => {
   if (doc2) {
     poll(bot);
   }
-  if(bot.guilds.cache.get("402555684849451028")) banners(bot);
+  if (bot.guilds.cache.get("402555684849451028")) banners(bot);
   //Show the inviter on the welcome message. Luckily, fetch invites do not have a rate-limit
-  const guildsToFetch = bot.guilds.cache.filter(e => e.me.hasPermission("MANAGE_GUILD")).array();
-  for (const guild of guildsToFetch) {
-    guild.inviteCount = await guild.getInviteCount().catch(err => {
-      console.log(err);
-      return {};
-    });
+  try {
+    const guildsToFetch = bot.guilds.cache.filter(e => e.me.hasPermission("MANAGE_GUILD")).array();
+    for (const guild of guildsToFetch) {
+      guild.inviteCount = await guild.getInviteCount().catch(err => {
+        console.log(err);
+        return {};
+      });
+    }
+  } catch (err) {
+    console.error(`In shard ${bot.shard.id || bot.shard.ids[0]} there was an error fetching invites.`)
   }
 
   //All internal operations ended
