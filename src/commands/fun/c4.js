@@ -25,7 +25,7 @@ export default class extends Command {
         this.guildonly = true;
     }
     async run(bot, message, args) {
-        if(!args[1]) return message.channel.send(`How to play Connect4 on Discord?\n\n1. Do \`g%c4 <someone>\`. It can be me or someone else.\n2. If you selected someone else, the person will be asked if they want to play. If you selected me then the game starts immediately.\n3. Within the game, they have to mark the column to add a token to it. The winner is the one with 4 tokens aligned together on the table.\n4. If someone no longer wants to play, they can say \`terminate\` to log out.\n5. If no one answers in less than 60 seconds the game is over.\n\nHappy playing! Credits to Lil MARCROCK22#2718 for the logic code and sprites :)`);
+        if (!args[1]) return message.channel.send(`How to play Connect4 on Discord?\n\n1. Do \`g%c4 <someone>\`. It can be me or someone else.\n2. If you selected someone else, the person will be asked if they want to play. If you selected me then the game starts immediately.\n3. Within the game, they have to mark the column to add a token to it. The winner is the one with 4 tokens aligned together on the table.\n4. If someone no longer wants to play, they can say \`terminate\` to log out.\n5. If no one answers in less than 60 seconds the game is over.\n\nHappy playing! Credits to Lil MARCROCK22#2718 for the logic code and sprites :)`);
         if (message.guild.game) return message.channel.send("There is already a game going. Please wait for it to finish.");
         let user = (["hard", "medium", "easy"].includes(args[1].toLowerCase()) ? bot.user : (message.mentions.users.first() || message.guild.members.cache.get(args[1]) || await message.guild.members.fetch(args[1] || "123").catch(() => { }) || message.guild.members.cache.find(e => (e.user?.username === args.slice(1).join(" ")) || (e.user?.tag === args.slice(1).join(" ") || (e.displayName === args.slice(1).join(" "))))));
         if (user?.user) user = user.user;
@@ -41,7 +41,7 @@ export default class extends Command {
                 files: [{ attachment: res, name: "connect4.gif" }],
                 allowedMentions: { parse: ["users"] }
             });
-            const col2 = message.channel.createMessageCollector(msg => (([message.author.id].includes(msg.author.id) && msg.content === "terminate") || (msg.author.c4turn === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), { idle: 60000 });
+            const col2 = message.channel.createMessageCollector(msg => (([message.author.id].includes(msg.author.id) && msg.content === "terminate") || (msg.author.c4turn === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), { idle: 120000 });
             col2.on('collect', async (msg) => {
                 if (msg.content === "terminate") {
                     message.channel.send(`You ended this game! See you soon!`, { allowedMentions: { parse: ["users"] } });
@@ -73,6 +73,12 @@ export default class extends Command {
                     return col2.stop("winner");
                 }
                 else if (msg.guild.game.gameStatus().gameOver) {
+                    const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
+                    message.channel.send({
+                        content: `Great tier!`,
+                        files: [{ attachment: res, name: "connect4.gif" }],
+                        allowedMentions: { parse: ["users"] }
+                    });
                     return col2.stop("tier");
                 }
                 const res = await displayConnectFourBoard(displayBoard(msg.guild.game.ascii()), msg.guild.game);
@@ -85,16 +91,8 @@ export default class extends Command {
             col2.on('end', async (c, r) => {
                 message.guild.game = null;
                 message.author.c4turn = null;
-                if (r === "winner") return;
-                else if (r === "tier") {
-                    const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
-                    message.channel.send({
-                        content: `Great tier!`,
-                        files: [{ attachment: res, name: "connect4.gif" }],
-                        allowedMentions: { parse: ["users"] }
-                    });
-                } else if (r === "idle") {
-                    message.channel.send("Waiting time is over (1m)! Bye.");
+                if (r === "idle") {
+                    message.channel.send("Waiting time is over (2m)! Bye.");
                 }
             });
         } else {
@@ -111,7 +109,7 @@ export default class extends Command {
                         files: [{ attachment: res, name: "connect4.gif" }],
                         allowedMentions: { parse: ["users"] }
                     });
-                    const col2 = message.channel.createMessageCollector(msg => (([user.id, message.author.id].includes(msg.author.id) && msg.content === "terminate") || (msg.author.c4turn === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), { idle: 60000 });
+                    const col2 = message.channel.createMessageCollector(msg => (([user.id, message.author.id].includes(msg.author.id) && msg.content === "terminate") || (msg.author.c4turn === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), { idle: 120000 });
                     col2.on('collect', async (msg) => {
                         if (msg.content === "terminate") {
                             message.channel.send(`${msg.author.toString()} ended this game! See you soon!`, { allowedMentions: { parse: ["users"] } });
@@ -128,6 +126,12 @@ export default class extends Command {
                             return col2.stop("winner");
                         }
                         else if (msg.guild.game.gameStatus().gameOver) {
+                            const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
+                            message.channel.send({
+                                content: `Great tier!`,
+                                files: [{ attachment: res, name: "connect4.gif" }],
+                                allowedMentions: { parse: ["users"] }
+                            });
                             return col2.stop("tier");
                         }
                         const res = await displayConnectFourBoard(displayBoard(msg.guild.game.ascii()), msg.guild.game);
@@ -141,16 +145,8 @@ export default class extends Command {
                         message.guild.game = null;
                         user.c4turn = null;
                         message.author.c4turn = null;
-                        if (r === "winner") return;
-                        else if (r === "tier") {
-                            const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
-                            message.channel.send({
-                                content: `Great tier!`,
-                                files: [{ attachment: res, name: "connect4.gif" }],
-                                allowedMentions: { parse: ["users"] }
-                            });
-                        } else if (r === "idle") {
-                            message.channel.send("Waiting time is over (1m)! Bye.");
+                        if (r === "idle") {
+                            message.channel.send("Waiting time is over (2m)! Bye.");
                         }
                     })
                 } else if (m.content.toLowerCase() === "n") {
