@@ -18,7 +18,7 @@ export default class extends Command {
         const data = await c4top.find({ id: member.id });
 
         if (!data || !data.length)
-            message.reply(`Not data yet.`);
+            return message.reply(`Not data yet.`);
 
         const easy = data.find(item => item.difficulty == 'easy'),
             medium = data.find(item => item.difficulty == 'medium'),
