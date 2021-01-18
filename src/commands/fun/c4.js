@@ -13,6 +13,8 @@ Some inefficient code was changed when examining.
 import c4lib from 'connect4-ai';
 const { Connect4, Connect4AI } = c4lib;
 import { displayConnectFourBoard, displayBoard } from '../../utils/c4.js';
+import c4top from '../../database/models/c4.js';
+
 export default class extends Command {
     constructor(options) {
         super(options);
@@ -70,7 +72,7 @@ export default class extends Command {
                         files: [{ attachment: res, name: "connect4.gif" }],
                         allowedMentions: { parse: ["users"] }
                     });
-                    return col2.stop("winner");
+                    return col2.stop("loser");
                 }
                 else if (msg.guild.game.gameStatus().gameOver) {
                     const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
@@ -91,7 +93,22 @@ export default class extends Command {
             col2.on('end', async (c, r) => {
                 message.guild.game = null;
                 message.author.c4turn = null;
-                if (r === "idle") {
+                let doc = await c4top.findOne({ difficulty, userId: message.author.id });
+                if(!doc) {
+                    doc = await c4top.create({
+                        userId: message.author.id,
+                        difficulty,
+                        cacheName: message.author.username
+                    });
+                }
+                if (r === "winner") {
+                    doc.updateOne({ $inc: { wins: 1 }, $set: { cacheName: message.author.username } }).catch(err => message.channel.send("Something happened when saving wins. " + err));
+                } else if (r === "loser" || r === "stoped") {
+                    doc.updateOne({ $inc: { loses: 1 }, $set: { cacheName: message.author.username } }).catch(err => message.channel.send("Something happened when saving loses. " + err));
+                } else if (r === "tier") {
+                    doc.updateOne({ $set: { cacheName: message.author.username } }).catch(err => message.channel.send("Something happened when saving your username. " + err));
+                } else if (r === "idle") {
+                    await doc.updateOne({ $inc: { loses: 1 }, $set: { cacheName: message.author.username } }).catch(err => message.channel.send("Something happened when saving loses. " + err));
                     message.channel.send("Waiting time is over (2m)! Bye.");
                 }
             });
@@ -141,7 +158,7 @@ export default class extends Command {
                             allowedMentions: { parse: ["users"] }
                         });
                     })
-                    col2.on('end', async (c, r) => {
+                    col2.on('end', (c, r) => {
                         message.guild.game = null;
                         user.c4turn = null;
                         message.author.c4turn = null;
