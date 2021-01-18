@@ -13,9 +13,9 @@ export default class extends Command {
     }
     async run(bot, message, args) {
 
-        const member = message.guild.members.cache.find(a => a.user.username === args.slice(1).join(' ')) || message.guild.members.cache.find(a => a.user.tag === args.slice(1).join(' ')) || message.guild.members.cache.find(a => a.displayName === args.slice(1).join(' ')) || message.guild.members.cache.get(args[1]) || message.mentions.members.first() || await message.guild.members.fetch(args[1]).catch(() => {}) || message.member
+        const member = message.guild.members.cache.find(a => a.user.username === args.slice(1).join(' ')) || message.guild.members.cache.find(a => a.user.tag === args.slice(1).join(' ')) || message.guild.members.cache.find(a => a.displayName === args.slice(1).join(' ')) || message.guild.members.cache.get(args[1]) || message.mentions.members.first() || await message.guild.members.fetch(args[1] || "123").catch(() => {}) || message.member
 
-        const data = await c4top.find({ id: member.user.id });
+        const data = await c4top.find({ id: member.id });
 
         if (!data || !data.length)
             message.reply(`Not data yet.`);
