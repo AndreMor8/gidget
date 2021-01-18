@@ -6,13 +6,13 @@ export default class extends Command {
         this.description = "Stats of the game Connect4";
         this.permissions = {
             user: [0, 0],
-            bot: [0, 32768]
+            bot: [0, 16384]
         };
         this.aliases = [];
     }
     async run(bot, message, args) {
 
-        const member = message.guild.members.cache.find(a => a.user.username === args.join(' ')) || message.guild.members.cache.find(a => a.user.tag === args.join(' ')) || message.guild.members.cache.find(a => a.displayName === args.join(' ')) || message.guild.members.cache.get(args[0]) || message.mentions.members.first() || message.member
+        const member = message.guild.members.cache.find(a => a.user.username === args.slice(1).join(' ')) || message.guild.members.cache.find(a => a.user.tag === args.slice(1).join(' ')) || message.guild.members.cache.find(a => a.displayName === args.slice(1).join(' ')) || message.guild.members.cache.get(args[1]) || message.mentions.members.first() || await message.guild.members.fetch(args[1]).catch(() => {}) || message.member
 
         const data = await require('../../database/models/c4').find({ id: member.user.id });
 
