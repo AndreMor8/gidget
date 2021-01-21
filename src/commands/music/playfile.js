@@ -29,8 +29,7 @@ export default class extends Command {
     const file = message.attachments.first() ? message.attachments.first().url : args[1]
     if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(file)) return message.channel.send("Invalid URL!");
     const res = await fetch(file);
-    if(!res.ok) return message.channel.send("Error: Status code returned " + res.status + " (" + res.statusText + ")");
-    const stream = res.body;
+    if (!res.ok) return message.channel.send("Error: Status code returned " + res.status + " (" + res.statusText + ")");
     let musicVariables = message.guild.musicVariables;
     if (musicVariables) return message.channel.send("I'm doing another operation");
     if (!musicVariables) {
@@ -40,6 +39,7 @@ export default class extends Command {
         loop: false,
         connection: null,
         other: true,
+        readyForLoop: false
       };
 
       musicVariables = message.guild.musicVariables
@@ -53,16 +53,25 @@ export default class extends Command {
       message.channel.stopTyping();
       return message.channel.send("Sorry, but I'm muted. Contact an admin to unmute me.");
     }
-    await playFile(stream, message.guild);
+    await playFile(file, message.guild);
   }
 }
 
 async function playFile(file, guild) {
   const musicVariables = guild.musicVariables;
   try {
-    const stream = ytdl.arbitraryStream(file, { opusEncoded: true });
+    // eslint-disable-next-line no-var
+    var timeout;
+    const pre_stream = await fetch(file);
+    if (!pre_stream.ok) {
+      await musicVariables.voiceChannel.leave();
+      guild.musicVariables = null;
+      return;
+    }
+    const stream = ytdl.arbitraryStream(pre_stream.body, { opusEncoded: true });
     const dispatcher = await musicVariables.connection.play(stream, { type: "opus" });
     dispatcher.on("finish", async () => {
+      clearTimeout(timeout);
       if (!musicVariables.loop) {
         await musicVariables.voiceChannel.leave();
         guild.musicVariables = null;
@@ -71,22 +80,26 @@ async function playFile(file, guild) {
       }
     });
     dispatcher.on("close", async () => {
-      if (!musicVariables.loop) {
-        await musicVariables.voiceChannel.leave();
-        guild.musicVariables = null;
-      } else {
-        playFile(file, guild);
-      }
+      clearTimeout(timeout);
+      await musicVariables.voiceChannel.leave();
+      guild.musicVariables = null;
     });
     dispatcher.on("error", async err => {
+      clearTimeout(timeout);
       await musicVariables.voiceChannel.leave();
       guild.musicVariables = null;
       await musicVariables.textChannel.send("Some error ocurred! Here's a debug: " + err)
     });
-    /*dispatcher.on("start", () => {
-      if (musicVariables.loop) return;
-      musicVariables.textChannel.send("Don't worry if the music starts to sound weird at first. Unfortunately I had to set up a workaround so that the music doesn't stop too soon.\nhttps://github.com/discordjs/discord.js/issues/3362").then(m => { m.suppressEmbeds(); m.delete({ timeout: 10000 }) });
-    });*/
+    dispatcher.on("start", () => {
+      if(!musicVariables.readyForLoop) return;
+      else {
+        timeout = setTimeout(() => {
+          guild.musicVariables.readyForLoop = true;
+        }, 60000);
+      }
+      /*if (musicVariables.loop) return;
+      musicVariables.textChannel.send("Don't worry if the music starts to sound weird at first. Unfortunately I had to set up a workaround so that the music doesn't stop too soon.\nhttps://github.com/discordjs/discord.js/issues/3362").then(m => { m.suppressEmbeds(); m.delete({ timeout: 10000 }) });*/
+    });
   } catch (err) {
     await musicVariables.voiceChannel.leave();
     guild.musicVariables = null;

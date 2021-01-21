@@ -11,6 +11,7 @@ export default class extends Command {
     const musicVariables = message.guild.musicVariables;
     if (!message.member.voice.channel) return message.channel.send("You need to be in a voice channel to loop the music!");
     if (musicVariables && musicVariables.other) {
+      if(!musicVariables.readyForLoop) return message.channel.send("60 seconds must pass before you can loop.")
       if (!musicVariables.loop) {
         musicVariables.loop = true;
         return message.channel.send("🔁 The song repeat has been enabled.");
