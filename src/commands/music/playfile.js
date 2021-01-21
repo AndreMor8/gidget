@@ -91,7 +91,7 @@ async function playFile(file, guild) {
       await musicVariables.textChannel.send("Some error ocurred! Here's a debug: " + err)
     });
     dispatcher.on("start", () => {
-      if(!musicVariables.readyForLoop) return;
+      if(musicVariables.readyForLoop) return;
       else {
         timeout = setTimeout(() => {
           guild.musicVariables.readyForLoop = true;
