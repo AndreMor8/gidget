@@ -80,9 +80,11 @@ async function playFile(file, guild) {
       }
     });
     dispatcher.on("close", async () => {
-      clearTimeout(timeout);
-      await musicVariables.voiceChannel.leave();
-      guild.musicVariables = null;
+      if (!guild.me.voice.channel) {
+        clearTimeout(timeout);
+        await musicVariables.voiceChannel.leave();
+        guild.musicVariables = null;
+      }
     });
     dispatcher.on("error", async err => {
       clearTimeout(timeout);
@@ -91,7 +93,7 @@ async function playFile(file, guild) {
       await musicVariables.textChannel.send("Some error ocurred! Here's a debug: " + err)
     });
     dispatcher.on("start", () => {
-      if(musicVariables.readyForLoop) return;
+      if (musicVariables.readyForLoop) return;
       else {
         timeout = setTimeout(() => {
           guild.musicVariables.readyForLoop = true;
