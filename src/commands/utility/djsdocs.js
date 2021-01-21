@@ -1,4 +1,3 @@
-
 import { MessageEmbed } from "discord.js";
 import fetch from 'node-fetch';
 export default class extends Command {
@@ -15,14 +14,16 @@ export default class extends Command {
     //https://djsdocs.sorta.moe/v2/embed?src=stable&q=Client
     let src = "";
     let cont = "";
-    if (["stable", "master", "commando", "rpc", "akairo", "akairo-master", "collection"].includes(args[1])) {
+    if (["stable", "master", "commando", "rpc", "akairo", "akairo-master", "collection"].includes(args[1]?.toLowerCase())) {
       src = args[1];
       cont = args.slice(2).join(" ");
     } else {
       src = "stable";
       cont = args.slice(1).join(" ");
     }
-    const r = await fetch(`https://djsdocs.sorta.moe/v2/embed?src=${encodeURIComponent(src)}&q=${encodeURIComponent(cont)}`)
+    const page = `https://djsdocs.sorta.moe/v2/embed?src=${encodeURIComponent(src)}&q=${encodeURIComponent(cont)}`;
+    const r = await fetch(page);
+    if(!r.ok) return message.channel.send(`Error: Status code from ${page} returned ${r.status} (${r.statusText})`)
     const res = await r.json();
     if (!res) return message.channel.send(new MessageEmbed().setTitle("Error").setDescription("No results found"));
     if (res.error) return message.channel.send(new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message));
