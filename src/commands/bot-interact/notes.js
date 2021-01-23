@@ -1,13 +1,7 @@
-//Needs update
-import commons from '../../utils/commons.js';
-const { __dirname } = commons(import.meta.url);
-
+//Rewrite
+import notes from '../../database/models/notes.js';
 import Discord from 'discord.js';
-import MeowDB from 'meowdb';
-const notes = new MeowDB({
-  dir: __dirname,
-  name: "notes"
-});
+
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -16,66 +10,54 @@ export default class extends Command {
   async run(bot, message, args) {
     if (args[1] === "add") {
       if (!args[2]) return await message.channel.send("Put some text!");
-      if (notes.exists(message.author.id)) {
-        const arr = notes.get(message.author.id);
-        arr.push(args.slice(2).join(" ").replace(/(\r\n|\n|\r)/gm, " "));
-        notes.set(message.author.id, arr);
-        await message.channel.send("I've added the new note");
-      } else {
-        notes.create(message.author.id, [args.slice(2).join(" ")]);
-        await message.channel.send("I've added the new note");
-      }
+      if ((await notes.find({ userID: { $eq: message.author.id } })).length >= 25) return message.channel.send("You can only have 25 notes.");
+      if(args.slice(2).join(" ").length > 230) return message.channel.send("Only 230 characters per note.");
+      await notes.create({
+        userID: message.author.id,
+        note: args.slice(2).join(" ")
+      });
+      await message.channel.send("I've created your note successfully.");
     } else if (args[1] === "remove") {
-      if (notes.exists(message.author.id)) {
         if (!args[2]) return await message.channel.send("Put the note ID or put `all` to delete all your notes");
         if (args[2] === "all") {
-          notes.delete(message.author.id);
-          await message.channel.send("I've deleted all your notes.");
+          const results = await notes.deleteMany({ userID: { $eq: message.author.id } });
+          await message.channel.send(`I have deleted ${results.n} notes of yours.`);
         } else {
-          const arr = notes.get(message.author.id);
-          const o = parseInt(args[2])
-          if (!o) return await message.channel.send("Invalid ID!")
+          const o = parseInt(args[2]);
+          if (!o) return await message.channel.send("Invalid ID!");
+          const arr = await notes.find({ userID: { $eq: message.author.id } });
           const i = o - 1;
           if (!arr[i]) return await message.channel.send("That note ID does not exist.");
-          arr.splice(i, 1);
-          notes.set(message.author.id, arr);
+          await arr[i].deleteOne();
           await message.channel.send("I've deleted that note");
         }
-      } else return await message.channel.send("You don't have notes");
     } else if (args[1] === "update") {
-      if (notes.exists(message.author.id)) {
         if (!args[2]) return await message.channel.send("Put the note ID you want to update");
         else {
-          const arr = notes.get(message.author.id);
           const o = parseInt(args[2]);
-          if (!o) return await message.channel.send("Invalid ID!")
+          if (!o) return await message.channel.send("Invalid ID!");
+          const arr = await notes.find({ userID: { $eq: message.author.id } });
           const i = o - 1;
           if (!arr[i]) return await message.channel.send("That note ID does not exist.");
           if (!args[3]) return await message.channel.send("Put some text!");
-          arr[i] = args.slice(3).join(" ").replace(/(\r\n|\n|\r)/gm, " ");
-          notes.set(message.author.id, arr);
+          if (args.slice(3).join(" ").length > 230) return message.channel.send("Only 230 characters per note.");
+          await arr[i].updateOne({ $set: { note: args.slice(3).join(" ") } });
           await message.channel.send("I've updated that note");
         }
-      } else return await message.channel.send("You don't have notes");
     } else {
-      if (notes.exists(message.author.id)) {
-        const arr = notes.get(message.author.id);
-        if (!arr[0]) return await message.channel.send("You don't have notes")
-        let text = "";
-        let i = 0;
-        arr.forEach(r => {
-          i++
-          text += i + ". " + r + "\n";
-        })
+        const arr = await notes.find({ userID: { $eq: message.author.id } });
+        if (!arr[0]) return await message.channel.send("You don't have notes");
+
         const embed = new Discord.MessageEmbed()
           .setTitle("Notes from " + message.author.username)
-          .setDescription(text)
           .setColor("BLUE")
-          .setFooter("Powered by MeowDB")
           .setTimestamp();
+
+        for(const i in arr) {
+          embed.addField(`${parseInt(i) + 1}.`, arr[i].note);
+        }
+
         await message.channel.send(embed);
-      }
-      else return await message.channel.send("You don't have notes");
     }
   }
 }
