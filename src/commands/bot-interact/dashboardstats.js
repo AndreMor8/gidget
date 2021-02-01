@@ -11,8 +11,8 @@ export default class extends Command {
         this.aliases = ["dashboard-stats", "dash"]
     }
     async run(bot, message) {
-        const res = await fetch("https://gidget.xyz/stats?format=json");
-        if(!res.ok) return message.channel.send(`\`https://gidget.xyz/stats\` returned ${res.status} (${res.statusText})`);
+        const res = await fetch("https://gidget.xyz/api/stats");
+        if(!res.ok) return message.channel.send(`\`https://gidget.xyz/api/stats\` returned ${res.status} (${res.statusText})`);
         const json = await res.json();
         const embedStats = new MessageEmbed()
             .setTitle("***Dashboard Stats***")
