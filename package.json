@@ -19,7 +19,7 @@
   "homepage": "https://gidget.xyz/",
   "license": "Apache-2.0",
   "dependencies": {
-    "@discordjs/opus": "^0.3.3",
+    "@discordjs/opus": "^0.4.0",
     "@gumlet/gif-resize": "^1.1.1",
     "@sindresorhus/to-milliseconds": "^1.2.0",
     "@vkedwardli/google-translate-api": "github:vkedwardli/google-translate-api",
