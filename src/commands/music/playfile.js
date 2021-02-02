@@ -68,7 +68,7 @@ async function playFile(file, guild) {
       guild.musicVariables = null;
       return;
     }
-    const stream = ytdl.arbitraryStream(pre_stream.body, { opusEncoded: true });
+    const stream = ytdl.arbitraryStream(file, { opusEncoded: true });
     const dispatcher = await musicVariables.connection.play(stream, { type: "opus" });
     dispatcher.on("finish", async () => {
       clearTimeout(timeout);
