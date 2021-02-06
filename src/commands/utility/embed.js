@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+const actual = new Set();
 
 export default class extends Command {
   constructor(options) {
@@ -6,7 +7,9 @@ export default class extends Command {
     this.description = "Create a embed";
     this.aliases = ["createembed"];
   }
+  // eslint-disable-next-line require-await
   async run(bot, message, args) {
+    if(actual.has(message.author.id)) return;
     let i = 0;
     let channel;
     if (message.guild) {
@@ -23,8 +26,9 @@ export default class extends Command {
       channel = message.channel;
     }
     const linkregex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&/\\/=]*)/g;
-    const questions = ["To get out of here put `exit`\nTo omit something say `none` (except in the fields)\n\nTell me the content of the message that will not be in the embed.", "Tell me the embed author", "Tell me a link o upload a attachment for the author image", "Tell me the author link", "Tell me the title", "Tell me the embed link", "Tell me a description", "Tell me a thumbnail link or upload a attachment", "Tell me a image link or upload a attachment", "Tell me a footer text", "Tell me a footer image link or upload a attachment", "Tell me the color to put it on the embed", "Do you want fields?"];
-    await message.channel.send(questions[0]);
+    const questions = ["To get out of here put **`exit`**\nTo omit something say `none` **(except in the fields)**\n\nGet a preview of your embed with `preview`\n\nTell me the content of the message that will not be in the embed.", "Tell me the embed author", "Tell me a link o upload a attachment for the author image", "Tell me the author link", "Tell me the title", "Tell me the embed link", "Tell me a description", "Tell me a thumbnail link or upload a attachment", "Tell me a image link or upload a attachment", "Tell me a footer text", "Tell me a footer image link or upload a attachment", "Tell me the color to put it on the embed", "Do you want fields?\n\n**Respond with `yes` or `no`**"];
+    message.channel.send(questions[0]);
+    actual.add(message.author.id);
     let msgContent = "";
     let author = "";
     let authorimg = "";
@@ -33,13 +37,13 @@ export default class extends Command {
     const embed = new MessageEmbed();
     const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 120000 });
     collector.on("collect", async (m) => {
-      if (m.content === "exit")
+      if (m.content.toLowerCase() === "exit")
         return collector.stop("Exited");
-      if (m.content === "preview")
+      if (m.content.toLowerCase() === "preview")
         return message.channel.send("Here's a preview of your embed", embed).then(e => e.delete({ timeout: 15000 }));
       switch (i) {
         case 0:
-          if (m.content === "none") {
+          if (m.content.toLowerCase() === "none") {
             msgContent = undefined;
           } else {
             msgContent = m.content;
@@ -191,7 +195,7 @@ export default class extends Command {
         case 12:
           if (m.content.toLowerCase() === "yes") {
             collector.stop("field");
-          } else if (m.content.toLowerCase() === "no") {
+          } else if (m.content.toLowerCase() === "no" || m.content.toLowerCase() === "none") {
             collector.stop("Finished");
           } else
             return message.channel.send("Invalid option!");
@@ -199,18 +203,24 @@ export default class extends Command {
       }
     });
     collector.on("end", (collected, reason) => {
-      if (reason === "Exited") {
-        message.channel.send("It seems you don't want an embed.");
-      } else if (reason === "field") {
-        fields(message, embed).then(embed => {
+      if (reason === "field") {
+        return fields(message, embed).then(embed => {
           channel.send(msgContent, embed);
         }).catch(reason => {
           if (reason === "idle") {
             message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
+          } else if (reason === "no") {
+            message.channel.send("It seems you don't want an embed.");
           } else {
             message.channel.send("Collector ended with reason: " + reason).catch(() => { });
           }
+        }).finally(() => {
+          actual.delete(message.author.id);
         });
+      }
+      actual.delete(message.author.id);
+      if (reason === "Exited") {
+        message.channel.send("It seems you don't want an embed.");
       }
       else if (reason === "Finished") {
         channel.send(msgContent, embed);
@@ -228,10 +238,17 @@ function fields(message, embed) {
     let i = 0;
     let title = "";
     let des = "";
-    const arr = ["Tell me the field name", "Tell me the field value", "Want this to be a inline field?", "Want another field?"];
+    message.channel.send("To get out of here put **`exit`**\n\nYou can't skip this with `none`...");
+    const arr = ["Tell me the field name", "Tell me the field value", "Want this to be a inline field?\n\n**Respond with `yes` or `no`**", "Want another field?\n\n**Respond with `yes` or `no`**"];
     message.channel.send(arr[i]);
     const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 120000 });
     collector.on("collect", m => {
+      if(m.content.toLowerCase() === "exit") {
+        return collector.stop("no");
+      }
+      if(!m.content) {
+        return message.channel.send("Don't be crazy, put something on, okay?");
+      }
       switch (i) {
         case 0:
           title = m.content
