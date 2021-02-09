@@ -55,7 +55,7 @@ export default class extends Command {
       const { muteroleid } = msgDocument;
       addMemberRole(muteroleid, member, time, args);
     } else {
-      return message.channel.send('You must first register a role for restrict. Use `restrict role` for set a role');
+      return message.channel.send('You must first register a role for restrict. Use `restrict role` to set a role');
     }
   }
 }
