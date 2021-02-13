@@ -9,7 +9,7 @@ With the level system you can measure user activity and see how active your serv
 You can also give users roles as a reward for reaching a specific level.
 
 {% hint style="danger" %}
-Role delivery by level only works if the bot is given the `MANAGE_ROLES` permission
+Role delivery by level only works if the bot is given the`MANAGE_ROLES` permission
 {% endhint %}
 
 {% hint style="warning" %}
@@ -51,10 +51,6 @@ g%setlevelroles remove 6
 ```
 
 ### Modify a user's level
-
-{% hint style="danger" %}
-The command that refers to this function is not yet documented internally, neither in the help command or another part of the bot.
-{% endhint %}
 
 For that the `g%modifylevel` command is used
 

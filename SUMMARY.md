@@ -18,4 +18,7 @@
   * [Custom responses](features/messages/custom-responses.md)
   * [Message links](features/messages/message-links.md)
   * [Level system](features/messages/level-system.md)
+  * [Bulk delete](features/messages/bulk-delete.md)
+* [Members](features/members/README.md)
+  * [Welcome system](features/members/welcome-system.md)
 
