@@ -1,5 +1,6 @@
 // swiftcord/src/Canvas.js
 import Canvas from "canvas";
+import path from 'path';
 import commons from './commons.js';
 const { __dirname } = commons(import.meta.url);
 let rankCard;
@@ -11,13 +12,13 @@ export default async ({ username, discrim, level, rank, neededXP, currentXP, ava
     if (!currentXP) throw new Error("No currentXP was provided!");
     if (!avatarURL) throw new Error("No avatarURL was provided!");
 
-    Canvas.registerFont(__dirname + "../assets/bold-font.ttf", { family: 'Manrope', weight: "regular", style: "normal" });
-    Canvas.registerFont(__dirname + "../assets/regular-font.ttf", { family: 'Manrope', weight: "bold", style: "normal" });
+    Canvas.registerFont(path.join(__dirname, "/../assets/bold-font.ttf"), { family: 'Manrope', weight: "regular", style: "normal" });
+    Canvas.registerFont(path.join(__dirname, "/../assets/regular-font.ttf"), { family: 'Manrope', weight: "bold", style: "normal" });
 
     const canvas = Canvas.createCanvas(934, 282);
     const ctx = canvas.getContext("2d");
 
-    if(!rankCard) rankCard = await Canvas.loadImage(__dirname + "../assets/rankcard.png");
+    if(!rankCard) rankCard = await Canvas.loadImage(path.join(__dirname, "/../assets/rankcard.png"));
     ctx.drawImage(rankCard, 0, 0, canvas.width, canvas.height);
 
     const font = "Manrope";
