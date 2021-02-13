@@ -1,5 +1,10 @@
 import Discord from 'discord.js';
 import Jimp from 'jimp';
+import path from 'path';
+import commons from '../../utils/commons.js';
+const { __dirname } = commons(import.meta.url);
+let font;
+let meme;
 
 export default class extends Command {
     constructor(options) {
@@ -18,8 +23,8 @@ export default class extends Command {
             if (!arg[1]) return message.channel.send("Usage: `wubmeme [<32>/<64>] <text1> | <text2>`");
             if (arg[0].length > 230 || arg[1].length > 230) return message.channel.send("There's a 230 characters limit.");
             message.channel.startTyping();
-            const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-            const meme = await Jimp.read("https://cdn.glitch.com/9215ce3e-8f9b-4577-9468-e5a34523fe98%2Fwubmeme.png?v=1589439757211");
+            if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
+            if (!meme) meme = await Jimp.read(path.join(__dirname, "../../assets/wubmeme.png"));
             meme.resize(1024, 768);
 
             meme.print(font, 537, 20, {
@@ -49,8 +54,8 @@ async function px64(message, args) {
     if (!arg[1]) return message.channel.send("Usage: `wubmeme [<32>/<64>] <text1> | <text2>`");
     if (arg[0].length > 70 || arg[1].length > 70) return message.channel.send("There's a 70 characters limit. Put `32` before the text to expand the limit to 230.");
     message.channel.startTyping();
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
-    const meme = await Jimp.read("https://cdn.glitch.com/9215ce3e-8f9b-4577-9468-e5a34523fe98%2Fwubmeme.png?v=1589439757211");
+    if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
+    if (!meme) meme = await Jimp.read(path.join(__dirname, "../../assets/wubmeme.png"));
     meme.resize(1024, 768);
 
     meme.print(font, 526, 15, {

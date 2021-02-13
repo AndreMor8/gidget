@@ -125,7 +125,7 @@ function render(sprite, character, frames, size, delay) {
 }
 
 export default async function (toconvert, dy = g.delay) {
-  if(!sprite) sprite = await Canvas.loadImage(path.join(__dirname, "/sprite.png"));
+  if(!sprite) sprite = await Canvas.loadImage(path.join(__dirname, "../assets/sprite.png"));
   const tosend = await render(sprite, toconvert, [0, 1, 2, 3, 4].map(getFrame), SIZE, dy);
   return tosend;
 }

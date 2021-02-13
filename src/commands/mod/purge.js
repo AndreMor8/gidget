@@ -1,4 +1,4 @@
-
+import safe from 'safe-regex';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -12,7 +12,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     if (!args[1] || (isNaN(args[1]) && !args[2]))
-      return message.reply('how many messages should I delete? Specify it.');
+      return message.reply('Usage: `purge [mode] <limit> [<args>]`');
     const number = args[2] ? parseInt(args[2]) : parseInt(args[1]);
   
     if (!isNaN(number) && (number <= 100) && (number >= 1)) {
@@ -62,6 +62,7 @@ export default class extends Command {
         }
           break;
         case 'with': {
+          if(!safe(args.slice(3).join(" "))) return message.channel.send("This is not a valid or safe regex.");
           const messages = await message.channel.messages.fetch({
             limit: number
           }, false);

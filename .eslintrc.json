@@ -5,10 +5,8 @@
         "node": true
     },
     "globals": {
-        "Command": "readonly",
-        "botIntl": "writable",
-        "botVersion": "writable",
-        "browser": "readonly"
+        "Command": "writable",
+        "gc": "readonly"
     },
     "extends": ["eslint:recommended"], 
     "parserOptions": {

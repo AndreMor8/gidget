@@ -10,7 +10,7 @@ export default class extends Command {
       .setTitle("Invite links!")
       .setColor("#848484")
       .setFooter("Requested by " + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
-      .addField("Invite the bot to your server", await bot.generateInvite() + "\nThanks for adding it!")
+      .addField("Invite the bot to your server", await bot.generateInvite() + "\nThanks for adding me!")
       .addField("Support server", "https://discord.gg/KDy4gJ7")
       .addField("Wow Wow Discord", "https://discord.gg/5qx9ZcV\nIf you are a fan of the Wubbzy series, join this server! It's managed by 4 big fans of the series :)"));
   }

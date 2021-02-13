@@ -1,4 +1,4 @@
-import data from './assets/sites.json';
+import data from '../assets/sites.json';
 
 // methods to be exported
 export function checkCleanUrl(urlFromReq) {

@@ -14,12 +14,11 @@ export default class extends Command {
     async run(bot, message) {
         const servers = (await bot.shard.fetchClientValues('guilds.cache.size')).reduce((acc, guildCount) => acc + guildCount, 0);
         const users = (await bot.shard.fetchClientValues('users.cache.size')).reduce((acc, userCount) => acc + userCount, 0);
-        //let servers = bot.guilds.cache.size;
-        //let users = bot.users.cache.size;
+        //const servers = bot.guilds.cache.size;
+        //const users = bot.users.cache.size;
         const serverEmbed = new MessageEmbed()
             .setDescription("At the moment I'm in **" + servers + "** servers and with **" + users + "** cached online users.", true)
-            .setColor(0xf7a7ff)
-            .setFooter('Requested by ' + message.author.username, message.author.displayAvatarURL());
+            .setColor(0xfffff9)
         await message.channel.send(serverEmbed)
     }
 }

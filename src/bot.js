@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 //Database
 import database from "./database/database.js";
 
@@ -27,13 +29,13 @@ if(process.env.EXTERNAL === "yes") {
 }
 
 //Global definitions
-global.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
-global.botVersion = "0.99 RC";
+bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
+bot.botVersion = "0.99 RC";
 (async () => {
   //Database
   if (process.argv[2] !== "ci") await database();
   //Commands
-  await registerCommands("../commands");
+  await registerCommands(bot, "../commands");
   //Cache system
   bot.cachedMessageReactions = new Discord.Collection();
   bot.rrcache = new Discord.Collection();
@@ -44,6 +46,7 @@ global.botVersion = "0.99 RC";
   //Login with Discord
   if (process.argv[2] !== "ci") {
     await bot.login();
+    if(global.gc) gc();
   } else process.exit();
 })().catch(err => {
   console.log(err);

@@ -31,7 +31,8 @@ export default async (bot, member) => {
 
   if (welcome) {
     let inviterMention = "Unknown";
-    let inviterTag = "Unknown"
+    let inviterTag = "Unknown";
+    let inviterId = "Unknown";
     try {
       if (((/%INVITER%/gmi.test(welcome.text)) || (/%INVITER%/gmi.test(welcome.dmmessage))) && member.guild.me.hasPermission("MANAGE_GUILD")) {
         const invitesBefore = member.guild.inviteCount
@@ -39,6 +40,7 @@ export default async (bot, member) => {
         for (const inviter in invitesAfter) {
           if (invitesBefore[inviter] === (invitesAfter[inviter] - 1)) {
             inviterMention = (inviter === member.guild.id) ? "System" : ("<@!" + inviter + ">");
+            inviterId = inviter;
             if (inviter !== member.guild.id) {
               const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(() => { });
               if (t) inviterTag = t;
@@ -58,12 +60,12 @@ export default async (bot, member) => {
       if (welcome.enabled && welcome.text) {
         const channel = member.guild.channels.cache.get(welcome.channelID);
         if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
-          const finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag);
+          const finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
           await channel.send(finalText || "?").catch(() => { });
         }
       }
       if (welcome.dmenabled && welcome.dmtext) {
-        const finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag);
+        const finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
         await member.send(finalText || "?").catch(() => { });
       }
     }
@@ -95,5 +97,5 @@ export default async (bot, member) => {
     )
     .setFooter("Thanks for joining!")
     .setTimestamp();
-  await member.send(embed).catch(() => { });
+  await member.send(embed).catch(() => {});
 };

@@ -158,7 +158,7 @@ export default class extends Command {
     }
     if (server instanceof Discord.Guild) {
       embed.addField("Server Owner", (server.owner.partial ? (await server.owner.fetch()).user.tag : server.owner.user.tag) + "\n" + server.owner.toString(), true)
-        .addField("Server Create Date", global.botIntl.format(server.createdAt), true)
+        .addField("Server Create Date", bot.botIntl.format(server.createdAt), true)
         .addField("Server Region", server.region, true)
         .addField("Verification Level", server.verificationLevel, true)
       if (server.rulesChannel) {

@@ -28,7 +28,7 @@ export default class extends Command {
             .addField("Name", presence.name, true)
             .addField("Type", presence.type, true);
         if (!isNaN(presence.createdTimestamp) && presence.createdAt) {
-            embed.addField("Created At", global.botIntl.format(presence.createdAt), true)
+            embed.addField("Created At", bot.botIntl.format(presence.createdAt), true)
         }
         if (presence.applicationID) {
             embed.addField("Application ID", presence.applicationID, true)

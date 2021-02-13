@@ -17,7 +17,7 @@ export default class extends Command {
         }
     }
     async run(bot, message, args) {
-        if (!sprite) sprite = await Canvas.loadImage(path.join(__dirname + "/../../utils/wubphone.png"));
+        if (!sprite) sprite = await Canvas.loadImage(path.join(__dirname + "/../../assets/wubphone.png"));
         const mentions = message.mentions.users.first(4);
         const source1 = mentions[0] || bot.users.cache.get(args[1]) || await bot.users.fetch(args[1]).catch(() => { }) || message.author;
         const source2 = mentions[1] || bot.users.cache.get(args[2]) || await bot.users.fetch(args[2]).catch(() => { });

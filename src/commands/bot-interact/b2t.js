@@ -5,6 +5,7 @@ export default class extends Command {
         this.description = "Convert binary to common text";
     }
     async run(bot, message, args) {
+        if(!args[1]) return message.channel.send("Usage: `b2t <binary>`");
         const newBin = args.slice(1);
         const binCode = [];
         for (let i = 0; i < newBin.length; i++) {

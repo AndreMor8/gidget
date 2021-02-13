@@ -54,7 +54,7 @@ export default class extends Command {
           if (number <= i && number >= 1) {
             if (!msg.deleted) await msg.delete();
             collector.stop("Ok!");
-            global.botCommands.get("play").run(bot, message, ["play", videos[number - 1].url]);
+            bot.commands.get("play").run(bot, message, ["play", videos[number - 1].url]);
           } else if (i < number) {
             message.channel.send("There are only " + i + " results...");
           } else {

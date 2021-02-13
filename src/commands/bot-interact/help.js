@@ -1,4 +1,4 @@
-import def from "../../utils/definitions.json";
+import def from "../../assets/definitions.json";
 import Discord from "discord.js";
 const links = `[Bot's page (in progress)](https://gidget.xyz/) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://andremor.ml) | [Discord.js documentation](https://discord.js.org/#/docs/)`;
 const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | [top.gg](https://top.gg/bot/694306281736896573) | [DiscordBotList](https://discordbotlist.com/bots/gidget) | [Discord Boats](https://discord.boats/bot/694306281736896573)`;
@@ -13,7 +13,7 @@ export default class extends Command {
     }
   }
   async run(bot, message, args) {
-    const c = global.botCommands.clone();
+    const c = bot.commands.clone();
     const arr = []
     for (const o of Object.entries(def)) {
       arr.push({
@@ -39,8 +39,8 @@ export default class extends Command {
         }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0])
         .setTimestamp()
       return message.channel.send(embed)
-    } else if (args[1] && (global.botCommands.get(args[1].toLowerCase()) || global.botCommands.find(c => c.aliases.includes(args[1].toLowerCase())))) {
-      const command = global.botCommands.get(args[1].toLowerCase()) || global.botCommands.find(c => c.aliases.includes(args[1].toLowerCase()))
+    } else if (args[1] && (bot.commands.get(args[1].toLowerCase()) || bot.commands.find(c => c.aliases.includes(args[1].toLowerCase())))) {
+      const command = bot.commands.get(args[1].toLowerCase()) || bot.commands.find(c => c.aliases.includes(args[1].toLowerCase()))
       if (command.dev || command.owner) return message.channel.send("Exclusive command for the owner or developers");
       let alias = "Without alias";
       if (command.aliases.length !== 0) {

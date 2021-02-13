@@ -8,7 +8,6 @@ export default class extends Command {
       }
   }
   async run(bot, message, args) {
-    // Check if you can delete the message
     if (message.deletable) await message.delete();
     if (!args[1]) return message.reply(`Nothing to say?`).then(m => m.delete({ timeout: 5000 }));
     await message.channel.send(args.slice(1).join(" "));

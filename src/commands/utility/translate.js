@@ -24,7 +24,7 @@ export default class extends Command {
         }
 
         const reallang = getCode(lang);
-        if (!reallang) return message.channel.send("Invalid language!\nhttps://github.com/AndreMor955/gidget/blob/master/src/utils/languages.js")
+        if (!reallang) return message.channel.send("Invalid language!\nhttps://github.com/vkedwardli/google-translate-api/blob/master/languages.js")
 
         //Get text
         const text = args.slice(1).join(" ");

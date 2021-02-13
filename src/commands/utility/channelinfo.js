@@ -27,7 +27,7 @@ export default class extends Command {
       .addField("ID", channel.id, true)
       .addField("Type", obj[channel.type], true)
       .addField("Client things", "Can I see it?: " + (channel.viewable ? "Yes" : "No") + ("\nCan I manage/edit it?: " + (channel.manageable ? "Yes" : "No")) + (channel.type === "voice" ? (("\nCan I join it?: " + (channel.joinable ? "Yes" : "No")) + ("\nCan I speak in it?: " + ((channel.speakable) ? "Yes" : "No"))) : ""), true)
-      .addField("Created At", global.botIntl.format(channel.createdAt), true);
+      .addField("Created At", bot.botIntl.format(channel.createdAt), true);
     if (channel.parent) {
       embed.addField("Parent", channel.parent.name + "\n`" + channel.parentID + "`", true);
       embed.addField("Synchronized with the channel's parent?", channel.permissionsLocked ? "Yes" : "No", true);
@@ -39,7 +39,7 @@ export default class extends Command {
         embed.addField("Last message", channel.lastMessage ? (`ID: ${channel.lastMessage.id}\nURL: [Click here](${channel.lastMessage.url})`) : (channel.lastMessageID ? (`ID: ${channel.lastMessageID}\nURL: [Click here](https://discordapp.com/channels/${message.guild.id}/${channel.id}/${channel.lastMessageID})`) : "Without fetch about that"), true)
           .addField("Number of members who can see it", channel.members.size, true)
           .addField("Pinned messages", channel.permissionsFor(bot.user.id).has("VIEW_CHANNEL") ? (await channel.messages.fetchPinned(false)).size : "*Without permissions for see that*", true)
-          .addField("Last pin at", channel.lastPinAt ? global.botIntl.format(channel.lastPinAt) : "None", true)
+          .addField("Last pin at", channel.lastPinAt ? bot.botIntl.format(channel.lastPinAt) : "None", true)
           .addField("NSFW?", channel.nsfw ? "Yes" : "No", true);
         if (channel.type !== "news") {
           embed.addField("Slowmode", channel.rateLimitPerUser + " seconds", true);

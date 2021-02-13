@@ -1,6 +1,10 @@
+import path from 'path';
+import commons from '../../utils/commons.js';
+const { __dirname } = commons(import.meta.url);
 import Discord from 'discord.js';
 import Jimp from 'jimp';
-
+let font;
+let meme;
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -29,10 +33,8 @@ async function px32(message, args) {
   if (args.join(" ").length > 80)
     return message.channel.send("There's a 80 characters limit.");
   message.channel.startTyping();
-  const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-  const meme = await Jimp.read(
-    "https://cdn.glitch.com/9215ce3e-8f9b-4577-9468-e5a34523fe98%2Fwalden-says-5d018d79327df.png?v=1590048195907"
-  );
+  if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
+  if (!meme) meme = await Jimp.read(path.join(__dirname, "../../assets/walden-says.png"));
   const pre_text = args.join(" ").split("");
   let realtext = "";
   let post_text = "";
@@ -69,10 +71,8 @@ async function px64(message, args) {
   if (args.join(" ").length > 16)
     return message.channel.send("There's a 16 characters limit.");
   message.channel.startTyping();
-  const font = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
-  const meme = await Jimp.read(
-    "https://cdn.glitch.com/9215ce3e-8f9b-4577-9468-e5a34523fe98%2Fwalden-says-5d018d79327df.png?v=1590048195907"
-  );
+  if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
+  if (!meme) meme = await Jimp.read(path.join(__dirname, "../../assets/walden-says.png"));
   const pre_text = args.join(" ").split("");
   let realtext = "";
   let post_text = "";

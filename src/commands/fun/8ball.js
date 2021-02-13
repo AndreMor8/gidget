@@ -11,9 +11,9 @@ export default class extends Command {
     }
   }
   async run(bot, message, args) {
-    if (!args[1]) return await message.reply("Please enter a full question with 2 or more words!");
+    if (!args[1]) return await message.reply("Please enter a full question!");
 
-    const replies = [
+    const result = [
       "Yes",
       "No",
       "I don't know",
@@ -24,16 +24,14 @@ export default class extends Command {
       "You tell me",
       "Without a doubt",
       "Cannot predict now",
-    ];
-
-    const result = Math.floor(Math.random() * replies.length);
+    ][Math.floor(Math.random() * 10)];
     const question = args.slice(1).join(" ");
 
     const ballembed = new Discord.MessageEmbed()
       .setAuthor(message.author.username)
       .setColor("RANDOM")
       .addField("Question", question)
-      .addField("Answer", replies[result]);
+      .addField("Answer", result);
 
     await message.channel.send(ballembed);
   }

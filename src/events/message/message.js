@@ -11,7 +11,7 @@ setInterval(() => {
   internalCooldown.clear();
 }, 90000)
 //Start message event
-export default async (bot, message = new Discord.Message(), nolevel = false) => {
+export default async (bot, message, nolevel = false) => {
   if (message.author.bot) return;
   if (message.guild && !message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return;
   try {
@@ -39,7 +39,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
       //Arguments with spaces
       const args = message.content.substring(PREFIX.length).trimEnd().split(/ +/g);
       if (!args[0]) return;
-      const command = global.botCommands.get(args[0].toLowerCase()) || global.botCommands.find(a => a.aliases.includes(args[0].toLowerCase()));
+      const command = bot.commands.get(args[0].toLowerCase()) || bot.commands.find(a => a.aliases.includes(args[0].toLowerCase()));
       if (command) {
         if (command.owner && message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
         if (command.dev && message.author.id !== "577000793094488085") {
@@ -68,6 +68,7 @@ export default async (bot, message = new Discord.Message(), nolevel = false) => 
           await message.channel.send("Something happened! Here's a debug: " + err).catch(() => { });
         } finally {
           internalCooldown.delete(message.author.id);
+          message.channel.stopTyping();
         }
       }
     } else {

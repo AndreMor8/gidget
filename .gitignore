@@ -1,11 +1,7 @@
 node_modules/
 .env
 package-lock.json
-prefixes.json
-notes.json
 .glitch-assets
 watch.json
-src/commands/bot-interact/notes.json
 Procfile
-cookies.txt
 .vscode

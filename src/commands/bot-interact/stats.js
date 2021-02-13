@@ -15,6 +15,7 @@ export default class extends Command {
     };
   }
   async run(bot, message) {
+    message.channel.startTyping();
     const percent = await usagePercent();
     const mem = process.memoryUsage();
     const memoryU = `Resident Set: ${memory(mem.rss)}`;
@@ -22,7 +23,7 @@ export default class extends Command {
     const embedStats = new Discord.MessageEmbed()
       .setTitle("***Stats***")
       .setColor("RANDOM")
-      .setDescription(`Gidget is alive! - Version ${global.botVersion} from shard ${bot.shard.id || bot.shard.ids[0]}`)
+      .setDescription(`Gidget is alive! - Version ${bot.botVersion} from shard ${bot.shard.id || bot.shard.ids[0]}`)
       .addField("• RAM", `${memory(os.totalmem() - os.freemem(), false)} / ${memory(os.totalmem())}`, true)
       .addField(`• Bot RAM usage (shard ${bot.shard.id || bot.shard.ids[0]})`, memoryU, true)
       .addField("• Uptime ", `${moment.duration(Date.now() - bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, true)
@@ -43,7 +44,8 @@ export default class extends Command {
       .addField("• Platform", `\`\`${os.platform()}\`\``, true)
       .setFooter("Gidget stats");
 
-    await message.channel.send(embedStats)
+    await message.channel.send(embedStats);
+    message.channel.stopTyping();
   }
 }
 

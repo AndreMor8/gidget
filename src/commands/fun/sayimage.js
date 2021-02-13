@@ -1,17 +1,16 @@
-//Someone asked to put this command...
-
 import Discord from 'discord.js';
 import algo from 'discord-emoji-canvas';
 const { Canvas, fillWithEmoji } = algo;
 export default class extends Command {
     constructor(options) {
         super(options);
-        this.description = ":)";
+        this.description = "Fake quote";
         this.secret = true;
         this.permissions = {
             user: [0, 0],
             bot: [0, 32768]
-        }
+        };
+        this.aliases = ["fakequote"];
     }
     async run(bot, message, args) {
         const miembro = message.mentions.members.first()
@@ -40,8 +39,8 @@ export default class extends Command {
 
         ctx.lineWidth = .3
         ctx.font = "14px Sans Serif"
-        ctx.fillStyle = miembro.roles.color.hexColor || '#000'
-        ctx.strokeStyle = miembro.roles.color.hexColor || '#000'
+        ctx.fillStyle = miembro.roles.color?.hexColor || '#FFF'
+        ctx.strokeStyle = miembro.roles.color?.hexColor || '#FFF'
         ctx.strokeText(miembro.nickname || miembro.user.username, 66, 27)
         ctx.fillText(miembro.nickname || miembro.user.username, 66, 27)
 

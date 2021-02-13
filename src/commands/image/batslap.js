@@ -1,10 +1,13 @@
+import path from 'path';
+import commons from '../../utils/commons.js';
+const { __dirname } = commons(import.meta.url);
 import Discord from "discord.js";
 import Canvas from "canvas";
-
+let background;
 export default class extends Command {
     constructor(options) {
         super(options)
-        this.description = "The classic meme of batman and robin";
+        this.description = "The classic meme of Batman and Robin";
         this.permissions = {
             user: [0, 0],
             bot: [0, 32768]
@@ -15,7 +18,7 @@ export default class extends Command {
         const canvas = Canvas.createCanvas(770, 433);
         const ctx = canvas.getContext('2d');
 
-        const background = await Canvas.loadImage('https://tvwriter.com/wp-content/uploads/2018/05/Batman-Slaps-Robin.jpg');
+        if (!background) background = await Canvas.loadImage(path.join(__dirname, "../../assets/Batman-Slaps-Robin.jpg"));
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
         const avatar = await Canvas.loadImage(message.author.displayAvatarURL({ format: 'png' }));
@@ -28,10 +31,5 @@ export default class extends Command {
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'btslap.png');
 
         message.channel.send(attachment);
-
-
-
-
     }
-
 }

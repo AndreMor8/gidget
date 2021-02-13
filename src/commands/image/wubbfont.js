@@ -20,7 +20,7 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Put something");
     if (args.slice(1).join(" ").length > 120) return message.channel.send("There's a 120 characters limit.");
     message.channel.startTyping();
-    if (!font) font = await Jimp.loadFont(path.join(__dirname, "/../../utils/", "font.fnt"));
+    if (!font) font = await Jimp.loadFont(path.join(__dirname, "/../../assets/", "font.fnt"));
     const image = new Jimp(WIDTH, HEIGHT);
     image.print(font, 0, 0, {
       text: getWellText(args.slice(1).join(" "), 19, 120),

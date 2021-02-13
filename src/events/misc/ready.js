@@ -39,5 +39,5 @@ export default async bot => {
 
   //All internal operations ended
   presence(bot);
-  console.log(`Gidget is alive! Version ${global.botVersion} from shard ${bot.shard.id || bot.shard.ids[0]}`);
+  console.log(`Gidget is alive! Version ${bot.botVersion} from shard ${bot.shard.id || bot.shard.ids[0]}`);
 };

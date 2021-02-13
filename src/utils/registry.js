@@ -17,17 +17,17 @@ class ErrorCommand extends Command {
         await message.channel.send("That command is not loaded due to error: " + this.error);
     }
 }
-export async function registerCommands(dir) {
-    if (!global.botCommands) global.botCommands = new Collection();
+export async function registerCommands(bot, dir) {
+    if (!bot.commands) bot.commands = new Collection();
     if (!global.Command) global.Command = (await import("file:///" + path.join(__dirname, "command.js"))).default;
-    const arr = dir.split("/");
+    const arr = dir.split(process.platform === "win32" ? "\\" : "/");
     const category = arr[arr.length - 1];
     const files = await fs.readdir(path.join(__dirname, dir));
     // Loop through each file.
     for (const file of files) {
         const stat = await fs.lstat(path.join(__dirname, dir, file));
         if (stat.isDirectory()) // If file is a directory, recursive call recurDir
-            await registerCommands(path.join(dir, file));
+            await registerCommands(bot, path.join(dir, file));
         else {
             // Check if file is a .js file.
             if (file.endsWith(".js")) {
@@ -35,17 +35,18 @@ export async function registerCommands(dir) {
                 try {
                     const cmdModule = await import("file:///" + path.join(__dirname, dir, file));
                     const cmdClass = new cmdModule.default({ name: cmdName, category })
-                    global.botCommands.set(cmdName, cmdClass);
+                    bot.commands.set(cmdName, cmdClass);
                     if (process.argv[2] === "ci") console.log(`Command ${cmdName} loaded =D`);
                 }
                 catch (err) {
                     process.exitCode = 1;
                     console.error("There was an error initializing the " + cmdName + " command\n", err);
-                    global.botCommands.set(cmdName, new ErrorCommand({ name: cmdName, category, err }));
+                    bot.commands.set(cmdName, new ErrorCommand({ name: cmdName, category, err }));
                 }
             }
         }
     }
+    global.Command = null;
 }
 export async function registerEvents(bot, dir) {
     const files = await fs.readdir(path.join(__dirname, dir));

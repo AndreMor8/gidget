@@ -3,7 +3,7 @@ import googleIt from 'google-it';
 import b from "../../utils/badwords.js";
 const badwords = new b();
 badwords.setOptions({ whitelist: ["crap"] });
-import { checkCleanUrl } from '../../utils/clean-url/index.js';
+import { checkCleanUrl } from '../../utils/clean-url.js';
 export default class extends Command {
   constructor(options) {
     super(options)

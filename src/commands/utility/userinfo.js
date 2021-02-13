@@ -72,7 +72,7 @@ export default class extends Command {
     let finaltext = "";
     if (!user.bot) {
       if (thing.value < 0) {
-        finaltext = "[*I don't know*](https://gidget.xyz/auth/)";
+        finaltext = "[*I don't know*](https://gidget.xyz/api/auth/)";
       } else if (thing.type === "db") {
         finaltext = premiumtext[thing.value] + " (DB)";
       } else {
@@ -190,13 +190,13 @@ export default class extends Command {
           .addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
           .addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");
         if (!user.bot) {
-          embed.addField("Boosting?", member.premiumSince ? `Yes, since ${global.botIntl.format(member.premiumSince)}` : "No");
+          embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No");
         }
         embed.addField(
           `Joined ${message.guild.name} at`,
-          global.botIntl.format(member.joinedAt)
+          bot.botIntl.format(member.joinedAt)
         )
-          .addField("Joined Discord At", global.botIntl.format(user.createdAt))
+          .addField("Joined Discord At", bot.botIntl.format(user.createdAt))
           .addField(
             "Roles",
             `${member.roles.cache
@@ -223,7 +223,7 @@ export default class extends Command {
           )
           .addField(
             "Joined Discord At",
-            global.botIntl.format(user.createdAt)
+            bot.botIntl.format(user.createdAt)
           );
         await message.channel.send(embed);
       }
@@ -245,7 +245,7 @@ export default class extends Command {
         )
         .addField(
           "Joined Discord At",
-          global.botIntl.format(user.createdAt)
+          bot.botIntl.format(user.createdAt)
         );
       await message.channel.send(embed);
     }
