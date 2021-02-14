@@ -3,7 +3,6 @@ import qrenc from 'qr';
 import fetch from 'node-fetch';
 import Canvas from 'canvas';
 import { MessageAttachment, Util } from "discord.js";
-
 import jsQR from 'jsqr';
 
 export default class extends Command {
@@ -78,9 +77,6 @@ export default class extends Command {
   }
 }
 
-/**
- * @param url
- */
 async function resize(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error("Status code: " + res.status);

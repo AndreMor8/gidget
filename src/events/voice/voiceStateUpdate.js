@@ -59,7 +59,7 @@ export default async (bot, oldState, newState) => {
     musicVariables.i = 1;
     musicVariables.time = setTimeout(async () => {
       if (!serverQueue) return;
-      if (serverQueue.textChannel) await serverQueue.textChannel.send("Queue deleted")
+      if (serverQueue.textChannel) await serverQueue.textChannel.send("Queue deleted").catch(() => {});
       if (serverQueue.voiceChannel) await serverQueue.voiceChannel.leave();
       newState.guild.queue = null;
       newState.guild.musicVariables = null;
@@ -68,11 +68,11 @@ export default async (bot, oldState, newState) => {
     if (serverQueue.voiceChannel.members.filter(e => !e.user.bot).size < 1 && musicVariables.i === 0) {
       serverQueue.playing = false;
       serverQueue.connection.dispatcher.pause();
-      serverQueue.textChannel.send("There's no one on the voice channel! I'm going to remove the queue in 60 seconds!")
+      serverQueue.textChannel.send("There's no one on the voice channel! I'm going to remove the queue in 60 seconds!").catch(() => {});
       musicVariables.i = 1;
       musicVariables.time = setTimeout(async () => {
         if (!serverQueue) return;
-        if (serverQueue.textChannel) await serverQueue.textChannel.send("Queue deleted")
+        if (serverQueue.textChannel) await serverQueue.textChannel.send("Queue deleted").catch(() => {});
         if (serverQueue.voiceChannel) await serverQueue.voiceChannel.leave();
         newState.guild.queue = null;
         newState.guild.musicVariables = null;
@@ -82,18 +82,18 @@ export default async (bot, oldState, newState) => {
       clearTimeout(musicVariables.time)
       serverQueue.playing = true;
       serverQueue.connection.dispatcher.resume();
-      serverQueue.textChannel.send("Okay, I'm back to playing the music.")
+      serverQueue.textChannel.send("Okay, I'm back to playing the music.").catch(() => {});
       musicVariables.i = 0;
     }
     if (newState.member.id === bot.user.id) {
       if (newState.mute && musicVariables.o === 0) {
         serverQueue.playing = false;
         serverQueue.connection.dispatcher.pause();
-        serverQueue.textChannel.send("An admin has muted me!")
+        serverQueue.textChannel.send("An admin has muted me!").catch(() => {});
         musicVariables.o = 1;
         musicVariables.time1 = setTimeout(async () => {
           if (!serverQueue) return;
-          if (serverQueue.textChannel) await serverQueue.textChannel.send("Queue deleted")
+          if (serverQueue.textChannel) await serverQueue.textChannel.send("Queue deleted").catch(() => {});
           if (serverQueue.voiceChannel) await serverQueue.voiceChannel.leave();
           newState.guild.queue = null;
           newState.guild.musicVariables = null;
@@ -103,7 +103,7 @@ export default async (bot, oldState, newState) => {
         if (!serverQueue) return;
         serverQueue.playing = true;
         if (serverQueue.connection && serverQueue.connection.dispatcher) serverQueue.connection.dispatcher.resume();
-        if (serverQueue.textChannel) await serverQueue.textChannel.send("Okay, I'm back to playing the music.")
+        if (serverQueue.textChannel) await serverQueue.textChannel.send("Okay, I'm back to playing the music.").catch(() => {});
         musicVariables.o = 0;
       }
     }
