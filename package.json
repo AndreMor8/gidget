@@ -24,7 +24,7 @@
     "@sindresorhus/to-milliseconds": "^1.2.0",
     "@vkedwardli/google-translate-api": "github:vkedwardli/google-translate-api",
     "badwords.js": "^0.1.6",
-    "boats.js": "^2.5.0",
+    "boats.js": "^2.5.1",
     "canvas": "^2.6.1",
     "cheerio": "^1.0.0-rc.5",
     "connect4-ai": "^0.1.3",
