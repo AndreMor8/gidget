@@ -37,7 +37,7 @@ export default class extends Command {
             if(c < 0 || c > 8) return;
             message.author.mine.CheckCell(c, f);
             to_edit.edit(`__Minesweeper Game__\n\n${showToUser(message.author.mine.board, message.author.mine.mask)}`);
-            m.delete();
+            if(message.deletable) m.delete().catch(() => {});
         });
         col.on("end", (c, r) => {
             if(r === "win") message.channel.send("You have won the minesweeper game :)");
