@@ -9,12 +9,13 @@ export default class extends Command {
     this.description = "Help command";
     this.permissions = {
       user: [0, 0],
-      bot: [0, 16384]
+      bot: [0, 0]
     }
   }
+  // eslint-disable-next-line require-await
   async run(bot, message, args) {
-    const c = bot.commands.clone();
-    const arr = []
+    const c = bot.commands;
+    const arr = [];
     for (const o of Object.entries(def)) {
       arr.push({
         catname: o[0],
@@ -26,19 +27,29 @@ export default class extends Command {
     }
     if (args[1] && arr.find(d => d.catname === args[1])) {
       const g = arr.find(d => d.catname === args[1]);
-      const embed = new Discord.MessageEmbed()
-        .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
-        .setColor("#FF8000")
-        .addField('Links', links)
-        .addField("Bot lists", botlists)
-        .setTitle(g.cat + " (" + g.commands.length + " commands)")
-        .setDescription(Discord.Util.splitMessage(g.commands.filter(s => {
-          if (s.secret) return false
-          if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false
-          return true
-        }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0])
-        .setTimestamp()
-      return message.channel.send(embed)
+      if (checkEmbed(message.channel)) {
+        const embed = new Discord.MessageEmbed()
+          .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
+          .setColor("#FF8000")
+          .addField('Links', links)
+          .addField("Bot lists", botlists)
+          .setTitle(g.cat + " (" + g.commands.length + " commands)")
+          .setDescription(Discord.Util.splitMessage(g.commands.filter(s => {
+            if (s.secret) return false
+            if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false
+            return true
+          }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0])
+          .setTimestamp()
+        message.channel.send(embed);
+      } else {
+        const str = `__**${g.cat + " (" + g.commands.length + " commands)"}**__\n\n${Discord.Util.splitMessage(g.commands.filter(s => {
+          if (s.secret) return false;
+          if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false;
+          return true;
+        }, { maxLength: 1800 }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0]}`;
+        message.channel.send(str);
+      }
+      return;
     } else if (args[1] && (bot.commands.get(args[1].toLowerCase()) || bot.commands.find(c => c.aliases.includes(args[1].toLowerCase())))) {
       const command = bot.commands.get(args[1].toLowerCase()) || bot.commands.find(c => c.aliases.includes(args[1].toLowerCase()))
       if (command.dev || command.owner) return message.channel.send("Exclusive command for the owner or developers");
@@ -46,32 +57,56 @@ export default class extends Command {
       if (command.aliases.length !== 0) {
         alias = command.aliases.join(", ");
       }
-      const embed = new Discord.MessageEmbed()
-        .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
-        .setTitle("Gidget help - " + args[1])
-        .addField("Description", command.description ? command.description : "Without description")
-        .addField("Required permissions", `User: \`${!(new Discord.Permissions(command.permissions.user[0]).has(8)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[0]).has(8)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``)
-        .addField("Required permissions (channel)", `User: \`${!(new Discord.Permissions(command.permissions.user[1]).has(8)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[1]).has(8)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``)
-        .addField("Environment", (command.guildonly || command.onlyguild) ? "Server" : "Server and DMs")
-        .addField("Alias", alias)
-        .setColor('#FFFFFF')
-        .setFooter('Requested by: ' + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
-        .setTimestamp();
-      return message.channel.send(embed);
+      if (checkEmbed(message.channel)) {
+        const embed = new Discord.MessageEmbed()
+          .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
+          .setTitle(`Gidget help - ${args[1]}`)
+          .addField("Description", command.description ? command.description : "Without description")
+          .addField("Required permissions", `User: \`${!(new Discord.Permissions(command.permissions.user[0]).has(8)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[0]).has(8)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``)
+          .addField("Required permissions (channel)", `User: \`${!(new Discord.Permissions(command.permissions.user[1]).has(8)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[1]).has(8)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``)
+          .addField("Environment", (command.guildonly || command.onlyguild) ? "Server" : "Server and DMs")
+          .addField("Alias", alias)
+          .setColor('#FFFFFF')
+          .setFooter('Requested by: ' + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+          .setTimestamp();
+        message.channel.send(embed);
+      } else {
+        const perms = `User: \`${!(new Discord.Permissions(command.permissions.user[0]).has(8)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[0]).has(8)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``;
+        const perms_channel = `User: \`${!(new Discord.Permissions(command.permissions.user[1]).has(8)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[1]).has(8)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``;
+        const str = `__**Gidget help - ${args[1]}**__\n\n__Description__: ${command.description ? command.description : "Without description"}\n__Required permissions__: ${perms}\n__Required permissions (channel)__: ${perms_channel}\n__Environment__: ${(command.guildonly || command.onlyguild) ? "Server" : "Server and DMs"}\n__Alias__: ${alias}`;
+        message.channel.send(str);
+      }
+      return;
     } else {
-      const embed = new Discord.MessageEmbed()
-        .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
-        .setColor("#BDBDBD")
-        .setTitle("Help command")
-        .addField('Links', links)
-        .addField("Bot lists", botlists)
       const text = "Use `help <category>` to obtain the category's commands\n\n" + Discord.Util.splitMessage(arr.filter(s => {
-        if (s.secret) return false
-        if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false
-        return true
-      }).map(s => "**" + s.catname + "**: " + s.cat).join("\n"))[0]
-      embed.setDescription(text || "?");
-      await message.channel.send(embed);
+        if (s.secret) return false;
+        if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false;
+        return true;
+      }).map(s => "**" + s.catname + "**: " + s.cat).join("\n"))[0];
+      if (checkEmbed(message.channel)) {
+        const embed = new Discord.MessageEmbed()
+          .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
+          .setColor("#BDBDBD")
+          .setTitle("Help command")
+          .addField('Links', links)
+          .addField("Bot lists", botlists)
+          .setDescription(text || "?");
+        message.channel.send(embed);
+      } else {
+        const str = `__**Help command**__\n\n${text}`;
+        message.channel.send(str);
+      }
+      return;
     }
   }
+}
+
+/**
+ * 
+ * @param {Discord.Channel} channel The channel to check permissions.
+ * @returns {boolean} "true" if you can send embeds, otherwise "false".
+ */
+function checkEmbed(channel) {
+  if (!channel.guild) return true;
+  return channel.permissionsFor(channel.guild.me).has(16384);
 }
