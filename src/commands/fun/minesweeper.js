@@ -35,7 +35,6 @@ export default class extends Command {
             const [f, c] = [parseInt(pre_f), parseInt(pre_c)];
             if(f < 0 || f > 8) return;
             if(c < 0 || c > 8) return;
-            console.log("here");
             message.author.mine.CheckCell(c, f);
             to_edit.edit(`__Minesweeper Game__\n\n${showToUser(message.author.mine.board, message.author.mine.mask)}`);
         });
