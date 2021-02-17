@@ -21,7 +21,7 @@ export default class extends Command {
             await message.channel.send(att);
         } else if (parsed.length >= 1) {
             const number = parseInt(args[2]);
-            const size = number && (number < 1024) ? number : 150;
+            const size = number && ((number < 1024) && (number > 0)) ? number : 150;
             const buf = await svg2img(parsed[0].url, { format: "png", width: size, height: size });
             const att = new MessageAttachment(buf, "twemoji.png");
             await message.channel.send(number ? "" : "In Twemoji mode you can resize the image up to 1024.\n`jumbo <emoji> [size]`", att);

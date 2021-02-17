@@ -1,18 +1,5 @@
-import BombSweeper from 'bombsweeper.js';
-const replaces = {
-    "N": "🟩",
-    "*": "💣",
-    "0": "⬜",
-    "e0": "0️⃣",
-    "1": "1️⃣",
-    "2": "2️⃣",
-    "3": "3️⃣",
-    "4": "4️⃣",
-    "5": "5️⃣",
-    "6": "6️⃣",
-    "7": "7️⃣",
-    "8": "8️⃣"
-};
+import BombSweeper from '../../utils/bombsweeper.js';
+
 export default class extends Command {
     constructor(options) {
         super(options);
@@ -21,49 +8,42 @@ export default class extends Command {
     }
     async run(bot, message) {
         if (message.author.mine) return message.channel.send("There is already a game with you in progress!");
-        message.author.mine = new BombSweeper(9, 9);
+        message.author.mine = new BombSweeper();
         const to_edit = await message.channel.send("Please wait...");
-        const col = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 40000 });
+        const col = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 300000 });
         message.author.mine.onWin = () => col.stop("win");
         message.author.mine.onLoss = () => col.stop("loss");
         message.author.mine.PlaceBombs(10);
         col.on("collect", m => {
-            if (m.content.toLowerCase() === "exit") col.stop("exit");
-            const [pre_f, pre_c] = m.content.split(",");
-            if(isNaN(pre_f)) return;
-            if(isNaN(pre_c)) return;
-            const [f, c] = [parseInt(pre_f), parseInt(pre_c)];
-            if(f < 0 || f > 8) return;
-            if(c < 0 || c > 8) return;
-            message.author.mine.CheckCell(c, f);
-            to_edit.edit(`__Minesweeper Game__\n\n${showToUser(message.author.mine.board, message.author.mine.mask)}`);
-            if(message.deletable) m.delete().catch(() => {});
+            try {
+                if (m.content.toLowerCase() === "exit") col.stop("exit");
+                const [pre_r, pre_c, flag] = m.content.split(",");
+                if (isNaN(pre_r)) return;
+                if (isNaN(pre_c)) return;
+                const [r, c] = [parseInt(pre_r), parseInt(pre_c)];
+                if (r < 0 || r > 8) return;
+                if (c < 0 || c > 8) return;
+                if (flag == "f") message.author.mine.setFlag(c, r);
+                else if (flag == "rf") message.author.mine.removeFlag(c, r);
+                else message.author.mine.CheckCell(c, r);
+                to_edit.edit(`__Minesweeper Game__\n\n${message.author.mine.showToUser()}`);
+                if (message.deletable) m.delete().catch(() => { });
+            } catch (err) {
+                message.channel.send(err.toString());
+            }
         });
         col.on("end", (c, r) => {
-            if(r === "win") message.channel.send("You have won the minesweeper game :)");
-            else if(r === "loss") message.channel.send("You lost the minesweeper game :(");
-            else if(r === "exit") {
-                to_edit.delete().catch(() => {});
+            if (r === "win") message.channel.send("You have won the minesweeper game :)");
+            else if (r === "loss") message.channel.send("You lost the minesweeper game :(");
+            else if (r === "exit") {
+                to_edit.delete().catch(() => { });
                 message.channel.send("Well, it seems you don't want to play minesweeper.");
-            } else if (r === "idle") message.channel.send("Time's up (40s)");
+            } else if (r === "idle") message.channel.send("Time's up (5m)");
             setTimeout(() => {
                 message.author.mine = null;
             }, 900);
         })
-        to_edit.edit(`__Minesweeper Game__\n**Use the fomat \`row,column\` to reveal a cell**\n\n${showToUser(message.author.mine.board, message.author.mine.mask)}`);
+        to_edit.edit(`__Minesweeper Game__\n**Use the fomat \`row,column,<flag_mode>\` to reveal a cell**\n**The flag modes are \`f\` and \`rf\` to flag and unflag a cell respectively.**\n\n${message.author.mine.showToUser()}`);
     }
 }
 
-function showToUser(board, mask) {
-    let str = "";
-    for (const i in board) {
-        for (const o in board[i]) {
-            if(o == 0) str += "`" + replaces[i == 0 ? "e0" : i] + "`";
-            if (mask[i][o]) str += replaces[board[i][o]];
-            else (str += replaces["N"]);
-        }
-        str += "\n";
-    }
-    str += `\`🟥${replaces["e0"]} ${replaces["1"]}${replaces["2"]} ${replaces["3"]}${replaces["4"]} ${replaces["5"]}${replaces["6"]} ${replaces["7"]}${replaces["8"]}\``
-    return str;
-}
