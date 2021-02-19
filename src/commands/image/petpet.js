@@ -1,8 +1,12 @@
 import Discord from 'discord.js';
 import Canvas from 'canvas';
-
+import svg2img_callback from 'node-svg2img';
+import { promisify } from 'util';
 import petpet from '../../utils/petpet.js';
 import parser from 'twemoji-parser';
+import isSvg from 'is-svg';
+import fetch from 'node-fetch';
+const svg2img = promisify(svg2img_callback);
 
 export default class extends Command {
     constructor(options) {
@@ -43,6 +47,12 @@ export default class extends Command {
             }
             if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm.test(source)) return message.channel.send("Invalid user, emoji or image!");
             message.channel.startTyping();
+            const res = await fetch(source);
+            if(!res.ok) return message.channel.send("Status code: " + res.status);
+            source = await res.buffer();
+            if(isSvg(source)) {
+                source = await svg2img(source, { format: "png", width: 112, height: 112 });
+            }
             const torender = await Canvas.loadImage(source);
             const buf = await petpet(torender, delay);
             message.channel.stopTyping(true);

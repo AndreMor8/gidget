@@ -4,7 +4,7 @@ import Levels from "../../utils/discord-xp.js";
 export default class extends Command {
   constructor(options) {
     super(options);
-    this.aliases = ["lb"];
+    this.aliases = ["lb", "top"];
     this.description = "Server leaderboard";
     this.guildonly = true;
     this.permissions = {

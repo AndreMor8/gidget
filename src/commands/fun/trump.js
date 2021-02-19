@@ -8,14 +8,14 @@ let meme;
 export default class extends Command {
   constructor(options) {
     super(options);
-    this.description = 'Some console.log tests';
+    this.description = 'An image of Trump where he grabs a book with your text.';
     this.permissions = {
       user: [0, 0],
       bot: [0, 32768]
     }
   }
   async run(bot, message, args) {
-    if (!args[1]) return message.channel.send("Put something");
+    if (!args[1]) return message.channel.send("Put something...");
     message.channel.startTyping();
     if(!font) font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
     if(!meme) meme = await Jimp.read(path.join(__dirname, "../../assets/TrumpApi.png"));

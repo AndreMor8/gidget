@@ -4,6 +4,10 @@ import fetch from 'node-fetch';
 import Canvas from 'canvas';
 import { MessageAttachment, Util } from "discord.js";
 import jsQR from 'jsqr';
+import isSvg from 'is-svg';
+import svg2img_callback from 'node-svg2img';
+import { promisify } from 'util';
+const svg2img = promisify(svg2img_callback);
 
 export default class extends Command {
   constructor(options) {
@@ -81,7 +85,9 @@ async function resize(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error("Status code: " + res.status);
   const buf = await res.buffer();
-  if (process.platform === "win32") {
+  if(isSvg(buf)) {
+    return await svg2img(buf, { format: "png", width: SIZE, height: SIZE });
+  } else if (process.platform === "win32") {
       const Jimp = (await import("jimp")).default;
       const pre_buf = await Jimp.read(buf);
       pre_buf.resize(SIZE, SIZE);
