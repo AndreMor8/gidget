@@ -48,7 +48,7 @@ bot.botVersion = "0.99 RC";
   await registerEvents(bot, "../events");
   await registerWsEvents(bot, "../ws-events");
   //Login with Discord
-  bot.wubbzy = await mwn.init({
+  if(process.argv[2] !== "ci") bot.wubbzy = await mwn.init({
     apiUrl: 'https://wubbzy.fandom.com/api.php',
     username: process.env.WIKI_USERNAME,
     password: process.env.WIKI_PASSWORD,
