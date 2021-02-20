@@ -28,7 +28,7 @@ export default class extends Command {
         });
         const embed = new MessageEmbed()
         .setImage(`${res.image.imageserving}&format=original`)
-        .setTitle(`${page}'s title card`);
+        .setTitle(`${page.replace("(episode)", "").trimEnd()}'s title card`);
         await message.channel.send(embed);
     }
 }
