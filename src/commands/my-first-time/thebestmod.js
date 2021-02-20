@@ -11,6 +11,6 @@ export default class extends Command {
     const i = mods.members.size;
     const text = "The best mod is:"
     const reason = ["For being friendly", "For supporting a lot", "For being responsible", "For doing a great job", "For doing great help to the community", "For being a big fan of the series"]
- await message.channel.send(text + " **" + map[Math.floor(Math.random() * i)] + "** \n" + "**Reason:** " + reason[Math.floor(Math.random() * 6)])
+    await message.channel.send(text + " **" + map[Math.floor(Math.random() * i)] + "** \n" + "**Reason:** " + reason[Math.floor(Math.random() * 6)])
   }
 }

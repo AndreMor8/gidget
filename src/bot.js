@@ -14,11 +14,15 @@ import Discord from 'discord.js';
 
 //Discord.js extended structures
 import './structures.js';
+
+//Wiki
+import { mwn } from 'mwn';
+
 //Bot client
 const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: 32511 }, allowedMentions: { parse: [] }, presence: { status: "dnd", activity: { name: "Ready event (Loading...)", type: "LISTENING" } } });
 
 //top.gg
-if(process.env.EXTERNAL === "yes") {
+if (process.env.EXTERNAL === "yes") {
   bot.dbl = new DBL(process.env.DBLKEY, bot);
   bot.dbl.on("posted", () => {
     console.log("tog.gg: Server count posted!");
@@ -44,9 +48,18 @@ bot.botVersion = "0.99 RC";
   await registerEvents(bot, "../events");
   await registerWsEvents(bot, "../ws-events");
   //Login with Discord
+  bot.wubbzy = await mwn.init({
+    apiUrl: 'https://wubbzy.fandom.com/api.php',
+    username: process.env.WIKI_USERNAME,
+    password: process.env.WIKI_PASSWORD,
+    userAgent: 'GidgetDiscordBot 0.99 RC',
+    defaultParams: {
+      assert: 'user'
+    }
+  });
   if (process.argv[2] !== "ci") {
     await bot.login();
-    if(global.gc) gc();
+    if (global.gc) gc();
   } else process.exit();
 })().catch(err => {
   console.log(err);
