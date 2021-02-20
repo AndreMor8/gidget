@@ -18,7 +18,7 @@ export default class extends Command {
         });
         if(!args[1] || !page) {
            const embed = new MessageEmbed()
-           .setDescription(pages.join("\n"))
+           .setDescription(pages.map(e => e.replace("(episode)", "").trimEnd()).join("\n"))
            .setTitle("List of episodes");
            return await message.channel.send(embed);
         }
