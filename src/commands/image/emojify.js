@@ -22,7 +22,7 @@ export default class extends Command {
     async run(bot, message, args) {
         if (!args[1] && !message.attachments.first()) return message.channel.send("Usage: emojify <url/attachment/emoji>");
         let url;
-        const user = (args[1] || message.mentions.users.first()) ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ") || e.username.toLowerCase() === args.slice(1).join(" ").toLowerCase() || e.tag.toLowerCase() === args.slice(1).join(" ").toLowerCase())) || message.guild?.members.cache.find(e => (e.nickname === args.slice(1).join(" ") || e.nickname.toLowerCase() === args.slice(1).join(" ").toLowerCase()))?.user || await bot.users.fetch(args[1]).catch(() => { })) : null;
+        const user = (args[1] || message.mentions.users.first()) ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ") || e.username?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase() || e.tag?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase())) || message.guild?.members.cache.find(e => (e.nickname === args.slice(1).join(" ") || e.nickname?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase()))?.user || await bot.users.fetch(args[1]).catch(() => { })) : null;
         if(user) {
             url = user.displayAvatarURL({ format: "png", dynamic: true, size: 64 });
         } else if (message.attachments.first()) {
