@@ -51,7 +51,7 @@
     "moment-duration-format": "^2.3.2",
     "mongoose": "^5.11.17",
     "ms": "^2.1.3",
-    "mwn": "^0.10.0",
+    "mwn": "^0.10.1",
     "node-fetch": "^2.6.1",
     "node-lame": "^1.2.2",
     "node-svg2img": "^1.1.0",
