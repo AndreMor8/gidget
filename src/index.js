@@ -1,3 +1,4 @@
+//TO DO: A function that detects the user that someone tries to mention in a message. Thus avoiding outdated detection code in commands.
 import dotenv from 'dotenv';
 dotenv.config();
 import webserver from './webserver.js';
