@@ -12,7 +12,7 @@ const svg2img = promisify(svg2img_callback);
 export default class extends Command {
     constructor(options) {
         super(options);
-        this.aliases = ["e"];
+        this.aliases = ["e", "convert-to-gif", "ctg"];
         this.description = "Make a fake emoji and save it in your favorite GIFs";
         this.permissions = {
             user: [0, 0],
@@ -55,7 +55,8 @@ export default class extends Command {
 }
 
 async function render(url, size) {
-    const realsize = parseInt(size);
+    let realsize = parseInt(size);
+    if(realsize >= 1024 || realsize < 32) realsize = 48;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Status code returned ${res.status} (${res.statusText})`);
     const pre_buf = await res.buffer();
