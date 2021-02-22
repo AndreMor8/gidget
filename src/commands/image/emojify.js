@@ -21,6 +21,13 @@ export default class extends Command {
     }
     async run(bot, message, args) {
         if (!args[1] && !message.attachments.first()) return message.channel.send("Usage: emojify <url/attachment/emoji>");
+        let fps = args[args.length - 1];
+            if (fps.charAt(0) == '-') {
+                fps = fps.substring(1);
+                args.pop();
+            } else {
+                fps = "48";
+            }
         let url;
         const user = (args[1] || message.mentions.users.first()) ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ") || e.username?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase() || e.tag?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase())) || message.guild?.members.cache.find(e => (e.nickname === args.slice(1).join(" ") || e.nickname?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase()))?.user || await bot.users.fetch(args[1]).catch(() => { })) : null;
         if(user) {
@@ -41,31 +48,32 @@ export default class extends Command {
             url = parsed[0].url;
         }
         if (!url) return message.channel.send("Invalid URL!");
-        const buffer = await render(url);
+        const buffer = await render(url, fps);
         const att = new MessageAttachment(buffer, "emoji.gif");
         await message.channel.send(att);
     }
 }
 
-async function render(url) {
+async function render(url, size) {
+    const realsize = parseInt(size);
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Status code returned ${res.status} (${res.statusText})`);
     const pre_buf = await res.buffer();
     const type = await FileType.fromBuffer(pre_buf);
     if (type?.mime === "image/gif") {
-        const buffer = await gifResize({ width: 48, interlaced: true, resize_method: "lanczos2" })(pre_buf);
+        const buffer = await gifResize({ width: realsize, interlaced: true, resize_method: "lanczos2" })(pre_buf);
         return buffer;
     } else if (isSvg(pre_buf)) {
-        return await svg2img(pre_buf, { format: "png", width: 48, height: 48 });
+        return await svg2img(pre_buf, { format: "png", width: realsize, height: realsize });
     } else if (process.platform === "win32") {
         const Jimp = (await import("jimp")).default;
         const img = await Jimp.read(pre_buf);
-        img.resize(48, Jimp.AUTO);
+        img.resize(realsize, Jimp.AUTO);
         const buffer = await img.getBufferAsync(Jimp.MIME_PNG);
         return buffer;
     } else {
         const sharp = (await import("sharp")).default;
-        const buffer = await sharp(pre_buf).resize(48).png().toBuffer();
+        const buffer = await sharp(pre_buf).resize(realsize).png().toBuffer();
         return buffer;
     }
 
