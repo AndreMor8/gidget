@@ -12,6 +12,7 @@ const svg2img = promisify(svg2img_callback);
 export default class extends Command {
     constructor(options) {
         super(options);
+        this.aliases = ["e"];
         this.description = "Make a fake emoji and save it in your favorite GIFs";
         this.permissions = {
             user: [0, 0],
@@ -49,7 +50,7 @@ async function render(url) {
     const pre_buf = await res.buffer();
     const type = await FileType.fromBuffer(pre_buf);
     if (type?.mime === "image/gif") {
-        const buffer = await gifResize({ width: 48 })(pre_buf);
+        const buffer = await gifResize({ width: 48, interlaced: true, resize_method: "lanczos2" })(pre_buf);
         return buffer;
     } else if (isSvg(pre_buf)) {
         return await svg2img(pre_buf, { format: "png", width: 48, height: 48 });

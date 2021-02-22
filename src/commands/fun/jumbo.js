@@ -7,6 +7,7 @@ const regex = /<?(a:|:)\w*:(\d{17}|\d{18})>/;
 export default class extends Command {
     constructor(options) {
         super(options);
+        this.aliases = ["j"];
         this.description = "Expand some emoji :)"
     }
     async run(bot, message, args) {

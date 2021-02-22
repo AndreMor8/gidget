@@ -11,6 +11,7 @@ const svg2img = promisify(svg2img_callback);
 export default class extends Command {
     constructor(options) {
         super(options);
+        this.aliases = ["patpat", "pp"];
         this.description = "Pet pet";
         this.permissions = {
             user: [0, 0],
