@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: gidget
-        image: AndreMor955/gidget
+        image: okteto.dev/gidget:latest
         ports:
         - containerPort: 4500
