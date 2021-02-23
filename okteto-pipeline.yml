@@ -1,0 +1,3 @@
+deploy:
+  - okteto build -t andremor/gidget
+  - kubectl apply -f k8s
