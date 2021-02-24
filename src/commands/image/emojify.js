@@ -12,25 +12,22 @@ const svg2img = promisify(svg2img_callback);
 export default class extends Command {
     constructor(options) {
         super(options);
-        this.aliases = ["e", "convert-to-gif", "ctg"];
-        this.description = "Make a fake emoji and save it in your favorite GIFs";
+        this.aliases = ["e", "to48px"];
+        this.description = "Make a fake emoji and save it in your favorite GIFs.\nNow you can force it to PNG if you want (`g%emojify <target> -force-png`)\nSave it in your server: `g%emojify <target> -server`";
         this.permissions = {
             user: [0, 0],
             bot: [0, 32768]
         }
     }
     async run(bot, message, args) {
+        const force = args.includes("-force-png");
+        if (force) args.splice(args.indexOf("-force-png"), 1);
+        const to_server = (args.includes("-server") && (message.guild?.me.hasPermission("MANAGE_EMOJIS") && message.member?.hasPermission("MANAGE_EMOJIS")));
+        if (to_server) args.splice(args.indexOf("-server"), 1);
         if (!args[1] && !message.attachments.first()) return message.channel.send("Usage: emojify <url/attachment/emoji>");
-        let fps = args[args.length - 1];
-            if (fps.charAt(0) == '-') {
-                fps = fps.substring(1);
-                args.pop();
-            } else {
-                fps = "48";
-            }
         let url;
         const user = (args[1] || message.mentions.users.first()) ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ") || e.username?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase() || e.tag?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase())) || message.guild?.members.cache.find(e => (e.nickname === args.slice(1).join(" ") || e.nickname?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase()))?.user || await bot.users.fetch(args[1]).catch(() => { })) : null;
-        if(user) {
+        if (user) {
             url = user.displayAvatarURL({ format: "png", dynamic: true, size: 64 });
         } else if (message.attachments.first()) {
             url = message.attachments.first().url;
@@ -48,34 +45,47 @@ export default class extends Command {
             url = parsed[0].url;
         }
         if (!url) return message.channel.send("Invalid URL!");
-        const buffer = await render(url, fps);
-        const att = new MessageAttachment(buffer, "emoji.gif");
+        const buffer = await render(url);
+        const att = new MessageAttachment(buffer, `emoji.${force ? "png" : "gif"}`);
         await message.channel.send(att);
+        if (to_server) {
+            await message.channel.send("Tell me the name of the new emoji (30s collector time).")
+            const col = message.channel.createMessageCollector((e) => e.author.id === message.author.id, { time: 30000 });
+            col.on("collect", (msg) => {
+                message.guild.emojis.create(buffer, msg.content, { reason: "emojify command" }).then((e) => {
+                    message.channel.send(`Emoji created correctly! -> ${e.toString()}`);
+                }).catch(e => {
+                    message.channel.send("Error: " + e);
+                }).finally(() => {
+                    col.stop();
+                });
+            });
+            col.on("end", (c, r) => {
+                if (r === "time") message.channel.send("Time's up!");
+            })
+        }
     }
 }
 
-async function render(url, size) {
-    let realsize = parseInt(size);
-    if(realsize >= 1024 || realsize < 32) realsize = 48;
+async function render(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Status code returned ${res.status} (${res.statusText})`);
     const pre_buf = await res.buffer();
     const type = await FileType.fromBuffer(pre_buf);
     if (type?.mime === "image/gif") {
-        const buffer = await gifResize({ width: realsize, interlaced: true, resize_method: "lanczos2" })(pre_buf);
+        const buffer = await gifResize({ width: 48, interlaced: true, resize_method: "lanczos2" })(pre_buf);
         return buffer;
     } else if (isSvg(pre_buf)) {
-        return await svg2img(pre_buf, { format: "png", width: realsize, height: realsize });
+        return await svg2img(pre_buf, { format: "png", width: 48, height: 48 });
     } else if (process.platform === "win32") {
         const Jimp = (await import("jimp")).default;
         const img = await Jimp.read(pre_buf);
-        img.resize(realsize, Jimp.AUTO);
+        img.resize(48, Jimp.AUTO);
         const buffer = await img.getBufferAsync(Jimp.MIME_PNG);
         return buffer;
     } else {
         const sharp = (await import("sharp")).default;
-        const buffer = await sharp(pre_buf).resize(realsize).png().toBuffer();
+        const buffer = await sharp(pre_buf).resize(48).png().toBuffer();
         return buffer;
     }
-
 }
