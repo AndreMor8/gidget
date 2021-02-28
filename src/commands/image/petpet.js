@@ -33,7 +33,7 @@ export default class extends Command {
             if (!fpsnumber) return message.channel.send("Invalid FPS. Allowable values are 2 to 60 FPS.");
             if (fpsnumber < 2 || fpsnumber > 60) return message.channel.send("Invalid FPS. Allowable values are 2 to 60 FPS.");
             const delay = parseInt(1000 / fpsnumber);
-            let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ") || e.username.toLowerCase() === args.slice(1).join(" ").toLowerCase() || e.tag.toLowerCase() === args.slice(1).join(" ").toLowerCase())) || await bot.users.fetch(args[1]).catch(() => { }) || args[1]) : message.author)
+            let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ") || e.username?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase() || e.tag?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase())) || await bot.users.fetch(args[1]).catch(() => { }) || args[1]) : message.author)
             if (!source) return message.channel.send("Invalid user, emoji or image!");
             if (source instanceof Discord.User) {
                 source = source.displayAvatarURL({ format: "png", size: 128 });
