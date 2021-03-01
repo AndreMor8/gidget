@@ -1,6 +1,7 @@
 export default async function (bot, interaction) {
-    if (interaction.type === 2) { 
-        if (interaction.data.name === "wubbzy") {
+    if (interaction.type !== 2) return;
+    switch (interaction.data.name) {
+        case 'wubbzy': {
             await bot.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
                     type: 3,
@@ -9,8 +10,9 @@ export default async function (bot, interaction) {
                     }
                 }
             })
+            break;
         }
-        if (interaction.data.name === "say") {
+        case 'say': {
             await bot.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
                     type: 4,
@@ -22,6 +24,7 @@ export default async function (bot, interaction) {
                     }
                 }
             })
+            break;
         }
     }
 }
