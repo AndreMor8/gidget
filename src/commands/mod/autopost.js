@@ -9,7 +9,7 @@ export default class extends Command {
         this.guildonly = true;
     }
     async run(bot, message, args) {
-        if (!args[1]) return message.channel.send("Use: `autopost <mode> <channel>`\nModes: `add`, `delete, `get`");
+        if (!args[1]) return message.channel.send("Use: `autopost <mode> <channel>`\nModes: `add`, `delete`, `get`");
         switch (args[1]) {
             case 'add': {
                 if (!args[2]) message.channel.send("Please put a channel!");
@@ -35,7 +35,7 @@ export default class extends Command {
                 break;
             case 'get': {
                 const doc = message.guild.cache.autopostchannels ? message.guild.autopostchannels : await message.guild.getAutoPostChannels();
-                const str = doc.channels.map(e => `<#${e}>`).join("\n");
+                const str = doc.map(e => `<#${e}>`).join("\n");
                 message.channel.send(`List of channels for automatic crossposting:\n\n${str}`);
             }
                 break;
