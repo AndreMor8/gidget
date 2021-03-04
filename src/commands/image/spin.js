@@ -3,7 +3,7 @@ const DEGREES = 20;
 const SIZE = 256;
 const FPS = 16;
 import fetch from 'node-fetch';
-import gifResize from '@gumlet/gif-resize';
+import gifResize from '../../utils/gifresize.js';
 import parser from 'twemoji-parser';
 import Canvas from 'canvas';
 import GIF from "gif-encoder";
@@ -69,7 +69,7 @@ export default class extends Command {
                 });
                 gif.on("end", async () => {
                     const pre_buf = Buffer.concat(chunks);
-                    const buf = await gifResize({ width: 512, height: 512, stretch: true })(pre_buf);
+                    const buf = await gifResize({ width: 512, height: 512, stretch: true, interlaced: true })(pre_buf);
                     const att = new MessageAttachment(buf, "spin.gif");
                     message.channel.stopTyping(true);
                     await message.channel.send(att).catch(() => { });

@@ -34,7 +34,7 @@ if (process.env.EXTERNAL === "yes") {
 
 //Global definitions
 bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
-bot.botVersion = "0.99 RC";
+bot.botVersion = "1.00 Final";
 (async () => {
   //Database
   if (process.argv[2] !== "ci") await database();
@@ -52,7 +52,7 @@ bot.botVersion = "0.99 RC";
     apiUrl: 'https://wubbzy.fandom.com/api.php',
     username: process.env.WIKI_USERNAME,
     password: process.env.WIKI_PASSWORD,
-    userAgent: 'GidgetDiscordBot 0.99 RC',
+    userAgent: `GidgetDiscordBot ${bot.botVersion}`,
     defaultParams: {
       assert: 'user'
     }
