@@ -14,7 +14,7 @@ export default class extends Command {
     this.description = "Play music from YouTube";
     this.guildonly = true;
   }
-  async run(bot, message, args, seek) {
+  async run(bot, message, args, seek = false) {
     //No arguments
     if (!args[1]) return message.channel.send("Please enter a YouTube link or search term.");
 
@@ -53,9 +53,9 @@ export default class extends Command {
       musicVariables = message.guild.musicVariables;
     }
 
-    if (typeof seek === "number") {
+    if (seek) {
       //Only for seek command...
-      return await play(message.guild, serverQueue.songs[0], seek);
+      return await play(message.guild, serverQueue.songs[0]);
     } else if (ytdl.validateURL(args[1])) {
       if (serverQueue) {
         if (serverQueue.loop) {
@@ -130,19 +130,20 @@ export default class extends Command {
  * @param {string} URL - The YouTube video URL.
  * @returns {object} The video object ready to push to the queue.
  */
-async function handleVideo(URL) {
-  const songInfo = await ytdl.getBasicInfo(URL, {
+async function handleVideo(url) {
+  const songInfo = await ytdl.getBasicInfo(url, {
     requestOptions: {
       headers: {
         cookie: COOKIE
       },
     },
   });
+  const opts = new URL(url);
   const song = {
     title: songInfo.videoDetails.title,
     url: songInfo.videoDetails.video_url,
     duration: songInfo.videoDetails.lengthSeconds,
-    seektime: 0
+    seektime: ((opts.searchParams.get("t")?.length < 8) ? opts.searchParams.get("t") : 0) || 0
   };
   return song;
 }
@@ -214,9 +215,8 @@ async function handleServerQueue(serverQueue, textChannel, voiceChannel, pre_son
   return;
 }
 
-async function play(guild, song, seek = 0) {
+async function play(guild, song) {
   const serverQueue = guild.queue;
-
   const musicVariables = guild.musicVariables;
 
   if (!song) {
@@ -238,7 +238,7 @@ async function play(guild, song, seek = 0) {
       serverQueue.songs[0] = thing;
       song = thing;
     }
-    const ytstream = ytdl(song.url, { filter: 'audioonly', opusEncoded: true, highWaterMark: 1 << 25, seek, requestOptions: { headers: { cookie: COOKIE } } });
+    const ytstream = ytdl(song.url, { filter: 'audioonly', opusEncoded: true, highWaterMark: 1 << 25, seek: song.seektime, requestOptions: { headers: { cookie: COOKIE } } });
     const dispatcher = serverQueue.connection.play(ytstream, { type: "opus", bitrate: 'auto' });
     dispatcher.on("error", async err => {
       musicVariables.memberVoted = [];
@@ -254,7 +254,7 @@ async function play(guild, song, seek = 0) {
       if (serverQueue.inseek) {
         serverQueue.inseek = false
         serverQueue.textChannel.stopTyping();
-        return serverQueue.textChannel.send("Position moved to " + moment.duration(seek, "seconds").format()).catch(() => { });
+        return serverQueue.textChannel.send("Position moved to " + moment.duration(song.seektime, "seconds").format()).catch(() => { });
       }
       if (!serverQueue.loop)
         serverQueue.textChannel.send(

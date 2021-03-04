@@ -35,6 +35,6 @@ export default class extends Command {
         await message.channel.send("This may take a bit...");
         message.channel.startTyping();
         serverQueue.connection.dispatcher.end();
-        await bot.commands.get("play").run(bot, message, ["play", "seek"], reconverted).catch(err => message.channel.send("Error: " + err)).finally(() => message.channel.stopTyping(true))
+        await bot.commands.get("play").run(bot, message, ["play", "seek"], true).catch(err => message.channel.send("Error: " + err)).finally(() => message.channel.stopTyping(true))
     }
 }
