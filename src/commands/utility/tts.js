@@ -1,6 +1,5 @@
 import { MessageAttachment } from "discord.js";
-import { languages } from '@vkedwardli/google-translate-api';
-const { getCode } = languages;
+import { languages } from '@vitalets/google-translate-api';
 
 export default class extends Command {
     constructor(options) {
@@ -21,7 +20,7 @@ export default class extends Command {
         } else {
             lang = "en"
         }
-        const reallang = getCode(lang);
+        const reallang = languages.getCode(lang);
         if (!reallang) return message.channel.send("Invalid language!\nhttps://github.com/vkedwardli/google-translate-api/blob/master/languages.js");
         if (!args[1]) return message.channel.send("Put something");
         const tosay = args.slice(1).join(" ");

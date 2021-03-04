@@ -1,5 +1,4 @@
-import { default as gtranslate, languages } from '@vkedwardli/google-translate-api';
-const { getCode } = languages;
+import { default as gtranslate, languages } from '@vitalets/google-translate-api';
 import { MessageEmbed } from "discord.js";
 
 export default class extends Command {
@@ -23,7 +22,7 @@ export default class extends Command {
             lang = "en"
         }
 
-        const reallang = getCode(lang);
+        const reallang = languages.getCode(lang);
         if (!reallang) return message.channel.send("Invalid language!\nhttps://github.com/vkedwardli/google-translate-api/blob/master/languages.js")
 
         //Get text
