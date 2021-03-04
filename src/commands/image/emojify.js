@@ -24,7 +24,7 @@ export default class extends Command {
         if (force) args.splice(args.indexOf("-force-png"), 1);
         const to_server = (args.includes("-server") && (message.guild?.me.hasPermission("MANAGE_EMOJIS") && message.member?.hasPermission("MANAGE_EMOJIS")));
         if (to_server) args.splice(args.indexOf("-server"), 1);
-        if (!args[1] && !message.attachments.first()) return message.channel.send("Usage: emojify <url/attachment/emoji>");
+        if (!args[1] && !message.attachments.first()) return message.channel.send("Usage: emojify `<url/attachment/emoji> ['-force-png'] ['-server']`");
         let url;
         const user = (args[1] || message.mentions.users.first()) ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ") || e.username?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase() || e.tag?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase())) || message.guild?.members.cache.find(e => (e.nickname === args.slice(1).join(" ") || e.nickname?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase()))?.user || await bot.users.fetch(args[1]).catch(() => { })) : null;
         if (user) {
