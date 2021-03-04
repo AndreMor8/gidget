@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
-const MessageSchema = new mongoose.Schema({
-    guildid: { type: String, required: true },
-    memberid: { type: String, required: true },
-    warnings: 0,
-});
+const sch = new mongoose.Schema({
+    guildId: { type: String, required: true },
+    memberId: { type: String, required: true },
+    reason: { type: String, default: "" }
+}, { timestamps: { createdAt: "created" } });
 
-export default mongoose.model('warn-members', MessageSchema);
+export default mongoose.model('warn-members', sch);
