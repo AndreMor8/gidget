@@ -10,7 +10,7 @@ const internalCooldown = new Set();
 setInterval(() => {
   internalCooldown.clear();
 }, 90000)
-//Start message event
+
 export default async (bot, message, nolevel = false) => {
   if (message.author.bot) return;
   if (message.guild && !message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return;
@@ -29,7 +29,6 @@ export default async (bot, message, nolevel = false) => {
     if (message.guild) {
       PREFIX = message.guild.cache.prefix ? message.guild.prefix : await message.guild.getPrefix();
     } else {
-      console.log(message.author.tag + ' "' + message.content + '"');
       PREFIX = "g%";
     }
     if (message.content.startsWith(PREFIX)) {
@@ -82,9 +81,13 @@ export default async (bot, message, nolevel = false) => {
           if (responses) {
             const arr = Object.entries(responses);
             for (const i in arr) {
-              const regex = new RegExp(arr[i][0], "gmi");
-              if (regex.test(message.content) && message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
-                await message.channel.send(arr[i][1]).catch(() => { });
+              try {
+                const regex = new RegExp(arr[i][0], "gmi");
+                if (regex.test(message.content) && message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
+                  await message.channel.send(arr[i][1]).catch(() => { });
+                }
+              } catch (err) {
+                null;
               }
             }
           }
@@ -150,6 +153,12 @@ export default async (bot, message, nolevel = false) => {
               }
             }
           }
+        }
+
+        //Autocrossposting
+        const acp = message.guild.cache.autopostchannels ? message.guild.autopostchannels : await message.guild.getAutoPostChannels();
+        if(acp.includes(message.channel.id) && message.channel.type === "news") {
+          message.crosspost().catch(() => {});
         }
       }
     }

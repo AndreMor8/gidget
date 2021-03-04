@@ -1,5 +1,3 @@
-//Must be tested =D
-
 export default class extends Command {
     constructor(options) {
         super(options)
@@ -12,7 +10,7 @@ export default class extends Command {
     }
     async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Usage: `kick (<user> [reason] || <users>)`")
-        const users = [].concat(message.mentions.members.array());
+        const users = message.mentions.members.clone().array();
         for (const thing of args.slice(1)) {
             if (thing.length > 19) continue;
             if (/^<@!?(\d+)>$/.test(thing)) continue;

@@ -4,7 +4,6 @@ const { __dirname } = commons(import.meta.url);
 import Discord from 'discord.js';
 import Jimp from 'jimp';
 let font;
-let meme;
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -34,7 +33,7 @@ async function px32(message, args) {
     return message.channel.send("There's a 80 characters limit.");
   message.channel.startTyping();
   if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-  if (!meme) meme = await Jimp.read(path.join(__dirname, "../../assets/walden-says.png"));
+  const meme = await Jimp.read(path.join(__dirname, "../../assets/walden-says.png"));
   const pre_text = args.join(" ").split("");
   let realtext = "";
   let post_text = "";
@@ -72,7 +71,7 @@ async function px64(message, args) {
     return message.channel.send("There's a 16 characters limit.");
   message.channel.startTyping();
   if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-  if (!meme) meme = await Jimp.read(path.join(__dirname, "../../assets/walden-says.png"));
+  const meme = await Jimp.read(path.join(__dirname, "../../assets/walden-says.png"));
   const pre_text = args.join(" ").split("");
   let realtext = "";
   let post_text = "";

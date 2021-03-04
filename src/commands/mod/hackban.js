@@ -21,7 +21,7 @@ export default class extends Command {
       if (message.guild.members.cache.has(thing)) continue;
       users.push(thing);
     }
-    if (users.length < 1) return message.channel.send("Invalid IDs. Make sure you have put them right. With this command you can ban actual server members.")
+    if (users.length < 1) return message.channel.send("Invalid IDs. Make sure you have put them right.")
     for (const user of users) {
       try {
         await message.guild.members.ban(user, { reason: (users.length === 1 ? args.slice(2).join(" ") : undefined) });

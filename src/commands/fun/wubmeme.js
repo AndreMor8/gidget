@@ -4,7 +4,6 @@ import path from 'path';
 import commons from '../../utils/commons.js';
 const { __dirname } = commons(import.meta.url);
 let font;
-let meme;
 
 export default class extends Command {
     constructor(options) {
@@ -24,7 +23,7 @@ export default class extends Command {
             if (arg[0].length > 230 || arg[1].length > 230) return message.channel.send("There's a 230 characters limit.");
             message.channel.startTyping();
             if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
-            if (!meme) meme = await Jimp.read(path.join(__dirname, "../../assets/wubmeme.png"));
+            const meme = await Jimp.read(path.join(__dirname, "../../assets/wubmeme.png"));
             meme.resize(1024, 768);
 
             meme.print(font, 537, 20, {
@@ -55,7 +54,7 @@ async function px64(message, args) {
     if (arg[0].length > 70 || arg[1].length > 70) return message.channel.send("There's a 70 characters limit. Put `32` before the text to expand the limit to 230.");
     message.channel.startTyping();
     if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
-    if (!meme) meme = await Jimp.read(path.join(__dirname, "../../assets/wubmeme.png"));
+    const meme = await Jimp.read(path.join(__dirname, "../../assets/wubmeme.png"));
     meme.resize(1024, 768);
 
     meme.print(font, 526, 15, {

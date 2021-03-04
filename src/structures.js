@@ -3,6 +3,7 @@ import cr from "./database/models/customresponses.js";
 import level from "./database/models/levelconfig.js";
 import welcome from "./database/models/welcome.js";
 import MessageLinksModel from "./database/models/messagelinks.js";
+import autopost from './database/models/autopost.js';
 import { Structures } from 'discord.js';
 
 //To differentiate user errors (maybe?)
@@ -27,13 +28,59 @@ Structures.extend('Guild', Guild => {
             this.messagelinksconfig = {};
             this.inviteCount = {};
             this.connect4 = null;
+            this.autopostchannels = [];
             this.cache = {
                 prefix: false,
                 customresponses: false,
                 levelconfig: false,
                 messagelinksconfig: false,
-                welcome: false
+                welcome: false,
+                autopostchannels: false
             };
+        }
+
+        async setAutoPostChannel(channel) {
+            if(channel.type !== "news") throw new StructureError("Only news channels are allowed!");
+            let doc = await autopost.findOneAndUpdate({ guildID: { $eq: this.id } }, { $push: { channels: channel.id } }, { new: true });
+            if(!doc) {
+                doc = await autopost.create({
+                    guildID: this.id,
+                    channels: [channel.id]
+                });
+            }
+            this.autopostchannels = doc.channels;
+            this.cache.autopostchannels = true;
+            return;
+        }
+
+        async deleteAutoPostChannel(channel) {
+            const id = channel?.id || (typeof channel === "string" ? channel : null);
+            if(!id) throw new StructureError("Can't get channel ID!");
+            if(isNaN(id)) throw new StructureError("Can't get channel ID!");
+            const doc = await autopost.findOneAndUpdate({ guildID: { $eq: this.id } }, { $pull: { channels: id } });
+            if(!doc) {
+                await autopost.create({
+                    guildID: this.id,
+                    channels: []
+                });
+            }
+            this.autopostchannels = doc.channels;
+            this.cache.autopostchannels = true;
+            if(!doc.channels.includes(id)) throw new StructureError("There is no such channel in the DB.");
+            return id;
+        }
+
+        async getAutoPostChannels() {
+            let doc = await autopost.find({ guildID: { $eq: this.id } });
+            if(!doc) {
+                doc = await autopost.create({
+                    guildID: this.id,
+                    channels: []
+                });
+            }
+            this.autopostchannels = doc.channels;
+            this.cache.autopostchannels = true;
+            return doc;
         }
 
         async getInviteCount() {
@@ -344,6 +391,8 @@ Structures.extend('Guild', Guild => {
             this.messagelinksconfig = {};
             this.cache.welcome = false;
             this.welcome = {};
+            this.autopostchannels = [];
+            this.cache.autopostchannels = false;
             return true;
         }
     };

@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import Discord from 'discord.js';
 export default class Command {
     constructor(opciones) {
         if(typeof opciones.name !== "string") throw new Error("opciones.name must be a string");
@@ -17,10 +18,17 @@ export default class Command {
         this.dev = false;
         this.secret = false;
     }
-    async run(bot, message, args) {
-        console.log(`${this.name} command was executed`);
-        await message.channel.send(`${this.name} command was executed`);
-    }
+    /**
+	 * Runs the command
+     * @param {Discord.Client} bot
+	 * @param {Discord.Message} message
+	 * @param {string[]} args
+	 * @return {Promise<void>}
+	 * @abstract
+	 */
+    async run(bot, message, args) { // eslint-disable-line require-await
+		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
+	}
     delete() {
         this.client.commands.delete(this.name);
     }

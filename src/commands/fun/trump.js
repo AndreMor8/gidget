@@ -4,7 +4,6 @@ const { __dirname } = commons(import.meta.url);
 import { MessageAttachment } from 'discord.js';
 import Jimp from 'jimp';
 let font;
-let meme;
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -18,7 +17,7 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Put something...");
     message.channel.startTyping();
     if(!font) font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-    if(!meme) meme = await Jimp.read(path.join(__dirname, "../../assets/TrumpApi.png"));
+    const meme = await Jimp.read(path.join(__dirname, "../../assets/TrumpApi.png"));
     const realtext = getWellText(args.slice(1).join(" "), 14, 88);
     meme.rotate(7);
     meme.print(font, 670, 320, realtext, 260);
