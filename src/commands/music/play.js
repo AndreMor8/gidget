@@ -267,6 +267,7 @@ async function play(guild, song) {
       musicVariables.memberVoted = [];
       if(serverQueue.loop) {
         if(serverQueue.loop?.shuffle) serverQueue.loop = false;
+        song.seektime = 0;
       } else serverQueue.songs.shift();
       if (!serverQueue.playing) serverQueue.playing = true;
       await play(guild, serverQueue.songs[0]);
