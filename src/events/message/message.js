@@ -97,30 +97,32 @@ export default async (bot, message, nolevel = false) => {
         if (!nolevel) {
           const msgDocument2 = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig();
           if (msgDocument2 && msgDocument2.levelsystem) {
-            if (!timer.get(message.author.id)) {
-              timer.set(message.author.id, true);
-              setTimeout(() => {
-                timer.delete(message.author.id);
-              }, 120000);
-              const randomAmountOfXp = Math.floor(Math.random() * 9) + 1; // Min 1, Max 10
-              const hasLeveledUp = await Levels.appendXp(
-                message.author.id,
-                message.guild.id,
-                randomAmountOfXp
-              );
-              if (hasLeveledUp) {
-                const user = await Levels.fetch(message.author.id, message.guild.id);
-                const { roles } = msgDocument2;
-                if (roles[user.level - 1]) {
-                  const toadd = roles[user.level - 1].filter(e => message.guild.roles.cache.has(e) && message.guild.roles.cache.get(e).editable && !message.guild.roles.cache.get(e).managed)
-                  message.member.roles.add(toadd);
+            if (!msgDocument2.nolevel.includes(message.channel.id)) {
+              if (!timer.get(message.author.id)) {
+                timer.set(message.author.id, true);
+                setTimeout(() => {
+                  timer.delete(message.author.id);
+                }, 120000);
+                const randomAmountOfXp = Math.floor(Math.random() * 9) + 1; // Min 1, Max 10
+                const hasLeveledUp = await Levels.appendXp(
+                  message.author.id,
+                  message.guild.id,
+                  randomAmountOfXp
+                );
+                if (hasLeveledUp) {
+                  const user = await Levels.fetch(message.author.id, message.guild.id);
+                  const { roles } = msgDocument2;
+                  if (roles[user.level - 1]) {
+                    const toadd = roles[user.level - 1].filter(e => message.guild.roles.cache.has(e) && message.guild.roles.cache.get(e).editable && !message.guild.roles.cache.get(e).managed)
+                    message.member.roles.add(toadd);
+                  }
                 }
-              }
-              if (hasLeveledUp && msgDocument2.levelnotif) {
-                const user = await Levels.fetch(message.author.id, message.guild.id);
-                await message.channel.send(
-                  `${message.author}, congratulations! You have leveled up to **${user.level}**. :tada:`
-                ).catch(() => { });
+                if (hasLeveledUp && msgDocument2.levelnotif) {
+                  const user = await Levels.fetch(message.author.id, message.guild.id);
+                  await message.channel.send(
+                    `${message.author}, congratulations! You have leveled up to **${user.level}**. :tada:`
+                  ).catch(() => { });
+                }
               }
             }
           }
@@ -157,8 +159,8 @@ export default async (bot, message, nolevel = false) => {
 
         //Autocrossposting
         const acp = message.guild.cache.autopostchannels ? message.guild.autopostchannels : await message.guild.getAutoPostChannels();
-        if(acp.includes(message.channel.id) && message.channel.type === "news") {
-          message.crosspost().catch(() => {});
+        if (acp.includes(message.channel.id) && message.channel.type === "news") {
+          message.crosspost().catch(() => { });
         }
       }
     }

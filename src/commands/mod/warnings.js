@@ -3,7 +3,7 @@ import { MessageEmbed } from "discord.js";
 export default class extends Command {
   constructor(options) {
     super(options)
-    this.aliases = ["nw"];
+    this.aliases = ["nw", "warns"];
     this.description = "It shows the warnings that the user has.";
     this.guildonly = true;
   }
