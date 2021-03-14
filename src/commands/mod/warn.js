@@ -14,7 +14,7 @@ export default class extends Command {
     if(!member) return message.channel.send("Invalid member!");
     if(member.id === message.guild.ownerID) return message.channel.send("You cannot warn the owner.");
     if(message.member.id !== message.guild.ownerID) {
-      if(member.roles.highest.comparePositionTo(message.member.roles.highest) > 0) return message.channel.send("You cannot warn someone with a role with a higher or equal rank than yours.");
+      if(member.roles.highest.comparePositionTo(message.member.roles.highest) >= 0) return message.channel.send("You cannot warn someone with a role with a higher or equal rank than yours.");
     }
     const warns = await member.setWarn(args.slice(2).join(" "));
     message.channel.send(`I've warned ${member.toString()}${args.slice(2).join(" ") ? (" with reason: " + args.slice(2).join(" ")) : ""}. Now they have ${warns} warning(s).`);

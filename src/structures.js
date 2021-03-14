@@ -52,7 +52,7 @@ Structures.extend('Guild', Guild => {
                     channels: [channel.id]
                 });
             }
-            this.autopostchannels = doc.channels;
+            this.autopostchannels = doc.channels || [];
             this.cache.autopostchannels = true;
             return;
         }
@@ -68,21 +68,21 @@ Structures.extend('Guild', Guild => {
                     channels: []
                 });
             }
-            this.autopostchannels = doc.channels;
+            this.autopostchannels = doc.channels || [];
             this.cache.autopostchannels = true;
             if (!doc.channels.includes(id)) throw new StructureError("There is no such channel in the DB.");
             return id;
         }
 
         async getAutoPostChannels() {
-            let doc = await autopost.find({ guildID: { $eq: this.id } });
+            let doc = await autopost.findOne({ guildID: { $eq: this.id } });
             if (!doc) {
                 doc = await autopost.create({
                     guildID: this.id,
                     channels: []
                 });
             }
-            this.autopostchannels = doc.channels;
+            this.autopostchannels = doc.channels || [];
             this.cache.autopostchannels = true;
             return doc.channels || [];
         }
@@ -219,8 +219,8 @@ Structures.extend('Guild', Guild => {
                 this.cache.levelconfig = true;
                 return doc;
             } else {
-                this.levelconfig = {},
-                    this.cache.levelconfig = true;
+                this.levelconfig = {};
+                this.cache.levelconfig = true;
                 return {};
             }
         }
@@ -462,7 +462,7 @@ Structures.extend('Guild', Guild => {
             this.cache.prefix = false;
             this.prefix = {};
             this.cache.levelconfig = false;
-            this.cache.levelconfig = {};
+            this.levelconfig = {};
             this.cache.messagelinksconfig = false;
             this.messagelinksconfig = {};
             this.cache.welcome = false;
@@ -508,7 +508,7 @@ Structures.extend("GuildMember", (GuildMember) => {
         }
         async setWarn(reason = "") {
             const warns = this.cache.warns ? this.warns : await this.getWarns();
-            this.cache.warns = false; 
+            this.cache.warns = false;
             const {
                 role,
                 roletime,
@@ -519,11 +519,11 @@ Structures.extend("GuildMember", (GuildMember) => {
                 bantime
             } = this.guild.cache.warnsconfig ? this.guild.warnsconfig : await this.guild.getWarnConfig();
 
-            await this.send(`You've been warned on ${this.guild.name}${reason ? (" with reason " + reason) : ""}. You have ${warns.length + 1} warning(s).`);
+            await this.send(`You've been warned on ${this.guild.name}${reason ? (" with reason " + reason) : ""}. You have ${warns.length + 1} warning(s).`).catch(() => { });
 
-            if(role && (roletime <= warns.length)) await this.roles.add(roleid, "Too many warnings").catch(() => {});
-            if(kick && (kicktime == warns.length)) await this.kick("Too many warnings").catch(() => {});
-            if(ban && (bantime == warns.length)) await this.ban({ reason: "Too many warnings" }).catch(() => {});
+            if (role && (roletime <= (warns.length + 1))) await this.roles.add(roleid, "Too many warnings").catch(() => { });
+            if (kick && (kicktime == (warns.length + 1))) await this.kick("Too many warnings").catch(() => { });
+            if (ban && (bantime == (warns.length + 1))) await this.ban({ reason: "Too many warnings" }).catch(() => { });
 
             await memberwarns.create({
                 guildId: this.guild.id,
@@ -540,7 +540,7 @@ Structures.extend("GuildMember", (GuildMember) => {
             if (deleted.memberId !== this.id) throw new StructureError("That ID doesn't exist!");
             if (deleted.guildId !== this.guild.id) throw new StructureError("That ID doesn't exist!");
             await deleted.deleteOne();
-            await this.send(`You've been pardoned on ${this.guild.name}${reason ? (" with reason: " + reason) : ""}. Now you have ${warns.length} warnings.`);
+            await this.send(`You've been pardoned on ${this.guild.name}${reason ? (" with reason: " + reason) : ""}. Now you have ${warns.length} warnings.`).catch(() => { });
             return warns.length - 1;
         }
         noCache() {

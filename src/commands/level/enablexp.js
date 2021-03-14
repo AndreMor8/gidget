@@ -1,0 +1,21 @@
+import levelconfig from "../../database/models/levelconfig.js";
+
+export default class extends Command {
+    constructor(options) {
+        super(options)
+        this.permissions = {
+            user: [8, 0],
+            bot: [0, 0]
+        }
+        this.guildonly = true;
+        this.description = "Re-enable XP on channels.";
+    }
+    async run(bot, message, args) {
+        if(!args[1]) return message.channel.send("Usage: `enablexp <channel>`");
+        const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(e => e.name === args[1]);
+        if(!channel) return message.channel.send("Invalid channel!");
+        await levelconfig.findOneAndUpdate({ guildId: { $eq: message.guild.id } }, { $pull: { nolevel: channel.id } });
+        message.guild.cache.levelconfig = false;
+        message.channel.send("The channel has been removed from the blacklist.");
+    }
+}

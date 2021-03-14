@@ -36,7 +36,7 @@ export default class extends Command {
             case 'get': {
                 const doc = message.guild.cache.autopostchannels ? message.guild.autopostchannels : await message.guild.getAutoPostChannels();
                 const str = doc.map(e => `<#${e}>`).join("\n");
-                message.channel.send(`List of channels for automatic crossposting:\n\n${str}`);
+                message.channel.send(`List of channels for automatic crossposting:\n\n${str || "*no channels added*"}`);
             }
                 break;
             default: {
