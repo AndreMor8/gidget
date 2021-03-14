@@ -519,7 +519,7 @@ Structures.extend("GuildMember", (GuildMember) => {
                 bantime
             } = this.guild.cache.warnsconfig ? this.guild.warnsconfig : await this.guild.getWarnConfig();
 
-            await this.send(`You've been warned on ${this.guild.name}${reason ? (" with reason " + reason) : ""}. You have ${warns.length + 1} warning(s).`).catch(e => { });
+            await this.send(`You've been warned on ${this.guild.name}${reason ? (" with reason " + reason) : ""}. You have ${warns.length + 1} warning(s).`).catch(() => { });
 
             if (role && (roletime <= (warns.length + 1))) await this.roles.add(roleid, "Too many warnings").catch(() => { });
             if (kick && (kicktime == (warns.length + 1))) await this.kick("Too many warnings").catch(() => { });
@@ -540,7 +540,7 @@ Structures.extend("GuildMember", (GuildMember) => {
             if (deleted.memberId !== this.id) throw new StructureError("That ID doesn't exist!");
             if (deleted.guildId !== this.guild.id) throw new StructureError("That ID doesn't exist!");
             await deleted.deleteOne();
-            await this.send(`You've been pardoned on ${this.guild.name}${reason ? (" with reason: " + reason) : ""}. Now you have ${warns.length} warnings.`).catch(e => { });
+            await this.send(`You've been pardoned on ${this.guild.name}${reason ? (" with reason: " + reason) : ""}. Now you have ${warns.length} warnings.`).catch(() => { });
             return warns.length - 1;
         }
         noCache() {
