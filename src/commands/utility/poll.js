@@ -12,7 +12,7 @@ export default class extends Command {
     this.guildonly = true;
     this.permissions = {
       user: [0, 0],
-      bot: [0, 16384]
+      bot: [0, 16448]
     };
   }
   // eslint-disable-next-line require-await
@@ -61,7 +61,6 @@ export default class extends Command {
         args = text.shift().split(" ");
         if (text.length) args.push("\n" + text.join("\n"));
         const reactions = [];
-        const toreact = [];
         args = toEmojis(args);
         const custom = /^<a?:/;
         // eslint-disable-next-line no-control-regex
@@ -79,15 +78,13 @@ export default class extends Command {
                 .join(" ")
                 .replace(/^\n| (\n)/, "$1"),
               reactions,
-              imgs,
-              toreact
+              imgs
             );
             break;
           } else if (reaction !== "") {
             if (custom.test(reaction)) {
-              toreact.push(reaction);
               reaction = reaction.substring(
-                reaction.lastIndexOf(":") + 1,
+                reaction.indexOf(":") + 1,
                 reaction.length - 1
               );
             }
@@ -100,8 +97,7 @@ export default class extends Command {
                   .join(" ")
                   .replace(/^\n| (\n)/, "$1"),
                 reactions,
-                imgs,
-                toreact
+                imgs
               );
               break;
             }
@@ -118,7 +114,7 @@ export default class extends Command {
      * @param reactions
      * @param imgs
      */
-    function cmd_sendumfrage(msg, text, reactions, imgs, toreact) {
+    function cmd_sendumfrage(msg, text, reactions, imgs) {
       if (!text) {
         text = "Image";
       }
@@ -148,23 +144,21 @@ export default class extends Command {
           files: imgs
         })
         .then(
-          poll => {
+          async poll => {
             if (msg.deletable) msg.delete();
             if (reactions.length) {
-              toreact.forEach(function (entry) {
-                poll.react(entry).catch(error => {
-                  console.log(error);
-                });
-              });
+              for(const reaction of reactions) {
+                await poll.react(reaction);
+              }
             } else {
-              poll.react(":Perfecto:460279003673001985");
-              poll.react(":Perfecto:612137351166033950");
+              await poll.react("Perfecto:460279003673001985");
+              await poll.react("WaldenNo:612137351166033950");
             }
             const newMessage = new MessageModel({
               messageId: poll.id,
               channelId: poll.channel.id,
               date: new Date(Date.now() + time),
-              reactions: reactions.length ? reactions : ["460279003673001985", "612137351166033950"]
+              reactions: poll.reactions.cache.map(e => e.emoji.identifier)
             })
             newMessage.save().then(() => interval(bot, true)).catch(() => msg.channel.send("Could not save the message and the time in database."));
           },

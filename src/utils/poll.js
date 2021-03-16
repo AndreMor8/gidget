@@ -36,7 +36,7 @@ export default (bot, reupdate = false) => {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
                   message.reactions.cache.each(r => {
-                    const tosee = r.emoji.id || r.emoji.name;
+                    const tosee = r.emoji.identifier;
                     if (!msgDocument[i].reactions.includes(tosee)) return;
                     if (r.partial) {
                       r.fetch().then(r => {
@@ -46,12 +46,12 @@ export default (bot, reupdate = false) => {
                       text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
                     }
                   });
-                  await Util.delayFor(1000)
+                  await Util.delayFor(1500);
                   const embed = message.embeds[0];
                   embed.setDescription(text).setTitle("Poll completed");
                   await message.edit(embed);
                   if (message.guild.me.hasPermission("MANAGE_MESSAGES")) {
-                    message.reactions.removeAll()
+                    message.reactions.removeAll().catch(() => {});
                   }
                 }
               }
