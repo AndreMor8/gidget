@@ -37,7 +37,7 @@
     "dotenv": "^8.2.0",
     "execa": "^5.0.0",
     "express": "^4.17.1",
-    "ffmpeg-static": "^4.2.8",
+    "ffmpeg-static": "^4.3.0",
     "file-type": "^16.3.0",
     "gif-encoder": "^0.7.2",
     "gifsicle": "^5.2.0",
