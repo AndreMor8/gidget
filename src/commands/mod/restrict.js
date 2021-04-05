@@ -1,4 +1,4 @@
-
+//NEEDS REWRITE!
 import MessageModel from '../../database/models/muterole.js';
 
 export default class extends Command {

@@ -1,5 +1,3 @@
-
-
 export default class extends Command {
   constructor(options) {
     super(options)
@@ -19,6 +17,6 @@ export default class extends Command {
     if (number > 21600 || number < 0) return message.channel.send('Invalid number. The number must be between 0 and 21600 seconds.');
     const channel = args[2] ? (message.guild.channels.cache.get(args[2]) || message.mentions.channels.first()) : message.channel;
     if (channel) await channel.edit({ rateLimitPerUser: number }, "Slowmode command").then(() => { message.channel.send('Slowmode changed to ' + number + ' seconds in ' + message.channel.toString()); }).catch(err => message.reply(`I couldn't change the slowmode. Here's a debug: ` + err));
-    else await message.reply('that\'s not a valid channel');
+    else await message.reply('That\'s not a valid channel');
   }
 }
