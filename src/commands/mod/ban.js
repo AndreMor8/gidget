@@ -19,7 +19,7 @@ export default class extends Command {
             if (user) {
                 if (user.bannable) {
                     if (!users.some(e => e.id === user.id)) {
-                        if((message.guild.owner.id !== user.member.id) && (user.roles.highest.comparePositionTo(message.member.roles.highest) < 0)) {
+                        if((message.guild.owner.id !== user.id) && (user.roles.highest.comparePositionTo(message.member.roles.highest) < 0)) {
                             users.push(user);
                         }
                     } else continue;
