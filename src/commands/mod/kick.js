@@ -10,7 +10,7 @@ export default class extends Command {
     }
     async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Usage: `kick (<user> [reason] || <users>)`")
-        const users = message.mentions.members.clone().array();
+        const users = message.mentions.members.clone().filter(e => (e.kickable) && (e.id !== message.guild.owner.id) && (e.roles.highest.comparePositionTo(message.member.roles.highest) < 0)).array();
         for (const thing of args.slice(1)) {
             if (thing.length > 19) continue;
             if (/^<@!?(\d+)>$/.test(thing)) continue;
@@ -19,7 +19,7 @@ export default class extends Command {
             if (user) {
                 if (user.kickable) {
                     if (!users.some(e => e.id === user.id)) {
-                        if((message.guild.owner.id === message.member.id) || (user.roles.highest.comparePositionTo(message.member.roles.highest) < 0)) {
+                        if((message.guild.owner.id !== user.id) && (user.roles.highest.comparePositionTo(message.member.roles.highest) < 0)) {
                             users.push(user);
                         }
                     } else continue;
@@ -29,7 +29,7 @@ export default class extends Command {
         if (users.length < 1) return message.channel.send("Invalid user(s). Make sure you have entered the correct IDs or verify that we (me and you) can kick them.");
         const kicked = [];
         for (const user of users) {
-            try {
+            try { 
                 await user.kick((users.length === 1) ? args.slice(2).join(" ") : undefined);
                 kicked.push(user);
             } catch (err) {
