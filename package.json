@@ -33,7 +33,7 @@
     "dblapi.js": "^2.4.1",
     "discord-emoji-canvas": "^1.4.0",
     "discord-ytdl-core": "^5.0.2",
-    "discord.js": "^12.5.2",
+    "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
     "execa": "^5.0.0",
     "express": "^4.17.1",
