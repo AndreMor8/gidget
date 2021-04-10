@@ -1,7 +1,7 @@
 import Discord from "discord.js";
 import b from "../../utils/badwords.js";
 const badwords = new b();
-badwords.setOptions({ whitelist: ["crap"] });
+badwords.setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
 import Levels from "../../utils/discord-xp.js";
 const timer = new Discord.Collection();
 //Only 1 command at a time.
