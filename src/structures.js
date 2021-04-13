@@ -52,7 +52,7 @@ Structures.extend('Guild', Guild => {
             this.cache.confessionconfig = true;
             return doc || {};
         }
-        
+
         async setConfessionAnon() {
             const doc = await confessions.findOne({ guildID: { $eq: this.id } });
             if (!doc) throw new StructureError("First set a channel!");
@@ -60,11 +60,11 @@ Structures.extend('Guild', Guild => {
             await doc.save();
             this.confessionconfig = doc || {};
             this.cache.confessionconfig = true;
-            return !doc.anon;
+            return doc.anon;
         }
 
         async setConfessionChannel(channel) {
-            if(channel.type !== "text" || channel.type !== "news") throw new StructureError("Only text channels are allowed!");
+            if (channel.type !== "text" && channel.type !== "news") throw new StructureError("Only text channels are allowed!");
             let doc = await confessions.findOneAndUpdate({ guildID: { $eq: this.id } }, { $set: { channelID: channel.id } }, { new: true });
             if (!doc) {
                 doc = await confessions.create({
