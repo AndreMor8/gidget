@@ -7,6 +7,7 @@ import autopost from './database/models/autopost.js';
 import guildwarnconfig from './database/models/warn.js';
 import memberwarns from './database/models/warn2.js';
 import { Structures } from 'discord.js';
+import confessions from './database/models/confessionconfig.js';
 
 //To differentiate user errors (maybe?)
 class StructureError extends Error {
@@ -32,6 +33,7 @@ Structures.extend('Guild', Guild => {
             this.connect4 = null;
             this.autopostchannels = [];
             this.warnsconfig = {};
+            this.confessionconfig = {};
             this.cache = {
                 prefix: false,
                 customresponses: false,
@@ -39,8 +41,47 @@ Structures.extend('Guild', Guild => {
                 messagelinksconfig: false,
                 welcome: false,
                 autopostchannels: false,
-                warnsconfig: false
+                warnsconfig: false,
+                confessionconfig: false
             };
+        }
+
+        async getConfessionConfig() {
+            const doc = await confessions.findOne({ guildID: { $eq: this.id } });
+            this.confessionconfig = doc || {};
+            this.cache.confessionconfig = true;
+            return doc || {};
+        }
+        
+        async setConfessionAnon() {
+            const doc = await confessions.findOne({ guildID: { $eq: this.id } });
+            if (!doc) throw new StructureError("First set a channel!");
+            doc.anon = !doc.anon;
+            await doc.save();
+            this.confessionconfig = doc || {};
+            this.cache.confessionconfig = true;
+            return !doc.anon;
+        }
+
+        async setConfessionChannel(channel) {
+            if(channel.type !== "text" || channel.type !== "news") throw new StructureError("Only text channels are allowed!");
+            let doc = await confessions.findOneAndUpdate({ guildID: { $eq: this.id } }, { $set: { channelID: channel.id } }, { new: true });
+            if (!doc) {
+                doc = await confessions.create({
+                    guildID: this.id,
+                    channelID: channel.id
+                });
+            }
+            this.confessionconfig = doc || {};
+            this.cache.confessionconfig = true;
+            return;
+        }
+
+        async deleteConfessionConfig() {
+            await confessions.deleteOne({ guildID: { $eq: this.id } });
+            this.confessionconfig = {};
+            this.cache.confessionconfig = true;
+            return;
         }
 
         async setAutoPostChannel(channel) {

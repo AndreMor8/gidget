@@ -10,8 +10,8 @@ export default async function (bot, interaction) {
                     }
                 }
             })
-            break;
         }
+            break;
         case 'say': {
             await bot.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
@@ -24,7 +24,19 @@ export default async function (bot, interaction) {
                     }
                 }
             })
+        }
             break;
+        case 'confession': {
+            console.log(interaction);
+            await bot.api.interactions(interaction.id, interaction.token).callback.post({
+                data: {
+                    type: 3,
+                    data: {
+                        content: 'Wubbzy is the best! <a:WubbzyFaceA:612311062611492900>'
+                    },
+                    flags: 64
+                }
+            })
         }
     }
 }
