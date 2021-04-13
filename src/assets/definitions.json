@@ -4,6 +4,11 @@
     "onlyguild": false,
     "secret": false
   },
+  "confessions": {
+    "name": "Commands to configure confessions",
+    "onlyguild": false,
+    "secret": false
+  },
   "custom-responses": {
     "name": "Custom responses commands",
     "onlyguild": false,
