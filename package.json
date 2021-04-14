@@ -21,7 +21,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.5.0",
     "@sindresorhus/to-milliseconds": "^1.2.0",
-    "@vitalets/google-translate-api": "^5.1.0",
+    "@vitalets/google-translate-api": "^7.0.0",
     "badwords.js": "^0.1.6",
     "boats.js": "^2.5.1",
     "bombsweeper.js": "^1.0.1",
