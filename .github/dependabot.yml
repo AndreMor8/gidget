@@ -6,7 +6,7 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   assignees:
-  - AndreMor955
+  - AndreMor8
   labels:
   - dependencies
   versioning-strategy: increase

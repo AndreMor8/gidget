@@ -33,4 +33,4 @@ Some commands in this bot have *Wow! Wow! Wubbzy!* as topic or refer to it.
 
 This bot is compatible with DM channels. Although not all commands will obviously work.
 
-You can freely contribute to the bot by [GitHub](https://github.com/AndreMor955/gidget/) either by issues or by pull requests, if the changes are approved then you will see them in the real bot. Thanks for contributing.
+You can freely contribute to the bot by [GitHub](https://github.com/AndreMor8/gidget/) either by issues or by pull requests, if the changes are approved then you will see them in the real bot. Thanks for contributing.

@@ -6,7 +6,7 @@ export default class extends Command {
     }
     async run(bot, message) {
         message.channel.startTyping();
-        const att = new MessageAttachment("https://contributors-img.web.app/image?repo=AndreMor955/gidget", "contributors.png");
+        const att = new MessageAttachment("https://contributors-img.web.app/image?repo=AndreMor8/gidget", "contributors.png");
         const embed = new MessageEmbed()
         .attachFiles([att])
         .setTitle("Some of the people who helped in some way with this project =D")
@@ -14,7 +14,7 @@ export default class extends Command {
         .addField("Awoo", "Access to a free VPS :)")
         .addField("Hyuuh", "https://gidget.xyz domain (1 year)")
         .addField("NeonBluu", "Support server creation and design")
-        .addField("GitHub", "[Those who contributed to the bot code](https://github.com/AndreMor955/gidget/graphs/contributors)")
+        .addField("GitHub", "[Those who contributed to the bot code](https://github.com/AndreMor8/gidget/graphs/contributors)")
         .setImage("attachment://contributors.png");
         await message.channel.send(embed);
         message.channel.stopTyping();

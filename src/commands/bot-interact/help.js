@@ -1,6 +1,6 @@
 import def from "../../assets/definitions.json";
 import Discord from "discord.js";
-const links = `[Bot's page (in progress)](https://gidget.xyz/) | [Bot's documentation](https://docs.gidget.xyz) | [Source code](https://github.com/AndreMor955/gidget) | [AndreMor's page](https://andremor.ml) | [Discord.js documentation](https://discord.js.org/#/docs/)`;
+const links = `[Bot's page (in progress)](https://gidget.xyz/) | [Bot's documentation](https://docs.gidget.xyz) | [Source code](https://github.com/AndreMor8/gidget) | [AndreMor's page](https://andremor.ml) | [Discord.js documentation](https://discord.js.org/#/docs/)`;
 const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | [top.gg](https://top.gg/bot/694306281736896573) | [DiscordBotList](https://discordbotlist.com/bots/gidget) | [Discord Boats](https://discord.boats/bot/694306281736896573)`;
 export default class extends Command {
   constructor(options) {
