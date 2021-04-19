@@ -13,10 +13,10 @@ export default class extends Command {
         this.aliases = ["fakequote"];
     }
     async run(bot, message, args) {
-        const miembro = message.mentions.members.first()
-        if (!miembro) return message.channel.send("Mention someone")
-        const mensaje = args.slice(2).join(" ")
-        if (!mensaje) return message.channel.send("Put some message")
+        const miembro = message.mentions.members.first();
+        if (!miembro) return message.channel.send("Mention someone");
+        const mensaje = args.slice(2).join(" ");
+        if (!mensaje) return message.channel.send("Put some message");
 
         const canvas = Canvas.createCanvas(600, 69)
         const ctx = canvas.getContext('2d')
