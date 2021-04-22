@@ -12,6 +12,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     //https://djsdocs.sorta.moe/v2/embed?src=stable&q=Client
+    if (!args[1]) return message.channel.send("What do you want to look for in the Discord.js documentation?");
     let src = "";
     let cont = "";
     if (["stable", "master", "commando", "rpc", "akairo", "akairo-master", "collection"].includes(args[1]?.toLowerCase())) {
@@ -23,7 +24,7 @@ export default class extends Command {
     }
     const page = `https://djsdocs.sorta.moe/v2/embed?src=${encodeURIComponent(src)}&q=${encodeURIComponent(cont)}`;
     const r = await fetch(page);
-    if(!r.ok) return message.channel.send(`Error: Status code from ${page} returned ${r.status} (${r.statusText})`)
+    if (!r.ok) return message.channel.send(`Error: Status code from ${page} returned ${r.status} (${r.statusText})`)
     const res = await r.json();
     if (!res) return message.channel.send(new MessageEmbed().setTitle("Error").setDescription("No results found"));
     if (res.error) return message.channel.send(new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message));

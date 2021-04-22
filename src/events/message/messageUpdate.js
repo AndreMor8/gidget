@@ -1,4 +1,5 @@
 export default (bot, oldMessage, newMessage) => {
+  if(!oldMessage) return;
   if(newMessage.partial) return;
   if(newMessage.author.bot) return;
   //No embed repeats

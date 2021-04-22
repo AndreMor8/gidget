@@ -43,7 +43,7 @@ export default async (bot, reaction, user) => {
     if (msgDocument3) return user.send("You already have a ticket!").catch(() => {});
     if(!reaction.message.guild.me.hasPermission("MANAGE_CHANNELS")) return user.send("I don't have permissions, sorry :(\nContact your server administrator.").catch(() => {})
     const { categoryId, roles } = msgDocument2;
-    const cat = reaction.message.guild.channels.cache.get(categoryId);
+    const cat = reaction.message.guild.channels.cache.get(categoryId) || await reaction.message.guild.channels.fetch(categoryId).catch(() => {});
     const roleperm = [
       {
         allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],

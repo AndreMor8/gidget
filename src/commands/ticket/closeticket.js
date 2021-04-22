@@ -20,7 +20,7 @@ export default class extends Command {
     const finish = async (staff = false) => {
       try {
         const { memberId, channelId } = msgDocument2;
-        const channel = message.guild.channels.cache.get(channelId);
+        const channel = message.guild.channels.cache.get(channelId) || await message.guild.channels.fetch(channelId || "123").catch(() => {});
         const member = message.guild.members.cache.get(memberId);
         if (channel) {
           await channel.delete("Finished ticket!");

@@ -43,7 +43,7 @@ export default class extends Command {
             case "channel": {
                 if (!args[2])
                     return message.channel.send("You have not put a channel");
-                const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.get(args[2]) || message.guild.channels.cache.find(e => e.name === args.slice(2).join(" "));
+                const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.get(args[2]) || message.guild.channels.cache.find(e => e.name === args.slice(2).join(" ")) || await message.guild.channels.fetch(args[2] || "123").catch(() => {});
                 if (!channel)
                     return message.channel.send("Invalid channel");
                 if (channel.type !== "text" && channel.type !== "news")

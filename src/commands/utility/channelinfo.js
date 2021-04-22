@@ -19,7 +19,7 @@ export default class extends Command {
       store: "Store channel",
       unknown: "Guild channel"
     };
-    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name.replace("#", "") === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || message.channel;
+    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name.replace("#", "") === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || await message.guild.channels.fetch(args[1] || "123").catch(() => {}) || message.channel;
     const embed = new MessageEmbed()
       .setTitle("Channel information for " + channel.name)
       .setColor("RANDOM")

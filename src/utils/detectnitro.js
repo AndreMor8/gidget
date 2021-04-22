@@ -1,6 +1,5 @@
 import fetch from "node-fetch";
 import OAuth2 from "../database/models/OAuth2Credentials.js";
-import DiscordUser from "../database/models/DiscordUser.js";
 import CryptoJS from "crypto-js";
 
 const cache = new Map();
@@ -10,6 +9,13 @@ export default async function (user) {
     if (saved) return saved;
     const data = await OAuth2.findOne({ discordId: user.id });
     if (!data) {
+        const thing = { type: null, value: -1 };
+        cache.set(user.id, thing);
+        setTimeout((id) => {
+            cache.delete(id)
+        }, 60000, user.id);
+        return thing;
+    } else if (data.invalid) {
         const thing = { type: null, value: -1 };
         cache.set(user.id, thing);
         setTimeout((id) => {
@@ -34,22 +40,13 @@ export default async function (user) {
             }, 60000, user.id);
             return thing;
         } else {
-            const otherthing = await DiscordUser.findOne({ discordId: user.id });
-            if (otherthing && otherthing.premium_type) {
-                const thing = { type: "db", value: otherthing.premium_type || 0 };
-                cache.set(user.id, thing);
-                setTimeout((id) => {
-                    cache.delete(id)
-                }, 60000, user.id);
-                return thing;
-            } else {
-                const thing = { type: null, value: -1 };
-                cache.set(user.id, thing)
-                setTimeout((id) => {
-                    cache.delete(id)
-                }, 60000, user.id);
-                return thing;
-            }
+            data.updateOne({ invalid: true });
+            const thing = { type: null, value: -1 };
+            cache.set(user.id, thing)
+            setTimeout((id) => {
+                cache.delete(id)
+            }, 60000, user.id);
+            return thing;
         }
     }
 }

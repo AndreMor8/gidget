@@ -24,20 +24,20 @@ export default class extends Command {
         }
         else {
             try {
+                const allEmojis = await message.guild.emojis.fetch();
                 const fetchedMessage = await message.channel.messages.fetch(args[1]);
                 if (fetchedMessage) {
                     await message.channel.send("Please provide all of the emoji names with the role name, one by one, separated with a comma.\ne.g: WubbzyWalk, A Wubbzy Fan, where the emoji name comes first, role name comes second.\nType `?done` when you finish.");
                     const collector = new MessageCollector(message.channel, msgCollectorFilter.bind(null, message));
                     const emojiRoleMappings = new Map();
                     collector.on('collect', msg => {
-                        const { cache } = msg.guild.emojis;
                         if (msg.content.toLowerCase() === '?done') {
                             collector.stop('done command was issued.');
                             return;
                         }
                         const [emojiName, roleName] = msg.content.split(/,\s+/);
                         if (!emojiName && !roleName) return;
-                        let emoji = cache.find(emoji => (emoji.toString() === emojiName) || (emoji.name.toLowerCase() === emojiName.toLowerCase()));
+                        let emoji = allEmojis.find(emoji => (emoji.toString() === emojiName) || (emoji.name.toLowerCase() === emojiName.toLowerCase()));
                         if (!emoji) {
                             if (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emojiName)) {
                                 emoji = emojiName;
@@ -48,7 +48,7 @@ export default class extends Command {
                                 return;
                             }
                         }
-                        const role = msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
+                        const role = msg.guild.roles.cache.get(roleName) || msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                         if (!role) {
                             msg.channel.send("Role does not exist. Try again.")
                                 .then(msg => msg.delete({ timeout: 2000 }))
@@ -56,7 +56,6 @@ export default class extends Command {
                             return;
                         }
                         fetchedMessage.react(emoji)
-                            .then(() => console.log("Reacted."))
                             .catch(err => console.log(err));
                         emojiRoleMappings.set((emoji.id || emoji), role.id);
                     });
@@ -65,7 +64,6 @@ export default class extends Command {
                             .findOne({ messageId: fetchedMessage.id, guildId: message.guild.id })
                             .catch(err => console.log(err));
                         if (findMsgDocument) {
-                            console.log("The message exists.. Don't save...");
                             await message.channel.send("A role reaction set up exists for this message already...");
                         }
                         else {
@@ -75,8 +73,7 @@ export default class extends Command {
                                 emojiRoleMappings: emojiRoleMappings
                             });
                             dbMsgModel.save()
-                                .then(async m => {
-                                    console.log(m);
+                                .then(async () => {
                                     bot.cachedMessageReactions.delete(fetchedMessage.id);
                                     await message.channel.send('I\'ve added that to my database.');
                                 })
@@ -86,7 +83,6 @@ export default class extends Command {
                 }
             }
             catch (err) {
-                console.log(err);
                 const msg = await message.channel.send("Invalid ID. Message was not found :(");
                 await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
             }

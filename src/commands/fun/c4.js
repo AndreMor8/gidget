@@ -14,6 +14,7 @@ import c4lib from 'connect4-ai';
 const { Connect4, Connect4AI } = c4lib;
 import { displayConnectFourBoard, displayBoard } from '../../utils/c4.js';
 import c4top from '../../database/models/c4.js';
+const turns = new Map();
 
 export default class extends Command {
     constructor(options) {
@@ -32,18 +33,18 @@ export default class extends Command {
         let user = (["hard", "medium", "easy"].includes(args[1].toLowerCase()) ? bot.user : (message.mentions.users.first() || message.guild.members.cache.get(args[1]) || await message.guild.members.fetch(args[1] || "123").catch(() => { }) || message.guild.members.cache.find(e => (e.user?.username === args.slice(1).join(" ")) || (e.user?.tag === args.slice(1).join(" ") || (e.displayName === args.slice(1).join(" "))))));
         if (user?.user) user = user.user;
         if (!user || user.id === message.author.id || (user.bot && user.id !== bot.user.id)) return message.channel.send("Invalid member!");
-        if (user.c4turn) return message.channel.send("This user is playing the same game on another server! Try with someone else.");
+        if (turns.get(user.id)) return message.channel.send("This user is playing the same game on another server! Try with someone else.");
         message.guild.game = user.id === bot.user.id ? (new Connect4AI()) : (new Connect4());
         if (user.id === bot.user.id) {
             const difficulty = ["hard", "medium", "easy"].includes(args[1].toLowerCase()) ? args[1].toLowerCase() : "medium";
-            message.author.c4turn = 1;
+            turns.set(message.author, 1);
             const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
             await message.channel.send({
                 content: `${message.author.toString()}, it's your turn! [🔴]`,
                 files: [{ attachment: res, name: "connect4.gif" }],
                 allowedMentions: { parse: ["users"] }
             });
-            const col2 = message.channel.createMessageCollector(msg => (([message.author.id].includes(msg.author.id) && msg.content === "terminate") || (msg.author.c4turn === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), { idle: 120000 });
+            const col2 = message.channel.createMessageCollector(msg => (([message.author.id].includes(msg.author.id) && msg.content === "terminate") || (turns.get(msg.author.id) === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), { idle: 120000 });
             col2.on('collect', async (msg) => {
                 if (msg.content === "terminate") {
                     message.channel.send(`You ended this game! See you soon!`, { allowedMentions: { parse: ["users"] } });
@@ -92,7 +93,7 @@ export default class extends Command {
             })
             col2.on('end', async (c, r) => {
                 message.guild.game = null;
-                message.author.c4turn = null;
+                turns.delete(message.author.id);
                 let doc = await c4top.findOne({ difficulty, userId: message.author.id });
                 if(!doc) {
                     doc = await c4top.create({
@@ -118,15 +119,16 @@ export default class extends Command {
             col.on("collect", async (m) => {
                 if (m.content.toLowerCase() === "y") {
                     col.stop("ok");
-                    user.c4turn = Math.floor(Math.random() * 2) + 1;
-                    message.author.c4turn = user.c4turn == 2 ? 1 : 2;
+                    const generatedTurn = Math.floor(Math.random() * 2) + 1; 
+                    turns.set(user.id, generatedTurn);
+                    turns.set(message.author.id, generatedTurn == 2 ? 1 : 2);
                     const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
                     await message.channel.send({
-                        content: `${message.author.c4turn == 1 ? message.author.toString() : user.toString()}, it's your turn! [🔴]`,
+                        content: `${turns.get(message.author.id) == 1 ? message.author.toString() : user.toString()}, it's your turn! [🔴]`,
                         files: [{ attachment: res, name: "connect4.gif" }],
                         allowedMentions: { parse: ["users"] }
                     });
-                    const col2 = message.channel.createMessageCollector(msg => (([user.id, message.author.id].includes(msg.author.id) && msg.content === "terminate") || (msg.author.c4turn === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), { idle: 120000 });
+                    const col2 = message.channel.createMessageCollector(msg => (([user.id, message.author.id].includes(msg.author.id) && msg.content === "terminate") || (turns.get(msg.author.id) === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), { idle: 120000 });
                     col2.on('collect', async (msg) => {
                         if (msg.content === "terminate") {
                             message.channel.send(`${msg.author.toString()} ended this game! See you soon!`, { allowedMentions: { parse: ["users"] } });
@@ -153,15 +155,15 @@ export default class extends Command {
                         }
                         const res = await displayConnectFourBoard(displayBoard(msg.guild.game.ascii()), msg.guild.game);
                         message.channel.send({
-                            content: `${message.author.c4turn == msg.author.c4turn ? user.toString() : message.author.toString()}, it's your turn! [${msg.author.c4turn == 2 ? "🔴" : "🟡"}]`,
+                            content: `${turns.get(message.author.id) == turns.get(msg.author.id) ? user.toString() : message.author.toString()}, it's your turn! [${turns.get(msg.author.id) == 2 ? "🔴" : "🟡"}]`,
                             files: [{ attachment: res, name: "connect4.gif" }],
                             allowedMentions: { parse: ["users"] }
                         });
                     })
                     col2.on('end', (c, r) => {
                         message.guild.game = null;
-                        user.c4turn = null;
-                        message.author.c4turn = null;
+                        turns.delete(user.id);
+                        turns.delete(message.author.id);
                         if (r === "idle") {
                             message.channel.send("Waiting time is over (2m)! Bye.");
                         }

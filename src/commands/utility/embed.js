@@ -13,7 +13,7 @@ export default class extends Command {
     let i = 0;
     let channel;
     if (message.guild) {
-      channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || message.channel;
+      channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => {}) || message.channel;
       if (channel.guild.id !== message.guild.id)
         return message.channel.send("That channel is from another guild");
       if (!["text", "news"].includes(channel.type))

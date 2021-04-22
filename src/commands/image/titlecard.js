@@ -1,3 +1,4 @@
+import { mwn } from 'mwn';
 import { MessageEmbed } from 'discord.js';
 
 export default class extends Command {
@@ -11,7 +12,12 @@ export default class extends Command {
         }
     }
     async run(bot, message, args) {
-        const pages = (await bot.wubbzy.getPagesInCategory("Category:Episodes", { cmtype: "page" })).filter(e => !e.includes("/"));
+        const mediabot = new mwn({
+            apiUrl: 'https://wubbzy.fandom.com/api.php',
+            userAgent: `GidgetDiscordBot ${bot.botVersion}`
+        });
+        await mediabot.getSiteInfo();
+        const pages = (await mediabot.getPagesInCategory("Category:Episodes", { cmtype: "page" })).filter(e => !e.includes("/"));
         const page = pages.find(e => {
             const to = e.replace("(episode)", "").trimEnd();
             return to.toLowerCase() === args.slice(1).join(" ").toLowerCase() || to.replace("!", "").toLowerCase() === args.slice(1).join(" ").toLowerCase();
@@ -22,7 +28,7 @@ export default class extends Command {
            .setTitle("List of episodes");
            return await message.channel.send(embed);
         }
-        const res = await bot.wubbzy.request({
+        const res = await mediabot.request({
             "action": "imageserving",
             "wisTitle": page,
         });

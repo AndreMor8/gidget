@@ -206,6 +206,7 @@ export default class extends Command {
           );
         await message.channel.send(embed);
       } catch (err) {
+        console.log(err);
         embed
           .addField("Full Username", user.tag + "\n" + user.toString(), true)
           .addField("ID", user.id, true)

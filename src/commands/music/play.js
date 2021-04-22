@@ -19,9 +19,9 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Please enter a YouTube link or search term.");
 
     //In where the bot is going to connect?
-    const voiceChannel = message.member.voice.channel;
-    if (!voiceChannel) return message.channel.send("You need to be in a voice channel to play music!");
-
+    const eeee = message.member.voice.channel;
+    if (!eeee) return message.channel.send("You need to be in a voice channel to play music!");
+    const voiceChannel = await message.guild.channels.fetch(message.member.voice.channelID);
     //See if a music system is already executing
     const serverQueue = message.guild.queue;
     if (serverQueue) {
@@ -292,6 +292,7 @@ async function play(guild, song) {
     serverQueue.songs.shift();
     if (serverQueue.textChannel) {
       serverQueue.textChannel.stopTyping();
+      console.log(err);
       await serverQueue.textChannel
         .send("An error ocurred with the YouTube stream: " + err)
         .catch(err => console.log(err));

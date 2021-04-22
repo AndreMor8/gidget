@@ -21,6 +21,7 @@ export default class extends Command {
         true: 'Anyone',
         false: 'Mention Everyone perm'
       }
+      /*
       const fullmembers = role.members.size;
       const bots = role.members.filter(m => m.user.bot).size;
       const members = fullmembers - bots;
@@ -46,7 +47,7 @@ export default class extends Command {
       } else {
         mtext += fullmembers + '\nHumans: ' + members + '\nBots: ' + bots;
       }
-
+*/
       const perms = role.permissions.toArray();
       let permstext = "";
       if (perms.indexOf('ADMINISTRATOR') === -1) {
@@ -58,8 +59,9 @@ export default class extends Command {
       let channel = args[args.length - 1];
       if (channel.charAt(0) == "-") {
         channel =
-          message.mentions.channels.first() ||
+          message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() ||
           message.guild.channels.cache.get(channel.substring(1)) ||
+          await message.guild.channels.fetch(channel.substring(1)).catch(() => {}) ||
           message.channel;
       } else {
         channel = message.channel;
@@ -81,7 +83,7 @@ export default class extends Command {
         .addField('Mention', role.toString() + ' `' + role.toString() + '`', true)
         .addField('Managed?', mng[role.managed], true)
         .addField('Hoisted?', mng[role.hoist], true)
-        .addField('Members ', mtext, true)
+        /*.addField('Members ', mtext, true)*/
         .addField('Mentionable by', mb[role.mentionable], true)
         .addField('Color', 'Base 10: ' + role.color + '\nHex: ' + role.hexColor, true)
         .addField('Position', `Role Manager: ${role.position}\nAPI: ${role.rawPosition}`, true)

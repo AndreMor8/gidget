@@ -17,13 +17,13 @@ export default class extends Command {
     if (!args[1])
       return message.channel.send("Usage: emoji <emoji>");
     let emoji = bot.emojis.cache.get(args[1]) ||
-      bot.emojis.cache.find(e => e.name === args[1]);
+      bot.emojis.cache.find(e => e.name === args[1]) || await message.guild.emojis.fetch(args[1]).catch(() => {});
     if (!emoji) {
       const e = Util.parseEmoji(args[1]);
       if (!e.id)
         emoji = bot.emojis.cache.find(a => a.name === e.name);
       else
-        emoji = bot.emojis.cache.get(e.id);
+        emoji = bot.emojis.cache.get(e.id) || await message.guild.emojis.fetch(e.id).catch(() => {});
       if (!emoji)
         return message.channel.send("Invalid emoji!");
     }

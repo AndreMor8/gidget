@@ -70,16 +70,16 @@ function handleCollector(fetchedMessage, author, channel, msgModel) {
         const collectorFilter = (m) => m.author.id === author.id;
         const collector = new MessageCollector(channel, collectorFilter);
         const emojiRoleMappings = new Map(Object.entries(msgModel.emojiRoleMappings));
-        collector.on('collect', msg => {
+        collector.on('collect', async msg => {
             if (msg.content.toLowerCase() === '?done') {
                 collector.stop();
                 resolve();
             }
             else {
-                const { cache } = msg.guild.emojis;
+                const allEmojis = await msg.guild.emojis.fetch();
                 const [emojiName, roleName] = msg.content.split(/,\s+/);
                 if (!emojiName && !roleName) return;
-                let emoji = cache.find(emoji => (emoji.toString() === emojiName) || (emoji.name.toLowerCase() === emojiName.toLowerCase()));
+                let emoji = allEmojis.find(emoji => (emoji.toString() === emojiName) || (emoji.name.toLowerCase() === emojiName.toLowerCase()));
                 if (!emoji) {
                     if (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emojiName)) {
                         emoji = emojiName;
@@ -90,7 +90,7 @@ function handleCollector(fetchedMessage, author, channel, msgModel) {
                         return;
                     }
                 }
-                const role = msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
+                const role = msg.guild.roles.cache.get(roleName) || msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                 if (!role) {
                     msg.channel.send("Role does not exist. Try again.")
                         .then(msg => msg.delete({ timeout: 2000 }))

@@ -47,6 +47,7 @@ export async function registerCommands(bot, dir) {
         }
     }
     global.Command = null;
+    delete global.Command;
 }
 export async function registerEvents(bot, dir) {
     const files = await fs.readdir(path.join(__dirname, dir));

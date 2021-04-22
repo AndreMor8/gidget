@@ -21,7 +21,7 @@ export default class extends Command {
         .setTitle(message.guild.name + " ticket config")
         .setDescription(`For the message with ID ` + msgDocument.messageId + `. [Message Link](https://ptb.discordapp.com/channels/${msgDocument.guildId}/${msgDocument.channelId}/${msgDocument.messageId})\n\`modifyticket <id> <option> <...args>\``)
         .addField("Channel", "<#" + msgDocument.channelId + ">")
-        .addField("Category (category)", message.guild.channels.cache.get(msgDocument.categoryId).name)
+        .addField("Category (category)", await message.guild.channels.fetch(msgDocument.categoryId).then(e => e.name))
         .addField("Roles (setroles)", msgDocument.roles[0] ? msgDocument.roles.map(r => "<@&" + r + ">").join(", ") : "No Roles")
         .addField("Manual closing? (manual)", manual ? "Yes" : "No")
         .addField("Emoji to react", Number(msgDocument.emojiId) ? (bot.emojis.cache.get(msgDocument.emojiId) ? bot.emojis.cache.get(msgDocument.emojiId).toString() : "Deleted") : msgDocument.emojiId)

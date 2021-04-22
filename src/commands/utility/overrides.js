@@ -6,7 +6,7 @@ export default class extends Command {
     this.aliases = ["overwrites"];
   }
   async run(bot, message, args) {
-    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || message.channel;
+    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || await message.guild.channels.fetch(args[1] || "123").catch(() => {}) || message.channel;
     if (channel.guild.id !== message.guild.id) return message.channel.send("The channel you have put belongs to another server.");
     const rr = channel.permissionOverwrites.filter(m => m.type === "member").map(m => m.id)
     for (const i in rr) {

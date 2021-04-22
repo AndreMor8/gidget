@@ -1,4 +1,3 @@
-import Discord from "discord.js";
 import MessageModel from "../../database/models/ticket.js";
 import MessageModel2 from "../../database/models/message.js";
 import MessageModel3 from "../../database/models/poll.js";

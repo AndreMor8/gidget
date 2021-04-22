@@ -14,6 +14,7 @@ setInterval(() => {
 export default async (bot, message, nolevel = false) => {
   if (message.author.bot) return;
   if (message.guild && !message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return;
+  await message.member.fetch();
   try {
     //All-time message code
     //For the moment this is a code for only 1 server
@@ -136,7 +137,7 @@ export default async (bot, message, nolevel = false) => {
           if (matches && matches.length) {
             const urlobj = new URL(matches[0]);
             const [channelid, messageid] = urlobj.pathname.split("/").slice(3);
-            const channel = bot.channels.cache.get(channelid);
+            const channel = bot.channels.cache.get(channelid) || await bot.channels.fetch(channelid).catch(() => {});
             if (channel && channel.permissionsFor(message.author).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
               const msg = channel.messages.cache.filter(e => !e.partial).get(messageid) || (messageid ? (await channel.messages.fetch(messageid).catch(() => { })) : undefined)
               if (msg) {

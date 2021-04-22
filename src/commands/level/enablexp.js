@@ -12,7 +12,7 @@ export default class extends Command {
     }
     async run(bot, message, args) {
         if(!args[1]) return message.channel.send("Usage: `enablexp <channel>`");
-        const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(e => e.name === args[1]);
+        const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(e => e.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => {});
         if(!channel) return message.channel.send("Invalid channel!");
         await levelconfig.findOneAndUpdate({ guildId: { $eq: message.guild.id } }, { $pull: { nolevel: channel.id } });
         message.guild.cache.levelconfig = false;

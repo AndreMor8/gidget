@@ -54,7 +54,6 @@ export default class extends Command {
             .findOne({ guildid: message.guild.id, word: args.slice(2).join(" ") })
             .catch(err => console.log(err));
           if (findMsgDocument) {
-            console.log("That name exists.. Don't save...");
             return message.channel.send("That name already exists...");
           } else {
             const dbMsgModel = new MessageModel({

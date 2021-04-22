@@ -32,6 +32,7 @@ export default class extends Command {
             }
             await message.channel.send(embed);
         } else {
+            const allChannels = await message.guild.channels.fetch();
             switch (args[1].toLowerCase()) {
                 case "enable": {
                     await list.updateOne({ enabled: (list.enabled ? false : true) });
@@ -48,7 +49,7 @@ export default class extends Command {
                     if (channels.length < 1) return message.channel.send("No channels selected");
                     const realchannels = [];
                     for (const channel of channels) {
-                        if (message.guild.channels.cache.get(channel)) realchannels.push(channel);
+                        if (allChannels.get(channel)) realchannels.push(channel);
                     }
                     if (realchannels.length < 1) return message.channel.send("No channels selected");
                     await list.updateOne({ $push: { list: { roleID: role.id, channels: realchannels } } });
@@ -58,7 +59,7 @@ export default class extends Command {
                 case "remove": {
                     if (!args[2]) return message.channel.send(`voicerole remove <roleid>`);
                     let role = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]) || message.guild.roles.cache.find(e => e.name === args.slice(2).join(" "));
-                    if(!role) role = { id: args[2] };
+                    if (!role) role = { id: args[2] };
                     if (!list.list.find(e => e.roleID === role.id)) return message.channel.send("No role found in the database");
                     await list.updateOne({ $pull: { list: { roleID: role.id } } });
                     await message.channel.send("The role has been removed from the DB.");
@@ -76,7 +77,7 @@ export default class extends Command {
                         if (channels.length < 1) return message.channel.send("No channels selected");
                         const realchannels = [];
                         for (const channel of channels) {
-                            if (message.guild.channels.cache.get(channel)) realchannels.push(channel);
+                            if (allChannels.get(channel)) realchannels.push(channel);
                         }
                         if (realchannels.length < 1) return message.channel.send("No channels selected");
                         thing.channels = realchannels;

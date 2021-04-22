@@ -10,16 +10,38 @@ import { registerCommands, registerEvents, registerWsEvents } from './utils/regi
 import DBL from 'dblapi.js';
 
 //Discord import
-import Discord from 'discord.js';
+import Discord from 'discord.js-light';
 
 //Discord.js extended structures
 import './structures.js';
 
-//Wiki
-import { mwn } from 'mwn';
-
 //Bot client
-const bot = new Discord.Client({ partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"], ws: { properties: { $browser: "Discord Android" }, intents: 32511 }, allowedMentions: { parse: [] }, presence: { status: "dnd", activity: { name: "Ready event (Loading...)", type: "LISTENING" } } });
+const bot = new Discord.Client({
+  partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"],
+  ws: {
+    properties: {
+      $browser: "Discord Android"
+    },
+    intents: 32511
+  },
+  allowedMentions: {
+    parse: []
+  },
+  presence: {
+    status: "dnd",
+    activity: {
+      name: "Ready event (Loading...)",
+      type: "LISTENING"
+    }
+  },
+  cacheGuilds: true,
+  cacheChannels: false,
+  cacheOverwrites: true,
+  cacheRoles: true,
+  cacheEmojis: false,
+  cachePresences: false,
+  messageEditHistoryMaxSize: 3
+});
 
 //top.gg
 if (process.env.EXTERNAL === "yes") {
@@ -32,7 +54,7 @@ if (process.env.EXTERNAL === "yes") {
   });
 }
 
-//Global definitions
+
 bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
 bot.botVersion = "1.00 Final";
 (async () => {
@@ -48,18 +70,9 @@ bot.botVersion = "1.00 Final";
   await registerEvents(bot, "../events");
   await registerWsEvents(bot, "../ws-events");
   //Login with Discord
-  if(process.argv[2] !== "ci") bot.wubbzy = await mwn.init({
-    apiUrl: 'https://wubbzy.fandom.com/api.php',
-    username: process.env.WIKI_USERNAME,
-    password: process.env.WIKI_PASSWORD,
-    userAgent: `GidgetDiscordBot ${bot.botVersion}`,
-    defaultParams: {
-      assert: 'user'
-    }
-  });
   if (process.argv[2] !== "ci") {
     await bot.login();
-    if (global.gc) gc();
+    if (global.gc) setTimeout(() => global.gc(), 60000);
   } else process.exit();
 })().catch(err => {
   console.log(err);

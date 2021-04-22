@@ -16,15 +16,15 @@ export default class extends Command {
     if (message.member.hasPermission("ADMINISTRATOR")) {
       if (!args[1]) return message.channel.send("Put a text channel");
       const channel =
-        message.mentions.channels.first() ||
+        message.mentions.channels.filter(e => e.guild.id !== message.guild.id).first() ||
         message.guild.channels.cache.get(args[1]) ||
-        message.guild.channels.cache.find(c => c.name === args[1]);
-      if (!channel) return message.channel.send("Invalid channel!");
-      if (channel.type !== "text") return message.channel.send("Invalid channel type!");
+        message.guild.channels.cache.find(c => c.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => {});
+      if (!channel) return message.channel.send("Invalid channel! (arg 1)");
+      if (channel.type !== "text") return message.channel.send("Invalid channel type! (arg 1)");
       if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have the `SEND_MESSAGES` and the `EMBED_LINKS` permission in that channel");
       if (!args[2]) return message.channel.send("Put a category channel!")
       const category = message.guild.channels.cache.get(args[2]) ||
-        message.guild.channels.cache.find(c => c.name === args[2]);
+        message.guild.channels.cache.find(c => c.name === args[2]) || await message.guild.channels.fetch(args[2] || "123").catch(() => {});
       if (!category) return message.channel.send("Invalid channel! (arg 2)");
       if (category.type !== "category") return message.channel.send("Invalid channel type! (arg 2)");
       if (!args[3]) return message.channel.send("Put a emoji!");
@@ -40,8 +40,9 @@ export default class extends Command {
           }
         }
       } else {
-        if (!bot.emojis.cache.get(inrevision.id)) return message.channel.send("Invalid emoji!");
-        else emoji = bot.emojis.cache.get(inrevision.id).id;
+        const emojiobj = bot.emojis.cache.get(inrevision.id) || await message.guild.emojis.fetch(inrevision.id).catch(() => {});
+        if (!emojiobj) return message.channel.send("Invalid emoji!");
+        else emoji = emojiobj.id;
       }
       if (!args[4]) return message.channel.send("Put a title for the ticket embed")
       try {
