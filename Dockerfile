@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:15-alpine
 WORKDIR /home/gidget
 ENV NODE_ENV="production"
 # See below
