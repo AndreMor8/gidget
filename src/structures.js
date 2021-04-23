@@ -522,12 +522,17 @@ Structures.extend("TextChannel", TextChannel => {
         constructor(guild, data) {
             super(guild, data);
             this.snipe = null;
-            setInterval(() => {
-                this.snipe = null;
-            }, 300000);
+            this.snipeInterval = null;
         }
         deleteSnipe() {
+            this.client.clearInterval(this.snipeInterval);
             this.snipe = null;
+        }
+        setSnipe(message) {
+            this.snipe = message;
+            this.snipeInterval = this.client.setInterval(() => {
+                this.snipe = null;
+            }, 300000);
         }
     }
 });

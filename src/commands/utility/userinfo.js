@@ -153,7 +153,7 @@ export default class extends Command {
 
     if (message.guild) {
       try {
-        const member = await message.guild.members.fetch(user.id);
+        const member = message.guild.members.cache.get(user.id) || await message.guild.members.fetch(user.id, { cache: true });
 
         const perms = member.permissions.toArray();
         let permstext = "";

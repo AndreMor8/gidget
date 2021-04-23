@@ -40,7 +40,8 @@ const bot = new Discord.Client({
   cacheRoles: true,
   cacheEmojis: false,
   cachePresences: false,
-  messageEditHistoryMaxSize: 3
+  messageEditHistoryMaxSize: 7,
+  messageCacheMaxSize: 20
 });
 
 //top.gg

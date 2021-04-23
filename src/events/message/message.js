@@ -6,15 +6,11 @@ import Levels from "../../utils/discord-xp.js";
 const timer = new Discord.Collection();
 //Only 1 command at a time.
 const internalCooldown = new Set();
-//Some problems
-setInterval(() => {
-  internalCooldown.clear();
-}, 90000)
 
 export default async (bot, message, nolevel = false) => {
   if (message.author.bot) return;
   if (message.guild && !message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return;
-  await message.member.fetch();
+  await message.channel.fetch({ cache: true });
   try {
     //All-time message code
     //For the moment this is a code for only 1 server
