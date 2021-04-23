@@ -218,10 +218,10 @@ export default class extends Command {
         /*.addField("Status", status2, true)
           .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)*/
           .addField("Flags", `\`${flagtext}\``, true)
-          .addField(
+          /*.addField(
             "Last Message",
             user.lastMessage ? user.lastMessage.url : "Without fetch about that"
-          )
+          )*/
           .addField(
             "Joined Discord At",
             bot.botIntl.format(user.createdAt)
@@ -240,10 +240,10 @@ export default class extends Command {
       /*.addField("Status", status2, true)
         .addField("Presence", ptext, true)*/
         .addField("Flags", `\`${flagtext}\``, true)
-        .addField(
+        /*.addField(
           "Last Message",
           user.lastMessage ? user.lastMessage.url : "Without fetch about that"
-        )
+        )*/
         .addField(
           "Joined Discord At",
           bot.botIntl.format(user.createdAt)
