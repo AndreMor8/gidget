@@ -47,7 +47,7 @@ export default async (bot, message, nolevel = false) => {
           const userperms = message.member.permissions;
           const userchannelperms = message.channel.permissionsFor(message.member.id);
           const botperms = message.guild.me.permissions;
-          const botchannelperms = message.channel.permissionsFor(message.guild.me.id);
+          const botchannelperms = message.channel.permissionsFor(bot.user.id);
           if (message.author.id !== "577000793094488085") {
             if (!userperms.has(command.permissions.user[0])) return message.channel.send("You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[0]).has(8)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
             if (!userchannelperms.has(command.permissions.user[1])) return message.channel.send("You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[1]).has(8)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
