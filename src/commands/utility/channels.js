@@ -9,15 +9,16 @@ export default class extends Command {
     if (!message.guild)
       return message.channel.send("The only channel I can see here is this.");
     let text = "";
-    const member = message.mentions.members.first() ||
+    const eeee = message.mentions.members.first() ||
       message.guild.members.cache.get(args[1]) ||
       message.guild.members.cache.find(m => m.nickname === args.slice(1).join(" ")) ||
       message.guild.members.cache.find(m => m.user ? (m.user.tag === args.slice(1).join(" ")) : false) ||
       message.guild.members.cache.find(m => m.user ? (m.user.tag === args.slice(1).join(" ")) : false) ||
-      (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined) ||
+      (args[1] ? await message.guild.members.fetch(args[1], { cache: true }).catch(() => { }) : undefined) ||
       message.mentions.roles.first() ||
       message.guild.roles.cache.get(args[1]) ||
       message.guild.roles.cache.find(e => e.name === args.slice(1).join(" "));
+    const member = await eeee.fetch({ cache: true });
     const allChannels = await message.guild.channels.fetch();
     let col;
     if (member) {
