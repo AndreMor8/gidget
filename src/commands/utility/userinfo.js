@@ -188,7 +188,7 @@ export default class extends Command {
           .addField("Flags", `\`${flagtext}\``, true)
           .addField("Permissions (General)", `\`${permstext}\``, true)
           .addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
-          .addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");
+          /*.addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");*/
         if (!user.bot) {
           embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No");
         }
