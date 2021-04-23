@@ -15,7 +15,7 @@ export default class extends Command {
                 if (!args[2]) message.channel.send("Please put a channel!");
                 const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id && e.type === "news").first() || message.guild.channels.cache.get(args[2]) || await message.guild.channels.fetch(args[2] || "123").catch(() => {});
                 if (!channel) return message.channel.send("A valid channel has not been set. Only news channels are allowed.");
-                if (!channel.permissionsFor(message.guild.me).has(["SEND_MESSAGES", "MANAGE_MESSAGES"])) return message.channel.send("I don't have the permissions to crosspost on that channel.\nGive me the permissions to manage messages and send messages.");
+                if (!channel.permissionsFor(message.guild.me.id).has(["SEND_MESSAGES", "MANAGE_MESSAGES"])) return message.channel.send("I don't have the permissions to crosspost on that channel.\nGive me the permissions to manage messages and send messages.");
                 await message.guild.setAutoPostChannel(channel);
                 message.channel.send(`The ${channel} channel has been added for crossposting!`);
             }

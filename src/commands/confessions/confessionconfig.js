@@ -15,7 +15,7 @@ export default class extends Command {
       case 'channel': {
         const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id && (e.type === "text" || e.type === "news")).first() || message.guild.channels.cache.filter(e => e.type === "text" || e.type === "news").get(args[2]) || await message.guild.channels.fetch(args[2] || "123").catch(() => {});
         if (!channel) return message.channel.send("Please enter a valid channel!");
-        if (!channel.permissionsFor(message.guild.me).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have the permissions to send embeds on that channel.\nGive me the permissions to send messages and embed links!");
+        if (!channel.permissionsFor(message.guild.me.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have the permissions to send embeds on that channel.\nGive me the permissions to send messages and embed links!");
         await message.guild.setConfessionChannel(channel);
         message.channel.send("The channel has been set correctly.");
       }

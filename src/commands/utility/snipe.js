@@ -8,8 +8,8 @@ export default class extends Command {
     async run(bot, message, args) {
         const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.filter(e => ["news", "text"].includes(e.type)).get(args[1]) || message.guild.channels.cache.filter(e => ["news", "text"].includes(e.type)).find(e => e.name === args.slice(1).join(" ")) || message.guild.channels.cache.filter(e => ["news", "text"].includes(e.type)).find(e => e.position == args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => {}) || message.channel;
         if (!(["text", "news"].includes(channel.type))) return message.channel.send("Only text channels!");
-        if (!channel.permissionsFor(bot.user).has("VIEW_CHANNEL")) return message.channel.send("I don't have permissions");
-        if (!channel.permissionsFor(message.author).has("VIEW_CHANNEL")) return message.channel.send("You don't have permissions");
+        if (!channel.permissionsFor(bot.user.id).has("VIEW_CHANNEL")) return message.channel.send("I don't have permissions");
+        if (!channel.permissionsFor(message.author.id).has("VIEW_CHANNEL")) return message.channel.send("You don't have permissions");
         if (!channel.snipe) return message.channel.send("There are no snipes");
         else {
             const realtext = Discord.Util.splitMessage(channel.snipe.content, { maxLength: 1000, char: "" })[0];

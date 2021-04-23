@@ -67,7 +67,7 @@ async function image(message, args) {
     collector.on('collect', async (reaction, user) => {
         if (reaction.emoji.name === '▶️') {
 
-            if (message.guild && message.channel.permissionsFor(message.client.user).has("MANAGE_MESSAGES")) {
+            if (message.guild && message.channel.permissionsFor(message.client.user.id).has("MANAGE_MESSAGES")) {
                 await reaction.users.remove(user.id);
             }
             if (max !== i) {
@@ -78,7 +78,7 @@ async function image(message, args) {
             }
         }
         if (reaction.emoji.name === '◀️') {
-            if (message.guild && message.channel.permissionsFor(message.client.user).has("MANAGE_MESSAGES")) {
+            if (message.guild && message.channel.permissionsFor(message.client.user.id).has("MANAGE_MESSAGES")) {
                 await reaction.users.remove(user.id);
             }
             if (i !== 0) {
@@ -93,6 +93,6 @@ async function image(message, args) {
         }
     })
     collector.on('end', () => {
-        if (message.guild && message.channel.permissionsFor(message.client.user).has("MANAGE_MESSAGES")) { msg.reactions.removeAll() }
+        if (message.guild && message.channel.permissionsFor(message.client.user.id).has("MANAGE_MESSAGES")) { msg.reactions.removeAll() }
     });
 }

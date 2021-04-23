@@ -108,5 +108,5 @@ export default class extends Command {
  */
 function checkEmbed(channel) {
   if (!channel.guild) return true;
-  return channel.permissionsFor(channel.guild.me).has(16384);
+  return channel.permissionsFor(channel.guild.me.id).has(16384);
 }

@@ -21,7 +21,7 @@ export default class extends Command {
     const allChannels = await message.guild.channels.fetch();
     let col;
     if (member) {
-      col = allChannels.filter(c => c.type === "category" ? (c.children.some(r => r.permissionsFor(member).has("VIEW_CHANNEL")) || (c.permissionsFor(member).has("MANAGE_CHANNELS"))) : (c.permissionsFor(member).has("VIEW_CHANNEL")));
+      col = allChannels.filter(c => c.type === "category" ? (c.children.some(r => r.permissionsFor(member.id).has("VIEW_CHANNEL")) || (c.permissionsFor(member.id).has("MANAGE_CHANNELS"))) : (c.permissionsFor(member.id).has("VIEW_CHANNEL")));
     } else {
       col = allChannels;
     }

@@ -33,7 +33,7 @@ export default class extends Command {
                 const channel = message.guild.channels.cache.get(doc.channelID);
                 if (!channel)
                     return message.channel.send("The established channel doesn't exist.");
-                if (!channel.permissionsFor(message.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
+                if (!channel.permissionsFor(message.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
                     return message.channel.send("Give me permissions for send messages on the established channel before starting the welcome system.");
                 const reference = !!doc.enabled;
                 await message.guild.setWelcome(0, !reference);
@@ -48,7 +48,7 @@ export default class extends Command {
                     return message.channel.send("Invalid channel");
                 if (channel.type !== "text" && channel.type !== "news")
                     return message.channel.send("That isn't a text-based channel");
-                if (!channel.permissionsFor(message.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
+                if (!channel.permissionsFor(message.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
                     return message.channel.send("I don't have permissions for send messages in that channel");
                 await message.guild.setWelcome(1, channel.id);
                 await message.channel.send("Channel set correctly");
@@ -90,7 +90,7 @@ export default class extends Command {
                 const channel = message.guild.channels.cache.get(doc.leavechannelID);
                 if (!channel)
                     return message.channel.send("The established channel doesn't exist.");
-                if (!channel.permissionsFor(message.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
+                if (!channel.permissionsFor(message.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
                     return message.channel.send("Give me permissions for send messages on the established channel before starting the goodbye system.");
                 const reference = !!doc.leaveenabled;
                 await message.guild.setWelcome(5, !reference);
@@ -105,7 +105,7 @@ export default class extends Command {
                     return message.channel.send("Invalid channel");
                 if (channel.type !== "text" && channel.type !== "news")
                     return message.channel.send("That isn't a text-based channel");
-                if (!channel.permissionsFor(message.guild.me).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
+                if (!channel.permissionsFor(message.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
                     return message.channel.send("I don't have permissions for send messages in that channel");
                 await message.guild.setWelcome(6, channel.id);
                 await message.channel.send("Channel set correctly");

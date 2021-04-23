@@ -45,9 +45,9 @@ export default async (bot, message, nolevel = false) => {
         if (command.onlyguild && (message.guild ? message.guild.id !== process.env.GUILD_ID : true)) return message.channel.send("This command only works on Wow Wow Discord");
         if (message.guild) {
           const userperms = message.member.permissions;
-          const userchannelperms = message.channel.permissionsFor(message.member);
+          const userchannelperms = message.channel.permissionsFor(message.member.id);
           const botperms = message.guild.me.permissions;
-          const botchannelperms = message.channel.permissionsFor(message.guild.me);
+          const botchannelperms = message.channel.permissionsFor(message.guild.me.id);
           if (message.author.id !== "577000793094488085") {
             if (!userperms.has(command.permissions.user[0])) return message.channel.send("You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[0]).has(8)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
             if (!userchannelperms.has(command.permissions.user[1])) return message.channel.send("You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[1]).has(8)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
@@ -134,7 +134,7 @@ export default async (bot, message, nolevel = false) => {
             const urlobj = new URL(matches[0]);
             const [channelid, messageid] = urlobj.pathname.split("/").slice(3);
             const channel = bot.channels.cache.get(channelid) || await bot.channels.fetch(channelid).catch(() => {});
-            if (channel && channel.permissionsFor(message.author).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+            if (channel && channel.permissionsFor(message.author.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
               const msg = channel.messages.cache.filter(e => !e.partial).get(messageid) || (messageid ? (await channel.messages.fetch(messageid).catch(() => { })) : undefined)
               if (msg) {
                 const embed = new Discord.MessageEmbed()
