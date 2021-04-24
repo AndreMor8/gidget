@@ -18,7 +18,7 @@ export default class extends Command {
       message.mentions.roles.first() ||
       message.guild.roles.cache.get(args[1]) ||
       message.guild.roles.cache.find(e => e.name === args.slice(1).join(" "));
-    const member = await eeee.fetch({ cache: true });
+    const member = await eeee?.fetch({ cache: true });
     const allChannels = await message.guild.channels.fetch();
     let col;
     if (member) {
