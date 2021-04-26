@@ -66,6 +66,6 @@
     "ytpl": "^2.1.1"
   },
   "devDependencies": {
-    "eslint": "^7.24.0"
+    "eslint": "^7.25.0"
   }
 }
