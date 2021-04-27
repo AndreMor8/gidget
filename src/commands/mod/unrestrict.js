@@ -1,5 +1,6 @@
 import MessageModel from '../../database/models/muterole.js';
 import MessageModel2 from '../../database/models/mutedmembers.js';
+import tempmutesystem from '../../utils/tempmute.js';
 
 export default class extends Command {
   constructor(options) {
@@ -26,6 +27,7 @@ export default class extends Command {
               const msg = await MessageModel2.findOne({ guildId: message.guild.id, memberId: member.id });
               if (msg) {
                 msg.deleteOne();
+                tempmutesystem(bot, true);
               }
            await message.channel.send(`I've unrestricted ${member.user.tag} with reason: ${args.slice(2).join(" ")}`)
             })
@@ -36,6 +38,7 @@ export default class extends Command {
               const msg = await MessageModel2.findOne({ guildId: message.guild.id, memberId: member.id });
               if (msg) {
                 msg.deleteOne();
+                tempmutesystem(bot, true);
               }
            await message.channel.send(`I've unrestricted ${member.user.tag}`)
             })

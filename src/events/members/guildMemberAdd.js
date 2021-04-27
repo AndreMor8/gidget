@@ -1,7 +1,13 @@
 import MessageModel from "../../database/models/roles.js";
 import MessageModel2 from "../../database/models/retreiveconfig.js";
+import tempmuteconfig from '../../database/models/muterole.js';
+import tempmute from '../../database/models/mutedmembers.js';
+import tempmutesystem from '../../utils/tempmute.js';
 import Discord from "discord.js";
+
 export default async (bot, member) => {
+
+  //RETRIVING ROLES
   let verify = bot.rrcache.get(member.guild.id);
   if (!verify) {
     verify = await MessageModel2.findOne({ guildId: member.guild.id });
@@ -27,6 +33,22 @@ export default async (bot, member) => {
     }
   }
 
+  //TEMPMUTE -> PERSIST
+  const data = await tempmute.findOne({ memberId: { $eq: member.id }, guildId: { $eq: member.guild.id } });
+  if (data && (Date.now() < data.date.getTime())) {
+    const guildData = await tempmuteconfig.findOne({ guildid: { $eq: member.guild.id } });
+    if (guildData) {
+      if (member.guild.me.hasPermission("MANAGE_ROLES")) {
+        member.roles.add(guildData.muteroleid, "Temprestrict - Persist").catch(() => { });
+      }
+    }
+    tempmutesystem(bot, true);
+  } else {
+    await data.deleteOne();
+    tempmutesystem(bot, true);
+  }
+
+  //WELCOME SYSTEM
   const welcome = member.guild.cache.welcome ? member.guild.welcome : await member.guild.getWelcome();
 
   if (welcome) {
@@ -70,6 +92,7 @@ export default async (bot, member) => {
       }
     }
   }
+
   //Things for Wow Wow Discord
   if (member.guild.id !== "402555684849451028") return;
   const embed = new Discord.MessageEmbed()
@@ -97,5 +120,5 @@ export default async (bot, member) => {
     )
     .setFooter("Thanks for joining!")
     .setTimestamp();
-  await member.send(embed).catch(() => {});
+  await member.send(embed).catch(() => { });
 };

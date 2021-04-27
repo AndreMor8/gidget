@@ -35,7 +35,7 @@ const bot = new Discord.Client({
     }
   },
   cacheGuilds: true,
-  cacheChannels: false,
+  cacheChannels: true,
   cacheOverwrites: true,
   cacheRoles: true,
   cacheEmojis: false,

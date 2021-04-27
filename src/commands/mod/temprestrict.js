@@ -16,9 +16,10 @@ export default class extends Command {
     }
   }
   async run(bot, message, args) {
-    if (!args[1]) return message.channel.send('Usage: `temprestrict <time> <member> <reason>`');
+    if (!args[1]) return message.channel.send('Usage: `temprestrict <time> <member> [reason]`');
     const time = ms(args[1]);
     if (typeof time !== "number") return message.channel.send('Invalid time!');
+    if (!args[2]) return message.channel.send('Please specify a member!');
     const member = message.mentions.members.first() || message.guild.members.cache.get(args[2]) || message.guild.members.cache.find(m => m.displayName === args[2]) || message.guild.members.cache.find(m => m.user.username === args[2]) || (args[2] ? await message.guild.members.fetch(args[2]).catch(() => { }) : undefined)
     if (!member) return message.channel.send('Invalid member!');
     const addMemberRole = async (muteroleid, member, time, args) => {
