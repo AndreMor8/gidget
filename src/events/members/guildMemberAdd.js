@@ -43,7 +43,7 @@ export default async (bot, member) => {
       }
     }
     tempmutesystem(bot, true);
-  } else {
+  } else if(data && (Date.now() > data.date.getTime())) {
     await data.deleteOne();
     tempmutesystem(bot, true);
   }
