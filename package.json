@@ -34,7 +34,7 @@
     "discord-emoji-canvas": "^1.4.0",
     "discord-ytdl-core": "^5.0.2",
     "discord.js-light": "^3.5.9",
-    "dotenv": "^8.2.0",
+    "dotenv": "^9.0.0",
     "execa": "^5.0.0",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.3.0",
