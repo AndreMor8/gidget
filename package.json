@@ -26,7 +26,7 @@
     "boats.js": "^2.5.1",
     "bombsweeper.js": "^1.0.1",
     "canvas": "^2.7.0",
-    "cheerio": "^1.0.0-rc.6",
+    "cheerio": "^1.0.0-rc.9",
     "connect4-ai": "^0.1.3",
     "cpu-stat": "2.0.1",
     "crypto-js": "^4.0.0",
