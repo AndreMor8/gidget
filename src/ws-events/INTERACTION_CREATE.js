@@ -28,6 +28,7 @@ export default async function (bot, interaction) {
         }
             break;
         case 'confession': {
+            if(interaction.user) return await bot.api.interactions(interaction.id, interaction.token).callback.post({ data: { type: 4, data: { content: 'This command only works in servers.' } } });
             const guild = bot.guilds.cache.get(interaction.guild_id);
             if (!guild) return await bot.api.interactions(interaction.id, interaction.token).callback.post({ data: { type: 4, data: { content: 'Please invite the real bot.' } } });
             const data = guild.cache.confessionconfig ? guild.confessionconfig : await guild.getConfessionConfig();

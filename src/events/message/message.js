@@ -1,7 +1,4 @@
 import Discord from "discord.js";
-import b from "../../utils/badwords.js";
-const badwords = new b();
-badwords.setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
 import Levels from "../../utils/discord-xp.js";
 const timer = new Discord.Collection();
 //Only 1 command at a time.
@@ -16,7 +13,7 @@ export default async (bot, message, nolevel = false) => {
     //For the moment this is a code for only 1 server
     if (message.guild) {
       if (message.guild.id === process.env.GUILD_ID && !message.channel.nsfw) {
-        if (badwords.isProfane(message.content.toLowerCase()) && !message.member.hasPermission("ADMINISTRATOR")) {
+        if (bot.badwords.isProfane(message.content.toLowerCase()) && !message.member.hasPermission("ADMINISTRATOR")) {
           await message.delete();
           return await message.reply("swearing is not allowed in this server!");
         }

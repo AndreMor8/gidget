@@ -8,6 +8,7 @@ import { registerCommands, registerEvents, registerWsEvents } from './utils/regi
 
 //Other packages
 import DBL from 'dblapi.js';
+import b from "./utils/badwords.js";
 
 //Discord import
 import Discord from 'discord.js-light';
@@ -55,7 +56,7 @@ if (process.env.EXTERNAL === "yes") {
   });
 }
 
-
+bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
 bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
 bot.botVersion = "1.00 Final";
 (async () => {

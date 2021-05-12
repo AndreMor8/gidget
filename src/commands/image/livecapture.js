@@ -43,7 +43,7 @@ export default class extends Command {
       //Download the video
       const stream = ytdl(args[1], { filter: "videoandaudio" });
       //Return a Promise
-      return new Promise((s, r) => {
+      return await new Promise((s, r) => {
         //Some random name for the temp file
         const name = crypto.randomBytes(20).toString('hex');
         //Paths

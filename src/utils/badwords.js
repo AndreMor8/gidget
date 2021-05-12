@@ -1,11 +1,12 @@
 import eeee from 'badwords.js/array.js';
 let arr = eeee;
-export default class Main {
+export default class {
     setOptions(options = {
         censor: '*',
         blacklist: arr,
         whitelist: []
     }) {
+        if(!options.blacklist) options.blacklist = arr;
         this.options = options;
         arr = arr.filter((item) => {
             return !this.options.whitelist.includes(item);

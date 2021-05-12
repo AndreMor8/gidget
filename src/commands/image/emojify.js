@@ -45,14 +45,14 @@ export default class extends Command {
             url = parsed[0].url;
         }
         if (!url) return message.channel.send("Invalid URL!");
-        const buffer = await render(url);
+        const { pre_type, buffer } = await render(url);
         const att = new MessageAttachment(buffer, `emoji.${force ? "png" : "gif"}`);
         await message.channel.send(att);
         if (to_server) {
             await message.channel.send("Tell me the name of the new emoji (30s collector time).")
             const col = message.channel.createMessageCollector((e) => e.author.id === message.author.id, { time: 30000 });
             col.on("collect", (msg) => {
-                message.guild.emojis.create(buffer, msg.content, { reason: "emojify command" }).then((e) => {
+                message.guild.emojis.create((pre_type == "svg") ? buffer : url, msg.content, { reason: "emojify command" }).then((e) => {
                     message.channel.send(`Emoji created correctly! -> ${e.toString()}`);
                 }).catch(e => {
                     message.channel.send("Error: " + e);
@@ -74,18 +74,18 @@ async function render(url) {
     const type = await FileType.fromBuffer(pre_buf);
     if (type?.mime === "image/gif") {
         const buffer = await gifResize({ width: 48, interlaced: true })(pre_buf);
-        return buffer;
+        return { pre_type: "gif", buffer };
     } else if (isSvg(pre_buf)) {
-        return await svg2img(pre_buf, { format: "png", width: 48, height: 48 });
+        return { pre_type: "svg", buffer: await svg2img(pre_buf, { format: "png", width: 48, height: 48 }) };
     } else if (process.platform === "win32") {
         const Jimp = (await import("jimp")).default;
         const img = await Jimp.read(pre_buf);
         img.resize(48, Jimp.AUTO);
         const buffer = await img.getBufferAsync(Jimp.MIME_PNG);
-        return buffer;
+        return { pre_type: "image", buffer };
     } else {
         const sharp = (await import("sharp")).default;
         const buffer = await sharp(pre_buf).resize(48).png().toBuffer();
-        return buffer;
+        return { pre_type: "image", buffer };
     }
 }

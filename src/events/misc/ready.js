@@ -23,7 +23,10 @@ export default async bot => {
   if (doc2) {
     poll(bot);
   }
-  if (bot.guilds.cache.get("402555684849451028")) banners(bot);
+
+  //WWD will have this always :jiggler:
+  banners(bot);
+  
   //Show the inviter on the welcome message. Luckily, fetch invites do not have a rate-limit
   try {
     const guildsToFetch = bot.guilds.cache.filter(e => e.me.hasPermission("MANAGE_GUILD")).array();
