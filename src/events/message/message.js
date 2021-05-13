@@ -13,7 +13,7 @@ export default async (bot, message, nolevel = false) => {
     //For the moment this is a code for only 1 server
     if (message.guild) {
       if (message.guild.id === process.env.GUILD_ID && !message.channel.nsfw) {
-        if (bot.badwords.isProfane(message.content.toLowerCase()) && !message.member.hasPermission("ADMINISTRATOR")) {
+        if (bot.badwords.isProfane(message.content.toLowerCase()) && (!message.channel.parentID !== "621560838041501696")) {
           await message.delete();
           return await message.reply("swearing is not allowed in this server!");
         }
