@@ -18,6 +18,27 @@ class StructureError extends Error {
     }
 }
 
+
+Structures.extend("TextChannel", TextChannel => {
+    return class extends TextChannel {
+        constructor(guild, data) {
+            super(guild, data);
+            this.snipe = null;
+            this.snipeTimeout = null;
+        }
+        deleteSnipe() {
+            this.client.clearTimeout(this.snipeInterval);
+            this.snipe = null;
+        }
+        setSnipe(message) {
+            this.snipe = message;
+            this.snipeTimeout = this.client.setTimeout(() => {
+                this.snipe = null;
+            }, 300000);
+        }
+    }
+});
+
 Structures.extend('Guild', Guild => {
     return class extends Guild {
         constructor(client, data) {
@@ -515,26 +536,6 @@ Structures.extend('Guild', Guild => {
             return true;
         }
     };
-});
-
-Structures.extend("TextChannel", TextChannel => {
-    return class extends TextChannel {
-        constructor(guild, data) {
-            super(guild, data);
-            this.snipe = null;
-            this.snipeInterval = null;
-        }
-        deleteSnipe() {
-            this.client.clearInterval(this.snipeInterval);
-            this.snipe = null;
-        }
-        setSnipe(message) {
-            this.snipe = message;
-            this.snipeInterval = this.client.setInterval(() => {
-                this.snipe = null;
-            }, 300000);
-        }
-    }
 });
 
 Structures.extend("GuildMember", (GuildMember) => {

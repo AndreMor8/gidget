@@ -11,5 +11,5 @@ export default async (bot, message) => {
   if (message.partial) return;
   if (!message.guild) return;
 
-  message.channel.setSnipe(message);
+  message.channel?.setSnipe(message);
 };

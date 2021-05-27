@@ -1,5 +1,4 @@
-
-import { Util } from "discord.js";
+import { Role, Util, Collection } from "discord.js";
 export default class extends Command {
   constructor(options) {
     super(options)
@@ -18,13 +17,11 @@ export default class extends Command {
       message.mentions.roles.first() ||
       message.guild.roles.cache.get(args[1]) ||
       message.guild.roles.cache.find(e => e.name === args.slice(1).join(" "));
-    const member = await eeee?.fetch({ cache: true });
+    const member = (eeee instanceof Role) ? eeee : await eeee?.fetch?.({ cache: true });
     const allChannels = await message.guild.channels.fetch();
-    let col;
+    let col = allChannels;
     if (member) {
       col = allChannels.filter(c => c.type === "category" ? (c.children.some(r => r.permissionsFor(member.id).has("VIEW_CHANNEL")) || (c.permissionsFor(member.id).has("MANAGE_CHANNELS"))) : (c.permissionsFor(member.id).has("VIEW_CHANNEL")));
-    } else {
-      col = allChannels;
     }
     const wocat = Util.discordSort(col.filter(c => !c.parent && c.type !== "category"));
     const textnp = wocat.filter(c => ['text', 'store', 'news'].includes(c.type));
@@ -33,6 +30,10 @@ export default class extends Command {
       text += textnp.map(advancedmap).join("\n");
       text += voicenp.map(advancedmap).join("\n");
     }
+    const voiceChannels = col.filter(c => c.type === "voice");
+    const user = Collection.prototype.concat.apply(new Collection(), voiceChannels.map(e => e.members)).filter(e => !message.guild.members.cache.has(e.id)).map(e => e.id);
+    if (user.length) await message.guild.members.fetch({ user });
+
     const cats = Util.discordSort(col.filter(c => c.type === "category"));
     cats.each(c => {
       const children = c.children.intersect(col);
