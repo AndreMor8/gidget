@@ -20,6 +20,7 @@ export default class extends Command {
     serverQueue.songs.forEach(e => {
       fullduration = fullduration + Number(e.duration);
     });
-    await message.channel.send(`**Song queue:**\n\n${serverQueue.songs.map((song, i) => `**${parseInt(i) + 1}** ${song.title} (${moment.duration(song.duration, "seconds").format()})`).join(`\n`)}\n\nTotal duration: **${moment.duration(fullduration, "seconds").format()}**\n\n**Now playing:** ${serverQueue.songs[0].title} (${moment.duration(serverQueue.connection.dispatcher.streamTime + (serverQueue.songs[0].seektime * 1000), "ms").format()} / ${moment.duration(serverQueue.songs[0].duration, "seconds").format()})`, { split: true }).catch(err => console.log(err));
+    const queueText = `**Song queue:**\n\n${serverQueue.songs.map((song, i) => `**${parseInt(i) + 1}** ${song.title} (${moment.duration(song.duration, "seconds").format()})`).join(`\n`)}\n\nTotal duration: **${moment.duration(fullduration, "seconds").format()}**\n\n**Now playing:** ${serverQueue.songs[0].title} (${moment.duration(serverQueue.connection.dispatcher.streamTime + (serverQueue.songs[0].seektime * 1000), "ms").format()} / ${moment.duration(serverQueue.songs[0].duration, "seconds").format()})`;
+    await message.channel.send(queueText, { split: true })
   }
 }
