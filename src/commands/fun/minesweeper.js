@@ -26,24 +26,29 @@ export default class extends Command {
                 if (flag == "f") message.author.mine.setFlag(c, r);
                 else if (flag == "rf") message.author.mine.removeFlag(c, r);
                 else message.author.mine.CheckCell(c, r);
-                to_edit.edit(`__Minesweeper Game__\n\n${message.author.mine.showToUser()}`);
+                to_edit.edit(`__Minesweeper Game__ (${message.author}) (in progress)\n\n${message.author.mine.showToUser()}`);
                 if (message.deletable) m.delete().catch(() => { });
             } catch (err) {
                 message.channel.send(err.toString());
             }
         });
-        col.on("end", (c, r) => {
-            if (r === "win") message.channel.send("You have won the minesweeper game :)");
-            else if (r === "loss") message.channel.send("You lost the minesweeper game :(");
-            else if (r === "exit") {
-                to_edit.delete().catch(() => { });
-                message.channel.send("Well, it seems you don't want to play minesweeper.");
-            } else if (r === "idle") message.channel.send("Time's up (5m)");
-            setTimeout(() => {
-                message.author.mine = null;
-            }, 900);
+        col.on("end", async (c, r) => {
+            if (r === "win") {
+                await to_edit.edit(`__Minesweeper Game__ (${message.author}) (Won)\n\n${message.author.mine.showToUser()}`);
+                await message.channel.send("You have won the minesweeper game :)");
+            } else if (r === "loss") {
+                await to_edit.edit(`__Minesweeper Game__ (${message.author}) (Lost)\n\n${message.author.mine.showToUser()}`);
+                await message.channel.send("You lost the minesweeper game :(");
+            } else if (r === "exit") {
+                await to_edit.delete().catch(() => { });
+                await message.channel.send("Well, it seems you don't want to play minesweeper.");
+            } else if (r === "idle") {
+                to_edit.edit(`__Minesweeper Game__ (${message.author}) (5m timeout)\n\n${message.author.mine.showToUser()}`);
+                await message.channel.send("Time's up (5m)");
+            }
+            message.author.mine = null;
         })
-        to_edit.edit(`__Minesweeper Game__\n**Use the format \`vertical,horizontal,<flag_mode>\` to reveal a cell**\n**The flag modes are \`f\` and \`rf\` to flag and unflag a cell respectively.**\n**Use \`exit\` for leave the game.**\n\n${message.author.mine.showToUser()}`);
+        to_edit.edit(`__Minesweeper Game__ (${message.author}) (in progress)\n**Use the format \`vertical,horizontal,<flag_mode>\` to reveal a cell**\n**The flag modes are \`f\` and \`rf\` to flag and unflag a cell respectively.**\n**Use \`exit\` for leave the game.**\n\n${message.author.mine.showToUser()}`);
     }
 }
 
