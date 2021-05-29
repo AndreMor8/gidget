@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
 import gse from 'general-search-engine';
 import { checkCleanUrl } from '../../utils/clean-url.js';
+import { MessageButton } from 'discord-buttons';
 
 export default class extends Command {
     constructor(options) {
@@ -31,55 +32,63 @@ export default class extends Command {
         }
 
         const urls = results.map(e => e.image);
-
         let i = 0;
         const max = urls.length - 1;
         const embed = new Discord.MessageEmbed()
             .setTitle("Image search: " + args.slice(1).join(" "))
-            .setDescription(`Use the reactions to move from one image to another`)
+            .setDescription(`Use the buttons to move from one image to another`)
             .setFooter(`${i + 1}/${max + 1}`)
             .setImage(urls[i])
-            .setColor("RANDOM")
+            .setColor("RANDOM");
 
-        const filter = (reaction, user) => {
-            return ['◀️', '▶️', '⏹️'].includes(reaction.emoji.name) && user.id === message.author.id;
+        const but_back = new MessageButton()
+            .setID("image_c_back")
+            .setStyle("gray")
+            .setLabel("Back");
+
+        const but_stop = new MessageButton()
+            .setID("image_c_stop")
+            .setStyle("red")
+            .setLabel("Stop");
+
+        const but_next = new MessageButton()
+            .setID("image_c_next")
+            .setStyle("gray")
+            .setLabel("Next");
+
+        const filter = (button) => {
+            if ((button.clicker.user?.id || button.message.channel.recipient.id) !== message.author.id) button.reply.send("Use your own instance by using `g%image <query>`", true);
+            return (button.clicker.user?.id || button.message.channel.recipient.id) === message.author.id;
         };
-        const msg = await message.channel.send(embed);
-        await msg.react('◀️');
-        await msg.react('▶️');
-        await msg.react('⏹️');
+        const msg = await message.channel.send("", { embed, buttons: [but_back.setDisabled(true), but_stop, but_next.setDisabled(false)] });
 
-        const collector = msg.createReactionCollector(filter, { idle: 20000 });
-        collector.on('collect', async (reaction, user) => {
-            if (reaction.emoji.name === '▶️') {
+        const collector = msg.createButtonCollector(filter, { idle: 20000 });
+        collector.on('collect', async (button) => {
+            await button.defer();
+            if (button.id === 'image_c_next') {
 
-                if (message.guild && message.channel.permissionsFor(message.client.user.id).has("MANAGE_MESSAGES")) {
-                    await reaction.users.remove(user.id);
-                }
                 if (max !== i) {
                     i++
                     embed.setImage(urls[i])
                     embed.setFooter(`${i + 1}/${max + 1}`)
-                    await msg.edit(embed);
+                    await msg.edit("", { embed, buttons: ((max === i ? [but_back.setDisabled(false), but_stop, but_next.setDisabled(true)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])) });
                 }
+
             }
-            if (reaction.emoji.name === '◀️') {
-                if (message.guild && message.channel.permissionsFor(message.client.user.id).has("MANAGE_MESSAGES")) {
-                    await reaction.users.remove(user.id);
-                }
+            if (button.id === 'image_c_back') {
                 if (i !== 0) {
                     i--
                     embed.setImage(urls[i])
                     embed.setFooter(`${i + 1}/${max + 1}`)
-                    await msg.edit(embed);
+                    await msg.edit("", { embed, buttons: ((i === 0 ? [but_back.setDisabled(true), but_stop, but_next.setDisabled(false)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])) });
                 }
             }
-            if (reaction.emoji.name === '⏹️') {
+            if (button.id === 'image_c_stop') {
                 collector.stop();
             }
         })
         collector.on('end', () => {
-            if (message.guild && message.channel.permissionsFor(message.client.user.id).has("MANAGE_MESSAGES")) { msg.reactions.removeAll() }
+            msg.edit("", { embed, buttons: [but_back.setDisabled(true), but_stop.setDisabled(true), but_next.setDisabled(true)] });
         });
     }
 }

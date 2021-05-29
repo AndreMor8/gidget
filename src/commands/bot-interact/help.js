@@ -1,6 +1,11 @@
 import def from "../../assets/definitions.json";
 import Discord from "discord.js";
-const links = `[Bot's page (in progress)](https://gidget.xyz/) | [Bot's documentation](https://docs.gidget.xyz) | [Source code](https://github.com/AndreMor8/gidget) | [AndreMor's page](https://andremor.ml) | [Discord.js documentation](https://discord.js.org/#/docs/)`;
+import { MessageButton } from 'discord-buttons';
+const buttons = [new MessageButton().setLabel("Gidget's dashboard").setStyle("url").setURL("https://gidget.xyz"),
+new MessageButton().setLabel("Bot's documentation").setStyle("url").setURL("https://docs.gidget.xyz"),
+new MessageButton().setLabel("Source code").setStyle("url").setURL("https://github.com/AndreMor8/gidget"),
+new MessageButton().setLabel("AndreMor's page").setStyle("url").setURL("https://andremor.ml"),
+new MessageButton().setLabel("Discord.js documentation").setStyle("url").setURL("https://discord.js.org/#/docs/")];
 const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | [top.gg](https://top.gg/bot/694306281736896573) | [DiscordBotList](https://discordbotlist.com/bots/gidget) | [Discord Boats](https://discord.boats/bot/694306281736896573)`;
 export default class extends Command {
   constructor(options) {
@@ -31,8 +36,6 @@ export default class extends Command {
         const embed = new Discord.MessageEmbed()
           .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
           .setColor("#FF8000")
-          .addField('Links', links)
-          .addField("Bot lists", botlists)
           .setTitle(g.cat + " (" + g.commands.length + " commands)")
           .setDescription(Discord.Util.splitMessage(g.commands.filter(s => {
             if (s.secret) return false
@@ -40,14 +43,14 @@ export default class extends Command {
             return true
           }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0])
           .setTimestamp()
-        message.channel.send(embed);
+        message.channel.send("", { embed, buttons: [buttons[1]] });
       } else {
         const str = `__**${g.cat + " (" + g.commands.length + " commands)"}**__\n\n${Discord.Util.splitMessage(g.commands.filter(s => {
           if (s.secret) return false;
           if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false;
           return true;
         }, { maxLength: 1800 }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0]}`;
-        message.channel.send(str);
+        message.channel.send(str, { buttons: [buttons[1]] });
       }
       return;
     } else if (args[1] && (bot.commands.get(args[1].toLowerCase()) || bot.commands.find(c => c.aliases.includes(args[1].toLowerCase())))) {
@@ -88,13 +91,12 @@ export default class extends Command {
           .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
           .setColor("#BDBDBD")
           .setTitle("Help command")
-          .addField('Links', links)
           .addField("Bot lists", botlists)
           .setDescription(text || "?");
-        message.channel.send(embed);
+          message.channel.send("", { embed, buttons });
       } else {
         const str = `__**Help command**__\n\n${text}`;
-        message.channel.send(str);
+        message.channel.send(str, { buttons });
       }
       return;
     }

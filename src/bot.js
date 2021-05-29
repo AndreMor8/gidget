@@ -12,6 +12,7 @@ import b from "./utils/badwords.js";
 
 //Discord import
 import Discord from 'discord.js-light';
+import buttons from 'discord-buttons';
 
 //Discord.js extended structures
 import './structures.js';
@@ -44,6 +45,8 @@ const bot = new Discord.Client({
   messageEditHistoryMaxSize: 7,
   messageCacheMaxSize: 20
 });
+
+buttons(bot);
 
 //top.gg
 if (process.env.EXTERNAL === "yes") {

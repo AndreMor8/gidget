@@ -8,8 +8,8 @@ export default async (bot, message) => {
 
   await MessageModel3.findOneAndDelete({ messageId: message.id });
   
-  if (message.partial) return;
+  /*if (message.partial) return;
   if (!message.guild) return;
 
-  message.channel?.setSnipe(message);
+  message.channel?.setSnipe(message);*/
 };

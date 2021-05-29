@@ -1,4 +1,5 @@
 import Discord from "discord.js";
+import { MessageButton } from 'discord-buttons';
 import os from 'os';
 import cpuStat from "cpu-stat";
 import moment from "moment";
@@ -44,7 +45,7 @@ export default class extends Command {
       .addField("• Platform", `\`\`${os.platform()}\`\``, true)
       .setFooter("Gidget stats");
 
-    await message.channel.send(embedStats);
+    await message.channel.send("", { embed: embedStats, buttons: [new MessageButton().setStyle("url").setLabel("Gidget Dashboard status").setURL("https://gidget.xyz/stats")] });
     message.channel.stopTyping();
   }
 }

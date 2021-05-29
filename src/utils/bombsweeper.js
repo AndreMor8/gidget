@@ -3,7 +3,6 @@ const default_replaces = {
     "N": "🟩",
     "*": "💣",
     "0": "⬜",
-    "e0": "0️⃣",
     "1": "1️⃣",
     "2": "2️⃣",
     "3": "3️⃣",
@@ -12,7 +11,17 @@ const default_replaces = {
     "6": "6️⃣",
     "7": "7️⃣",
     "8": "8️⃣",
-    "F": "🚩"
+    "F": "🚩",
+    "C": "🟫",
+    "S0": "<:zero_red:848003500264521748>",
+    "S1": "<:one_red:848003876078092299>",
+    "S2": "<:two_red:848004091199356969>",
+    "S3": "<:three_red:848004556109774889>",
+    "S4": "<:four_red:848004838226395196>",
+    "S5": "<:five_red:848005141293563914>",
+    "S6": "<:six_red:848005439693783051>",
+    "S7": "<:seven_red:848005711853256734>",
+    "S8": "<:eight_red:848005866157637673>"
 };
 export default class extends BombSweeper {
     constructor(width = 9, height = 9, onWin = () => { }, onLoss = () => { }, replaces = default_replaces) {
@@ -43,10 +52,14 @@ export default class extends BombSweeper {
         return this;
     }
     showToUser() {
-        let str = "";
+        let str = `${this.replaces["C"]}`;
+        for (let i = 0; i < this.width; i++) {
+            str += `${this.replaces[`S${i}`]}`;
+        }
+        str += "\n";
         for (const i in this.board) {
             for (const o in this.board[i]) {
-                if (o == 0) str += "`" + this.replaces[i == 0 ? "e0" : i] + "`";
+                if (o == 0) str += this.replaces[`S${i}`];
                 if (this.mask[i][o]) str += this.replaces[this.board[i][o]];
                 else {
                     if (this.flags.find(a => a[0] == o && a[1] == i)) str += this.replaces["F"];
@@ -54,10 +67,6 @@ export default class extends BombSweeper {
                 }
             }
             str += "\n";
-        }
-        str += `\`🟥`;
-        for (let i = 0; i < this.width; i++) {
-            str += `${this.replaces[i == 0 ? "e0" : i]}${(i % 2) ? "" : " "}${(this.width - 1) == i ? "`" : ""}`;
         }
         return str;
     }

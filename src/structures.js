@@ -19,7 +19,7 @@ class StructureError extends Error {
 }
 
 
-Structures.extend("TextChannel", TextChannel => {
+/*Structures.extend("TextChannel", TextChannel => {
     return class extends TextChannel {
         constructor(guild, data) {
             super(guild, data);
@@ -37,7 +37,7 @@ Structures.extend("TextChannel", TextChannel => {
             }, 300000);
         }
     }
-});
+});*/
 
 Structures.extend('Guild', Guild => {
     return class extends Guild {

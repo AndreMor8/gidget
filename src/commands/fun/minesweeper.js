@@ -43,7 +43,7 @@ export default class extends Command {
                 message.author.mine = null;
             }, 900);
         })
-        to_edit.edit(`__Minesweeper Game__\n**Use the fomat \`row,column,<flag_mode>\` to reveal a cell**\n**The flag modes are \`f\` and \`rf\` to flag and unflag a cell respectively.**\n**Use \`exit\` for leave the game.**\n\n${message.author.mine.showToUser()}`);
+        to_edit.edit(`__Minesweeper Game__\n**Use the format \`vertical,horizontal,<flag_mode>\` to reveal a cell**\n**The flag modes are \`f\` and \`rf\` to flag and unflag a cell respectively.**\n**Use \`exit\` for leave the game.**\n\n${message.author.mine.showToUser()}`);
     }
 }
 
