@@ -7,13 +7,14 @@ import isSvg from 'is-svg';
 import svg2img_callback from 'node-svg2img';
 import { promisify } from 'util';
 import parser from 'twemoji-parser';
+import { MessageButton } from 'discord-buttons';
 const svg2img = promisify(svg2img_callback);
 
 export default class extends Command {
     constructor(options) {
         super(options);
         this.aliases = ["e", "to48px"];
-        this.description = "Make a fake emoji and save it in your favorite GIFs.\nNow you can force it to PNG if you want (`g%emojify <target> -force-png`)\nSave it in your server: `g%emojify <target> -server`";
+        this.description = "Make a fake emoji and save it in your favorite GIFs.\nNow you can force it to PNG if you want (`g%emojify <target> -force-png`)\nSave it in your server with a button ;)";
         this.permissions = {
             user: [0, 0],
             bot: [0, 32768]
@@ -22,8 +23,6 @@ export default class extends Command {
     async run(bot, message, args) {
         const force = args.includes("-force-png");
         if (force) args.splice(args.indexOf("-force-png"), 1);
-        const to_server = (args.includes("-server") && (message.guild?.me.hasPermission("MANAGE_EMOJIS") && message.member?.hasPermission("MANAGE_EMOJIS")));
-        if (to_server) args.splice(args.indexOf("-server"), 1);
         if (!args[1] && !message.attachments.first()) return message.channel.send("Usage: emojify `<url/attachment/emoji> ['-force-png'] ['-server']`");
         let url;
         const user = (args[1] || message.mentions.users.first()) ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ") || e.username?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase() || e.tag?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase())) || message.guild?.members.cache.find(e => (e.nickname === args.slice(1).join(" ") || e.nickname?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase()))?.user || await bot.users.fetch(args[1]).catch(() => { })) : null;
@@ -46,22 +45,45 @@ export default class extends Command {
         }
         if (!url) return message.channel.send("Invalid URL!");
         const { pre_type, buffer } = await render(url);
+
+        const but_add = new MessageButton()
+            .setStyle("blurple")
+            .setID("emojify_c_add2sv")
+            .setLabel("Add to server")
+            .setDisabled(!(message.guild?.me.hasPermission("MANAGE_EMOJIS") && message.member?.hasPermission("MANAGE_EMOJIS")));
+
         const att = new MessageAttachment(buffer, `emoji.${force ? "png" : "gif"}`);
-        await message.channel.send(att);
-        if (to_server) {
-            await message.channel.send("Tell me the name of the new emoji (30s collector time).")
-            const col = message.channel.createMessageCollector((e) => e.author.id === message.author.id, { time: 30000 });
-            col.on("collect", (msg) => {
-                message.guild.emojis.create((pre_type == "svg") ? buffer : url, msg.content, { reason: "emojify command" }).then((e) => {
-                    message.channel.send(`Emoji created correctly! -> ${e.toString()}`);
-                }).catch(e => {
-                    message.channel.send("Error: " + e);
-                }).finally(() => {
-                    col.stop();
+        const filter = (button) => {
+            if ((button.clicker.user?.id || button.message.channel.recipient.id) !== message.author.id) button.reply.send("You are not authorized", true);
+            return (button.clicker.user?.id || button.message.channel.recipient.id) === message.author.id;
+        };
+        const here = await message.channel.send("", { files: [att], buttons: [but_add] });
+
+        if (!but_add.disabled) {
+            const butcol = here.createButtonCollector(filter, { idle: 60000 });
+            butcol.on("collect", async (button) => {
+                if (!(message.guild?.me.hasPermission("MANAGE_EMOJIS") && message.member?.hasPermission("MANAGE_EMOJIS"))) return button.reply.send("Nope", true);
+                await button.reply.send("Tell me the name of the new emoji (30s collector time).");
+                butcol.stop("a");
+                here.edit("", { buttons: [but_add.setDisabled(true)] });
+                const col = message.channel.createMessageCollector((e) => e.author.id === message.author.id, { time: 30000 });
+                col.on("collect", (msg) => {
+                    message.guild.emojis.create((pre_type == "svg") ? buffer : url, msg.content, { reason: "emojify command" }).then((e) => {
+                        button.reply.edit(`Emoji created correctly! -> ${e.toString()}`);
+                    }).catch(e => {
+                        button.reply.edit("Error: " + e);
+                    }).finally(() => {
+                        msg.delete();
+                        col.stop();
+                    });
+                });
+                col.on("end", (c, r) => {
+                    if (r === "time") button.reply.send("Time's up!");
+
                 });
             });
-            col.on("end", (c, r) => {
-                if (r === "time") message.channel.send("Time's up!");
+            butcol.on("end", (c, r) => {
+                if (r === "idle") here.edit("", { buttons: [but_add.setDisabled(true)] });
             })
         }
     }

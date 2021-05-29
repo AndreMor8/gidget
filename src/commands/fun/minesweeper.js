@@ -18,16 +18,18 @@ export default class extends Command {
             try {
                 if (m.content.toLowerCase() === "exit") col.stop("exit");
                 const [pre_r, pre_c, flag] = m.content.split(",");
-                if (isNaN(pre_r)) return;
-                if (isNaN(pre_c)) return;
                 const [r, c] = [parseInt(pre_r), parseInt(pre_c)];
+                if (isNaN(r)) return;
+                if (isNaN(c)) return;
                 if (r < 0 || r > 8) return;
                 if (c < 0 || c > 8) return;
                 if (flag == "f") message.author.mine.setFlag(c, r);
                 else if (flag == "rf") message.author.mine.removeFlag(c, r);
-                else message.author.mine.CheckCell(c, r);
-                to_edit.edit(`__Minesweeper Game__ (${message.author}) (in progress)\n\n${message.author.mine.showToUser()}`);
-                if (message.deletable) m.delete().catch(() => { });
+                else {
+                    const can = message.author.mine.CheckCell(c, r);
+                    if (can) to_edit.edit(`__Minesweeper Game__ (${message.author}) (in progress)\n\n${message.author.mine.showToUser()}`);
+                    if (message.deletable) m.delete().catch(() => { });
+                }
             } catch (err) {
                 message.channel.send(err.toString());
             }

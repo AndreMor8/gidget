@@ -49,7 +49,15 @@ export default class extends BombSweeper {
         this.checkValue(x, y);
         if (this.flags.find(a => a[0] == x && a[1] == y)) throw new Error("The chosen position is flagged. You cannot reveal it.");
         super.CheckCell(x, y);
-        return this;
+        if (this.board[y][x] === "*") return false;
+        let unmaskedCells = 0;
+        this.mask.forEach(function (row) {
+            unmaskedCells += row.reduce(function (sum, cell) {
+                return sum + (cell ? 1 : 0);
+            }, 0);
+        });
+        if (unmaskedCells === this.width * this.height - this.bombCount) return false;
+        return true;
     }
     showToUser() {
         let str = `${this.replaces["C"]}`;

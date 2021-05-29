@@ -62,7 +62,7 @@ export default class extends Command {
         };
         const msg = await message.channel.send("", { embed, buttons: [but_back.setDisabled(true), but_stop, but_next.setDisabled(false)] });
 
-        const collector = msg.createButtonCollector(filter, { idle: 20000 });
+        const collector = msg.createButtonCollector(filter, { idle: 30000 });
         collector.on('collect', async (button) => {
             await button.defer();
             if (button.id === 'image_c_next') {

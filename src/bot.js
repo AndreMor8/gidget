@@ -12,6 +12,8 @@ import b from "./utils/badwords.js";
 
 //Discord import
 import Discord from 'discord.js-light';
+//tempfix actions
+Discord.version = "12.5.3";
 import buttons from 'discord-buttons';
 
 //Discord.js extended structures
