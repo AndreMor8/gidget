@@ -25,7 +25,7 @@
     "badwords.js": "^0.1.6",
     "boats.js": "^2.5.1",
     "bombsweeper.js": "^1.0.1",
-    "canvas": "^2.7.0",
+    "canvas": "^2.8.0",
     "connect4-ai": "^0.1.3",
     "cpu-stat": "2.0.1",
     "crypto-js": "^4.0.0",
@@ -61,7 +61,7 @@
     "qr": "^0.2.4",
     "safe-regex": "^2.1.1",
     "sharp": "^0.28.1",
-    "twemoji-parser": "^13.0.0",
+    "twemoji-parser": "^13.1.0",
     "yt-search": "^2.8.0",
     "ytdl-core": "^4.8.2",
     "ytpl": "^2.1.1"
