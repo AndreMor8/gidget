@@ -23,9 +23,13 @@ export default class extends Command {
                 if (isNaN(c)) return;
                 if (r < 0 || r > 8) return;
                 if (c < 0 || c > 8) return;
-                if (flag == "f") message.author.mine.setFlag(c, r);
-                else if (flag == "rf") message.author.mine.removeFlag(c, r);
-                else {
+                if (flag == "f") {
+                    message.author.mine.setFlag(c, r);
+                    to_edit.edit(`__Minesweeper Game__ (${message.author}) (in progress)\n\n${message.author.mine.showToUser()}`);
+                } else if (flag == "rf") {
+                    message.author.mine.removeFlag(c, r);
+                    to_edit.edit(`__Minesweeper Game__ (${message.author}) (in progress)\n\n${message.author.mine.showToUser()}`);
+                } else {
                     const can = message.author.mine.CheckCell(c, r);
                     if (can) to_edit.edit(`__Minesweeper Game__ (${message.author}) (in progress)\n\n${message.author.mine.showToUser()}`);
                     if (message.deletable) m.delete().catch(() => { });
