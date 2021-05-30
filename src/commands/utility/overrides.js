@@ -6,10 +6,10 @@ export default class extends Command {
     this.aliases = ["overwrites"];
   }
   async run(bot, message, args) {
-    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || await message.guild.channels.fetch(args[1] || "123").catch(() => {}) || message.channel;
+    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || await message.guild.channels.fetch(args[1] || "123").catch(() => { }) || message.channel;
     if (channel.guild.id !== message.guild.id) return message.channel.send("The channel you have put belongs to another server.");
     const rr = channel.permissionOverwrites.filter(m => m.type === "member" && !message.guild.members.cache.has(m.id)).map(m => m.id)
-    if(rr.length) await message.guild.members.fetch({ user: rr });
+    if (rr.length) await message.guild.members.fetch({ user: rr });
     const permissions = channel.permissionOverwrites.map(m => {
       let text = ``;
       if (m.type === "member") {
@@ -45,6 +45,6 @@ export default class extends Command {
       return text;
     });
     if (!permissions[0]) return message.channel.send("There are no channel overrides here.")
-    else message.channel.send(`\n${channel.permissionsLocked ? "The channel is synchronized with its parent category." : "The channel is not synchronized with its parent category."}\nChannel overrides for #` + channel.name, { code: permissions.join("\n\n"), split: true })
+    else message.channel.send({ content: `\n${channel.permissionsLocked ? "The channel is synchronized with its parent category." : "The channel is not synchronized with its parent category."}\nChannel overrides for #${channel.name}`, code: permissions.join("\n\n"), split: true })
   }
 }

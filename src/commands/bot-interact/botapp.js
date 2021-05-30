@@ -1,4 +1,3 @@
-
 import { MessageEmbed } from "discord.js";
 
 export default class extends Command {

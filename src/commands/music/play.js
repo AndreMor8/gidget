@@ -241,6 +241,7 @@ async function play(guild, song) {
     const ytstream = ytdl(song.url, { filter: 'audioonly', opusEncoded: true, highWaterMark: 1 << 25, seek: song.seektime, requestOptions: { headers: { cookie: COOKIE } } });
     const dispatcher = serverQueue.connection.play(ytstream, { type: "opus", bitrate: 'auto' });
     dispatcher.on("error", async err => {
+      console.error(err);
       musicVariables.memberVoted = [];
       serverQueue.songs.shift();
       await serverQueue.textChannel

@@ -6,7 +6,7 @@ export default class extends Command {
         this.description = "This command will make an DNS request to the domain you choose, and will show the corresponding records.";
     }
     async run(client, message, args) {
-        if (!args[1]) return message.channel.send("Enter a valid domain name (FQDN).\n`resolvedns [type] <domain (IP for PTR)>`");
+        if (!args[1]) return message.channel.send("Enter a valid domain name (FQDN).\n`resolvedns [type] <domain>`");
         try {
             switch (args[1].toLowerCase()) {
                 case "a": {

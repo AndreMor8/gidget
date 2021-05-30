@@ -16,12 +16,12 @@ export default class extends Command {
       bot.guilds.cache.find(e => e.name === args.slice(1).join(" ")) ||
       bot.guilds.cache.find(e => e.name.toLowerCase() === args.slice(1).join(" ").toLowerCase()))
       : message.guild;
-    if(!server) {
+    if (!server) {
       broadcastedServer = args[1] ? (await bot.shard.fetchClientValues(bot.shard.id ? `guilds.cache.map(e => e && e.toJSON())` : `guilds.cache`)).find(e => e.find(a => a.name === args.slice(1).join(" ") || a.name.toLowerCase() === args.slice(1).join(" ").toLowerCase() || a.id === args[1]))?.find(a => a.name === args.slice(1).join(" ") || a.name.toLowerCase() === args.slice(1).join(" ").toLowerCase() || a.id === args[1]) : undefined;
-      server = broadcastedServer ? (await bot.guilds.fetch(broadcastedServer.id, false).catch(() => {})) : undefined;
+      server = broadcastedServer ? (await bot.guilds.fetch(broadcastedServer.id, false).catch(() => { })) : undefined;
     }
-    if(!server) {
-      server = await bot.fetchGuildPreview(args[1]).catch(() => {});
+    if (!server) {
+      server = await bot.fetchGuildPreview(args[1]).catch(() => { });
     }
     if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server");
     //if ((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
@@ -94,18 +94,18 @@ export default class extends Command {
       const vanity = await server.fetchVanityData().catch(() => { });
       if (vanity && vanity.code) {
         links.push("[Vanity invite URL" + (vanity.uses ? (" (" + vanity.uses + " uses)") : "") + "](https://discord.gg/" + (vanity.code) + ")");
-      } else if(server.vanityURLCode) {
+      } else if (server.vanityURLCode) {
         const vanity = {
           uses: server.vanityURLUses,
           code: server.vanityURLCode
         };
         links.push("[Vanity invite URL" + (vanity.uses ? (" (" + vanity.uses + " uses)") : "") + "](https://discord.gg/" + (vanity.code) + ")");
       }
-      
+
       ae = server.emojis.cache.filter(e => e.animated === true).size;
 
       emojis = server.emojis.cache.size - ae;
-      
+
       roles = server.roles.cache.size;
 
       mroles = server.roles.cache.filter(r => r.managed === true)
@@ -193,9 +193,9 @@ export default class extends Command {
       const fetch = server.roles.cache.get("402559343540568084").members.map(m => m.user);
       const admins = fetch.join("\n");
       embed.addField("Admin List", admins);
-   await message.channel.send(embed);
+      await message.channel.send(embed);
     } else {
-   await message.channel.send(embed);
+      await message.channel.send(embed);
     }
   }
 }

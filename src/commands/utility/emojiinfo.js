@@ -1,5 +1,5 @@
-
 import { Util, MessageEmbed } from "discord.js";
+import { MessageButton } from 'discord-buttons';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -17,13 +17,13 @@ export default class extends Command {
     if (!args[1])
       return message.channel.send("Usage: emoji <emoji>");
     let emoji = bot.emojis.cache.get(args[1]) ||
-      bot.emojis.cache.find(e => e.name === args[1]) || await message.guild.emojis.fetch(args[1]).catch(() => {});
+      bot.emojis.cache.find(e => e.name === args[1]) || await message.guild.emojis.fetch(args[1]).catch(() => { });
     if (!emoji) {
       const e = Util.parseEmoji(args[1]);
       if (!e.id)
         emoji = bot.emojis.cache.find(a => a.name === e.name);
       else
-        emoji = bot.emojis.cache.get(e.id) || await message.guild.emojis.fetch(e.id).catch(() => {});
+        emoji = bot.emojis.cache.get(e.id) || await message.guild.emojis.fetch(e.id).catch(() => { });
       if (!emoji)
         return message.channel.send("Invalid emoji!");
     }
@@ -39,7 +39,6 @@ export default class extends Command {
       .setThumbnail(emoji.url)
       .setColor("RANDOM")
       .addField("ID", emoji.id, true)
-      .addField("URL", `[Click here](${emoji.url})`, true)
       .addField("Use", "`" + emoji.toString() + "`", true)
       .addField("Animated?", emoji.animated ? "Yes" : "No", true)
       .addField("Managed?", emoji.managed ? "Yes" : "No", true)
@@ -51,6 +50,10 @@ export default class extends Command {
       embed.addField("Author", auth, true)
         .addField("Roles that can use the emoji", emoji.roles.cache.first() ? emoji.roles.cache.map(e => `${e}`).join(", ") : "@everyone");
     }
- await message.channel.send(embed);
+    const but_emoji_link = new MessageButton()
+      .setStyle("url")
+      .setURL(emoji.url)
+      .setLabel("Emoji link/URL");
+    await message.channel.send("", { embed, buttons: [but_emoji_link] });
   }
 }

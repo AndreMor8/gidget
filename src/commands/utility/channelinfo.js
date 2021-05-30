@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { MessageButton } from 'discord-buttons';
 
 export default class extends Command {
   constructor(options) {
@@ -19,7 +20,7 @@ export default class extends Command {
       store: "Store channel",
       unknown: "Guild channel"
     };
-    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name.replace("#", "") === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || await message.guild.channels.fetch(args[1] || "123").catch(() => {}) || message.channel;
+    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name.replace("#", "") === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentID === message.channel.parentID && c.position === parseInt(args[1])) || await message.guild.channels.fetch(args[1] || "123").catch(() => { }) || message.channel;
     const embed = new MessageEmbed()
       .setTitle("Channel information for " + channel.name)
       .setColor("RANDOM")
@@ -36,9 +37,7 @@ export default class extends Command {
     switch (channel.type) {
       case 'news':
       case 'text':
-        embed.addField("Last message", channel.lastMessage ? (`ID: ${channel.lastMessage.id}\nURL: [Click here](${channel.lastMessage.url})`) : (channel.lastMessageID ? (`ID: ${channel.lastMessageID}\nURL: [Click here](https://discordapp.com/channels/${message.guild.id}/${channel.id}/${channel.lastMessageID})`) : "Without fetch about that"), true)
-          .addField("Number of members who can see it", channel.members.size, true)
-          .addField("Pinned messages", channel.permissionsFor(bot.user.id).has("VIEW_CHANNEL") ? (await channel.messages.fetchPinned(false)).size : "*Without permissions for see that*", true)
+        embed.addField("Pinned messages", channel.permissionsFor(bot.user.id).has("VIEW_CHANNEL") ? (await channel.messages.fetchPinned(false)).size : "*Without permissions for see that*", true)
           .addField("Last pin at", channel.lastPinAt ? bot.botIntl.format(channel.lastPinAt) : "None", true)
           .addField("NSFW?", channel.nsfw ? "Yes" : "No", true);
         if (channel.type !== "news") {
@@ -56,6 +55,11 @@ export default class extends Command {
         embed.addField("Channels in this category", channel.children.size, true);
         break;
     }
- await message.channel.send(embed);
+    const but_link_msg = new MessageButton()
+      .setStyle("url")
+      .setURL(`https://discordapp.com/channels/${message.guild.id}/${channel.id}/${channel.lastMessageID}`)
+      .setLabel("Last channel message")
+      .setDisabled(channel.lastMessageID ? false : true);
+    await message.channel.send("", { embed, buttons: ["news", "text"].includes(channel.type) ? [but_link_msg] : undefined });
   }
 }

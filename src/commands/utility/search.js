@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
 import googleIt from 'google-it';
 import { checkCleanUrl } from '../../utils/clean-url.js';
+import { MessageButton } from 'discord-buttons';
 
 export default class extends Command {
   constructor(options) {
@@ -18,7 +19,7 @@ export default class extends Command {
     message.channel.startTyping();
 
     const results = await googleIt({ 'query': args.slice(1).join(" "), 'limit': 7, disableConsole: true });
-    
+
     if (results.some(e => checkCleanUrl(e.link)) && !message.channel.nsfw) {
       message.channel.stopTyping(true);
       return message.channel.send("Your search includes NSFW content. To order this content go to an NSFW channel.");
@@ -32,7 +33,7 @@ export default class extends Command {
     for (const elements of Object.values(results)) {
       i++
       const toadd = `${i}. [${elements.title}](${elements.link})\n${elements.snippet}\n\n`;
-      if((text.length + toadd.length) > 2040) break;
+      if ((text.length + toadd.length) > 2040) break;
       text += toadd;
     }
     const embed = new Discord.MessageEmbed()
@@ -41,10 +42,13 @@ export default class extends Command {
       .setTitle('Google Search Results')
       .setDescription(text)
       .setFooter('Powered by Google-it')
-      .addField('Link', 'https://www.google.com/search?q=' + args.slice(1).join("+"), true)
       .addField('Time', ((Date.now() - message.createdTimestamp) / 1000) + 's', true)
       .setTimestamp();
+    const but_link_google = new MessageButton()
+      .setStyle("url")
+      .setURL(`https://www.google.com/search?q=${args.slice(1).join("+")}`)
+      .setLabel("Google search link");
     message.channel.stopTyping(true);
-    await message.channel.send(embed);
+    await message.channel.send("", { embed, buttons: [but_link_google] });
   }
 }
