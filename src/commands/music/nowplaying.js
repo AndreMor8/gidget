@@ -15,6 +15,9 @@ export default class extends Command {
     if (!serverQueue.connection) return;
     if (!serverQueue.connection.dispatcher) return;
 
+    const suma =
+      serverQueue.connection.dispatcher.streamTime +
+      serverQueue.songs[0].seektime * 1000;
     const embed_success = new MessageEmbed()
       .setDescription([
         `Now playing: **[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})**`,
@@ -28,13 +31,7 @@ export default class extends Command {
           .duration(serverQueue.songs[0].duration, "seconds")
           .format()}`,
         `Progress Bar:`,
-        `**[${
-          createBar(
-            serverQueue.songs[0].duration,
-            serverQueue.connection.dispatcher.streamTime +
-              serverQueue.songs[0].seektime * 1000
-          )[0]
-        }]**`,
+        `**[${createBar(serverQueue.songs[0].duration * 1000, suma)[0]}]**`,
       ])
       .setColor(0xffff00);
     await message.channel.send({ embed: embed_success });
