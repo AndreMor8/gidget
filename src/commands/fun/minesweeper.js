@@ -26,9 +26,11 @@ export default class extends Command {
                 if (flag == "f") {
                     message.author.mine.setFlag(c, r);
                     to_edit.edit(`__Minesweeper Game__ (${message.author}) (in progress)\n\n${message.author.mine.showToUser()}`);
+                    if (message.deletable) m.delete().catch(() => { });
                 } else if (flag == "rf") {
                     message.author.mine.removeFlag(c, r);
                     to_edit.edit(`__Minesweeper Game__ (${message.author}) (in progress)\n\n${message.author.mine.showToUser()}`);
+                    if (message.deletable) m.delete().catch(() => { });
                 } else {
                     const can = message.author.mine.CheckCell(c, r);
                     if (can) to_edit.edit(`__Minesweeper Game__ (${message.author}) (in progress)\n\n${message.author.mine.showToUser()}`);
