@@ -35,7 +35,7 @@ export default class extends Command {
           const code = jsQR(ctx.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height);
           if(code) {
             if(!code.data) return message.channel.send("I couldn't read any QR code. Try again");
-            const newstr = Util.splitMessage(code.data, { limit: 1900, char: " " });
+            const newstr = Util.splitMessage(code.data, { limit: 2000, char: " " });
             message.channel.stopTyping(true);
          await message.channel.send("`Output:` " + newstr[0]);
           } else {

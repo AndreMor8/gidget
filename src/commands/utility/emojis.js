@@ -1,3 +1,5 @@
+import { Util } from "discord.js";
+
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -60,7 +62,9 @@ export default class extends Command {
       else
         realtext += `**Unavailable (${unavailable}): ** ${utext}\n`;
     }
-
-    await message.channel.send({ content: realtext, split: { char: " " } });
+    const contents = Util.splitMessage(realtext, { char: " ", maxLength: 2000 });
+    for (const content of contents) {
+      message.channel.send(content);
+    }
   }
 }

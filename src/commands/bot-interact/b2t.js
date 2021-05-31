@@ -13,6 +13,6 @@ export default class extends Command {
             if(!num) return message.channel.send("Are you sure that's binary?")
             binCode.push(String.fromCharCode(num));
         }
-        await message.channel.send(`\`Output:\` ${Util.splitMessage(binCode.join(""), { char: " ", maxLength: 1900 })[0]}`);
+        await message.channel.send(`\`Output:\` ${Util.splitMessage(binCode.join(""), { char: " ", maxLength: 2000 })[0]}`);
     }
 }

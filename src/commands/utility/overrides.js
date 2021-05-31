@@ -1,3 +1,5 @@
+import { Util } from "discord.js";
+
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -45,6 +47,11 @@ export default class extends Command {
       return text;
     });
     if (!permissions[0]) return message.channel.send("There are no channel overrides here.")
-    else message.channel.send({ content: `\n${channel.permissionsLocked ? "The channel is synchronized with its parent category." : "The channel is not synchronized with its parent category."}\nChannel overrides for #${channel.name}`, code: permissions.join("\n\n"), split: true })
+    else {
+      const contents = Util.splitMessage(`\`\`\`${permissions.join("\n\n")}\n${channel.permissionsLocked ? "The channel is synchronized with its parent category." : "The channel is not synchronized with its parent category."}\nChannel overrides for #${channel.name}\`\`\``, { maxLength: 2000 });
+      for (const content of contents) {
+        message.channel.send(content);
+      }
+    }
   }
 }
