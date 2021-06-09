@@ -30,7 +30,7 @@
     "cpu-stat": "2.0.1",
     "crypto-js": "^4.0.0",
     "dblapi.js": "^2.4.1",
-    "discord-buttons": "^2.4.1",
+    "discord-buttons": "^3.2.1",
     "discord-emoji-canvas": "^1.4.0",
     "discord-ytdl-core": "^5.0.3",
     "discord.js-light": "^3.5.11",
