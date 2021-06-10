@@ -7,7 +7,7 @@ const internalCooldown = new Set();
 export default async (bot, message, nolevel = false) => {
   if (message.author.bot) return;
   if (message.guild && !message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return;
-  await message.member?.fetch({ cache: true });
+  await message.member?.fetch({ cache: true }).catch(() => {});
   try {
     //All-time message code
     //For the moment this is a code for only 1 server

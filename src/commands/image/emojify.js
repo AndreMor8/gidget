@@ -78,8 +78,7 @@ export default class extends Command {
                     });
                 });
                 col.on("end", (c, r) => {
-                    if (r === "time") button.reply.send("Time's up!");
-
+                    if (r === "time") button.reply.edit("Time's up!");
                 });
             });
             butcol.on("end", (c, r) => {

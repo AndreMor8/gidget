@@ -36,7 +36,8 @@ export default class extends Command {
                             return;
                         }
                         const [emojiName, roleName] = msg.content.split(/,\s+/);
-                        if (!emojiName && !roleName) return;
+                        if (!emojiName) return;
+                        if (!roleName) return;
                         let emoji = allEmojis.find(emoji => (emoji.toString() === emojiName) || (emoji.name.toLowerCase() === emojiName.toLowerCase()));
                         if (!emoji) {
                             if (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emojiName)) {

@@ -11,6 +11,7 @@ export default class extends Command {
             bot: [268435456, 0]
         };
         this.guildonly = true;
+        this.aliases = ["vr"];
     }
     async run(bot, message, args) {
         let list = await db.findOne({ guildID: { $eq: message.guild.id } });
@@ -32,7 +33,8 @@ export default class extends Command {
             }
             await message.channel.send(embed);
         } else {
-            const allChannels = await message.guild.channels.fetch();
+            const acl = await message.guild.channels.fetch();
+            const allChannels = acl.filter(e => e.type === "voice");
             switch (args[1].toLowerCase()) {
                 case "enable": {
                     await list.updateOne({ enabled: (list.enabled ? false : true) });
@@ -50,6 +52,10 @@ export default class extends Command {
                     const realchannels = [];
                     for (const channel of channels) {
                         if (allChannels.get(channel)) realchannels.push(channel);
+                        else {
+                            const rc = allChannels.find(e => e.name === channel);
+                            if(rc) realchannels.push(rc.id);
+                        }
                     }
                     if (realchannels.length < 1) return message.channel.send("No channels selected");
                     await list.updateOne({ $push: { list: { roleID: role.id, channels: realchannels } } });
@@ -78,6 +84,10 @@ export default class extends Command {
                         const realchannels = [];
                         for (const channel of channels) {
                             if (allChannels.get(channel)) realchannels.push(channel);
+                            else {
+                                const rc = allChannels.find(e => e.name === channel);
+                                if(rc) realchannels.push(rc.id);
+                            }
                         }
                         if (realchannels.length < 1) return message.channel.send("No channels selected");
                         thing.channels = realchannels;
