@@ -15,13 +15,16 @@ export default class extends Command {
     if (!serverQueue.connection) return;
     if (!serverQueue.connection.dispatcher) return;
 
-    const suma =
+    const suma = moment.duration(
       serverQueue.connection.dispatcher.streamTime +
-      serverQueue.songs[0].seektime * 1000;
+        serverQueue.songs[0].seektime * 1000,
+      "ms"
+    )._milliseconds;
+
     const embed_success = new MessageEmbed()
       .setDescription([
         `Now playing: **[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})**`,
-        `Time: ${moment
+        `Time: **${moment
           .duration(
             serverQueue.connection.dispatcher.streamTime +
               serverQueue.songs[0].seektime * 1000,
@@ -29,34 +32,31 @@ export default class extends Command {
           )
           .format()} / ${moment
           .duration(serverQueue.songs[0].duration, "seconds")
-          .format()}`,
+          .format()}**`,
         `Progress Bar:`,
-        `**[${createBar(serverQueue.songs[0].duration * 1000, suma)[0]}]**`,
+        `**${createProgressBar(
+          suma,
+          moment.duration(serverQueue.songs[0].duration, "seconds")
+            ._milliseconds,
+          15
+        )}**`,
       ])
       .setColor(0xffff00);
     await message.channel.send({ embed: embed_success });
   }
 }
 
-function createBar(
-  total,
-  current,
-  size = 15,
-  line = "▬",
-  slider = "<a:KicketyKickBallA:649698360978178061>"
-) {
-  if (current > total) {
-    const bar = line.repeat(size + 2);
-    const percentage = (current / total) * 100;
-    return [bar, percentage];
-  } else {
-    const percentage = current / total;
-    const progress = Math.round(size * percentage);
-    const emptyProgress = size - progress;
-    const progressText = line.repeat(progress).replace(/.$/, slider);
-    const emptyProgressText = line.repeat(emptyProgress);
-    const bar = progressText + emptyProgressText;
-    const calculated = percentage * 100;
-    return [bar, calculated];
-  }
+function createProgressBar(current, total, size) {
+  const slider = "<a:KicketyKickBallA:649698360978178061>";
+  const line = "▬";
+  const percentage = current / total;
+  const progress = Math.round(size * percentage);
+  const emptyProgress = size - progress;
+
+  const progressText = line.repeat(progress).replace(/.$/, slider);
+  const emptyProgressText = line.repeat(emptyProgress);
+  const percentageText = Math.round(percentage * 100);
+
+  const bar = `[${progressText + emptyProgressText}] ${percentageText}%`;
+  return bar;
 }
