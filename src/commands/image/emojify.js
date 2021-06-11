@@ -23,7 +23,7 @@ export default class extends Command {
     async run(bot, message, args) {
         const force = args.includes("-force-png");
         if (force) args.splice(args.indexOf("-force-png"), 1);
-        if (!args[1] && !message.attachments.first()) return message.channel.send("Usage: emojify `<url/attachment/emoji> ['-force-png'] ['-server']`");
+        if (!args[1] && !message.attachments.first()) return message.channel.send("Usage: emojify `<url/attachment/emoji> ['-force-png']`");
         let url;
         const user = (args[1] || message.mentions.users.first()) ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ") || e.username?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase() || e.tag?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase())) || message.guild?.members.cache.find(e => (e.nickname === args.slice(1).join(" ") || e.nickname?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase()))?.user || await bot.users.fetch(args[1]).catch(() => { })) : null;
         if (user) {
