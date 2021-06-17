@@ -18,7 +18,7 @@ If you don't know anything about programming, I recommend using the public bot. 
 
 ## Some details
 
-This bot uses Discord.js v12.x to interact with the Discord API.
+This bot uses Discord.js v13.x to interact with the Discord API.
 
 The command/event handler base and reaction-role system are based on [**this code**](https://github.com/ansonfoong/discordjs-v12-bot).
 
