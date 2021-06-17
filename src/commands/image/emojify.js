@@ -68,16 +68,16 @@ export default class extends Command {
                 const col = message.channel.createMessageCollector((e) => e.author.id === message.author.id, { time: 30000 });
                 col.on("collect", (msg) => {
                     message.guild.emojis.create((pre_type == "svg") ? buffer : url, msg.content, { reason: "emojify command" }).then((e) => {
-                        button.reply.edit(`Emoji created correctly! -> ${e.toString()}`);
+                        button.editReply(`Emoji created correctly! -> ${e.toString()}`);
                     }).catch(e => {
-                        button.reply.edit("Error: " + e);
+                        button.editReply("Error: " + e);
                     }).finally(() => {
                         msg.delete();
                         col.stop();
                     });
                 });
                 col.on("end", (c, r) => {
-                    if (r === "time") button.reply.edit("Time's up!");
+                    if (r === "time") button.editReply("Time's up!");
                 });
             });
             butcol.on("end", (c, r) => {
