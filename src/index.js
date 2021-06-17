@@ -10,11 +10,14 @@ const manager = new Discord.ShardingManager('./src/bot.js', {
     totalShards: parseInt(process.env.SHARDS_WANTED) || "auto",
     execArgv
 });
-manager.on('shardCreate', shard => console.log(`Launched shard ${shard.id}`));
+manager.on('shardCreate', shard => {
+    console.log(`Launched shard ${shard.id}`);
+    
+});
 manager.spawn({ timeout: Infinity }).then(() => {
-    if (process.env.EXTERNAL === "yes") {
+    /*if (process.env.EXTERNAL === "yes") {
         discordboats(manager);
         setInterval(discordboats, 1800000, manager);
-    }
+    }*/
     webserver(manager);
 });

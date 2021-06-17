@@ -8,7 +8,7 @@ export default class extends Command {
         this.owner = true;
     }
     async run(bot, message) {
-        if ((await bot.shard.fetchClientValues("voice.connections.size")).reduce((a, c) => a + c, 0)) {
+        if ((await bot.shard.broadcastEval(c => c.voice.adapters.size)).reduce((a, c) => a + c, 0)) {
             if (!thing.has(message.author.id)) {
                 thing.add(message.author.id);
                 setTimeout(() => {

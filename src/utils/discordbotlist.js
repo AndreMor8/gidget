@@ -10,11 +10,11 @@ export default async function (bot) {
         body: JSON.stringify({
             guilds: bot.guilds.cache.size,
             users: bot.users.cache.size,
-            /*voice_connections: bot.voice.connections.size,*/
+            voice_connections: bot.voice.adapters.size,
             shard_id: bot.shard?.ids[0] || 0
         })
     });
-    if(!res.ok) console.error(await res.text());
+    if (!res.ok) console.error("discordbotlist.com: Error!");
     else console.log("discordbotlist.com: Posted!");
     return;
 }

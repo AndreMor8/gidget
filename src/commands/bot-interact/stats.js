@@ -18,7 +18,7 @@ export default class extends Command {
     message.channel.startTyping();
     const percent = await usagePercent();
     const memoryU = `Resident Set: ${memory(process.memoryUsage.rss())}\nHeap Used: ${memory(process.memoryUsage().heapUsed)}`;
-    /*const vcs = (await bot.shard.fetchClientValues("voice.connections.size")).reduce((a, c) => a + c, 0);*/
+    const vcs = (await bot.shard.broadcastEval(c => c.voice.adapters.size)).reduce((a, c) => a + c, 0);
     const embedStats = new Discord.MessageEmbed()
       .setTitle("***Stats***")
       .setColor("RANDOM")
@@ -32,9 +32,9 @@ export default class extends Command {
       .addField("• Operating system", `\`\`\`md\n${os.version()}\n${os.release()}\`\`\``)
       .addField("• CPU", `\`\`\`md\n${os.cpus()[0].model}\`\`\``)
       .addField("• Shards", bot.shard.count.toString(), true)
-    /*if (vcs) {
-      embedStats.addField("• Voice connections", vcs, true)
-    }*/
+    if (vcs) {
+      embedStats.addField("• Voice connections", vcs.toString(), true)
+    }
     embedStats.addField("• CPU usage", `\`${percent.toFixed(2)}%\``, true)
       .addField("• Arch", `\`${os.arch()}\``, true)
       .addField("• Platform", `\`\`${os.platform()}\`\``, true)
