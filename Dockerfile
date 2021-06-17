@@ -13,7 +13,7 @@ RUN apk add --no-cache libpng libpng-dev jpeg-dev pango-dev cairo-dev giflib-dev
 RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
 # Installing project dependencies
 COPY package.json .
-RUN npm install --only=production --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 # Doing things with Discord.js
 RUN cd ./node_modules/discord.js && npm i -D gen-esm-wrapper --legacy-peer-deps && npx gen-esm-wrapper ./src/index.js ./src/index.mjs
 # Free space
