@@ -38,7 +38,7 @@ export default class extends Command {
     cats.each(c => {
       const children = c.children.intersect(col);
       const textp = children.filter(c => ['text', 'store', 'news'].includes(c.type));
-      const voicep = children.filter(c => c.type === "voice");
+      const voicep = children.filter(c => ['voice', 'stage'].includes(c.type));
       text += "\n[📂] " + c.name;
       text += textp.size ? ("\n\t" + Util.discordSort(textp).map(advancedmap).join("\n\t")) : "";
       text += voicep.size ? ("\n\t" + Util.discordSort(voicep).map(advancedmap).join("\n\t")) : "";
