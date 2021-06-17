@@ -12,8 +12,8 @@ export default class extends Command {
         super(options);
         this.description = "The Wubphone :)";
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 32768]
+            user: [0n, 0n],
+            bot: [0n, 32768n]
         }
     }
     async run(bot, message, args) {
@@ -44,6 +44,6 @@ export default class extends Command {
             ctx.drawImage(canvasimages[i], constants[i][0], constants[i][1], 62, 57.6)
         }
         const att = new MessageAttachment(canvas.toBuffer(), "algo.png");
-        await message.channel.send((realsources.length <= 1 ? "Usage: `wubphone [user1] [user2] [user3] [user4]`" : ""), att);
+        await message.channel.send({ content: (realsources.length <= 1 ? "Usage: `wubphone [user1] [user2] [user3] [user4]`" : undefined), files: [att] });
     }
 }

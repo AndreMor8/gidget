@@ -13,6 +13,6 @@ export default class extends Command {
         .addField("NeonBluu", "Support server creation and design")
         .addField("GitHub", "[Those who contributed to the bot code](https://github.com/AndreMor8/gidget/graphs/contributors)")
         .setImage("https://contributors-img.web.app/image?repo=AndreMor8/gidget");
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
     }
 }

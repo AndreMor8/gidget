@@ -49,8 +49,8 @@ export default (bot, reupdate = false) => {
                   await Util.delayFor(1500);
                   const embed = message.embeds[0];
                   embed.setDescription(text).setTitle("Poll completed");
-                  await message.edit(embed);
-                  if (message.guild.me.hasPermission("MANAGE_MESSAGES")) {
+                  await message.edit({embeds: [embed]});
+                  if (message.guild.me.permissions.has("MANAGE_MESSAGES")) {
                     message.reactions.removeAll().catch(() => {});
                   }
                 }

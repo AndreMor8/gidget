@@ -6,7 +6,7 @@ export default class extends Command {
     this.description = "This fetches the actual bot application on Discord";
   }
   async run(bot, message) {
-    const info = await bot.fetchApplication()
+    const info = bot.application.partial ? await bot.application.fetch() : bot.application;
     const embed = new MessageEmbed()
     .setTitle("Client app information")
     .setThumbnail(info.iconURL({ format: "png" }))
@@ -17,6 +17,6 @@ export default class extends Command {
     .addField("Public bot?", info.botPublic ? "Yes" : "No")
     .addField("Requires OAuth2 code grant?", info.botRequireCodeGrant ? "Yes" : "No")
     .addField("Owner", info.owner.toString())
-    await message.channel.send(embed);
+    await message.channel.send({embeds: [embed]});
   }
 }

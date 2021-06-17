@@ -1,13 +1,12 @@
 import Discord from 'discord.js';
-import { MessageButton } from 'discord-buttons';
 
 export default class extends Command {
   constructor(options) {
     super(options);
     this.description = "A fun game";
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16384]
+      user: [0n, 0n],
+      bot: [0n, 16384n]
     }
   }
   async run(bot, message, args) {
@@ -32,25 +31,25 @@ export default class extends Command {
       .addField("Question", args.slice(1).join(" "))
       .addField("Answer", arr[Math.floor(Math.random() * arr.length)]);
 
-    const but_redo = new MessageButton()
-      .setID("8ball_c_redo")
-      .setStyle("blurple")
+    const but_redo = new Discord.MessageButton()
+      .setCustomID("8ball_c_redo")
+      .setStyle("PRIMARY")
       .setLabel("Retry");
 
-    const msg = await message.channel.send("", { embed: ballembed, buttons: [but_redo] });
+    const msg = await message.channel.send({ embeds: [ballembed], components: [new Discord.MessageActionRow().addComponents([but_redo])] });
     const filter = (button) => {
-      if ((button.clicker.user?.id || button.message.channel.recipient.id) !== message.author.id) button.reply.send("Use your own instance by using `g%8ball <question>`", true);
-      return (button.clicker.user?.id || button.message.channel.recipient.id) === message.author.id;
+      if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%8ball <question>`", ephemeral: true });
+      return button.user.id === message.author.id;
     };
-    const col = msg.createButtonCollector(filter, { idle: 15000 });
+    const col = msg.createMessageComponentInteractionCollector(filter, { idle: 15000 });
     col.on("collect", async (button) => {
-      await button.defer();
-      if (button.id === "8ball_c_redo") {
-        msg.edit("", { embed: ballembed.spliceFields(1, 1).addField("Answer", arr[Math.floor(Math.random() * arr.length)]) });
+      await button.deferUpdate();
+      if (button.customID === "8ball_c_redo") {
+        msg.edit({ embeds: [ballembed.spliceFields(1, 1).addField("Answer", arr[Math.floor(Math.random() * arr.length)])] });
       }
     });
     col.on("end", () => {
-      msg.edit("", { buttons: [but_redo.setDisabled(true)] });
+      msg.edit({ components: [new Discord.MessageActionRow().addComponents([but_redo.setDisabled(true)])] });
     });
   }
 }

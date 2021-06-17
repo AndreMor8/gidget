@@ -7,8 +7,8 @@ export default class extends Command {
         super(options);
         this.description = "Give a role when a member joins specific voice channels.";
         this.permissions = {
-            user: [8, 0],
-            bot: [268435456, 0]
+            user: [8n, 0n],
+            bot: [268435456n, 0n]
         };
         this.guildonly = true;
         this.aliases = ["vr"];
@@ -31,7 +31,7 @@ export default class extends Command {
                 if (!role) continue;
                 embed.addField(`${role.name} (${role.id})`, option.channels.map(e => `<#${e}>`).join(", ") || "No channels");
             }
-            await message.channel.send(embed);
+            await message.channel.send({embeds: [embed]});
         } else {
             const acl = await message.guild.channels.fetch();
             const allChannels = acl.filter(e => e.type === "voice");

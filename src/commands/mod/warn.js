@@ -4,8 +4,8 @@ export default class extends Command {
     this.description = "Warn a member";
     this.guildonly = true;
     this.permissions = {
-      user: [4, 0],
-      bot: [268435456, 0]
+      user: [4n, 0n],
+      bot: [268435456n, 0n]
     };
   }
   async run(bot, message, args) {

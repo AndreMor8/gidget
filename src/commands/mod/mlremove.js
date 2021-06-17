@@ -1,4 +1,3 @@
-
 import MessageModel from "../../database/models/roles.js";
 
 export default class extends Command {
@@ -8,8 +7,8 @@ export default class extends Command {
     this.guildonly = true;
     this.description = "Removes a user from the guild list of roles to retrieve";
     this.permissions = {
-      user: [8, 0],
-      bot: [0, 0]
+      user: [8n, 0n],
+      bot: [0n, 0n]
     }
   }
   async run(bot, message, args) {

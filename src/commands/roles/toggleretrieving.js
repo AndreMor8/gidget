@@ -6,14 +6,14 @@ export default class extends Command {
     this.description = "If a server member leaves, save the roles and when they come back, put them back.";
     this.guildonly = true;
     this.permissions = {
-      user: [8, 0],
-      bot: [268435456, 0]
+      user: [8n, 0n],
+      bot: [268435456n, 0n]
     };
   }
   async run(bot, message) {
     if (!message.guild) return message.channel.send("This command only works on servers");
-    if (!message.member.hasPermission("MANAGE_ROLES")) return message.channel.send("You don't have permission to modify that.")
-    if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("I don't have the `MANAGE_ROLES` permission.")
+    if (!message.member.permissions.has("MANAGE_ROLES")) return message.channel.send("You don't have permission to modify that.")
+    if (!message.guild.me.permissions.has("MANAGE_ROLES")) return message.channel.send("I don't have the `MANAGE_ROLES` permission.")
     const msgDocument = await MessageModel.findOne({ guildId: message.guild.id });
     if (!msgDocument) {
       new MessageModel({

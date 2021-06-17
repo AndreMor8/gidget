@@ -14,8 +14,8 @@ export default class extends Command {
     this.description = "Take a screenshot from a live YouTube stream.";
     this.aliases = ["lc"];
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 32768]
+      user: [0n, 0n],
+      bot: [0n, 32768n]
     }
   }
   async run(bot, message, args) {
@@ -76,7 +76,7 @@ export default class extends Command {
                 const buf = await fs.promises.readFile(pathPNG);
                 //Send to Discord
                 const att = new MessageAttachment(buf, "image.png");
-                await message.channel.send(att);
+                await message.channel.send({ files: [att] });
                 s();
               })
               //Any errors here

@@ -9,8 +9,8 @@ export default class extends Command {
         super(options)
         this.description = "The classic meme of Batman and Robin";
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 32768]
+            user: [0n, 0n],
+            bot: [0n, 32768n]
         }
     }
     async run(bot, message, args) {
@@ -30,6 +30,6 @@ export default class extends Command {
 
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'btslap.png');
 
-        message.channel.send(attachment);
+        message.channel.send({ files: [attachment] });
     }
 }

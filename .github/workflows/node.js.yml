@@ -24,5 +24,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev lame qrencode
     - name: Installing project dependencies
       run: npm install --legacy-peer-deps
+    - name: Doing things with Discord.js
+      run: cd ./node_modules/discord.js && npm i && gen-esm-wrapper ./src/index.js ./src/index.mjs
     - name: Executing CI test script
       run: npm test

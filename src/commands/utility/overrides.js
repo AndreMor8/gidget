@@ -31,7 +31,7 @@ export default class extends Command {
           })
         }
       }
-      else text += `[👪] ${message.guild.roles.cache.get(m.id).name}:\n`
+      else text += `[👪] ${message.guild.roles.cache.get(m.id).name}:\n`;
       let doit = false;
       if (m.allow.bitfield !== 0) {
         doit = true;

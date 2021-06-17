@@ -18,6 +18,6 @@ export default class extends Command {
     for(const i in warns) {
       embed.addField(`Case #${parseInt(i) + 1}`, `ID: ${warns[i]._id}\nReason: ${warns[i].reason || "*None*"}`);
     }
-    message.channel.send(embed);
+    message.channel.send({embeds: [embed]});
   }
 }

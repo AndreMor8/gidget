@@ -6,8 +6,8 @@ export default class extends Command {
     this.description = "Wubbzypedia staff :)";
     this.onlyguild = true;
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 0]
+      user: [0n, 0n],
+      bot: [0n, 0n]
     };
   }
   async run(bot, message) {

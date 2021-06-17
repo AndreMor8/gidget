@@ -1,13 +1,12 @@
-import { MessageEmbed, Snowflake } from "discord.js";
-
+import { MessageEmbed, SnowflakeUtil } from "discord.js";
 
 export default class extends Command {
   constructor(options) {
     super(options);
     this.description = "De-structure a snowflake to indicate data.";
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16384]
+      user: [0n, 0n],
+      bot: [0n, 16384n]
     };
   }
   async run(bot, message, args) {
@@ -17,16 +16,16 @@ export default class extends Command {
       return message.channel.send("I don't think Discord's snowflakes have gotten to those points.");
     if (!Number(args[1]))
       return message.channel.send("Put a real snowflake!");
-    const data = Snowflake.deconstruct(args[1]);
+    const data = SnowflakeUtil.deconstruct(args[1]);
     const embed = new MessageEmbed()
       .setTitle("Deconstructed snowflake")
       .setColor("BLUE")
       .setTimestamp(data.date)
-      .addField("Date", data.date.toLocaleString())
-      .addField("Worker ID", data.workerID, true)
-      .addField("Process ID", data.processID, true)
-      .addField("Increment", data.increment, true)
+      .addField("Date", bot.botIntl.format(data.date))
+      .addField("Worker ID", data.workerID.toString(), true)
+      .addField("Process ID", data.processID.toString(), true)
+      .addField("Increment", data.increment.toString(), true)
       .addField("Binary representation", data.binary);
-    await message.channel.send(embed);
+    await message.channel.send({ embeds: [embed] });
   }
 }

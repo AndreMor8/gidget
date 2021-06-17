@@ -9,11 +9,11 @@ export default class extends Command {
   }
   // eslint-disable-next-line require-await
   async run(bot, message, args) {
-    if(actual.has(message.author.id)) return;
+    if (actual.has(message.author.id)) return;
     let i = 0;
     let channel;
     if (message.guild) {
-      channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => {}) || message.channel;
+      channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => { }) || message.channel;
       if (channel.guild.id !== message.guild.id)
         return message.channel.send("That channel is from another guild");
       if (!["text", "news"].includes(channel.type))
@@ -205,7 +205,7 @@ export default class extends Command {
     collector.on("end", (collected, reason) => {
       if (reason === "field") {
         return fields(message, embed).then(embed => {
-          channel.send(msgContent, embed);
+          channel.send({ content: msgContent, embeds: [embed] });
         }).catch(reason => {
           if (reason === "idle") {
             message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
@@ -223,7 +223,7 @@ export default class extends Command {
         message.channel.send("It seems you don't want an embed.");
       }
       else if (reason === "Finished") {
-        channel.send(msgContent, embed);
+        channel.send({ content: msgContent, embeds: [embed] });
       } else if (reason === "idle") {
         message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
       } else {
@@ -243,10 +243,10 @@ function fields(message, embed) {
     message.channel.send(arr[i]);
     const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 120000 });
     collector.on("collect", m => {
-      if(m.content.toLowerCase() === "exit") {
+      if (m.content.toLowerCase() === "exit") {
         return collector.stop("no");
       }
-      if(!m.content) {
+      if (!m.content) {
         return message.channel.send("Don't be crazy, put something on, okay?");
       }
       switch (i) {

@@ -7,8 +7,8 @@ export default class extends Command {
     this.description = "Limit emojis to certain roles";
     this.guildonly = true;
     this.permissions = {
-      user: [1073741824, 0],
-      bot: [1073741824, 0]
+      user: [1073741824n, 0n],
+      bot: [1073741824n, 0n]
     };
   }
   // eslint-disable-next-line require-await
@@ -37,12 +37,7 @@ export default class extends Command {
         }
       }
     }
-
-    /**
-     * @param msg
-     * @param args
-     * @param emoji
-     */
+    
     async function cmd_sendumfrage(msg, args, emoji) {
       const emojiobj = msg.guild.emojis.cache.get(emoji) || await msg.guild.emojis.fetch(emoji).catch(() => {});
       if (!emojiobj)
@@ -55,7 +50,7 @@ export default class extends Command {
           .setTitle("List of roles they can use " + emojiobj.name)
           .setDescription(text)
           .setFooter("Available modes: add, remove, set");
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed]});
       }
       const roles = msg.mentions.roles.first() ? msg.mentions.roles : args.slice(1);
 

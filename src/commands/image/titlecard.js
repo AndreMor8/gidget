@@ -7,8 +7,8 @@ export default class extends Command {
         this.aliases = ['tt'];
         this.description = "Shows a title card from the Wubbzy show!";
         this.permissions = {
-            user: [0, 0],
-            bot: [0, ]
+            user: [0n, 0n],
+            bot: [0n, 0n]
         }
     }
     async run(bot, message, args) {
@@ -26,7 +26,7 @@ export default class extends Command {
            const embed = new MessageEmbed()
            .setDescription(pages.map(e => e.replace("(episode)", "").trimEnd()).join("\n"))
            .setTitle("List of episodes");
-           return await message.channel.send(embed);
+           return await message.channel.send({embeds: [embed]});
         }
         const res = await mediabot.request({
             "action": "imageserving",
@@ -35,6 +35,6 @@ export default class extends Command {
         const embed = new MessageEmbed()
         .setImage(`${res.image.imageserving}&format=original`)
         .setTitle(`${page.replace("(episode)", "").trimEnd()}'s title card`);
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
     }
 }

@@ -10,8 +10,8 @@ export default class extends Command {
         this.guildonly = true;
         this.description = "Role reaction system";
         this.permissions = {
-            user: [8, 0],
-            bot: [268435456, 0]
+            user: [8n, 0n],
+            bot: [268435456n, 0n]
         };
     }
     async run(bot, message, args) {

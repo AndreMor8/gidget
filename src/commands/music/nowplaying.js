@@ -10,39 +10,29 @@ export default class extends Command {
     this.guildonly = true;
   }
   async run(bot, message) {
-    const serverQueue = message.guild.queue;
-    if (!serverQueue) return message.channel.send("There is nothing playing.");
-    if (!serverQueue.connection) return;
-    if (!serverQueue.connection.dispatcher) return;
 
-    const suma = moment.duration(
-      serverQueue.connection.dispatcher.streamTime +
-        serverQueue.songs[0].seektime * 1000,
-      "ms"
-    )._milliseconds;
+    const queue = bot.distube.getQueue(message);
+    if (!queue) return message.channel.send("There is nothing playing.");
+
+    const suma = moment.duration(queue.currentTime, "seconds")._milliseconds;
 
     const embed_success = new MessageEmbed()
       .setDescription([
-        `Now playing: **[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})**`,
-        `Time: **${moment
-          .duration(
-            serverQueue.connection.dispatcher.streamTime +
-              serverQueue.songs[0].seektime * 1000,
-            "ms"
-          )
+        `Now playing: **[${queue.songs[0].name}](${queue.songs[0].url})**`,
+        `Time: **${moment.duration(queue.currentTime, "seconds")
           .format()} / ${moment
-          .duration(serverQueue.songs[0].duration, "seconds")
-          .format()}**`,
+            .duration(queue.songs[0].duration, "seconds")
+            .format()}**`,
         `Progress Bar:`,
         `**${createProgressBar(
           suma,
-          moment.duration(serverQueue.songs[0].duration, "seconds")
+          moment.duration(queue.songs[0].duration, "seconds")
             ._milliseconds,
           15
         )}**`,
-      ])
+      ].join("\n"))
       .setColor(0xffff00);
-    await message.channel.send({ embed: embed_success });
+    await message.channel.send({ embeds: [embed_success] });
   }
 }
 

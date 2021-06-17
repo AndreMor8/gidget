@@ -6,8 +6,8 @@ export default class extends Command {
     this.aliases = ["djs", "discordjs", "discord.js"];
     this.description = "Discord.js Docs :)";
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16384]
+      user: [0n, 0n],
+      bot: [0n, 16384n]
     };
   }
   async run(bot, message, args) {
@@ -26,8 +26,8 @@ export default class extends Command {
     const r = await fetch(page);
     if (!r.ok) return message.channel.send(`Error: Status code from ${page} returned ${r.status} (${r.statusText})`)
     const res = await r.json();
-    if (!res) return message.channel.send(new MessageEmbed().setTitle("Error").setDescription("No results found"));
-    if (res.error) return message.channel.send(new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message));
-    await message.channel.send(new MessageEmbed(res));
+    if (!res) return message.channel.send({ embeds: [new MessageEmbed().setTitle("Error").setDescription("No results found")] });
+    if (res.error) return message.channel.send({ embeds: [new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message)] });
+    await message.channel.send({ embeds: [new MessageEmbed(res)] });
   }
 }

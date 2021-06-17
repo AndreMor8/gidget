@@ -5,8 +5,8 @@ export default class extends Command {
         this.description = "This command enables message link detection so that a message from the bot appears with its content."
         this.guildonly = true;
         this.permissions = {
-            user: [8, 0],
-            bot: [0, 0]
+            user: [8n, 0n],
+            bot: [0n, 0n]
         }
     }
     async run(bot, message) {

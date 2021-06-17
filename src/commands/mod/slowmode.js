@@ -5,8 +5,8 @@ export default class extends Command {
     this.description = "Edit the channel slowmode";
     this.guildonly = true;
     this.permissions = {
-      user: [268435456, 0],
-      bot: [0, 16]
+      user: [268435456n, 0n],
+      bot: [0n, 16n]
     };
 
   }

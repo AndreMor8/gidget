@@ -1,7 +1,6 @@
-import Discord from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import googleIt from 'google-it';
 import { checkCleanUrl } from '../../utils/clean-url.js';
-import { MessageButton } from 'discord-buttons';
 
 export default class extends Command {
   constructor(options) {
@@ -9,8 +8,8 @@ export default class extends Command {
     this.description = "Search in Google";
     this.aliases = ["google"];
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16384]
+      user: [0n, 0n],
+      bot: [0n, 16384n]
     };
   }
   async run(bot, message, args) {
@@ -36,7 +35,7 @@ export default class extends Command {
       if ((text.length + toadd.length) > 2040) break;
       text += toadd;
     }
-    const embed = new Discord.MessageEmbed()
+    const embed = new MessageEmbed()
       .setAuthor(message.author.username, message.author.displayAvatarURL({ dynamic: true }))
       .setColor('RANDOM')
       .setTitle('Google Search Results')
@@ -45,10 +44,10 @@ export default class extends Command {
       .addField('Time', ((Date.now() - message.createdTimestamp) / 1000) + 's', true)
       .setTimestamp();
     const but_link_google = new MessageButton()
-      .setStyle("url")
+      .setStyle("LINK")
       .setURL(`https://www.google.com/search?q=${args.slice(1).join("+")}`)
       .setLabel("Google search link");
     message.channel.stopTyping(true);
-    await message.channel.send("", { embed, buttons: [but_link_google] });
+    await message.channel.send({ embeds: [embed], components: [new MessageActionRow().addComponents([but_link_google])] });
   }
 }

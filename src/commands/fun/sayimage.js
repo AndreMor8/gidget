@@ -7,8 +7,8 @@ export default class extends Command {
         this.description = "Fake quote";
         this.secret = true;
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 32768]
+            user: [0n, 0n],
+            bot: [0n, 32768n]
         };
         this.aliases = ["fakequote"];
     }
@@ -66,6 +66,6 @@ export default class extends Command {
         await fillWithEmoji(ctx, mensaje, 66, 50)
 
         const attach = new Discord.MessageAttachment(canvas.toBuffer(), 'isay.png')
-        await message.channel.send(attach)
+        await message.channel.send({ files: [attach] })
     }
 }

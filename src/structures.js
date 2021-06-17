@@ -9,7 +9,7 @@ import memberwarns from './database/models/warn2.js';
 import { Structures } from 'discord.js';
 import confessions from './database/models/confessionconfig.js';
 
-//To differentiate user errors (maybe?)
+//To differentiate user errors
 class StructureError extends Error {
     constructor(error) {
         super();
@@ -151,7 +151,7 @@ Structures.extend('Guild', Guild => {
 
         async getInviteCount() {
             const col = await this.fetchInvites();
-            const invites = col.array();
+            const invites = Array.from(col.values());
             const inviteCounter = {}
 
             for (const invite of invites) {

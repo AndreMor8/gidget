@@ -9,14 +9,14 @@ export default class extends Command {
     super(options);
     this.description = 'An image of Trump where he grabs a book with your text.';
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 32768]
+      user: [0n, 0n],
+      bot: [0n, 32768n]
     }
   }
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Put something...");
     message.channel.startTyping();
-    if(!font) font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
+    if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
     const meme = await Jimp.read(path.join(__dirname, "../../assets/TrumpApi.png"));
     const realtext = getWellText(args.slice(1).join(" "), 14, 88);
     meme.rotate(7);
@@ -25,7 +25,7 @@ export default class extends Command {
     meme.autocrop();
     const render = await meme.getBufferAsync(Jimp.MIME_PNG);
     const attachment = new MessageAttachment(render, "trump.png");
-    await message.channel.send(attachment);
+    await message.channel.send({ files: [attachment] });
     message.channel.stopTyping();
   }
 }

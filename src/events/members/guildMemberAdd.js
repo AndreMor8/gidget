@@ -18,16 +18,10 @@ export default async (bot, member) => {
       memberid: member.user.id
     });
     if (msgDocument) {
-      if (member.guild.me.hasPermission("MANAGE_ROLES")) {
+      if (member.guild.me.permissions.has("MANAGE_ROLES")) {
         const { roles } = msgDocument;
-        const toadd = [];
-        for (const r of roles) {
-          const role = member.guild.roles.cache.get(r);
-          if (role && !role.deleted && role.editable && !role.managed) {
-            toadd.push(role.id);
-          }
-        }
-        await member.roles.add(toadd, "Retrieving roles").catch(() => { });
+        const col = member.guild.roles.cache.filter(role => roles.includes(role.id) && (!role.deleted && role.editable && !role.managed));
+        if(col.size >= 1)await member.roles.add(col, "Retrieving roles").catch(() => { });
       }
       msgDocument.deleteOne();
     }
@@ -38,7 +32,7 @@ export default async (bot, member) => {
   if (data && (Date.now() < data.date.getTime())) {
     const guildData = await tempmuteconfig.findOne({ guildid: { $eq: member.guild.id } });
     if (guildData) {
-      if (member.guild.me.hasPermission("MANAGE_ROLES")) {
+      if (member.guild.me.permissions.has("MANAGE_ROLES")) {
         member.roles.add(guildData.muteroleid, "Temprestrict - Persist").catch(() => { });
       }
     }
@@ -56,8 +50,8 @@ export default async (bot, member) => {
     let inviterTag = "Unknown";
     let inviterId = "Unknown";
     try {
-      if (((/%INVITER%/gmi.test(welcome.text)) || (/%INVITER%/gmi.test(welcome.dmmessage))) && member.guild.me.hasPermission("MANAGE_GUILD")) {
-        const invitesBefore = member.guild.inviteCount
+      if (((/%INVITER%/gmi.test(welcome.text)) || (/%INVITER%/gmi.test(welcome.dmmessage))) && member.guild.me.permissions.has("MANAGE_GUILD")) {
+        const invitesBefore = member.guild.inviteCount;
         const invitesAfter = await member.guild.getInviteCount();
         for (const inviter in invitesAfter) {
           if (invitesBefore[inviter] === (invitesAfter[inviter] - 1)) {
@@ -75,7 +69,7 @@ export default async (bot, member) => {
       }
     } catch (err) {
       console.log(err);
-      if (member.guild.me.hasPermission("MANAGE_GUILD")) {
+      if (member.guild.me.permissions.has("MANAGE_GUILD")) {
         member.guild.inviteCount = await member.guild.getInviteCount();
       }
     } finally {
@@ -120,5 +114,5 @@ export default async (bot, member) => {
     )
     .setFooter("Thanks for joining!")
     .setTimestamp();
-  await member.send(embed).catch(() => { });
+  await member.send({ embeds: [embed] }).catch(() => { });
 };

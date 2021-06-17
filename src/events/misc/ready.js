@@ -29,7 +29,7 @@ export default async bot => {
   
   //Show the inviter on the welcome message. Luckily, fetch invites do not have a rate-limit
   try {
-    const guildsToFetch = bot.guilds.cache.filter(e => e.me.hasPermission("MANAGE_GUILD")).array();
+    const guildsToFetch = bot.guilds.cache.filter(e => e.me.permissions.has("MANAGE_GUILD")).array();
     for (const guild of guildsToFetch) {
       guild.inviteCount = await guild.getInviteCount().catch(err => {
         console.log(err);
@@ -37,10 +37,10 @@ export default async bot => {
       });
     }
   } catch (err) {
-    console.error(`In shard ${bot.shard.id || bot.shard.ids[0]} there was an error fetching invites.`)
+    console.error(`In shard ${bot.shard?.ids[0] || 0} there was an error fetching invites.`)
   }
 
   //All internal operations ended
   presence(bot);
-  console.log(`Gidget is alive! Version ${bot.botVersion} from shard ${bot.shard.id || bot.shard.ids[0]}`);
+  console.log(`Gidget is alive! Version ${bot.botVersion} from shard ${bot.shard?.ids[0] || 0}`);
 };

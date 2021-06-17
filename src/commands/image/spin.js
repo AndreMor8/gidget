@@ -19,8 +19,8 @@ export default class extends Command {
         this.description = "Spin some image";
         this.aliases = ["sp"];
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 32768]
+            user: [0n, 0n],
+            bot: [0n, 32768n]
         }
     }
     async run(bot, message, args) {
@@ -72,7 +72,7 @@ export default class extends Command {
                     const buf = await gifResize({ width: 512, height: 512, stretch: true, interlaced: true })(pre_buf);
                     const att = new MessageAttachment(buf, "spin.gif");
                     message.channel.stopTyping(true);
-                    await message.channel.send(att).catch(() => { });
+                    await message.channel.send({ files: [att] }).catch(() => { });
                     s();
                 })
                 for (let i = 0; i < parseInt(360 / DEGREES); i++) {

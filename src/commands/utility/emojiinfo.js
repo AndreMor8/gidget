@@ -1,5 +1,4 @@
-import { Util, MessageEmbed } from "discord.js";
-import { MessageButton } from 'discord-buttons';
+import { Util, MessageEmbed, MessageButton, MessageActionRow } from "discord.js";
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -7,8 +6,8 @@ export default class extends Command {
     this.description = "Get information from an emoji.";
     this.guildonly = true;
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16384]
+      user: [0n, 0n],
+      bot: [0n, 16384n]
     };
   }
   async run(bot, message, args) {
@@ -29,7 +28,7 @@ export default class extends Command {
     }
 
     let auth = emoji.author;
-    if (!auth && message.guild.me.hasPermission("MANAGE_EMOJIS") && emoji.guild.id === message.guild.id) {
+    if (!auth && message.guild.me.permissions.has("MANAGE_EMOJIS") && emoji.guild.id === message.guild.id) {
       auth = await emoji.fetchAuthor();
     } else if (!auth) {
       auth = "*Without perms to see that*";
@@ -47,13 +46,13 @@ export default class extends Command {
       .setFooter("Created at")
       .setTimestamp(emoji.createdAt);
     if (emoji.guild.id === message.guild.id) {
-      embed.addField("Author", auth, true)
+      embed.addField("Author", auth.toString(), true)
         .addField("Roles that can use the emoji", emoji.roles.cache.first() ? emoji.roles.cache.map(e => `${e}`).join(", ") : "@everyone");
     }
     const but_emoji_link = new MessageButton()
-      .setStyle("url")
+      .setStyle("LINK")
       .setURL(emoji.url)
       .setLabel("Emoji link/URL");
-    await message.channel.send("", { embed, buttons: [but_emoji_link] });
+    await message.channel.send({ embeds: [embed], components: [new MessageActionRow().addComponents([but_emoji_link])] });
   }
 }

@@ -10,8 +10,8 @@ export default async function (bot) {
         body: JSON.stringify({
             guilds: bot.guilds.cache.size,
             users: bot.users.cache.size,
-            voice_connections: bot.voice.connections.size,
-            shard_id: bot.shard.id || bot.shard.ids[0]
+            /*voice_connections: bot.voice.connections.size,*/
+            shard_id: bot.shard?.ids[0] || 0
         })
     });
     if(!res.ok) console.error(await res.text());

@@ -1,4 +1,4 @@
-import { MessageButton } from 'discord-buttons';
+import { MessageButton, MessageActionRow } from 'discord.js';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -7,23 +7,23 @@ export default class extends Command {
   async run(bot, message) {
     const arr = ["Heads", "Tails"];
     const but_redo = new MessageButton()
-      .setID("coinflip_c_redo")
-      .setStyle("blurple")
+      .setCustomID("coinflip_c_redo")
+      .setStyle("PRIMARY")
       .setLabel("Retry");
-    const msg = await message.channel.send(`You got: **${arr[Math.floor(Math.random() * 2)]}**!`, { buttons: [but_redo] });
+    const msg = await message.channel.send({ content: `You got: **${arr[Math.floor(Math.random() * 2)]}**!`, components: [new MessageActionRow().addComponents([but_redo])] });
     const filter = (button) => {
-      if ((button.clicker.user?.id || button.message.channel.recipient?.id) !== message.author.id) button.reply.send("Use your own instance by using `g%coinflip`", true);
-      return (button.clicker.user?.id || button.message.channel.recipient?.id) === message.author.id;
+      if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%coinflip`", ephemeral: true });
+      return button.user.id === message.author.id;
     };
-    const col = msg.createButtonCollector(filter, { idle: 15000 });
+    const col = msg.createMessageComponentInteractionCollector(filter, { idle: 15000 });
     col.on("collect", async (button) => {
-      await button.defer();
-      if (button.id === "coinflip_c_redo") {
+      await button.deferUpdate();
+      if (button.customID === "coinflip_c_redo") {
         msg.edit(`You got: **${arr[Math.floor(Math.random() * 2)]}**!`);
       }
     });
     col.on("end", () => {
-      msg.edit(msg.content, { buttons: [but_redo.setDisabled(true)] });
+      msg.edit({ content: msg.content, components: [new MessageActionRow().addComponents([but_redo.setDisabled(true)])] });
     });
   }
 }

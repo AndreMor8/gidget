@@ -5,8 +5,8 @@ export default class extends Command {
     this.aliases = ["server"];
     this.description = "Server info";
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16384]
+      user: [0n, 0n],
+      bot: [0n, 16384n]
     };
   }
   async run(bot, message, args) {
@@ -68,7 +68,7 @@ export default class extends Command {
         const bans = await server.fetchBans();
 
         if (bans.first()) {
-          bannumber = bans.size + " bans";
+          bannumber = bans.size.toString() + " bans";
         } else {
           bannumber = "Without bans";
         }
@@ -76,7 +76,7 @@ export default class extends Command {
         const invites = await server.fetchInvites();
 
         if (invites.first()) {
-          invitenum = invites.size + " invites";
+          invitenum = invites.size.toString() + " invites";
         } else {
           invitenum = "Without invites";
         }
@@ -157,10 +157,13 @@ export default class extends Command {
       embed.addField("Description", server.description, true);
     }
     if (server instanceof Discord.Guild) {
-      embed.addField("Server Owner", (server.owner.partial ? (await server.owner.fetch()).user.tag : server.owner.user.tag) + "\n" + server.owner.toString(), true)
+      const owner = await server.fetchOwner();
+      embed.addField("Server Owner", owner.user.tag + "\n" + owner.toString(), true)
         .addField("Server Create Date", bot.botIntl.format(server.createdAt), true)
-        .addField("Server Region", server.region, true)
         .addField("Verification Level", server.verificationLevel, true)
+        .addField("Default Message Notifications", server.defaultMessageNotifications, true)
+        .addField("Partnered?", server.partnered ? "**Yes**" : "No", true)
+        .addField("Verified?", server.verified ? "**Yes**" : "No", true)
       if (server.rulesChannel) {
         embed.addField("Rules channel", server.rulesChannel.toString(), true);
       }
@@ -169,10 +172,10 @@ export default class extends Command {
       }
       embed.addField("Member Count", server.memberCount?.toString() || (broadcastedServer ? broadcastedServer.memberCount?.toString() || "?" : "?"), true)
         .addField("Channel Count", `${server.channels.cache.filter(c => c.type === "text" || c.type === "voice").size} (${catname})\nText = ${server.channels.cache.filter(c => c.type === "text").size}\nVoice = ${server.channels.cache.filter(c => c.type === "voice").size}`, true)
-        .addField("Emojis", `${server.emojis.cache.size}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
+        .addField("Emojis", `${server.emojis.cache.size.toString()}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
         .addField("Roles", `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, true)
-        .addField("Server Boost Level", server.premiumTier, true)
-        .addField("Boosts", server.premiumSubscriptionCount, true)
+        .addField("Server Boost Level", server.premiumTier.toString(), true)
+        .addField("Boosts", server.premiumSubscriptionCount.toString(), true)
       if (server.systemChannel) {
         embed.addField("System Channel", server.systemChannel.toString(), true);
       }
@@ -184,18 +187,19 @@ export default class extends Command {
       }
     }
     embed.addField("Features", server.features.join("\n") || "None", true)
-      .addField("Links", links.join(", "))
       .setThumbnail((server instanceof Discord.Guild) ? server.bannerURL({ format: "png", size: 128 }) : server.discoverySplashURL({ format: "png", size: 128 }))
       .setImage(server.splashURL({ format: "png", size: 128 }))
       .setColor("#FF00FF")
       .setTimestamp();
+    if (server.maximumMembers) embed.addField("Maximum members", server.maximumMembers.toString(), true);
+    embed.addField("Links", links.join(", "));
     if ((message.guild ? message.guild.id === "402555684849451028" : false) && server.id === "402555684849451028") {
       const fetch = server.roles.cache.get("402559343540568084").members.map(m => m.user);
       const admins = fetch.join("\n");
       embed.addField("Admin List", admins);
-      await message.channel.send(embed);
+      await message.channel.send({ embeds: [embed] });
     } else {
-      await message.channel.send(embed);
+      await message.channel.send({ embeds: [embed] });
     }
   }
 }

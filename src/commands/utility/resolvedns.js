@@ -15,7 +15,7 @@ export default class extends Command {
                     const embed = new MessageEmbed()
                         .setTitle("A records for " + args[2])
                         .setDescription(results.join("\n"));
-                    message.channel.send(embed);
+                    message.channel.send({ embeds: [embed] });
                 }
                     break;
                 case "aaaa": {
@@ -24,7 +24,7 @@ export default class extends Command {
                     const embed = new MessageEmbed()
                         .setTitle("AAAA records for " + args[2])
                         .setDescription(results.join("\n"));
-                    message.channel.send(embed);
+                    message.channel.send({ embeds: [embed] });
                 }
                     break;
                 case "mx": {
@@ -37,7 +37,7 @@ export default class extends Command {
                     const embed = new MessageEmbed()
                         .setTitle("MX records for " + args[2])
                         .setDescription(text);
-                    message.channel.send(embed);
+                    message.channel.send({ embeds: [embed] });
                 }
                     break;
                 case "ns": {
@@ -46,7 +46,7 @@ export default class extends Command {
                     const embed = new MessageEmbed()
                         .setTitle("NS records for " + args[2])
                         .setDescription(results.join("\n"));
-                    message.channel.send(embed);
+                    message.channel.send({ embeds: [embed] });
                 }
                     break;
                 case "cname": {
@@ -55,7 +55,7 @@ export default class extends Command {
                     const embed = new MessageEmbed()
                         .setTitle("CNAME records for " + args[2])
                         .setDescription(results.join("\n"));
-                    message.channel.send(embed);
+                    message.channel.send({ embeds: [embed] });
                 }
                     break;
                 default: {
@@ -64,7 +64,7 @@ export default class extends Command {
                     const embed = new MessageEmbed()
                         .setTitle("A records for " + args[1])
                         .setDescription(results.join("\n"));
-                    message.channel.send(embed);
+                    message.channel.send({ embeds: [embed] });
                 }
             }
         } catch (err) {

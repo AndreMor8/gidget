@@ -3,32 +3,29 @@
 export default class extends Command {
   constructor(options) {
     super(options);
-    this.description = "Loops the song";
+    this.description = "Loops the song or the queue";
     this.guildonly = true;
   }
-  async run(bot, message) {
-    const serverQueue = message.guild.queue
-    const musicVariables = message.guild.musicVariables;
-    if (!message.member.voice.channel) return message.channel.send("You need to be in a voice channel to loop the music!");
-    if (musicVariables && musicVariables.other) {
-      if(!musicVariables.readyForLoop) return message.channel.send("60 seconds must pass before you can loop.")
-      if (!musicVariables.loop) {
-        musicVariables.loop = true;
-        return message.channel.send("🔁 The song repeat has been enabled.");
-      } else {
-        musicVariables.loop = false;
-        return message.channel.send("🔁 The song repeat has been disabled.");
-      }
+  async run(bot, message, args) {
+    const queue = bot.distube.getQueue(message);
+    if (!queue) return message.channel.send(`There is nothing playing.`);
+    let mode = null;
+    switch (args[1]) {
+      case "off":
+      case "0":
+        mode = 0
+        break
+      case "song":
+      case "1":
+        mode = 1
+        break
+      case "queue":
+      case "2":
+        mode = 2
+        break
     }
-    if (!serverQueue || !musicVariables) return message.channel.send("There is nothing playing.");
-    if (serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send("I'm on another voice channel!");
-
-    if (!serverQueue.loop) {
-      serverQueue.loop = true;
-      await message.channel.send("🔁 The song repeat has been enabled.");
-    } else {
-      serverQueue.loop = false;
-      await message.channel.send("🔁 The song repeat has been disabled.");
-    }
+    mode = queue.setRepeatMode(mode || (queue.repeatMode === 0 ? 1 : 0));
+    mode = mode ? mode === 2 ? "Repeat queue" : "Repeat song" : "Off";
+    await message.channel.send(`🔁 Set repeat mode to \`${mode}\`${!args[1] ? "\n\nUse: `queue <mode>`\nAvailable modes: `off`, `song`, `queue`" : ""}`);
   }
 }

@@ -145,7 +145,7 @@ module.exports = async (bot, message) => {
                 if (!message.member.voice.channel) return message.channel.send("You need to be in a voice channel to skip music!");
                 if (!serverQueue) return message.channel.send("There is nothing playing that I could skip.")
             if (serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send('I\'m on another voice channel!')
-            if(!message.member.hasPermission('MANAGE_CHANNELS')){
+            if(!message.member.permissions.has('MANAGE_CHANNELS')){
               let memberRequired = Math.floor((message.member.voice.channel.members.size - 1) / 100 * 75)
               if (memberRequired > 1) {
                 if (musicVariables.memberVoted.indexOf(message.author.id) === -1) {
@@ -170,7 +170,7 @@ module.exports = async (bot, message) => {
                 if (!message.member.voice.channel) return message.channel.send("You need to be in a voice channel to stop music!");
                 if (!serverQueue) return message.channel.send("There is nothing playing that I could stop.")
             if (serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send('I\'m on another voice channel!')
-            if(!message.member.hasPermission('MANAGE_CHANNELS')){
+            if(!message.member.permissions.has('MANAGE_CHANNELS')){
               if (message.member.voice.channel.members.size > 2) {
                 return message.channel.send('Only a member with permission to manage channels can stop queuing. Being alone also works.')
               }
@@ -227,7 +227,7 @@ module.exports = async (bot, message) => {
                 if (!message.member.voice.channel) return message.channel.send("You have to be in a voice channel to pause the music!");
                 if (!serverQueue) return message.channel.send("There is no song that I could pause!")
             if (serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send('I\'m on another voice channel!')
-            if(!message.member.hasPermission('MANAGE_CHANNELS')){
+            if(!message.member.permissions.has('MANAGE_CHANNELS')){
               if (message.member.voice.channel.members.size > 2) {
                 return message.channel.send('Only a member with permission to manage channels can pause the music. Being alone also works.')
               }
@@ -248,7 +248,7 @@ module.exports = async (bot, message) => {
                     return message.channel.send("There is no song that I could resume!");
             if (serverQueue.voiceChannel.id !== message.member.voice.channel.id) return message.channel.send('I\'m on another voice channel!')
                 if (serverQueue.playing) return message.channel.send(`The music isn't paused.`)
-            if(!message.member.hasPermission('MANAGE_CHANNELS')){
+            if(!message.member.permissions.has('MANAGE_CHANNELS')){
               if (message.member.voice.channel.members.size > 2) {
                 return message.channel.send('Only a member with permission to manage channels can resume the music. Being alone also works.')
               }

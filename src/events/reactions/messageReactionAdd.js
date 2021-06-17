@@ -14,7 +14,7 @@ export default async (bot, reaction, user) => {
       const role = reaction.message.guild.roles.cache.get(roleId);
       const member = reaction.message.guild.members.cache.get(user.id) || await reaction.message.guild.members.fetch(user.id).catch(() => {});
       if (role && member) {
-        if(!member.guild.me.hasPermission("MANAGE_ROLES")) return member.send("I don't have permissions, sorry :(\nContact your server administrator.")
+        if(!member.guild.me.permissions.has("MANAGE_ROLES")) return member.send("I don't have permissions, sorry :(\nContact your server administrator.")
         member.roles.add(role, "Reaction-role");
       }
     }
@@ -22,15 +22,11 @@ export default async (bot, reaction, user) => {
   //Fetch
   await reaction.message.fetch();
   
-  //I don't know why...
-  const id = reaction.message.id;
-  
-  
   const msgDocument2 = await MessageModel2.findOne({
     guildId: reaction.message.guild.id,
-    messageId: id,
+    messageId: reaction.message.id,
     channelId: reaction.message.channel.id,
-    emojiId: reaction.emoji.id ? reaction.emoji.id : reaction.emoji.name
+    emojiId: reaction.emoji.id || reaction.emoji.name
   });
   if (msgDocument2) {
     await bot.users.fetch(user.id);
@@ -41,7 +37,7 @@ export default async (bot, reaction, user) => {
       memberId: user.id
     });
     if (msgDocument3) return user.send("You already have a ticket!").catch(() => {});
-    if(!reaction.message.guild.me.hasPermission("MANAGE_CHANNELS")) return user.send("I don't have permissions, sorry :(\nContact your server administrator.").catch(() => {})
+    if(!reaction.message.guild.me.permissions.has("MANAGE_CHANNELS")) return user.send("I don't have permissions, sorry :(\nContact your server administrator.").catch(() => {})
     const { categoryId, roles } = msgDocument2;
     const cat = reaction.message.guild.channels.cache.get(categoryId) || await reaction.message.guild.channels.fetch(categoryId).catch(() => {});
     const roleperm = [
@@ -100,17 +96,17 @@ export default async (bot, reaction, user) => {
   
   //Main function
   
-  const cach = bot.cachedMessageReactions.get(id);
+  const cach = bot.cachedMessageReactions.get(reaction.message.id);
   if(typeof cach === "boolean") return
   else if(!cach) {
    try {
-    const msgDocument = await MessageModel.findOne({ messageId: id });
+    const msgDocument = await MessageModel.findOne({ messageId: reaction.message.id });
     if (msgDocument) {
-      bot.cachedMessageReactions.set(id, msgDocument);
+      bot.cachedMessageReactions.set(reaction.message.id, msgDocument);
       const { emojiRoleMappings } = msgDocument;
       addMemberRole(emojiRoleMappings);
     } else {
-      bot.cachedMessageReactions.set(id, false);
+      bot.cachedMessageReactions.set(reaction.message.id, false);
     }
   } catch (err) {
     console.log(err);

@@ -12,8 +12,8 @@ export default class extends Command {
     super(options);
     this.description = "Generate a text with the House Holiday Sans font, the font that some Wubbzy products and pages used.";
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 32768]
+      user: [0n, 0n],
+      bot: [0n, 32768n]
     }
   }
   async run(bot, message, args) {
@@ -30,7 +30,7 @@ export default class extends Command {
     const buf = await image.getBufferAsync(Jimp.MIME_PNG);
     const att = new MessageAttachment(buf, "wubbtext.png");
     message.channel.stopTyping(true);
-    await message.channel.send(att);
+    await message.channel.send({ files: [att] });
   }
 }
 

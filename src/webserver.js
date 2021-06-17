@@ -13,7 +13,7 @@ export default function (sharder) {
     } else next();
   });
   app.get("/guilds", async (req, res) => {
-    const servers = await sharder.broadcastEval("this.guilds.cache.map(e => e.id)");
+    const servers = await sharder.broadcastEval(c => c.guilds.cache.map(e => e.id));
     const merged = Array.prototype.concat.apply([], servers);
     return res.json(merged);
   });
@@ -44,7 +44,7 @@ export default function (sharder) {
    */
   async function deleteCache(guildID) {
     if (isNaN(guildID)) return false;
-    const res = await sharder.broadcastEval(`this.guilds.cache.get('${guildID}')?.noCache()`);
+    const res = await sharder.broadcastEval(c => c.guilds.cache.get(guildID)?.noCache());
     if (res.find(e => Boolean(e))) return true;
     else return false;
   }

@@ -6,8 +6,8 @@ export default class extends Command {
     this.guildonly = true;
     this.description = "Ban people who are not on the server. (Only IDs)";
     this.permissions = {
-      user: [4, 0],
-      bot: [4, 0]
+      user: [4n, 0n],
+      bot: [4n, 0n]
     }
   }
   async run(bot, message, args) {

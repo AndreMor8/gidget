@@ -6,8 +6,8 @@ export default class extends Command {
     this.description = "Bulk delete messages";
     this.guildonly = true;
     this.permissions = {
-      user: [0, 8192],
-      bot: [0, 8192]
+      user: [0n, 8192n],
+      bot: [0n, 8192n]
     };
   }
   async run(bot, message, args) {
@@ -27,7 +27,7 @@ export default class extends Command {
           }, false);
           messages.sweep(m => !authors.includes(m.author.id));
           await message.channel.bulkDelete(messages, true);
-          const thing = await message.channel.send(messages.size + " messages were successfully deleted");
+          const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
           thing.delete({ timeout: 5000 });
         }
           break;
@@ -37,7 +37,7 @@ export default class extends Command {
           }, false);
           messages.sweep(m => !m.author.bot);
           await message.channel.bulkDelete(messages, true);
-          const thing = await message.channel.send(messages.size + " messages were successfully deleted");
+          const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
           thing.delete({ timeout: 5000 });
         }
           break;
@@ -47,7 +47,7 @@ export default class extends Command {
           }, false);
           messages.sweep(m => !m.attachments.first());
           await message.channel.bulkDelete(messages, true);
-          const thing = await message.channel.send(messages.size + " messages were successfully deleted");
+          const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
           thing.delete({ timeout: 5000 });
         }
           break;
@@ -57,7 +57,7 @@ export default class extends Command {
           }, false);
           messages.sweep(m => !m.embeds[0]);
           await message.channel.bulkDelete(messages, true);
-          const thing = await message.channel.send(messages.size + " messages were successfully deleted");
+          const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
           thing.delete({ timeout: 5000 });
         }
           break;
@@ -68,7 +68,7 @@ export default class extends Command {
           }, false);
           messages.sweep(m => !(new RegExp(args.slice(3).join(" "), "gmi").test(m.content)));
           await message.channel.bulkDelete(messages, true);
-          const thing = await message.channel.send(messages.size + " messages were successfully deleted");
+          const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
           thing.delete({ timeout: 5000 });
         }
           break;

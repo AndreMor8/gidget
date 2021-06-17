@@ -5,7 +5,7 @@ export default async (bot, oldState, newState) => {
   const member = newState?.member || oldState?.member;
   const guild = newState?.guild || oldState?.guild;
   //VOICEROLE
-  if (member && guild.me.hasPermission("MANAGE_ROLES")) {
+  if (member && guild.me.permissions.has("MANAGE_ROLES")) {
     const list = await db.findOne({ guildID: { $eq: guild.id } });
     if (list && list.enabled) {
       const thing1 = list.list.find(e => e.channels.includes(newState?.channelID));
@@ -14,7 +14,7 @@ export default async (bot, oldState, newState) => {
         if (!member.roles.cache.has(thing1.roleID)) {
           const algo = guild.roles.cache.get(thing1.roleID);
           if (algo && algo.editable && !algo.managed) {
-            await member.roles.add(thing1.roleID).catch(() => { });
+            await member.roles.add(thing1.roleID, "Voice-role").catch(() => { });
           }
         }
       } else if (thing1 && thing2) {
@@ -22,13 +22,13 @@ export default async (bot, oldState, newState) => {
         if (!member.roles.cache.has(thing1.roleID)) {
           const algo = guild.roles.cache.get(thing1.roleID);
           if (algo && algo.editable && !algo.managed) {
-            await member.roles.add(thing1.roleID).catch(() => { });
+            await member.roles.add(thing1.roleID, "Voice-role").catch(() => { });
           }
         }
         if (member.roles.cache.has(thing2.roleID)) {
           const algo = guild.roles.cache.get(thing2.roleID);
           if (algo && algo.editable && !algo.managed) {
-            await member.roles.remove(thing2.roleID).catch(() => { });
+            await member.roles.remove(thing2.roleID, "Voice-role").catch(() => { });
           }
 
         }
@@ -36,14 +36,14 @@ export default async (bot, oldState, newState) => {
         if (member.roles.cache.has(thing2.roleID)) {
           const algo = guild.roles.cache.get(thing2.roleID);
           if (algo && algo.editable && !algo.managed) {
-            await member.roles.remove(thing2.roleID).catch(() => { });
+            await member.roles.remove(thing2.roleID, "Voice-role").catch(() => { });
           }
         }
       }
     }
   }
 
-  //MUSIC
+  /*/MUSIC
   const musicVariables = guild.musicVariables;
   if (musicVariables && !newState?.channel && (member.id === bot.user.id)) {
     guild.queue = null;
@@ -108,5 +108,5 @@ export default async (bot, oldState, newState) => {
         musicVariables.o = 0;
       }
     }
-  }
+  }*/
 }

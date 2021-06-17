@@ -6,8 +6,8 @@ export default class extends Command {
         super(options);
         this.description = "Rotate the banner of your server with different images that will be shown at the hours you choose (you can only choose hours, example, 16)";
         this.permissions = {
-            user: [8, 0],
-            bot: [32, 0]
+            user: [8n, 0n],
+            bot: [32n, 0n]
         };
         this.guildonly = true;
     }
@@ -56,8 +56,8 @@ export default class extends Command {
             const embed = new MessageEmbed()
                 .setTitle("Banners for " + message.guild.name)
                 .setDescription(Util.splitMessage(doc.banners.map((e, i) => `${++i}. Banner: ${e.url}\nHour: ${e.hour}:00 ET`).join("\n"), { maxLength: 1950, char: "" }));
-            if(!message.guild.features.includes("BANNER")) embed.setFooter("For this to work your server must have Server Boost at level 2 or higher.");
-            return message.channel.send(embed);
+            if (!message.guild.features.includes("BANNER")) embed.setFooter("For this to work your server must have Server Boost at level 2 or higher.");
+            return message.channel.send({ embeds: [embed] });
         } else return message.channel.send("Invalid mode!");
     }
 }

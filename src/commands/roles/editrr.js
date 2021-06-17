@@ -6,8 +6,8 @@ export default class extends Command {
         this.description = "Role reaction system (Edit)";
         this.guildonly = true;
         this.permissions = {
-            user: [8, 0],
-            bot: [268435456, 0]
+            user: [8n, 0n],
+            bot: [268435456n, 0n]
         };
     }
     async run(bot, message, args) {
@@ -29,7 +29,7 @@ export default class extends Command {
                         const awaitMsgOps = { max: 1, time: 20000, errors: ['time'] };
                         const choice = (await channel.awaitMessages(filter, awaitMsgOps)).first();
                         if (choice.content === "add") {
-                            if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?")
+                            if (!message.guild.me.permissions.has("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?")
                             await channel.send("Enter an emoji name followed by the corresponding role name, separated with a comma. e.g: WubbzyWalk, A Wubbzy Fan\nType `?done` when you finish");
                             const collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel);
                             msgModel.updateOne({ emojiRoleMappings: collectorResult }).then(() => {

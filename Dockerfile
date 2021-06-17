@@ -14,6 +14,8 @@ RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash 
 # Installing project dependencies
 COPY package.json .
 RUN npm install --only=production --legacy-peer-deps
+# Doing things with Discord.js
+RUN cd ./node_modules/discord.js && npm i && gen-esm-wrapper ./src/index.js ./src/index.mjs
 # Free space
 RUN /usr/local/bin/node-prune
 RUN apk del git build-base autoconf automake libtool make gcc g++ curl bash \

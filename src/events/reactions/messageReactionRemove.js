@@ -10,25 +10,24 @@ export default async (bot, reaction, user) => {
       const role = reaction.message.guild.roles.cache.get(roleId);
       const member = reaction.message.guild.members.cache.get(user.id) || await reaction.message.guild.members.fetch(user.id).catch(() => { });
       if (role && member) {
-        if (!member.guild.me.hasPermission("MANAGE_ROLES")) return member.send("I don't have permissions, sorry :(\nContact your server administrator.")
+        if (!member.guild.me.permissions.has("MANAGE_ROLES")) return member.send("I don't have permissions, sorry :(\nContact your server administrator.")
         member.roles.remove(role, 'Reaction-role');
       }
     }
   }
 
   await reaction.message.fetch();
-  const id = reaction.message.id;
-  const cach = bot.cachedMessageReactions.get(id);
+  const cach = bot.cachedMessageReactions.get(reaction.message.id);
   if (typeof cach === "boolean") return
   else if (!cach) {
     try {
-      const msgDocument = await MessageModel.findOne({ messageId: id });
+      const msgDocument = await MessageModel.findOne({ messageId: reaction.message.id });
       if (msgDocument) {
-        bot.cachedMessageReactions.set(id, msgDocument);
+        bot.cachedMessageReactions.set(reaction.message.id, msgDocument);
         const { emojiRoleMappings } = msgDocument;
         removeMemberRole(emojiRoleMappings);
       } else {
-        bot.cachedMessageReactions.set(id, false);
+        bot.cachedMessageReactions.set(reaction.message.id, false);
       }
     } catch (err) {
       console.log(err);

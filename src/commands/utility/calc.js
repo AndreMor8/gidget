@@ -6,8 +6,8 @@ export default class extends Command {
     super(options);
     this.description = "Calculate something";
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16384]
+      user: [0n, 0n],
+      bot: [0n, 16384n]
     };
 
   }
@@ -25,6 +25,6 @@ export default class extends Command {
     }
     embed.addField("Input:", `\`\`\`js\n${args.slice(1).join(" ")}\`\`\``)
       .addField("Output", `\`\`\`js\n${result}\`\`\``);
-    await message.channel.send(embed);
+    await message.channel.send({embeds: [embed]});
   }
 }

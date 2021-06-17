@@ -5,8 +5,8 @@ export default class extends Command {
     this.description = "Set the confession channel and whether to allow anonymity.\nThe bot is not responsible for what is sent in the confession channel.\nEverything is done with an ephemeral slash command.";
     this.guildonly = true;
     this.permissions = {
-      user: [8, 0],
-      bot: [0, 0]
+      user: [8n, 0n],
+      bot: [0n, 0n]
     }
   }
   async run(bot, message, args) {

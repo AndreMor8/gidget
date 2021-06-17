@@ -5,8 +5,8 @@ export default class extends Command {
         super(options);
         this.description = "The famous Connect4 game";
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 16384]
+            user: [0n, 0n],
+            bot: [0n, 16384n]
         };
         this.aliases = ["c4-top"];
         this.guildonly = true;
@@ -24,7 +24,7 @@ export default class extends Command {
                 for (const info of toshow) {
                     embed.addField(info.cacheName || '?', `**Wins:** ${info.wins}\t**Loses:** ${info.loses}`);
                 }
-                message.channel.send(embed);
+                message.channel.send({embeds: [embed]});
             }
                 break;
             case 'server':
@@ -39,7 +39,7 @@ export default class extends Command {
                     embed.addField(info.cacheName || '?', `**Wins:** ${info.wins}\t**Loses:** ${info.loses}`);
                 }
                 if(!args[1]) embed.setAuthor("g%c4top [server/global] [difficulty]");
-                message.channel.send(embed);
+                message.channel.send({embeds: [embed]});
             }
         }
     }

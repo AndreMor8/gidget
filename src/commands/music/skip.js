@@ -1,4 +1,3 @@
-
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -6,50 +5,35 @@ export default class extends Command {
     this.guildonly = true;
   }
   async run(bot, message) {
-    const serverQueue = message.guild.queue;
-    if (serverQueue && serverQueue.inseek)
-      return;
-    const musicVariables = message.guild.musicVariables;
-    if (!message.member.voice.channel)
-      return message.channel.send(
-        "You need to be in a voice channel to skip music!"
-      );
-    if (!serverQueue)
-      return message.channel.send(
-        "There is nothing playing that I could skip."
-      );
-    if (!musicVariables)
-      return message.channel.send(
-        "There is nothing playing that I could skip."
-      );
-    if (serverQueue.voiceChannel.id !== message.member.voice.channel.id)
-      return message.channel.send("I'm on another voice channel!");
-    if (!message.member.hasPermission("MANAGE_CHANNELS")) {
+
+    const channel = message.member.voice.channel;
+    if (!channel) return await message.channel.send("You need to be in a voice channel to pause music!");
+
+    const queue = bot.distube.getQueue(message);
+    if (!queue) return await message.channel.send(`There is nothing playing.`);
+    if (queue.voiceChannel.id !== channel.id) return await message.channel.send("You are not on the same voice channel as me.");
+
+    if (!message.member.permissions.has("MANAGE_CHANNELS")) {
       const memberRequired = Math.floor(
-        ((message.member.voice.channel.members.filter(s => !s.user.bot).size) / 100) * 75
+        ((queue.voiceChannel.members.filter(s => !s.user.bot).size) / 100) * 75
       );
       if (memberRequired > 1) {
-        if (!musicVariables.memberVoted.includes(message.author.id)) {
-          musicVariables.memberVoted.push(message.author.id);
-          if (musicVariables.memberVoted.length < memberRequired) {
-            return message.channel.send(
-              `Skipping? (${musicVariables.memberVoted.length}/${memberRequired})`
-            );
+        let memberVoted = bot.memberVotes.get(message.guild.id);
+        if (!memberVoted) {
+          bot.memberVotes.set(message.guild.id, []);
+          memberVoted = bot.memberVotes.get(message.guild.id);
+        }
+        if (!memberVoted.includes(message.author.id)) {
+          memberVoted.push(message.author.id);
+          if (memberVoted.length < memberRequired) {
+            return await message.channel.send(`Skipping? (${memberVoted.length}/${memberRequired})`);
           }
         } else {
-          return message.channel.send("You have already voted!");
+          return await message.channel.send("You have already voted!");
         }
       }
     }
-    if (serverQueue.loop) {
-      serverQueue.loop = false;
-   await message.channel.send("🔁 The song repeat has been disabled.");
-    }
-    if (!serverQueue.playing) {
-      serverQueue.playing = true;
-      serverQueue.connection.dispatcher.resume();
-    }
-    musicVariables.memberVoted = [];
-    serverQueue.connection.dispatcher.end();
+    if(queue.songs.length > 1) queue.skip();
+    else queue.stop();
   }
 }

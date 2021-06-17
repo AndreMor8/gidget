@@ -1,30 +1,29 @@
 import Discord from "discord.js";
 import MessageModel from "../../database/models/ticket.js";
 
-
 export default class extends Command {
   constructor(options) {
     super(options);
     this.description = "Start listening tickets";
     this.guildonly = true;
     this.permissions = {
-      user: [0, 0],
-      bot: [16, 0]
+      user: [0n, 0n],
+      bot: [16n, 0n]
     };
   }
   async run(bot, message, args) {
-    if (message.member.hasPermission("ADMINISTRATOR")) {
+    if (message.member.permissions.has("ADMINISTRATOR")) {
       if (!args[1]) return message.channel.send("Put a text channel");
       const channel =
         message.mentions.channels.filter(e => e.guild.id !== message.guild.id).first() ||
         message.guild.channels.cache.get(args[1]) ||
-        message.guild.channels.cache.find(c => c.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => {});
+        message.guild.channels.cache.find(c => c.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => { });
       if (!channel) return message.channel.send("Invalid channel! (arg 1)");
       if (channel.type !== "text") return message.channel.send("Invalid channel type! (arg 1)");
       if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have the `SEND_MESSAGES` and the `EMBED_LINKS` permission in that channel");
       if (!args[2]) return message.channel.send("Put a category channel!")
       const category = message.guild.channels.cache.get(args[2]) ||
-        message.guild.channels.cache.find(c => c.name === args[2]) || await message.guild.channels.fetch(args[2] || "123").catch(() => {});
+        message.guild.channels.cache.find(c => c.name === args[2]) || await message.guild.channels.fetch(args[2] || "123").catch(() => { });
       if (!category) return message.channel.send("Invalid channel! (arg 2)");
       if (category.type !== "category") return message.channel.send("Invalid channel type! (arg 2)");
       if (!args[3]) return message.channel.send("Put a emoji!");
@@ -40,7 +39,7 @@ export default class extends Command {
           }
         }
       } else {
-        const emojiobj = bot.emojis.cache.get(inrevision.id) || await message.guild.emojis.fetch(inrevision.id).catch(() => {});
+        const emojiobj = bot.emojis.cache.get(inrevision.id) || await message.guild.emojis.fetch(inrevision.id).catch(() => { });
         if (!emojiobj) return message.channel.send("Invalid emoji!");
         else emoji = emojiobj.id;
       }
@@ -51,8 +50,8 @@ export default class extends Command {
           .setDescription('React with ' + (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gmi.test(emoji) ? emoji : bot.emojis.cache.get(emoji).toString()) + ' to create a ticket.')
           .setColor("BLUE")
           .setFooter('You can only have one ticket at a time');
-        const msg = await channel.send(embed)
-        await msg.react(emoji)
+        const msg = await channel.send({ embeds: [embed] });
+        await msg.react(emoji);
         const dbMsgModel = new MessageModel({
           guildId: message.guild.id,
           channelId: channel.id,

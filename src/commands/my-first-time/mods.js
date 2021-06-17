@@ -7,8 +7,8 @@ export default class extends Command {
     this.onlyguild = true;
     this.description = "List of Mods";
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16384]
+      user: [0n, 0n],
+      bot: [0n, 16384n]
     };
   }
   async run(bot, message) {
@@ -17,6 +17,6 @@ export default class extends Command {
     const embed = new MessageEmbed()
       .setTitle('List of Mods')
       .setDescription(mods)
-    await message.channel.send(embed);
+    await message.channel.send({embeds: [embed]});
   }
 }

@@ -8,8 +8,8 @@ export default class extends Command {
     this.description = "Add or remove roles from yourself";
     this.guildonly = true;
     this.permissions = {
-      user: [0, 0],
-      bot: [268435456, 0]
+      user: [0n, 0n],
+      bot: [268435456n, 0n]
     };
   }
   async run(bot, message, args) {
@@ -28,14 +28,14 @@ export default class extends Command {
           .setDescription(text)
           .setTimestamp()
           .setColor("RANDOM");
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
       } else {
         return message.channel.send("This server has no selfroles assigned.");
       }
     }
-    if (!message.guild.me.hasPermission("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?");
+    if (!message.guild.me.permissions.has("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?");
     if (args[1] === 'add') {
-      if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
+      if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
       if (!args[2]) {
         return message.channel.send('Put a name for that selfrole')
       } else {
@@ -110,7 +110,7 @@ export default class extends Command {
       }
     }
     if (args[1] === 'remove') {
-      if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
+      if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
       if (!args[2]) return message.channel.send('Tell me that selfrole should be removed from my database.')
       const name = args.slice(2).join(" ");
       const msgDocument = await MessageModel.findOne({ guildid: message.guild.id, word: name });

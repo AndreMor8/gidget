@@ -6,8 +6,8 @@ export default class extends Command {
     this.description = "Get information about a role";
     this.guildonly = true;
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16384]
+      user: [0n, 0n],
+      bot: [0n, 16384n]
     };
   }
   async run(bot, message, args) {
@@ -61,7 +61,7 @@ export default class extends Command {
         channel =
           message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() ||
           message.guild.channels.cache.get(channel.substring(1)) ||
-          await message.guild.channels.fetch(channel.substring(1)).catch(() => {}) ||
+          await message.guild.channels.fetch(channel.substring(1)).catch(() => { }) ||
           message.channel;
       } else {
         channel = message.channel;
@@ -89,8 +89,11 @@ export default class extends Command {
         .addField('Position', `Role Manager: ${role.position}\nAPI: ${role.rawPosition}`, true)
         .addField('Permissions', '`' + permstext + '`')
         .addField('Permissions (Overwrites)', '`' + permstext2 + '`')
+        .addField('Does it belong to a bot?', role.tags?.botID ? `**Yes** (${role.tags?.botID}, <@!${role.tags?.botID}>)` : "No", true)
+        .addField('Does it belong to a integration?', role.tags?.integrationID ? `**Yes** (${role.tags?.integrationID})` : "No", true)
+        .addField('Is this the role for boosters?', role.tags?.premiumSubscriberRole ? "**Yes**" : "No", true)
         .setTimestamp()
-        await message.channel.send(embed);
+      await message.channel.send({ embeds: [embed] });
     }
 
     if (!args[1]) {

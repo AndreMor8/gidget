@@ -7,8 +7,8 @@ export default class extends Command {
         this.description = "Delete users that are less than or equal to the level you specify.";
         this.guildonly = true;
         this.permissions = {
-            user: [8, 0],
-            bot: [0, 0]
+            user: [8n, 0n],
+            bot: [0n, 0n]
         };
     }
     async run(bot, message, args) {

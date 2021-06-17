@@ -1,15 +1,14 @@
 import Discord from 'discord.js';
 import gse from 'general-search-engine';
 import { checkCleanUrl } from '../../utils/clean-url.js';
-import { MessageButton } from 'discord-buttons';
 
 export default class extends Command {
     constructor(options) {
         super(options);
         this.description = "Random images";
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 16384]
+            user: [0n, 0n],
+            bot: [0n, 16384n]
         }
     }
     async run(bot, message, args) {
@@ -41,54 +40,54 @@ export default class extends Command {
             .setImage(urls[i])
             .setColor("RANDOM");
 
-        const but_back = new MessageButton()
-            .setID("image_c_back")
-            .setStyle("gray")
+        const but_back = new Discord.MessageButton()
+            .setCustomID("image_c_back")
+            .setStyle("SECONDARY")
             .setLabel("Back");
 
-        const but_stop = new MessageButton()
-            .setID("image_c_stop")
-            .setStyle("red")
+        const but_stop = new Discord.MessageButton()
+            .setCustomID("image_c_stop")
+            .setStyle("DANGER")
             .setLabel("Stop");
 
-        const but_next = new MessageButton()
-            .setID("image_c_next")
-            .setStyle("gray")
+        const but_next = new Discord.MessageButton()
+            .setCustomID("image_c_next")
+            .setStyle("SECONDARY")
             .setLabel("Next");
 
         const filter = (button) => {
-            if ((button.clicker.user?.id || button.message.channel.recipient.id) !== message.author.id) button.reply.send("Use your own instance by using `g%image <query>`", true);
-            return (button.clicker.user?.id || button.message.channel.recipient.id) === message.author.id;
+            if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%image <query>`", ephemeral: true });
+            return button.user.id === message.author.id;
         };
-        const msg = await message.channel.send("", { embed, buttons: [but_back.setDisabled(true), but_stop, but_next.setDisabled(false)] });
+        const msg = await message.channel.send({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back, but_stop, but_next])] });
 
-        const collector = msg.createButtonCollector(filter, { idle: 30000 });
+        const collector = msg.createMessageComponentInteractionCollector(filter, { idle: 30000 });
         collector.on('collect', async (button) => {
-            await button.defer();
-            if (button.id === 'image_c_next') {
+            await button.deferUpdate();
+            if (button.customID === 'image_c_next') {
 
                 if (max !== i) {
                     i++
                     embed.setImage(urls[i])
                     embed.setFooter(`${i + 1}/${max + 1}`)
-                    await msg.edit("", { embed, buttons: ((max === i ? [but_back.setDisabled(false), but_stop, but_next.setDisabled(true)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])) });
+                    await msg.edit({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(((max === i ? [but_back.setDisabled(false), but_stop, but_next.setDisabled(true)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])))] });
                 }
 
             }
-            if (button.id === 'image_c_back') {
+            if (button.customID === 'image_c_back') {
                 if (i !== 0) {
                     i--
                     embed.setImage(urls[i])
                     embed.setFooter(`${i + 1}/${max + 1}`)
-                    await msg.edit("", { embed, buttons: ((i === 0 ? [but_back.setDisabled(true), but_stop, but_next.setDisabled(false)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])) });
+                    await msg.edit({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(((i === 0 ? [but_back.setDisabled(true), but_stop, but_next.setDisabled(false)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])))] });
                 }
             }
-            if (button.id === 'image_c_stop') {
+            if (button.customID === 'image_c_stop') {
                 collector.stop();
             }
         })
         collector.on('end', () => {
-            msg.edit("", { embed, buttons: [but_back.setDisabled(true), but_stop.setDisabled(true), but_next.setDisabled(true)] });
+            msg.edit({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back.setDisabled(true), but_stop.setDisabled(true), but_next.setDisabled(true)])] });
         });
     }
 }

@@ -1,7 +1,6 @@
 # Own
 autoconf
 qrencode
-lame
 
 # Canvas
 libcairo2-dev

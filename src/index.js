@@ -1,4 +1,3 @@
-//TO DO: A function that detects the user that someone tries to mention in a message. Thus avoiding outdated detection code in commands.
 import dotenv from 'dotenv';
 dotenv.config();
 import webserver from './webserver.js';
@@ -12,7 +11,7 @@ const manager = new Discord.ShardingManager('./src/bot.js', {
     execArgv
 });
 manager.on('shardCreate', shard => console.log(`Launched shard ${shard.id}`));
-manager.spawn().then(() => {
+manager.spawn({ timeout: Infinity }).then(() => {
     if (process.env.EXTERNAL === "yes") {
         discordboats(manager);
         setInterval(discordboats, 1800000, manager);

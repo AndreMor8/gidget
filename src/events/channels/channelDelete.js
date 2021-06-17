@@ -9,13 +9,13 @@ export default async (bot, channel) => {
     const msgDocument = await MessageModel.findOne({ guildId: channel.guild.id, channelId: channel.id });
     if (msgDocument) {
       const { memberId } = msgDocument;
-      const member = await channel.guild.members.fetch(memberId);
+      const member = await channel.guild.members.fetch(memberId).catch(() => {});
       if (member) {
         const auditlog = await channel.guild.fetchAuditLogs({
           limit: 1,
           type: 12
         });
-        const entry = auditlog.entries.first()
+        const entry = auditlog.entries.first();
         if (entry.executor.id === bot.user.id) return;
         else member.send("Your ticket was deleted by " + entry.executor.tag).catch(() => { });
       }

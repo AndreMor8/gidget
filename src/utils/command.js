@@ -9,8 +9,8 @@ export default class Command {
         this.aliases = [];
         this.description = "*Without description*";
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 0]
+            user: [0n, 0n],
+            bot: [0n, 0n]
         }
         this.owner = false;
         this.guildonly = false;

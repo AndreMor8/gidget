@@ -3,8 +3,8 @@ export default class extends Command {
         super(options);
         this.description = "Messages from a news channel will be automatically crossposted.";
         this.permissions = {
-            user: [8, 0],
-            bot: [0, 0]
+            user: [8n, 0n],
+            bot: [0n, 0n]
         }
         this.guildonly = true;
     }

@@ -7,14 +7,16 @@ export default class extends Command {
         this.description = "Change the position of the stream";
         this.guildonly = true;
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 0]
+            user: [0n, 0n],
+            bot: [0n, 0n]
         };
     }
     async run(bot, message, args) {
-        if (!args[1]) return message.channel.send("Usage: `seek <time>`\n`seek 1:30`");
-        const serverQueue = message.guild.queue;
-        if (!serverQueue) return message.channel.send("There is nothing playing.");
+        const channel = message.member.voice.channel;
+        if (!channel) return message.channel.send("You need to be in a voice channel to seek music!");
+        const queue = bot.distube.getQueue(message);
+        if (!queue) return message.channel.send(`There is nothing playing.`);
+        if (queue.voiceChannel.id !== channel.id) return message.channel.send("You are not on the same voice channel as me.");
 
         const exp = args[1].split(":")
         //More support?
@@ -24,17 +26,10 @@ export default class extends Command {
         const reconverted = (ms(hrs + "h") / 1000) + (ms(min + "m") / 1000) + (ms(sec + "s") / 1000);
         if (isNaN(reconverted) || (typeof reconverted !== "number")) return message.channel.send("Invalid value!");
 
-        if (!serverQueue || !serverQueue.songs[0]) return;
-        if (!serverQueue.songs[0].duration) return message.channel.send("It's impossible for me to seek without a certain duration, sorry.");
+        if (queue.songs[0].duration <= (reconverted + 2)) return message.channel.send("The song is too short for the specified time!");
 
-        if (serverQueue.songs[0].duration <= (reconverted + 2)) return message.channel.send("The song is too short for the specified time!");
+        queue.seek(reconverted);
 
-        if (reconverted < 0) return message.channel.send("Huh?");
-        serverQueue.inseek = true;
-        serverQueue.songs[0].seektime = reconverted;
-        await message.channel.send("This may take a bit...");
-        message.channel.startTyping();
-        serverQueue.connection.dispatcher.end();
-        await bot.commands.get("play").run(bot, message, ["play", "seek"], true).catch(err => message.channel.send("Error: " + err)).finally(() => message.channel.stopTyping(true))
+        await message.channel.send(`Position moved to ${hrs}:${min}:${sec}`);
     }
 }

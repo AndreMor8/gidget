@@ -49,6 +49,7 @@ export async function registerCommands(bot, dir) {
     global.Command = null;
     delete global.Command;
 }
+
 export async function registerEvents(bot, dir) {
     const files = await fs.readdir(path.join(__dirname, dir));
     // Loop through each file.
@@ -74,27 +75,32 @@ export async function registerEvents(bot, dir) {
     }
 }
 
-export async function registerWsEvents(bot, dir) {
+export async function registerSlashCommands(bot, dir) {
+    if (!bot.slashCommands) bot.slashCommands = new Collection();
+    if (!global.SlashCommand) global.SlashCommand = (await import("file:///" + path.join(__dirname, "slashcommand.js"))).default;
     const files = await fs.readdir(path.join(__dirname, dir));
     // Loop through each file.
     for (const file of files) {
         const stat = await fs.lstat(path.join(__dirname, dir, file));
         if (stat.isDirectory()) // If file is a directory, recursive call recurDir
-            await registerEvents(bot, path.join(dir, file));
+            await registerSlashCommands(bot, path.join(dir, file));
         else {
             // Check if file is a .js file.
             if (file.endsWith(".js")) {
-                const eventName = file.substring(0, file.indexOf(".js"));
+                const name = file.substring(0, file.indexOf(".js"));
                 try {
-                    const eventModule = await import("file:///" + path.join(__dirname, dir, file));
-                    bot.ws.on(eventName, eventModule.default.bind(null, bot));
-                    if (process.argv[2] === "ci") console.log(`Event ${eventName} loaded =D`);
+                    const cmdModule = await import("file:///" + path.join(__dirname, dir, file));
+                    const cmdClass = new cmdModule.default({ name });
+                    bot.slashCommands.set(name, cmdClass);
+                    if (process.argv[2] === "ci") console.log(`Command ${name} loaded =D`);
                 }
                 catch (err) {
                     process.exitCode = 1;
-                    console.error("There was an error initializing the " + eventName + " event\n", err);
+                    console.error("There was an error initializing the " + name + " command\n", err);
                 }
             }
         }
     }
+    global.SlashCommand = null;
+    delete global.SlashCommand;
 }

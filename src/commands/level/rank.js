@@ -9,8 +9,8 @@ export default class extends Command {
     this.description = "Rank";
     this.guildonly = true;
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 32768]
+      user: [0n, 0n],
+      bot: [0n, 32768n]
     };
   }
   async run(bot, message, args) {
@@ -22,6 +22,6 @@ export default class extends Command {
     const user = await Levels.fetch(target.id, message.guild.id, true);
     if (!user) return message.channel.send("Seems like this user has not earned any xp so far.");
     const attachment = new Discord.MessageAttachment(await rankimage({ username: target.user.username, discrim: target.user.discriminator, level: user.level, rank: user.position, neededXP: (Levels.xpFor(user.level + 1) - Levels.xpFor(user.level)), currentXP: (user.xp - Levels.xpFor(user.level)) !== 0 ? user.xp - Levels.xpFor(user.level) : (user.xp - Levels.xpFor(user.level)) + 1, avatarURL: target.user.displayAvatarURL({ format: "png" }) }), "rank.png")
-    await message.channel.send(attachment);
+    await message.channel.send({ files: [attachment] });
   }
 }

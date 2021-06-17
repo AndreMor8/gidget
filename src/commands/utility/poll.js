@@ -11,8 +11,8 @@ export default class extends Command {
     this.description = "Reaction poll system";
     this.guildonly = true;
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16448]
+      user: [0n, 0n],
+      bot: [0n, 16448n]
     };
   }
   // eslint-disable-next-line require-await
@@ -52,7 +52,7 @@ export default class extends Command {
      */
     function cmd_umfrage(msg, args) {
       let imgs = [];
-      if (msg.guild.me.hasPermission("ATTACH_FILES"))
+      if (msg.guild.me.permissions.has("ATTACH_FILES"))
         imgs = msg.attachments.map(function (img) {
           return { attachment: img.url, name: img.filename };
         });
@@ -125,7 +125,7 @@ export default class extends Command {
         .setFooter("Made by: " + msg.author.tag + ", finish date:", msg.author.displayAvatarURL({ dynamic: true }))
         .setColor("RANDOM")
         .setTimestamp(new Date(Date.now() + time));
-      if (msg.member.hasPermission("ADMINISTRATOR")) {
+      if (msg.member.permissions.has("ADMINISTRATOR")) {
         if (msg.mentions.everyone) {
           if (msg.content.includes("@everyone")) {
             mentions += "@everyone ";
@@ -138,9 +138,9 @@ export default class extends Command {
       }
       msg.channel
         .send({
-          content: mentions,
-          embed: embed,
-          allowedMentions: { parse: (msg.member.hasPermission("MENTION_EVERYONE") ? ["users", "everyone", "roles"] : []) },
+          content: mentions || undefined,
+          embeds: [embed],
+          allowedMentions: { parse: (msg.member.permissions.has("MENTION_EVERYONE") ? ["users", "everyone", "roles"] : []) },
           files: imgs
         })
         .then(

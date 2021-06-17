@@ -5,8 +5,8 @@ export default class extends Command {
         this.description = "Display the list of server custom responses.";
         this.guildonly = true;
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 16384]
+            user: [0n, 0n],
+            bot: [0n, 16384n]
         }
     }
     async run(bot, message) {
@@ -25,7 +25,7 @@ export default class extends Command {
                 .setDescription(text)
                 .setTimestamp()
 
-            await message.channel.send(embed);
+            await message.channel.send({embeds: [embed]});
         } else return await message.channel.send("There are no custom responses on this server...");
     }
 }

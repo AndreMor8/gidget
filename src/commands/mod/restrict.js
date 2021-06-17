@@ -8,14 +8,14 @@ export default class extends Command {
     this.description = "Restrict members";
     this.guildonly = true;
     this.permissions = {
-      user: [4, 0],
-      bot: [268435456, 0]
+      user: [4n, 0n],
+      bot: [268435456n, 0n]
     }
   }
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send('Usage: `restrict <member> [reason]` or `restrict role <role>`')
     if (args[1] === 'role') {
-      if (!message.member.hasPermission("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
+      if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
       if (!args[2]) return message.channel.send('Please mention the role or enter the role ID.')
       const roleobj = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]);
       if (!roleobj) return message.channel.send('That role isn\'t valid.')

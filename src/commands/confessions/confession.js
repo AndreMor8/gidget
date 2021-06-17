@@ -5,8 +5,8 @@ export default class extends Command {
       this.description = "**(Slash command)** Confess something to others on this server!\nPossibly I need the permission to add slash commands to your server.";
       this.guildonly = true;
       this.permissions = {
-        user: [0, 0],
-        bot: [0, 0]
+        user: [0n, 0n],
+        bot: [0n, 0n]
       }
     }
     async run(bot, message) {

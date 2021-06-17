@@ -57,7 +57,7 @@ export default class extends Command {
           embed.addField(`${parseInt(i) + 1}.`, arr[i].note);
         }
 
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
     }
   }
 }

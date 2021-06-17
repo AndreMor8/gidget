@@ -6,8 +6,8 @@ export default class extends Command {
     this.description = "Unban a member from the server";
     this.guildonly = true;
     this.permissions = {
-      user: [4, 0],
-      bot: [4, 0]
+      user: [4n, 0n],
+      bot: [4n, 0n]
     };
   }
   async run(bot, message, args) {
@@ -22,7 +22,7 @@ export default class extends Command {
       return message.channel.send('Some error ocurred while fetching the bans. Here\'s a debug: ' + err);
     }
     try {
-      await message.guild.members.unban(banInfo.user);
+      await message.guild.members.unban(banInfo.user, "Unban command");
       await message.channel.send(`I've unbanned ${banInfo.user.tag} correctly.`);
     } catch (err) {
       await message.channel.send('I had an error while unbanning this user. Here\'s a debug: ' + err);

@@ -4,8 +4,8 @@ export default class extends Command {
     constructor(options) {
         super(options)
         this.permissions = {
-            user: [8, 0],
-            bot: [0, 0]
+            user: [8n, 0n],
+            bot: [0n, 0n]
         }
         this.guildonly = true;
         this.description = "Disable XP on certain channels.";

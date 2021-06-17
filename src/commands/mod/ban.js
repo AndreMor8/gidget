@@ -4,8 +4,8 @@ export default class extends Command {
         this.guildonly = true;
         this.description = "Ban members from the server";
         this.permissions = {
-            user: [4, 0],
-            bot: [4, 0]
+            user: [4n, 0n],
+            bot: [4n, 0n]
         }
     }
     async run(bot, message, args) {

@@ -8,8 +8,8 @@ export default class extends Command {
     this.description = "Server leaderboard";
     this.guildonly = true;
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16384]
+      user: [0n, 0n],
+      bot: [0n, 16384n]
     };
   }
   async run(bot, message, args) {
@@ -23,7 +23,7 @@ export default class extends Command {
     if (leaderboard.length < 1) return message.reply("Nobody's in leaderboard yet.");
     const pages = Math.ceil(leaderboard.length / 10);
     if(page > pages) return message.channel.send("Invalid number!");
-    const lb = leaderboard.slice((page * 10) - 10, page * 10).map(e => `${(leaderboard.findIndex(i => i.guildID === e.guildID && i.userID === e.userID) + 1)}. ${"<@!" + e.userID + ">"} => **Level:** ${e.level} **XP:** ${e.xp.toLocaleString()}\n`);
+    const lb = leaderboard.slice((page * 10) - 10, page * 10).map(e => `${(leaderboard.findIndex(i => i.guildID === e.guildID && i.userID === e.userID) + 1)}. ${"<@!" + e.userID + ">"} => **Level:** ${e.level} **XP:** ${e.xp.toLocaleString()}\n`).join("\n");
     const embed = new Discord.MessageEmbed()
       .setTitle('Leaderboard for ' + message.guild.name)
       .setDescription(lb)
@@ -31,6 +31,6 @@ export default class extends Command {
       .setThumbnail(message.guild.iconURL({ dynamic: true }))
       .setTimestamp()
       .setFooter(`Page ${page}/${pages}`);
-    await message.channel.send(embed);
+    await message.channel.send({embeds: [embed]});
   }
 }

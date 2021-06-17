@@ -4,7 +4,7 @@ export default class extends Command {
         this.description = "Reverse some text";
     }
     async run(bot, message, args) {
-        if (!args[1]) return message.reply('you must input text to be reversed!');
+        if (!args[1]) return message.reply('You must input text to be reversed!');
         await message.channel.send(args.slice(1).join(' ').split('').reverse().join(''));
     }
 }

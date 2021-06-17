@@ -6,8 +6,8 @@ export default class extends Command {
         super(options);
         this.description = "Stats of the game Connect4";
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 16384]
+            user: [0n, 0n],
+            bot: [0n, 16384n]
         };
         this.aliases = [];
     }
@@ -31,6 +31,6 @@ export default class extends Command {
         if (medium) embed.addField('Medium', `Wins: ${medium.wins} Loses: ${medium.loses}`)
         if (hard) embed.addField('Hard', `Wins: ${hard.wins} Loses: ${hard.loses}`)
 
-        return message.channel.send({ embed: embed });
+        return message.channel.send({ embeds: [embed] });
     }
 }

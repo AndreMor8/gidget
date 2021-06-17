@@ -7,9 +7,9 @@ export default async (bot, member) => {
   //I don't want errors..
   if (!member.partial) {
     //A cache system
-    let verify = bot.rrcache.get(member.guild.id)
+    let verify = bot.rrcache.get(member.guild.id);
     if (!verify) {
-      verify = await MessageModel2.findOne({ guildId: member.guild.id })
+      verify = await MessageModel2.findOne({ guildId: member.guild.id });
     }
     if (verify && verify.enabled) {
       const msgDocument = await MessageModel.findOne({

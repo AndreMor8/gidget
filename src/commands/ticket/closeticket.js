@@ -7,8 +7,8 @@ export default class extends Command {
     this.description = "Close a user ticket";
     this.guildonly = true;
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 16]
+      user: [0n, 0n],
+      bot: [0n, 16n]
     };
   }
   async run(bot, message, args) {
@@ -20,7 +20,7 @@ export default class extends Command {
     const finish = async (staff = false) => {
       try {
         const { memberId, channelId } = msgDocument2;
-        const channel = message.guild.channels.cache.get(channelId) || await message.guild.channels.fetch(channelId || "123").catch(() => {});
+        const channel = message.guild.channels.cache.get(channelId) || await message.guild.channels.fetch(channelId || "123").catch(() => { });
         const member = message.guild.members.cache.get(memberId);
         if (channel) {
           await channel.delete("Finished ticket!");
@@ -35,7 +35,7 @@ export default class extends Command {
     }
     const { manual, roles, perms } = msgDocument;
     let s = 0;
-    if (message.member.hasPermission(perms)) {
+    if (message.member.permissions.has(perms)) {
       finish(true);
     } else {
       for (const i in roles) {

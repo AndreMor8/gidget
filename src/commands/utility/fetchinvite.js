@@ -18,13 +18,13 @@ export default class extends Command {
         embed.setAuthor("Invite information", invite.guild.iconURL({ dynamic: true }))
           .addField("Guild", invite.guild.name + "\n`" + invite.guild.id + "`", true)
           .addField("Guild Verification", invite.guild.verificationLevel, true)
-          .addField("Presence Count", invite.presenceCount, true)
+          .addField("Presence Count", invite.presenceCount.toString(), true)
       } else if (invite.channel.type === "group") {
         embed.setThumbnail(invite.channel.iconURL({ dynamic: true }))
           .addField("Type", "Group DM invite", true)
           .addField("Group name", invite.channel.name ? invite.channel.name : "None", true)
       }
-      embed.addField("Member Count", invite.memberCount, true)
+      embed.addField("Member Count", invite.memberCount.toString(), true)
       if (invite.guild) {
         embed.addField("Redirects to", invite.channel.name + "\n" + invite.channel.toString(), true)
         embed.addField("\u200b", "\u200b", true)
@@ -37,7 +37,7 @@ export default class extends Command {
         }
       }
       embed.addField("Inviter", invite.inviter ? invite.inviter.tag + "\n" + invite.inviter.toString() : "None", true)
-      await message.channel.send(embed);
+      await message.channel.send({embeds: [embed]});
     } catch (err) {
       if (err.message === "Unknown Invite") return message.channel.send("The API says that invitation is unknown.");
       else return message.channel.send("Something happened when I was trying to collect the information. Here's a debug: " + err);

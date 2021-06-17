@@ -10,8 +10,8 @@ export default class extends Command {
         super(options);
         this.description = "Wubmeme!";
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 32768]
+            user: [0n, 0n],
+            bot: [0n, 32768n]
         }
     }
     async run(bot, message, args) {
@@ -40,7 +40,7 @@ export default class extends Command {
             const render = await meme.getBufferAsync(Jimp.MIME_PNG);
 
             const attachment = new Discord.MessageAttachment(render, "wubmeme.png");
-            await message.channel.send(attachment);
+            await message.channel.send({ files: [attachment] });
             message.channel.stopTyping();
         } else {
             await px64(message, args.slice(1));
@@ -71,6 +71,6 @@ async function px64(message, args) {
     const render = await meme.getBufferAsync(Jimp.MIME_PNG);
 
     const attachment = new Discord.MessageAttachment(render, "wubmeme.png");
-    await message.channel.send(attachment);
+    await message.channel.send({ files: [attachment] });
     message.channel.stopTyping();
 }

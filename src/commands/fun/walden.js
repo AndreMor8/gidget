@@ -9,8 +9,8 @@ export default class extends Command {
     super(options);
     this.description = "Walden";
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 32768]
+      user: [0n, 0n],
+      bot: [0n, 32768n]
     }
   }
   async run(bot, message, args) {
@@ -60,7 +60,7 @@ async function px32(message, args) {
   const render = await meme.getBufferAsync(Jimp.MIME_PNG);
 
   const attachment = new Discord.MessageAttachment(render, "walden.png");
-  await message.channel.send(attachment);
+  await message.channel.send({ files: [attachment] });
   message.channel.stopTyping();
 }
 
@@ -98,6 +98,6 @@ async function px64(message, args) {
   const render = await meme.getBufferAsync(Jimp.MIME_PNG);
 
   const attachment = new Discord.MessageAttachment(render, "walden.png");
-  await message.channel.send(attachment);
+  await message.channel.send({ files: [attachment] });
   message.channel.stopTyping();
 }

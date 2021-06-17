@@ -51,7 +51,7 @@ export default class extends Command {
           user.id === message.author.id
         );
       };
-      let msg = await message.channel.send(embed);
+      let msg = await message.channel.send({embed});
       await msg.react("◀️");
       await msg.react("▶️");
       await msg.react("⏹️");

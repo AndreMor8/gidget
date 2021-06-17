@@ -6,8 +6,8 @@ export default class extends Command {
         super(options);
         this.description = "Translate things";
         this.permissions = {
-            user: [0, 0],
-            bot: [0, 16384]
+            user: [0n, 0n],
+            bot: [0n, 16384n]
         };
     }
     async run(bot, message, args) {
@@ -23,7 +23,7 @@ export default class extends Command {
         }
 
         const reallang = languages.getCode(lang);
-        if (!reallang) return message.channel.send("Invalid language!\nhttps://github.com/vkedwardli/google-translate-api/blob/master/languages.js")
+        if (!reallang) return message.channel.send("Invalid language!\nhttps://github.com/vitalets/google-translate-api/blob/master/languages.js")
 
         //Get text
         const text = args.slice(1).join(" ");
@@ -42,6 +42,6 @@ export default class extends Command {
         if (result.from.text.didYouMean) {
             embed.addField("Did you mean?", `\`\`\`css\n${result.from.text.value}\`\`\``);
         }
-        await message.channel.send(embed);
+        await message.channel.send({embeds: [embed]});
     }
 }

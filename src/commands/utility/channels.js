@@ -45,7 +45,7 @@ export default class extends Command {
     });
     const split = Util.splitMessage(text);
     for (const i in split) {
-      await message.channel.send("Channel structure of " + message.guild.name + (member ? (" for " + (member.user ? member.user.tag : member.name)) : "") + "\n" + split[i], { code: true });
+      await message.channel.send({ content: "Channel structure of " + message.guild.name + (member ? (" for " + (member.user ? member.user.tag : member.name)) : "") + "\n" + split[i], code: true });
     }
   }
 }
@@ -63,7 +63,16 @@ function advancedmap(c) {
       r += "[📃] " + c.name;
       break;
     case "voice":
-      r += "[🎙] " + c.name + (c.members.size ? (c.members.map(d => {
+      r += "[🎙] " + c.name + (c.members.size.toString() ? (c.members.map(d => {
+        if (d.user.bot) {
+          return "\n\t\t[🤖] " + d.user.tag;
+        } else {
+          return "\n\t\t[🙎] " + d.user.tag;
+        }
+      })).join("") : "")
+      break;
+    case "stage":
+      r += "[👪] " + c.name + (c.members.size.toString() ? (c.members.map(d => {
         if (d.user.bot) {
           return "\n\t\t[🤖] " + d.user.tag;
         } else {

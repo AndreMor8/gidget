@@ -3,6 +3,7 @@ import commons from '../../utils/commons.js';
 const { require, __dirname, __filename } = commons(import.meta.url);
 import Discord from "discord.js";
 import util from 'util';
+
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -18,18 +19,18 @@ export default class extends Command {
         let evaluated = e;
         if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
         const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
-        message.channel.send(arr[0], { code: "js" });
+        message.channel.send({ content: arr[0], code: "js" });
       }).catch(e => {
         let evaluated = e;
         if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
         const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
-        message.channel.send(arr[0], { code: "js" });
+        message.channel.send({ content: arr[0], code: "js" });
       })
     } catch (err) {
       let cosa = err;
       if (typeof cosa !== "string") cosa = util.inspect(cosa, { depth: 0 });
       const arr = Discord.Util.splitMessage(cosa, { maxLength: 1950, char: "" });
-      await message.channel.send(arr[0], { code: "js" });
+      await message.channel.send({ content: arr[0], code: "js" });
     }
   }
 }

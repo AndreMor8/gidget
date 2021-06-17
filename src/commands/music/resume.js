@@ -1,5 +1,3 @@
-
-
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -7,37 +5,24 @@ export default class extends Command {
     this.description = "Resume the music";
     this.guildonly = true;
     this.permissions = {
-      user: [0, 0],
-      bot: [0, 0]
+      user: [0n, 0n],
+      bot: [0n, 0n]
     };
 
   }
   async run(bot, message) {
-    const serverQueue = message.guild.queue
-    if (!serverQueue) return message.channel.send("There is nothing playing.");
-    if (serverQueue && serverQueue.inseek) return;
-    const musicVariables = message.guild.musicVariables;
-    if (!musicVariables)
-      return message.channel.send("There is nothing playing.");
-    if (!message.member.voice.channel)
-      return message.channel.send(
-        "You have to be in a voice channel to resume the music!"
-      );
-    if (!serverQueue)
-      return message.channel.send("There is no song that I could resume!");
-    if (serverQueue.voiceChannel.id !== message.member.voice.channel.id)
-      return message.channel.send("I'm on another voice channel!");
-    if (serverQueue.playing)
-      return message.channel.send(`The music isn't paused.`);
-    if (!message.member.hasPermission("MANAGE_CHANNELS")) {
-      if (message.member.voice.channel.members.size > 2) {
-        return message.channel.send(
-          "Only a member with permission to manage channels can resume the music. Being alone also works."
-        );
-      }
+    const channel = message.member.voice.channel;
+    if (!channel) return message.channel.send("You need to be in a voice channel to resume music!");
+
+    const queue = bot.distube.getQueue(message);
+    if (!queue) return message.channel.send(`There is nothing playing.`);
+    if (queue.voiceChannel.id !== channel.id) return message.channel.send("You are not on the same voice channel as me.");
+    if (!queue.paused) return message.channel.send("Music is already playing.");
+    if (!message.member.permissions.has("MANAGE_CHANNELS")) {
+      if (queue.voiceChannel.members.size > 2) return message.channel.send("Only a member with permission to manage channels can resume the music. Being alone also works.");
     }
-    serverQueue.playing = true;
-    serverQueue.connection.dispatcher.resume();
-    await message.channel.send("**Resuming!**");
+
+    queue.resume();
+    await message.channel.send("**Resumed!**");
   }
 }

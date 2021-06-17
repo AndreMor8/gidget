@@ -8,8 +8,8 @@ export default class extends Command {
     this.aliases = ["ss", "pageshot", "screenwebpage", "web"],
       this.description = "Screenshot of a page",
       this.permissions = {
-        user: [0, 0],
-        bot: [0, 32768]
+        user: [0n, 0n],
+        bot: [0n, 32768n]
       }
   }
   async run(bot, message, args) {
@@ -83,7 +83,7 @@ async function pup(message, url, options) {
     else {
       const att = new MessageAttachment(await res.buffer(), "capture.png");
       const time = "Time: " + (Date.now() - (message.editedTimestamp || message.createdTimestamp)) / 1000 + "s";
-      await message.channel.send(time, att);
+      await message.channel.send({ content: time, files: [att] });
     }
   } catch (err) {
     message.channel.send("Error: " + err.toString());

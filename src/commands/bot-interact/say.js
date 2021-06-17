@@ -3,8 +3,8 @@ export default class extends Command {
     super(options);
     this.description = "Make me say something",
       this.permissions = {
-        user: [0, 0],
-        bot: [0, 0]
+        user: [0n, 0n],
+        bot: [0n, 0n]
       }
   }
   async run(bot, message, args) {

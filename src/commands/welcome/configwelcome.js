@@ -4,8 +4,8 @@ export default class extends Command {
         super(options);
         this.aliases = ["welcome"];
         this.permissions = {
-            user: [32, 0],
-            bot: [0, 0]
+            user: [32n, 0n],
+            bot: [0n, 0n]
         };
         this.guildonly = true;
         this.description = "Welcome and goodbye system";
@@ -24,7 +24,7 @@ export default class extends Command {
                 .addField("Goodbye enabled? (leaveenable)", doc.leaveenabled ? "Yes" : "No")
                 .addField("Channel for goodbyes (leavechannel)", doc.leavechannelID ? ("<#" + doc.leavechannelID + ">") : "Not established")
                 .addField("Goodbye message (leavemessage)", Discord.Util.splitMessage(doc.leavetext, { maxLength: 1000 })[0]);
-            return message.channel.send(embed);
+            return message.channel.send({ embeds: [embed] });
         }
         switch (args[1].toLowerCase()) {
             case "enable": {
@@ -43,7 +43,7 @@ export default class extends Command {
             case "channel": {
                 if (!args[2])
                     return message.channel.send("You have not put a channel");
-                const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.get(args[2]) || message.guild.channels.cache.find(e => e.name === args.slice(2).join(" ")) || await message.guild.channels.fetch(args[2] || "123").catch(() => {});
+                const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.get(args[2]) || message.guild.channels.cache.find(e => e.name === args.slice(2).join(" ")) || await message.guild.channels.fetch(args[2] || "123").catch(() => { });
                 if (!channel)
                     return message.channel.send("Invalid channel");
                 if (channel.type !== "text" && channel.type !== "news")
@@ -58,7 +58,7 @@ export default class extends Command {
                 if (!args[2])
                     return message.channel.send("You have not put anything");
                 if (/%INVITER%/gmi.test(args.slice(2).join(" "))) {
-                    if (!message.guild.me.hasPermission("MANAGE_GUILD"))
+                    if (!message.guild.me.permissions.has("MANAGE_GUILD"))
                         return message.channel.send("You must give me the permission to manage guild if you want the who invited the user to appear");
                 }
                 await message.guild.setWelcome(2, args.slice(2).join(" "));
@@ -77,7 +77,7 @@ export default class extends Command {
                 if (!args[2])
                     return message.channel.send("You have not put anything");
                 if (/%INVITER%/gmi.test(args.slice(2).join(" "))) {
-                    if (!message.guild.me.hasPermission("MANAGE_GUILD"))
+                    if (!message.guild.me.permissions.has("MANAGE_GUILD"))
                         return message.channel.send("You must give me the permission to manage guild if you want the who invited the user to appear");
                 }
                 await message.guild.setWelcome(4, args.slice(2).join(" "));
@@ -121,7 +121,7 @@ export default class extends Command {
             default:
                 await message.channel.send("Invalid mode!");
         }
-        if (message.guild.me.hasPermission("MANAGE_GUILD"))
+        if (message.guild.me.permissions.has("MANAGE_GUILD"))
             message.guild.inviteCount = await message.guild.getInviteCount().catch(() => { return {}; });
     }
 }

@@ -5,8 +5,8 @@ export default class extends Command {
     this.guildonly = true;
     this.description = "Remove the warning from a member.";
     this.permissions = {
-      user: [4, 0],
-      bot: [0, 0]
+      user: [4n, 0n],
+      bot: [0n, 0n]
     };
   }
   async run(bot, message, args) {

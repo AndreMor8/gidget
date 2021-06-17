@@ -7,7 +7,7 @@ const internalCooldown = new Set();
 export default async (bot, message, nolevel = false) => {
   if (message.author.bot) return;
   if (message.guild && !message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return;
-  await message.member?.fetch({ cache: true }).catch(() => {});
+  await message.member?.fetch({ cache: true }).catch(() => { });
   try {
     //All-time message code
     //For the moment this is a code for only 1 server
@@ -131,7 +131,7 @@ export default async (bot, message, nolevel = false) => {
             const urlobj = new URL(matches[0]);
             const [channelid, messageid] = urlobj.pathname.split("/").slice(3);
             const channel = bot.channels.cache.get(channelid) || await bot.channels.fetch(channelid).catch(() => { });
-            if (channel && channel.permissionsFor(message.author.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+            if (channel && message.guild.id === channel.guild.id && channel.permissionsFor(message.author.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
               const msg = channel.messages.cache.filter(e => !e.partial).get(messageid) || (messageid ? (await channel.messages.fetch(messageid).catch(() => { })) : undefined)
               if (msg) {
                 const embed = new Discord.MessageEmbed()
@@ -145,7 +145,7 @@ export default async (bot, message, nolevel = false) => {
                 if (msg.attachments.first()) {
                   embed.setImage(msg.attachments.first().url);
                 }
-                await message.channel.send(embed);
+                await message.channel.send({ embeds: [embed] });
               }
             }
           }

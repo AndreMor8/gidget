@@ -19,16 +19,16 @@ export default class extends Command {
             const ext = args[1].startsWith("<a:") ? ("gif") : ("png");
             const img = `https://cdn.discordapp.com/emojis/${matched[2]}.${ext}`;
             const att = new MessageAttachment(img, matched[2] + "." + ext);
-            await message.channel.send(att);
+            await message.channel.send({ files: [att] });
         } else if (parsed.length >= 1) {
             const number = parseInt(args[2]);
             const size = number && ((number <= 1024) && (number > 0)) ? number : 150;
             const buf = await svg2img(parsed[0].url, { format: "png", width: size, height: size });
             const att = new MessageAttachment(buf, "twemoji.png");
-            await message.channel.send(number ? "" : "In Twemoji mode you can resize the image up to 1024.\n`jumbo <emoji> [size]`", att);
+            await message.channel.send({ content: (number ? "" : "In Twemoji mode you can resize the image up to 1024.\n`jumbo <emoji> [size]`"), files: [att] });
         } else if (cachedemoji) {
             const att = new MessageAttachment(cachedemoji.url, cachedemoji.id + (cachedemoji.animated ? ".gif" : ".png"));
-            await message.channel.send(att);
+            await message.channel.send({ files: [att] });
         } else await message.channel.send("Please put a valid Discord custom o Twemoji/common/Unicode emoji");
     }
 }
