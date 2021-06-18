@@ -1,8 +1,12 @@
-# Own
+# @discordjs/voice
 autoconf
+automake
+libtool
+
+# QR
 qrencode
 
-# Canvas
+# canvas
 libcairo2-dev
 libpango1.0-dev
 libjpeg-dev

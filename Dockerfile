@@ -3,9 +3,9 @@ WORKDIR /home/gidget
 ENV NODE_ENV="production"
 # See below
 RUN apk add --no-cache curl bash git
-# Commands => qr, record
-RUN apk add --no-cache libqrencode lame
-# Build C++/Python addons (Canvas, gifsicle, @discordjs/opus)
+# Commands => qr
+RUN apk add --no-cache libqrencode
+# Build C++/Python addons (Canvas, gifsicle, @discordjs/opus, sodium)
 RUN apk add --no-cache build-base g++ autoconf automake libtool
 # Any Canvas command (only node.js versions where binary Canvas is not available)
 RUN apk add --no-cache libpng libpng-dev jpeg-dev pango-dev cairo-dev giflib-dev
