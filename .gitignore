@@ -4,3 +4,4 @@ node_modules/
 watch.json
 Procfile
 .vscode
+src/tmp
