@@ -14,7 +14,7 @@ export default class extends Command {
 
         const hook = new Discord.WebhookClient(process.env.TRW_ID, process.env.TRW_TOKEN);
 
-        if (!args[1]) return message.reply(`Nothing to say?`).then(message => message.delete({ timeout: 5000 }));
+        if (!args[1]) return message.reply(`Nothing to say?`);
 
         await hook.send(args.slice(1).join(" "));
     }

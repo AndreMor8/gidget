@@ -14,7 +14,7 @@ export default class extends Command {
     if (!args[1] || (isNaN(args[1]) && !args[2]))
       return message.reply('Usage: `purge [mode] <limit> [<args>]`\nDocumentation here: https://docs.gidget.xyz/features/messages/bulk-delete');
     const number = args[2] ? parseInt(args[2]) : parseInt(args[1]);
-  
+
     if (!isNaN(number) && (number <= 100) && (number >= 1)) {
       await message.delete();
       switch (args[1]) {
@@ -28,7 +28,9 @@ export default class extends Command {
           messages.sweep(m => !authors.includes(m.author.id));
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          thing.delete({ timeout: 5000 });
+          bot.setTimeout(() => {
+            if (!thing.deleted) thing.delete()
+          }, 5000);
         }
           break;
         case 'bots': {
@@ -38,7 +40,9 @@ export default class extends Command {
           messages.sweep(m => !m.author.bot);
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          thing.delete({ timeout: 5000 });
+          bot.setTimeout(() => {
+            if (!thing.deleted) thing.delete()
+          }, 5000);
         }
           break;
         case 'attachments': {
@@ -48,7 +52,9 @@ export default class extends Command {
           messages.sweep(m => !m.attachments.first());
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          thing.delete({ timeout: 5000 });
+          bot.setTimeout(() => {
+            if (!thing.deleted) thing.delete()
+          }, 5000);
         }
           break;
         case 'embeds': {
@@ -58,18 +64,22 @@ export default class extends Command {
           messages.sweep(m => !m.embeds[0]);
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          thing.delete({ timeout: 5000 });
+          bot.setTimeout(() => {
+            if (!thing.deleted) thing.delete()
+          }, 5000);
         }
           break;
         case 'with': {
-          if(!safe(args.slice(3).join(" "))) return message.channel.send("This is not a valid or safe regex.");
+          if (!safe(args.slice(3).join(" "))) return message.channel.send("This is not a valid or safe regex.");
           const messages = await message.channel.messages.fetch({
             limit: number
           }, false);
           messages.sweep(m => !(new RegExp(args.slice(3).join(" "), "gmi").test(m.content)));
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          thing.delete({ timeout: 5000 });
+          bot.setTimeout(() => {
+            if (!thing.deleted) thing.delete()
+          }, 5000);
         }
           break;
         default: {

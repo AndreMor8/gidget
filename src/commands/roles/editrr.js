@@ -34,7 +34,7 @@ export default class extends Command {
                             const collectorResult = await handleCollector(fetchedMessage, author, channel, msgModel);
                             msgModel.updateOne({ emojiRoleMappings: collectorResult }).then(() => {
                                 bot.cachedMessageReactions.delete(fetchedMessage.id)
-                                message.channel.send("Updated!").catch(() => {});
+                                message.channel.send("Updated!").catch(() => { });
                             })
                         }
                         else if (choice.content === "remove") {
@@ -85,7 +85,9 @@ function handleCollector(fetchedMessage, author, channel, msgModel) {
                         emoji = emojiName;
                     } else {
                         msg.channel.send("Emoji does not exist. Try again.")
-                            .then(msg => msg.delete({ timeout: 2000 }))
+                            .then(msg => msg.client.setTimeout(() => {
+                                if (!msg.deleted) msg.delete();
+                            }, 2000))
                             .catch(err => console.log(err));
                         return;
                     }
@@ -93,7 +95,9 @@ function handleCollector(fetchedMessage, author, channel, msgModel) {
                 const role = msg.guild.roles.cache.get(roleName) || msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                 if (!role) {
                     msg.channel.send("Role does not exist. Try again.")
-                        .then(msg => msg.delete({ timeout: 2000 }))
+                        .then(msg => msg.client.setTimeout(() => {
+                            if (!msg.deleted) msg.delete();
+                        }, 2000))
                         .catch(err => console.log(err));
                     return;
                 }
