@@ -89,6 +89,7 @@ export default class extends Command {
                     return col2.stop("stoped");
                 }
                 const userRes = parseInt(button.customID.split("_")[2]);
+                if (button.guild.tttgame.isPositionTaken(userRes + 1)) return button.deferUpdate();
                 button.guild.tttgame = button.guild.tttgame.makeMove(userRes + 1, "X");
                 await button.deferUpdate();
                 if (button.guild.tttgame.isGameOver()) {
@@ -195,6 +196,7 @@ export default class extends Command {
                             return col2.stop("stoped");
                         }
                         const userRes = parseInt(button.customID.split("_")[2]);
+                        if (button.guild.tttgame.isPositionTaken(userRes + 1)) return button.deferUpdate();
                         button.guild.tttgame = button.guild.tttgame.makeMove(userRes + 1, button.guild.tttgame.currentMark());
                         await button.deferUpdate();
                         if (button.guild.tttgame.isGameOver()) {
