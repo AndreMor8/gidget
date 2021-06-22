@@ -10,7 +10,7 @@ export default class extends Command {
         .addField("Steven Castro", "Current bot hosting")
         .addField("Awoo", "Access to a free VPS :)")
         .addField("Hyuuh", "https://gidget.xyz domain (1 year)")
-        .addField("NeonBluu", "Support server creation and design")
+        .addField("Ultriax", "Support server creation and design")
         .addField("GitHub", "[Those who contributed to the bot code](https://github.com/AndreMor8/gidget/graphs/contributors)")
         .setImage("https://contributors-img.web.app/image?repo=AndreMor8/gidget");
         await message.channel.send({embeds: [embed]});
