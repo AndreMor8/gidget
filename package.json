@@ -32,7 +32,7 @@
     "crypto-js": "^4.0.0",
     "dblapi.js": "^2.4.1",
     "discord-emoji-canvas": "^1.4.0",
-    "discord.js-light": "github:timotejroiko/discord.js-light",
+    "discord.js-light": "git+https://github.com/timotejroiko/discord.js-light.git#8f5a65f932cdb9b95be21667aabb59ad11abe76c",
     "distube": "^3.0.0-alpha.4",
     "dotenv": "^10.0.0",
     "execa": "^5.1.1",
@@ -62,6 +62,8 @@
     "safe-regex": "^2.1.1",
     "sharp": "^0.28.3",
     "sodium": "^3.0.2",
+    "tictactoe-board": "^1.2.2",
+    "tictactoe-complex-ai": "^1.0.1",
     "twemoji-parser": "^13.1.0"
   },
   "devDependencies": {
