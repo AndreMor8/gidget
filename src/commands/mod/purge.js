@@ -28,7 +28,7 @@ export default class extends Command {
           messages.sweep(m => !authors.includes(m.author.id));
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          thing.delete({ timeout: 5000 });
+          thing.delete();
         }
           break;
         case 'bots': {
@@ -38,7 +38,7 @@ export default class extends Command {
           messages.sweep(m => !m.author.bot);
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          thing.delete({ timeout: 5000 });
+          thing.delete();
         }
           break;
         case 'attachments': {
@@ -48,7 +48,7 @@ export default class extends Command {
           messages.sweep(m => !m.attachments.first());
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          thing.delete({ timeout: 5000 });
+          thing.delete();
         }
           break;
         case 'embeds': {
@@ -58,7 +58,7 @@ export default class extends Command {
           messages.sweep(m => !m.embeds[0]);
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          thing.delete({ timeout: 5000 });
+          thing.delete();
         }
           break;
         case 'with': {
@@ -69,7 +69,7 @@ export default class extends Command {
           messages.sweep(m => !(new RegExp(args.slice(3).join(" "), "gmi").test(m.content)));
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          thing.delete({ timeout: 5000 });
+          thing.delete();
         }
           break;
         default: {

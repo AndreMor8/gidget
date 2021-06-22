@@ -12,7 +12,7 @@ export default class extends Command {
     }
     async run(bot, message, args) {
         if (!args[1])
-            return message.channel.send("Please include a message to translate!").then(m => m.delete({ timeout: 3000 }))
+            return message.channel.send("Use: `translate <text> [-<lang>]`").then(m => m.delete())
         //Get language
         let lang = args[args.length - 1];
         if (lang.charAt(0) == '-') {
@@ -28,7 +28,7 @@ export default class extends Command {
         //Get text
         const text = args.slice(1).join(" ");
         if (text.length > 700) {
-            await message.channel.send("The message is too long!!").then(m => m.delete({ timeout: 3000 }))
+            await message.channel.send("The message is too long!!").then(m => m.delete())
             return;
         }
         const result = await gtranslate(text, { to: reallang });

@@ -17,10 +17,10 @@ export default class extends Command {
     async run(bot, message, args) {
         if (args.slice(1).length < 1) {
             const msg = await message.channel.send("Put the message ID");
-            await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
+            await msg.delete().catch(err => console.log(err));
         } else if (args.slice(1).length > 1) {
             const msg = await message.channel.send("Too many arguments!");
-            await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
+            await msg.delete().catch(err => console.log(err));
         }
         else {
             try {
@@ -44,7 +44,7 @@ export default class extends Command {
                                 emoji = emojiName;
                             } else {
                                 msg.channel.send("Emoji does not exist. Try again.")
-                                    .then(msg => msg.delete({ timeout: 2000 }))
+                                    .then(msg => msg.delete())
                                     .catch(err => console.log(err));
                                 return;
                             }
@@ -52,7 +52,7 @@ export default class extends Command {
                         const role = msg.guild.roles.cache.get(roleName) || msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                         if (!role) {
                             msg.channel.send("Role does not exist. Try again.")
-                                .then(msg => msg.delete({ timeout: 2000 }))
+                                .then(msg => msg.delete())
                                 .catch(err => console.log(err));
                             return;
                         }
@@ -85,7 +85,7 @@ export default class extends Command {
             }
             catch (err) {
                 const msg = await message.channel.send("Invalid ID. Message was not found :(");
-                await msg.delete({ timeout: 3500 }).catch(err => console.log(err));
+                await msg.delete().catch(err => console.log(err));
             }
         }
     }

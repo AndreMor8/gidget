@@ -85,7 +85,7 @@ function handleCollector(fetchedMessage, author, channel, msgModel) {
                         emoji = emojiName;
                     } else {
                         msg.channel.send("Emoji does not exist. Try again.")
-                            .then(msg => msg.delete({ timeout: 2000 }))
+                            .then(msg => msg.delete())
                             .catch(err => console.log(err));
                         return;
                     }
@@ -93,7 +93,7 @@ function handleCollector(fetchedMessage, author, channel, msgModel) {
                 const role = msg.guild.roles.cache.get(roleName) || msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                 if (!role) {
                     msg.channel.send("Role does not exist. Try again.")
-                        .then(msg => msg.delete({ timeout: 2000 }))
+                        .then(msg => msg.delete())
                         .catch(err => console.log(err));
                     return;
                 }

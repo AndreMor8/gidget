@@ -40,7 +40,7 @@ export default class extends Command {
       if (m.content.toLowerCase() === "exit")
         return collector.stop("Exited");
       if (m.content.toLowerCase() === "preview")
-        return message.channel.send("Here's a preview of your embed", embed).then(e => e.delete({ timeout: 15000 }));
+        return message.channel.send("Here's a preview of your embed", embed).then(e => e.delete());
       switch (i) {
         case 0:
           if (m.content.toLowerCase() === "none") {
