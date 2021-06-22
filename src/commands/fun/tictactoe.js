@@ -78,9 +78,9 @@ export default class extends Command {
                 components: [[res[0], res[1], res[2]], [res[3], res[4], res[5]], [res[6], res[7], res[8]], [terminateButton]]
             });
             const col2 = finalMsg.createMessageComponentInteractionCollector(async button => {
-                if (![message.author.id].includes(button.user.id)) button.reply({ content: "Use your own instance by using `g%ttt`", ephemeral: true });
+                if (![message.author.id].includes(button.user.id)) await button.reply({ content: "Use your own instance by using `g%ttt`", ephemeral: true });
                 const turn = button.guild.tttgame.currentMark() === "X" ? message.author.id : bot.user.id;
-                if (turn !== button.user.id) button.reply({ content: "It's not your turn yet!", ephemeral: true });
+                if (turn !== button.user.id) await button.reply({ content: "It's not your turn yet!", ephemeral: true });
                 return ([message.author.id].includes(button.user.id) && (button.customID === "ttt_g_terminate" || turn === button.user.id));
             }, { idle: 120000 });
             col2.on('collect', async (button) => {
