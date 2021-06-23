@@ -48,7 +48,7 @@ export default class extends Command {
         const name = crypto.randomBytes(20).toString('hex');
         //Paths
         const pathMP4 = join(__dirname, '../../tmp', `/${name}.mp4`);
-        const pathPNG = join(__dirname, '../../tmp', `/${name}.mp4`);
+        const pathPNG = join(__dirname, '../../tmp', `/${name}.png`);
         //Create a MP4 file
         const file = fs.createWriteStream(pathMP4);
         //Put data on it.
