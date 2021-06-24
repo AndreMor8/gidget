@@ -71,15 +71,18 @@ export default class extends Command {
         if (user.id === bot.user.id) {
             const difficulty = ["expert", "hard", "medium", "easy"].includes(args[1].toLowerCase()) ? args[1].toLowerCase() : "medium";
             const res = message.guild.tttgame.grid.map(buttonMap);
-            const aiInstance = ai.createAI({ level: difficulty });
+            //Only applicable here. X is supposed to be the local and O is the guest, but you can't do that with the bot.
+            const randomturn = Boolean(Math.round(Math.random()));
+            const aiInstance = ai.createAI({ level: difficulty, ai: randomturn ? 'X' : 'O', player: randomturn ? 'O' : 'X' });
             const finalMsg = await message.channel.send({
-                content: `${message.author.toString()}'s turn`,
+                content: `${randomturn ? bot.user.toString() : message.author.toString()}'s turn`,
                 allowedMentions: { parse: ["users"] },
                 components: [[res[0], res[1], res[2]], [res[3], res[4], res[5]], [res[6], res[7], res[8]], [terminateButton]]
             });
             const col2 = finalMsg.createMessageComponentInteractionCollector(async button => {
                 if (![message.author.id].includes(button.user.id)) await button.reply({ content: "Use your own instance by using `g%ttt`", ephemeral: true });
-                const turn = button.guild.tttgame.currentMark() === "X" ? message.author.id : bot.user.id;
+                const seeTurn = Boolean(button.guild.tttgame.availablePositionCount() % 2);
+                const turn = randomturn ? (seeTurn ? bot.user.id : message.author.id) : (seeTurn ? message.author.id : bot.user.id);
                 if (turn !== button.user.id && !button.replied) await button.reply({ content: "It's not your turn yet!", ephemeral: true });
                 return ([message.author.id].includes(button.user.id) && (button.customID === "ttt_g_terminate" || turn === button.user.id));
             }, { idle: 120000 });
@@ -90,7 +93,7 @@ export default class extends Command {
                 }
                 const userRes = parseInt(button.customID.split("_")[2]);
                 if (button.guild.tttgame.isPositionTaken(userRes + 1)) return button.deferUpdate();
-                button.guild.tttgame = button.guild.tttgame.makeMove(userRes + 1, "X");
+                button.guild.tttgame = button.guild.tttgame.makeMove(userRes + 1, randomturn ? "O" : "X");
                 await button.deferUpdate();
                 if (button.guild.tttgame.isGameOver()) {
                     if (button.guild.tttgame.hasWinner()) {
@@ -119,7 +122,7 @@ export default class extends Command {
                 });
 
                 const aiRes = await aiInstance.play(button.guild.tttgame.grid);
-                button.guild.tttgame = button.guild.tttgame.makeMove(aiRes + 1, "O");
+                button.guild.tttgame = button.guild.tttgame.makeMove(aiRes + 1, randomturn ? "X" : "O");
                 if (button.guild.tttgame.isGameOver()) {
                     if (button.guild.tttgame.hasWinner()) {
                         const res = button.guild.tttgame.grid.map(buttonMap);
@@ -145,7 +148,8 @@ export default class extends Command {
                     allowedMentions: { parse: ["users"] },
                     components: [[res[0], res[1], res[2]], [res[3], res[4], res[5]], [res[6], res[7], res[8]], [terminateButton]]
                 });
-            })
+            });
+
             col2.on('end', (c, r) => {
                 if (r === "idle" || r === "stoped") {
                     const res = message.guild.tttgame.grid.map(buttonMap);
@@ -157,6 +161,19 @@ export default class extends Command {
                 }
                 message.guild.tttgame = undefined;
             });
+            if (randomturn) {
+                const aiRes = await aiInstance.play(message.guild.tttgame.grid);
+                if (!col2.ended || message.guild.tttgame) {
+                    message.guild.tttgame = message.guild.tttgame.makeMove(aiRes + 1, "X");
+                    const res = message.guild.tttgame.grid.map(buttonMap);
+                    await finalMsg.edit({
+                        content: `${message.author.toString()}'s turn`,
+                        allowedMentions: { parse: ["users"] },
+                        components: [[res[0], res[1], res[2]], [res[3], res[4], res[5]], [res[6], res[7], res[8]], [terminateButton]]
+                    });
+                }
+
+            }
         } else {
             const but_yes = new MessageButton()
                 .setCustomID("ttt_c_vsyes")

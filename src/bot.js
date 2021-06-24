@@ -79,12 +79,12 @@ bot.distube.on("playSong", (queue, song) => {
 }).on("addSong", (queue, song) => {
   queue.textChannel.send(`**${song.name}** has been added to the queue!`);
 }).on("addList", (queue, playlist) => {
-  queue.textChannel.send(`Playlist: **${playlist.name}** has been added to the queue (${playlist.songs.length} songs)!`)
+  queue.textChannel.send(`Playlist: **${playlist.name}** has been added to the queue (${playlist.songs.length} songs)!`);
 }).on("error", (channel, e) => {
-  channel.send(`Some error ocurred. Here's a debug: ${e}`)
+  channel.send(`Some error ocurred. Here's a debug: ${e}`);
   console.error(e);
 }).on("empty", channel => {
-  channel.send("Queue deleted")
+  channel.send("Queue deleted");
 }).on("searchNoResult", message => {
   message.channel.send(`I didn't find any video. Please try again with another term.`);
 }).on("finishSong", (queue) => {

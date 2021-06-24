@@ -44,7 +44,9 @@ export default function (sharder) {
    */
   async function deleteCache(guildID) {
     if (isNaN(guildID)) return false;
-    const res = await sharder.broadcastEval(c => c.guilds.cache.get(guildID)?.noCache());
+    const res = await sharder.broadcastEval((c, { g }) => {
+      return c.guilds.cache.get(g)?.noCache();
+    }, { context: { g: guildID } });
     if (res.find(e => Boolean(e))) return true;
     else return false;
   }
