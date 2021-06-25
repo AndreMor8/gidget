@@ -11,7 +11,6 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
-    //https://djsdocs.sorta.moe/v2/embed?src=stable&q=Client
     if (!args[1]) return message.channel.send("What do you want to look for in the Discord.js documentation?");
     let src = "";
     let cont = "";
@@ -23,11 +22,12 @@ export default class extends Command {
       cont = args.slice(1).join(" ");
     }
     const page = `https://djsdocs.sorta.moe/v2/embed?src=${encodeURIComponent(src)}&q=${encodeURIComponent(cont)}`;
-    const r = await fetch(page);
-    if (!r.ok) return message.channel.send(`Error: Status code from ${page} returned ${r.status} (${r.statusText})`)
-    const res = await r.json();
-    if (!res) return message.channel.send({ embeds: [new MessageEmbed().setTitle("Error").setDescription("No results found")] });
-    if (res.error) return message.channel.send({ embeds: [new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message)] });
-    await message.channel.send({ embeds: [new MessageEmbed(res)] });
+    await fetch(page).then(async r => {
+      const res = await r.json();
+      if (res.error) return message.channel.send({ embeds: [new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message)] });
+      await message.channel.send({ embeds: [new MessageEmbed(res)] });
+    }).catch((err) => {
+      return message.channel.send(`An error occurred while consulting the documentation: ${err.message}`)
+    });
   }
 }
