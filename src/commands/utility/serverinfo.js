@@ -39,6 +39,7 @@ export default class extends Command {
     let rroles;
     let ae;
     let emojis;
+    let allEmojis;
     /*
     let bots;
     let rmembers;
@@ -102,9 +103,11 @@ export default class extends Command {
         links.push("[Vanity invite URL" + (vanity.uses ? (" (" + vanity.uses + " uses)") : "") + "](https://discord.gg/" + (vanity.code) + ")");
       }
 
-      ae = server.emojis.cache.filter(e => e.animated === true).size;
+      allEmojis = await message.guild.emojis.fetch();
 
-      emojis = server.emojis.cache.size - ae;
+      ae = allEmojis.filter(e => e.animated === true).size;
+
+      emojis = allEmojis.size - ae;
 
       roles = server.roles.cache.size;
 
@@ -172,7 +175,7 @@ export default class extends Command {
       }
       embed.addField("Member Count", server.memberCount?.toString() || (broadcastedServer ? broadcastedServer.memberCount?.toString() || "?" : "?"), true)
         .addField("Channel Count", `${server.channels.cache.filter(c => c.type === "text" || c.type === "voice").size} (${catname})\nText = ${server.channels.cache.filter(c => c.type === "text").size}\nVoice = ${server.channels.cache.filter(c => c.type === "voice").size}`, true)
-        .addField("Emojis", `${server.emojis.cache.size.toString()}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
+        .addField("Emojis", `${allEmojis.size.toString()}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
         .addField("Roles", `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, true)
         .addField("Server Boost Level", server.premiumTier.toString(), true)
         .addField("Boosts", server.premiumSubscriptionCount.toString(), true)
