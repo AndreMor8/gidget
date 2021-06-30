@@ -60,7 +60,7 @@ export default class extends Command {
       case 'voice':
         embed.addField("Bitrate", channel.bitrate + " bps", true)
           .addField("Joined members", channel.members.size.toString(), true)
-          .addField("User limit", channel.userLimit ? channel.userLimit : "*None*", true)
+          .addField("User limit", channel.userLimit ? channel.userLimit.toString() : "*None*", true)
           .addField("Full?", channel.full ? "Yes" : "No", true);
         if (channel.type === "stage" && channel.instance) {
           embed.addField("Instance ID", channel.instance.id, true)
