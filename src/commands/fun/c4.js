@@ -47,7 +47,7 @@ export default class extends Command {
                 if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%c4`", ephemeral: true });
                 return button.user.id === message.author.id;
             };
-            const col = msg.createMessageComponentInteractionCollector(filter, { time: 20000 });
+            const col = msg.createMessageComponentInteractionCollector({ filter, time: 20000 });
             col.on("collect", (button) => {
                 if (button.customID === "c4_c_easymode") {
                     this.run(bot, message, ["c4", "easy"]);
@@ -80,7 +80,7 @@ export default class extends Command {
                 files: [{ attachment: res, name: "connect4.gif" }],
                 allowedMentions: { parse: ["users"] }
             });
-            const col2 = message.channel.createMessageCollector(msg => (([message.author.id].includes(msg.author.id) && msg.content === "terminate") || (turns.get(msg.author.id) === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), { idle: 120000 });
+            const col2 = message.channel.createMessageCollector({ filter: msg => (([message.author.id].includes(msg.author.id) && msg.content === "terminate") || (turns.get(msg.author.id) === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), idle: 120000 });
             col2.on('collect', async (msg) => {
                 if (msg.content === "terminate") {
                     message.channel.send(`You ended this game! See you soon!`);
@@ -161,10 +161,12 @@ export default class extends Command {
 
             const msg_response = await message.channel.send({ content: `Hey ${user.toString()}, do you want to play Connect4 with ${message.author.toString()}?`, allowedMentions: { parse: ["users"] }, components: [new MessageActionRow().addComponents([but_yes, but_no])] });
 
-            const col = msg_response.createMessageComponentInteractionCollector((b) => {
-                if (b.user.id !== user.id) b.reply({ content: "You are not the expecting user!", ephemeral: true });
-                return b.user.id === user.id;
-            }, { time: 60000 });
+            const col = msg_response.createMessageComponentInteractionCollector({
+                filter: (b) => {
+                    if (b.user.id !== user.id) b.reply({ content: "You are not the expecting user!", ephemeral: true });
+                    return b.user.id === user.id;
+                }, time: 60000
+            });
 
             col.on("collect", async (button) => {
                 await button.deferUpdate();
@@ -179,7 +181,7 @@ export default class extends Command {
                         files: [{ attachment: res, name: "connect4.gif" }],
                         allowedMentions: { parse: ["users"] }
                     });
-                    const col2 = message.channel.createMessageCollector(msg => (([user.id, message.author.id].includes(msg.author.id) && msg.content === "terminate") || (turns.get(msg.author.id) === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), { idle: 120000 });
+                    const col2 = message.channel.createMessageCollector({ filter: msg => (([user.id, message.author.id].includes(msg.author.id) && msg.content === "terminate") || (turns.get(msg.author.id) === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), idle: 120000 });
                     col2.on('collect', async (msg) => {
                         if (msg.content === "terminate") {
                             message.channel.send(`${msg.author.toString()} ended this game! See you soon!`, { allowedMentions: { parse: ["users"] } });

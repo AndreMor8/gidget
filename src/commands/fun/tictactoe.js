@@ -37,7 +37,7 @@ export default class extends Command {
                 if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%ttt`", ephemeral: true });
                 return button.user.id === message.author.id;
             };
-            const col = msg.createMessageComponentInteractionCollector(filter, { time: 20000 });
+            const col = msg.createMessageComponentInteractionCollector({ filter, time: 20000 });
             col.on("collect", (button) => {
                 if (button.customID === "ttt_c_easymode") {
                     this.run(bot, message, ["tictactoe", "easy"]);
@@ -79,13 +79,15 @@ export default class extends Command {
                 allowedMentions: { parse: ["users"] },
                 components: [[res[0], res[1], res[2]], [res[3], res[4], res[5]], [res[6], res[7], res[8]], [terminateButton]]
             });
-            const col2 = finalMsg.createMessageComponentInteractionCollector(async button => {
-                if (![message.author.id].includes(button.user.id)) await button.reply({ content: "Use your own instance by using `g%ttt`", ephemeral: true });
-                const seeTurn = Boolean(button.guild.tttgame.availablePositionCount() % 2);
-                const turn = randomturn ? (seeTurn ? bot.user.id : message.author.id) : (seeTurn ? message.author.id : bot.user.id);
-                if (turn !== button.user.id && !button.replied) await button.reply({ content: "It's not your turn yet!", ephemeral: true });
-                return ([message.author.id].includes(button.user.id) && (button.customID === "ttt_g_terminate" || turn === button.user.id));
-            }, { idle: 120000 });
+            const col2 = finalMsg.createMessageComponentInteractionCollector({
+                filter: async button => {
+                    if (![message.author.id].includes(button.user.id)) await button.reply({ content: "Use your own instance by using `g%ttt`", ephemeral: true });
+                    const seeTurn = Boolean(button.guild.tttgame.availablePositionCount() % 2);
+                    const turn = randomturn ? (seeTurn ? bot.user.id : message.author.id) : (seeTurn ? message.author.id : bot.user.id);
+                    if (turn !== button.user.id && !button.replied) await button.reply({ content: "It's not your turn yet!", ephemeral: true });
+                    return ([message.author.id].includes(button.user.id) && (button.customID === "ttt_g_terminate" || turn === button.user.id));
+                }, idle: 120000
+            });
             col2.on('collect', async (button) => {
                 if (button.customID === "ttt_g_terminate") {
                     await button.reply("You ended this game! See you soon!");
@@ -186,10 +188,12 @@ export default class extends Command {
 
             const msg_response = await message.channel.send({ content: `Hey ${user.toString()}, do you want to play TicTacToe with ${message.author.toString()}?`, allowedMentions: { parse: ["users"] }, components: [[but_yes, but_no]] });
 
-            const col = msg_response.createMessageComponentInteractionCollector((b) => {
-                if (b.user.id !== user.id) b.reply({ content: "You are not the expecting user!", ephemeral: true });
-                return b.user.id === user.id;
-            }, { time: 60000 });
+            const col = msg_response.createMessageComponentInteractionCollector({
+                filter: (b) => {
+                    if (b.user.id !== user.id) b.reply({ content: "You are not the expecting user!", ephemeral: true });
+                    return b.user.id === user.id;
+                }, time: 60000
+            });
 
             col.on("collect", async (button) => {
                 await button.deferUpdate();
@@ -201,12 +205,14 @@ export default class extends Command {
                         allowedMentions: { parse: ["users"] },
                         components: [[res[0], res[1], res[2]], [res[3], res[4], res[5]], [res[6], res[7], res[8]], [terminateButton]]
                     });
-                    const col2 = finalMsg.createMessageComponentInteractionCollector(async button => {
-                        if (![message.author.id, user.id].includes(button.user.id)) await button.reply({ content: "Use your own instance by using `g%ttt`", ephemeral: true });
-                        const turn = button.guild.tttgame.currentMark() === "X" ? message.author.id : user.id;
-                        if (turn !== button.user.id && button.customID !== "ttt_g_terminate" && !button.replied) await button.reply({ content: "It's not your turn yet!", ephemeral: true });
-                        return ([message.author.id, user.id].includes(button.user.id) && (button.customID === "ttt_g_terminate" || turn === button.user.id));
-                    }, { idle: 120000 });
+                    const col2 = finalMsg.createMessageComponentInteractionCollector({
+                        filter: async button => {
+                            if (![message.author.id, user.id].includes(button.user.id)) await button.reply({ content: "Use your own instance by using `g%ttt`", ephemeral: true });
+                            const turn = button.guild.tttgame.currentMark() === "X" ? message.author.id : user.id;
+                            if (turn !== button.user.id && button.customID !== "ttt_g_terminate" && !button.replied) await button.reply({ content: "It's not your turn yet!", ephemeral: true });
+                            return ([message.author.id, user.id].includes(button.user.id) && (button.customID === "ttt_g_terminate" || turn === button.user.id));
+                        }, idle: 120000
+                    });
                     col2.on('collect', async (button) => {
                         if (button.customID === "ttt_g_terminate") {
                             await button.reply("You ended this game! See you soon!");

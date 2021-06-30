@@ -12,16 +12,16 @@ export default async (bot, reaction, user) => {
     if (Object.prototype.hasOwnProperty.call(emojiRoleMappings, reaction.emoji.id || reaction.emoji.name)) {
       const roleId = emojiRoleMappings[reaction.emoji.id || reaction.emoji.name];
       const role = reaction.message.guild.roles.cache.get(roleId);
-      const member = reaction.message.guild.members.cache.get(user.id) || await reaction.message.guild.members.fetch(user.id).catch(() => {});
+      const member = reaction.message.guild.members.cache.get(user.id) || await reaction.message.guild.members.fetch(user.id).catch(() => { });
       if (role && member) {
-        if(!member.guild.me.permissions.has("MANAGE_ROLES")) return member.send("I don't have permissions, sorry :(\nContact your server administrator.")
+        if (!member.guild.me.permissions.has("MANAGE_ROLES")) return member.send("I don't have permissions, sorry :(\nContact your server administrator.")
         member.roles.add(role, "Reaction-role");
       }
     }
   };
   //Fetch
-  await reaction.message.fetch();
-  
+  await reaction.message.fetch().catch(() => { });
+
   const msgDocument2 = await MessageModel2.findOne({
     guildId: reaction.message.guild.id,
     messageId: reaction.message.id,
@@ -30,16 +30,16 @@ export default async (bot, reaction, user) => {
   });
   if (msgDocument2) {
     await bot.users.fetch(user.id);
-    if(reaction.message.channel.permissionsFor(bot.user.id).has("MANAGE_MESSAGES")) await reaction.users.remove(user);
+    if (reaction.message.channel.permissionsFor(bot.user.id).has("MANAGE_MESSAGES")) await reaction.users.remove(user);
     const msgDocument3 = await MessageModel3.findOne({
       guildId: reaction.message.guild.id,
       from: reaction.message.id,
       memberId: user.id
     });
-    if (msgDocument3) return user.send("You already have a ticket!").catch(() => {});
-    if(!reaction.message.guild.me.permissions.has("MANAGE_CHANNELS")) return user.send("I don't have permissions, sorry :(\nContact your server administrator.").catch(() => {})
+    if (msgDocument3) return user.send("You already have a ticket!").catch(() => { });
+    if (!reaction.message.guild.me.permissions.has("MANAGE_CHANNELS")) return user.send("I don't have permissions, sorry :(\nContact your server administrator.").catch(() => { })
     const { categoryId, roles } = msgDocument2;
-    const cat = reaction.message.guild.channels.cache.get(categoryId) || await reaction.message.guild.channels.fetch(categoryId).catch(() => {});
+    const cat = reaction.message.guild.channels.cache.get(categoryId) || await reaction.message.guild.channels.fetch(categoryId).catch(() => { });
     const roleperm = [
       {
         allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
@@ -92,25 +92,25 @@ export default async (bot, reaction, user) => {
         });
       });
   }
-  
-  
+
+
   //Main function
-  
+
   const cach = bot.cachedMessageReactions.get(reaction.message.id);
-  if(typeof cach === "boolean") return
-  else if(!cach) {
-   try {
-    const msgDocument = await MessageModel.findOne({ messageId: reaction.message.id });
-    if (msgDocument) {
-      bot.cachedMessageReactions.set(reaction.message.id, msgDocument);
-      const { emojiRoleMappings } = msgDocument;
-      addMemberRole(emojiRoleMappings);
-    } else {
-      bot.cachedMessageReactions.set(reaction.message.id, false);
+  if (typeof cach === "boolean") return
+  else if (!cach) {
+    try {
+      const msgDocument = await MessageModel.findOne({ messageId: reaction.message.id });
+      if (msgDocument) {
+        bot.cachedMessageReactions.set(reaction.message.id, msgDocument);
+        const { emojiRoleMappings } = msgDocument;
+        addMemberRole(emojiRoleMappings);
+      } else {
+        bot.cachedMessageReactions.set(reaction.message.id, false);
+      }
+    } catch (err) {
+      console.log(err);
     }
-  } catch (err) {
-    console.log(err);
-  } 
   } else {
     const { emojiRoleMappings } = cach;
     addMemberRole(emojiRoleMappings);

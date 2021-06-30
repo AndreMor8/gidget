@@ -10,7 +10,7 @@ export default class extends Command {
         if (message.author.mine) return message.channel.send("There is already a game with you in progress!");
         message.author.mine = new BombSweeper();
         const to_edit = await message.channel.send("Please wait...");
-        const col = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 300000 });
+        const col = message.channel.createMessageCollector({ filter: (m) => m.author.id === message.author.id, idle: 300000 });
         message.author.mine.onWin = () => col.stop("win");
         message.author.mine.onLoss = () => col.stop("loss");
         message.author.mine.PlaceBombs(10);

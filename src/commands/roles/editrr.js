@@ -26,8 +26,8 @@ export default class extends Command {
                     const filter = m => m.author.id === author.id && (m.content.toLowerCase() === 'add' || m.content.toLowerCase() === 'remove');
                     channel.send('If you are going to add more reaction-roles to that message, put `add`. To remove the configuration say `remove`');
                     try {
-                        const awaitMsgOps = { max: 1, time: 20000, errors: ['time'] };
-                        const choice = (await channel.awaitMessages(filter, awaitMsgOps)).first();
+                        const awaitMsgOps = { filter, max: 1, time: 20000, errors: ['time'] };
+                        const choice = (await channel.awaitMessages(awaitMsgOps)).first();
                         if (choice.content === "add") {
                             if (!message.guild.me.permissions.has("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?")
                             await channel.send("Enter an emoji name followed by the corresponding role name, separated with a comma. e.g: WubbzyWalk, A Wubbzy Fan\nType `?done` when you finish");
@@ -68,7 +68,7 @@ export default class extends Command {
 function handleCollector(fetchedMessage, author, channel, msgModel) {
     return new Promise((resolve) => {
         const collectorFilter = (m) => m.author.id === author.id;
-        const collector = new MessageCollector(channel, collectorFilter);
+        const collector = new MessageCollector(channel, { filter: collectorFilter });
         const emojiRoleMappings = new Map(Object.entries(msgModel.emojiRoleMappings));
         collector.on('collect', async msg => {
             if (msg.content.toLowerCase() === '?done') {

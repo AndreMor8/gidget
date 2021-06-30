@@ -59,13 +59,13 @@ export default class extends Command {
         const here = await message.channel.send({ files: [att], components: [new MessageActionRow().addComponents([but_add])] });
 
         if (!but_add.disabled) {
-            const butcol = here.createMessageComponentInteractionCollector(filter, { idle: 60000 });
+            const butcol = here.createMessageComponentInteractionCollector({ filter, idle: 60000 });
             butcol.on("collect", async (button) => {
                 if (!(message.guild?.me.permissions.has("MANAGE_EMOJIS") && message.member?.permissions.has("MANAGE_EMOJIS"))) return button.reply("Nope", true);
                 await button.reply("Tell me the name of the new emoji (30s collector time).");
                 butcol.stop("a");
                 here.edit({ components: [new MessageActionRow().addComponents([but_add.setDisabled(true)])] });
-                const col = message.channel.createMessageCollector((e) => e.author.id === message.author.id, { time: 30000 });
+                const col = message.channel.createMessageCollector({ filter: (e) => e.author.id === message.author.id, time: 30000 });
                 col.on("collect", (msg) => {
                     message.guild.emojis.create((pre_type == "svg") ? buffer : url, msg.content, { reason: "emojify command" }).then((e) => {
                         button.editReply(`Emoji created correctly! -> ${e.toString()}`);

@@ -61,7 +61,7 @@ export default class extends Command {
         };
         const msg = await message.channel.send({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back, but_stop, but_next])] });
 
-        const collector = msg.createMessageComponentInteractionCollector(filter, { idle: 30000 });
+        const collector = msg.createMessageComponentInteractionCollector({ filter, idle: 30000 });
         collector.on('collect', async (button) => {
             await button.deferUpdate();
             if (button.customID === 'image_c_next') {

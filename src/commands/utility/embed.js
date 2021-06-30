@@ -35,7 +35,7 @@ export default class extends Command {
     let authorlink = "";
     let footer = "";
     const embed = new MessageEmbed();
-    const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 120000 });
+    const collector = message.channel.createMessageCollector({ filter: (m) => m.author.id === message.author.id, idle: 120000 });
     collector.on("collect", async (m) => {
       if (m.content.toLowerCase() === "exit")
         return collector.stop("Exited");
@@ -243,7 +243,7 @@ function fields(message, embed) {
     message.channel.send("To get out of here put **`exit`**\n\nYou can't skip this with `none`...");
     const arr = ["Tell me the field name", "Tell me the field value", "Want this to be a inline field?\n\n**Respond with `yes` or `no`**", "Want another field?\n\n**Respond with `yes` or `no`**"];
     message.channel.send(arr[i]);
-    const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id, { idle: 120000 });
+    const collector = message.channel.createMessageCollector({ filter: (m) => m.author.id === message.author.id, idle: 120000 });
     collector.on("collect", m => {
       if (m.content.toLowerCase() === "exit") {
         return collector.stop("no");

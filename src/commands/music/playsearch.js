@@ -40,7 +40,7 @@ export default class extends Command {
 
       const msg = await message.channel.send({ embeds: [embed] });
       msg.channel.stopTyping();
-      const collector = message.channel.createMessageCollector(m => m.author.id === message.author.id, { time: 35000, idle: 15000 })
+      const collector = message.channel.createMessageCollector({ filter: m => m.author.id === message.author.id, time: 35000, idle: 15000 })
 
       collector.on("collect", async message => {
         const number = parseInt(message.content);

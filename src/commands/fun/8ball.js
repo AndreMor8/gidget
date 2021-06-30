@@ -41,7 +41,7 @@ export default class extends Command {
       if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%8ball <question>`", ephemeral: true });
       return button.user.id === message.author.id;
     };
-    const col = msg.createMessageComponentInteractionCollector(filter, { idle: 15000 });
+    const col = msg.createMessageComponentInteractionCollector({ filter, idle: 15000 });
     col.on("collect", async (button) => {
       await button.deferUpdate();
       if (button.customID === "8ball_c_redo") {
