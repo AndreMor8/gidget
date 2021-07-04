@@ -89,7 +89,6 @@ export default class extends SlashCommand {
             }
         ]
         this.guildonly = true;
-        this.onlyguild = true;
         this.permissions = {
             user: [8n, 0n],
             bot: [268435456n, 0n]
