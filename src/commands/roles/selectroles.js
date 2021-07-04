@@ -2,11 +2,11 @@ export default class extends Command {
     constructor(options) {
       super(options);
       this.aliases = [];
-      this.description = "**(Slash command)** Confess something to others on this server!";
+      this.description = "**(Slash command)** Use Discord's new menu selector to add self-roles to users in just 1 step.";
       this.guildonly = true;
       this.permissions = {
-        user: [0n, 0n],
-        bot: [0n, 0n]
+        user: [8n, 0n],
+        bot: [268435456n, 0n]
       }
     }
     async run(bot, message) {

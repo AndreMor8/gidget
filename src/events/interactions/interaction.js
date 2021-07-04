@@ -6,7 +6,7 @@ export default async (bot, interaction) => {
         if (internalCooldown.has(interaction.user.id)) return interaction.reply({ content: "Calm down! Wait until the previous command finished executing.", ephemeral: true });
         const command = bot.slashCommands.get(interaction.commandName);
         if (!command) return interaction.reply({ content: "That command doesn't exist", ephemeral: true });
-        if (!interaction.guild && command.guildonly) return interaction.reply("This command only works on servers");
+        if (!interaction.inGuild() && command.guildonly) return interaction.reply("This command only works on servers");
         if (interaction.guild) {
             const userperms = interaction.member.permissions;
             const userchannelperms = interaction.channel.permissionsFor(interaction.member.id);
@@ -29,6 +29,23 @@ export default async (bot, interaction) => {
         } finally {
             internalCooldown.delete(interaction.user.id);
         }
-
+    }
+    if (interaction.isSelectMenu() && interaction.customID === "selectroles_f") {
+        if (!interaction.guild.me.permissions.has("MANAGE_ROLES")) return interaction.reply({ content: "I don't have permissions to add roles. Contact an administrator to fix the problem.", ephemeral: true })
+        const roles = interaction.values?.map(e => e.split("_")[3]) || [];
+        if (!roles.length) return interaction.deferUpdate();
+        const rolesToManage = roles.filter(e => interaction.guild.roles.cache.get(e)?.editable && !(interaction.guild.roles.cache.get(e)?.managed));
+        if (!rolesToManage.length) interaction.reply({ content: `I cannot add/remove the requested role${roles.length ? "s" : ""}. Contact an administrator to fix the problem.`, ephemeral: true });
+        else {
+            const rolesToAdd = rolesToManage.filter(e => !interaction.member.roles.cache.has(e));
+            const rolesToRemove = rolesToManage.filter(e => interaction.member.roles.cache.has(e));
+            if (rolesToAdd.length) await interaction.member.roles.add(rolesToAdd, "Select-roles function");
+            if (rolesToRemove.length) await interaction.member.roles.remove(rolesToRemove, "Select-roles function");
+            if (roles.length === rolesToManage.length) interaction.reply({ content: `I've added/removed ${roles.length > 1 ? "all the roles" : "the role"} you have requested.`, ephemeral: true });
+            else {
+                const notManagedRoles = roles.filter(e => !rolesToManage.includes(e));
+                interaction.reply({ content: `I've added/removed the requested roles except for: ${notManagedRoles.map(e => `<@&${e}>`).join(", ")}. Contact an administrator to fix the problem.`, ephemeral: true })
+            }
+        }
     }
 }

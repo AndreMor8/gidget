@@ -89,6 +89,8 @@ bot.distube.on("playSong", (queue, song) => {
   message.channel.send(`I didn't find any video. Please try again with another term.`);
 }).on("finishSong", (queue) => {
   bot.memberVotes.delete(queue.voiceChannel.guild.id);
+}).on("initQueue", (queue) => {
+  queue.setVolume(100);
 });
 
 (async () => {

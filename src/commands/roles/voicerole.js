@@ -1,4 +1,3 @@
-
 import db from '../../database/models/voicerole.js';
 import { MessageEmbed } from 'discord.js';
 

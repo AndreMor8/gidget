@@ -34,7 +34,7 @@
     "discord-emoji-canvas": "^1.4.0",
     "discord-together": "^1.1.14",
     "discord.js-light": "git+https://github.com/timotejroiko/discord.js-light.git#7c753b9d6a59ed149464d14415123772fa9e49ab",
-    "distube": "^3.0.0-alpha.7",
+    "distube": "^3.0.0-alpha.8.2",
     "dotenv": "^10.0.0",
     "execa": "^5.1.1",
     "express": "^4.17.1",

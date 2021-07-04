@@ -15,6 +15,5 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Please enter a YouTube link or search term.");
 
     await bot.distube.play(message, args.slice(1).join(" "));
-    if (!queue) bot.distube.setVolume(message, 100);
   }
 }

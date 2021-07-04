@@ -21,13 +21,12 @@ export default class extends SlashCommand {
         this.guildonly = true;
     }
     async run(bot, interaction) {
-        const guild = bot.guilds.cache.get(interaction.guild.id);
-        if (!guild) return interaction.reply({ content: 'Please invite the real bot.', ephemeral: true });
-        const data = guild.cache.confessionconfig ? guild.confessionconfig : await guild.getConfessionConfig();
+        if(!bot.guilds.cache.has(interaction.guild.id)) return interaction.reply({ content: "Please invite the real bot", ephemeral: true })
+        const data = interaction.guild.cache.confessionconfig ? interaction.guild.confessionconfig : await interaction.guild.getConfessionConfig();
         if (!data.channelID) return interaction.reply({ content: "The server hasn't set up a confession channel yet!\nDo it with `g%confessionconfig channel <channel>`", ephemeral: true });
         const user_anon = interaction.options.get("anon")?.value;
         if (!data.anon && user_anon) return interaction.reply({ content: 'Sorry, the server does not accept anonymous confessions.', ephemeral: true });
-        const channel = guild.channels.cache.get(data.channelID);
+        const channel = interaction.guild.channels.cache.get(data.channelID);
         if (!channel) return interaction.reply({ content: "It seems that the channel set by the admin does not exist!\nSet the channel again with `g%confessionconfig channel <channel>`", ephemeral: true })
 
         const embed = new MessageEmbed()
