@@ -89,6 +89,7 @@ export default class extends SlashCommand {
             }
         ]
         this.guildonly = true;
+        this.onlyguild = true;
         this.permissions = {
             user: [8n, 0n],
             bot: [268435456n, 0n]
@@ -102,7 +103,7 @@ export default class extends SlashCommand {
                 if (doc?.roles.length > 25) return interaction.reply("You can only have 25 roles(options) per list.")
                 const option = {
                     id: interaction.options.get("add").options.find(e => e.name === "role").role.id,
-                    name: interaction.options.get("add").options.find(e => e.name === "role-name")?.value || interaction.options.get("add").options.get("role").role.name,
+                    name: interaction.options.get("add").options.find(e => e.name === "role-name")?.value || interaction.options.get("add").options.find(e => e.name === "role").role.name,
                     description: interaction.options.get("add").options.find(e => e.name === "description")?.value,
                     emoji: interaction.options.get("add").options.find(e => e.name === "emoji")?.value || 1
                 }

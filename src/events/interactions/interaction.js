@@ -6,7 +6,7 @@ export default async (bot, interaction) => {
         if (internalCooldown.has(interaction.user.id)) return interaction.reply({ content: "Calm down! Wait until the previous command finished executing.", ephemeral: true });
         const command = bot.slashCommands.get(interaction.commandName);
         if (!command) return interaction.reply({ content: "That command doesn't exist", ephemeral: true });
-        if (!interaction.inGuild() && command.guildonly) return interaction.reply("This command only works on servers");
+        if (!interaction.guild && command.guildonly) return interaction.reply("This command only works on servers");
         if (interaction.guild) {
             const userperms = interaction.member.permissions;
             const userchannelperms = interaction.channel.permissionsFor(interaction.member.id);
