@@ -43,9 +43,8 @@ export default class extends Command {
     };
     const col = msg.createMessageComponentInteractionCollector({ filter, idle: 15000 });
     col.on("collect", async (button) => {
-      await button.deferUpdate();
       if (button.customID === "8ball_c_redo") {
-        msg.edit({ embeds: [ballembed.spliceFields(1, 1).addField("Answer", arr[Math.floor(Math.random() * arr.length)])] });
+        await button.update({ embeds: [ballembed.spliceFields(1, 1).addField("Answer", arr[Math.floor(Math.random() * arr.length)])] });
       }
     });
     col.on("end", () => {

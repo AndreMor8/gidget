@@ -75,14 +75,14 @@ export default class extends SlashCommand {
                         required: true
                     },
                     {
-                        name: "placeholder",
-                        description: "Text that will appear when the user views the menu without anything selected. (MAX 100 CHARACTERS)",
-                        type: "STRING",
-                        required: false
-                    },
-                    {
                         name: "content",
                         description: "Default message top content (MAX 2000 CHARACTERS)",
+                        type: "STRING",
+                        required: true
+                    },
+                    {
+                        name: "placeholder",
+                        description: "Text that will appear when the user views the menu without anything selected. (MAX 100 CHARACTERS)",
                         type: "STRING",
                         required: false
                     }]
@@ -106,8 +106,8 @@ export default class extends SlashCommand {
                     description: interaction.options.get("add").options.find(e => e.name === "description")?.value,
                     emoji: interaction.options.get("add").options.find(e => e.name === "emoji")?.value || 1
                 }
-                if (option.name.length > 25) return interaction.reply("[add.name] You can only put up to 25 characters max.");
-                if (option.description.length > 50) return interaction.reply("[add.description] You can only put up to 50 characters max.");
+                if (option.name.length > 25) return interaction.reply("[add.role-name] You can only put up to 25 characters max.");
+                if (option.description?.length > 50) return interaction.reply("[add.description] You can only put up to 50 characters max.");
                 if (interaction.guild.emojis.cache.size < 1) await interaction.guild.emojis.fetch();
                 const resolvedEmoji = (option.emoji !== 1 ? (interaction.guild.emojis.cache.get(option.emoji)?.identifier || interaction.guild.emojis.cache.find(e => e.name === option.emoji || e.toString() === option.emoji)?.identifier || (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(option.emoji) ? option.emoji : undefined)) : undefined);
                 if ((!resolvedEmoji) && (option.emoji !== 1)) return interaction.reply("[add.emoji] Invalid default or server emoji.");
@@ -172,12 +172,13 @@ export default class extends SlashCommand {
                     .setCustomID("selectroles_f")
                     .setMinValues(0)
                     .setMaxValues(doc.roles.length)
-                    .setPlaceholder(interaction.options.get("create-instance").options.find(e => e.name === "placeholder")?.value)
                     .addOptions(options);
+                const plc = interaction.options.get("create-instance").options.find(e => e.name === "placeholder")?.value;
+                if (plc) menu.setPlaceholder(plc);
                 const channel = interaction.options.get("create-instance").options.find(e => e.name === "channel").channel;
                 if (!["text", "news"].includes(channel.type)) return interaction.reply("[create-instance.channel] That isn't a text-based channel!")
                 if (!channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return interaction.reply("[create-instance.channel] I don't have permissions to send messages in that channel!");
-                await channel.send({ content: interaction.options.get("create-instance").options.find(e => e.name === "content")?.value, components: [[menu]] });
+                await channel.send({ content: interaction.options.get("create-instance").options.find(e => e.name === "content").value, components: [[menu]] });
                 interaction.reply("Message sent. Test it ;)")
             }
                 break;

@@ -56,12 +56,9 @@ export default class extends Command {
                 } else if (button.customID === "c4_c_hardmode") {
                     this.run(bot, message, ["c4", "hard"]);
                 }
-                button.deferUpdate();
+                button.update({ content: msg.content, components: [new MessageActionRow().addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)])] });
                 col.stop("ok");
             });
-            col.on("end", () => {
-                msg.edit({ content: msg.content, components: [new MessageActionRow().addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)])] });
-            })
             return;
         }
         if (message.guild.game) return message.channel.send("There is already a game going. Please wait for it to finish.");
@@ -169,7 +166,6 @@ export default class extends Command {
             });
 
             col.on("collect", async (button) => {
-                await button.deferUpdate();
                 if (button.customID === "c4_c_vsyes") {
                     col.stop("ok");
                     const generatedTurn = Math.floor(Math.random() * 2) + 1;
@@ -226,11 +222,11 @@ export default class extends Command {
                 }
             });
             col.on("end", (c, r) => {
-                if (r === "ok") return msg_response.edit({ content: "Accepted", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
+                if (r === "ok") return c.last().update({ content: "Accepted", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
                 else {
                     message.guild.game = undefined;
-                    if (r === "rejected") msg_response.edit({ content: "The user declined the invitation. Try it with someone else.", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
-                    else if (r === "time") msg_response.edit("Time's up. Try it with someone else.", { components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
+                    if (r === "rejected") c.last().update({ content: "The user declined the invitation. Try it with someone else.", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
+                    else if (r === "time") msg_response.edit({ content: "Time's up. Try it with someone else.", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
                 }
             })
         }

@@ -17,9 +17,8 @@ export default class extends Command {
     };
     const col = msg.createMessageComponentInteractionCollector({ filter, idle: 15000 });
     col.on("collect", async (button) => {
-      await button.deferUpdate();
       if (button.customID === "coinflip_c_redo") {
-        msg.edit(`You got: **${arr[Math.floor(Math.random() * 2)]}**!`);
+        button.update(`You got: **${arr[Math.floor(Math.random() * 2)]}**!`);
       }
     });
     col.on("end", () => {

@@ -30,9 +30,8 @@ export default class extends Command {
     };
     const col = msg.createMessageComponentInteractionCollector({ filter, idle: 15000 });
     col.on("collect", async (button) => {
-      await button.deferUpdate();
       if (button.customID === "choose_c_redo") {
-        msg.edit({ embeds: [embed.spliceFields(1, 1).addField("I choose...", `**${tochoose[Math.floor(Math.random() * tochoose.length)]}**`)] });
+        await button.update({ embeds: [embed.spliceFields(1, 1).addField("I choose...", `**${tochoose[Math.floor(Math.random() * tochoose.length)]}**`)] });
       }
     });
     col.on("end", () => {

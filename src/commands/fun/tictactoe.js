@@ -48,12 +48,9 @@ export default class extends Command {
                 } else if (button.customID === "ttt_c_expertmode") {
                     this.run(bot, message, ["tictactoe", "expert"]);
                 }
-                button.deferUpdate();
+                button.update({ content: msg.content, components: [[easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true), expert_but.setDisabled(true)]] });
                 col.stop("ok");
             });
-            col.on("end", () => {
-                msg.edit({ content: msg.content, components: [[easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true), expert_but.setDisabled(true)]] });
-            })
             return;
         }
         if (message.guild.tttgame) return message.channel.send("There is already a game going. Please wait for it to finish.");
@@ -85,22 +82,20 @@ export default class extends Command {
                     const seeTurn = Boolean(button.guild.tttgame.availablePositionCount() % 2);
                     const turn = randomturn ? (seeTurn ? bot.user.id : message.author.id) : (seeTurn ? message.author.id : bot.user.id);
                     if (turn !== button.user.id && !button.replied) await button.reply({ content: "It's not your turn yet!", ephemeral: true });
-                    return ([message.author.id].includes(button.user.id) && (button.customID === "ttt_g_terminate" || turn === button.user.id));
+                    return ([message.author.id].includes(button.user.id) && turn === button.user.id);
                 }, idle: 120000
             });
             col2.on('collect', async (button) => {
                 if (button.customID === "ttt_g_terminate") {
-                    await button.reply("You ended this game! See you soon!");
                     return col2.stop("stoped");
                 }
                 const userRes = parseInt(button.customID.split("_")[2]);
                 if (button.guild.tttgame.isPositionTaken(userRes + 1)) return button.deferUpdate();
                 button.guild.tttgame = button.guild.tttgame.makeMove(userRes + 1, randomturn ? "O" : "X");
-                await button.deferUpdate();
                 if (button.guild.tttgame.isGameOver()) {
                     if (button.guild.tttgame.hasWinner()) {
                         const res = button.guild.tttgame.grid.map(buttonMap);
-                        finalMsg.edit({
+                        button.update({
                             content: `${message.author.toString()} won this game!`,
                             allowedMentions: { parse: ["users"] },
                             components: [[res[0].setDisabled(true), res[1].setDisabled(true), res[2].setDisabled(true)], [res[3].setDisabled(true), res[4].setDisabled(true), res[5].setDisabled(true)], [res[6].setDisabled(true), res[7].setDisabled(true), res[8].setDisabled(true)], [terminateButton.setDisabled(true)]]
@@ -108,7 +103,7 @@ export default class extends Command {
                         return col2.stop("winner");
                     } else if (button.guild.tttgame.isGameDraw()) {
                         const res = button.guild.tttgame.grid.map(buttonMap);
-                        finalMsg.edit({
+                        button.update({
                             content: `Great draw!`,
                             allowedMentions: { parse: ["users"] },
                             components: [[res[0].setDisabled(true), res[1].setDisabled(true), res[2].setDisabled(true)], [res[3].setDisabled(true), res[4].setDisabled(true), res[5].setDisabled(true)], [res[6].setDisabled(true), res[7].setDisabled(true), res[8].setDisabled(true)], [terminateButton.setDisabled(true)]]
@@ -117,7 +112,7 @@ export default class extends Command {
                     }
                 }
                 const res1 = button.guild.tttgame.grid.map(buttonMap);
-                await finalMsg.edit({
+                await button.update({
                     content: `${bot.user.toString()}'s turn`,
                     allowedMentions: { parse: ["users"] },
                     components: [[res1[0], res1[1], res1[2]], [res1[3], res1[4], res1[5]], [res1[6], res1[7], res1[8]], [terminateButton]]
@@ -145,22 +140,21 @@ export default class extends Command {
                     }
                 }
                 const res = button.guild.tttgame.grid.map(buttonMap);
-                finalMsg.edit({
+                await finalMsg.edit({
                     content: `${message.author.toString()}'s turn`,
                     allowedMentions: { parse: ["users"] },
                     components: [[res[0], res[1], res[2]], [res[3], res[4], res[5]], [res[6], res[7], res[8]], [terminateButton]]
                 });
             });
 
-            col2.on('end', (c, r) => {
-                if (r === "idle" || r === "stoped") {
-                    const res = message.guild.tttgame.grid.map(buttonMap);
-                    finalMsg.edit({
-                        content: r === "idle" ? "Timeout (2m)" : `Game terminated by ${message.author.toString()}`,
-                        components: [[res[0].setDisabled(true), res[1].setDisabled(true), res[2].setDisabled(true)], [res[3].setDisabled(true), res[4].setDisabled(true), res[5].setDisabled(true)], [res[6].setDisabled(true), res[7].setDisabled(true), res[8].setDisabled(true)], [terminateButton.setDisabled(true)]]
-                    });
-                    if (r === "idle") message.channel.send("Waiting time is over (2m)! Bye.");
-                }
+            col2.on('end', async (c, r) => {
+                const res = message.guild.tttgame.grid.map(buttonMap);
+                if (r === "stoped") await c.last().update({
+                    content: r === "idle" ? "Timeout (2m)" : `Game terminated by ${message.author.toString()}`,
+                    components: [[res[0].setDisabled(true), res[1].setDisabled(true), res[2].setDisabled(true)], [res[3].setDisabled(true), res[4].setDisabled(true), res[5].setDisabled(true)], [res[6].setDisabled(true), res[7].setDisabled(true), res[8].setDisabled(true)], [terminateButton.setDisabled(true)]]
+                });
+                if (r === "stoped") c.last().followUp("You ended this game. See you soon!")
+                if (r === "idle") finalMsg.reply("Waiting time is over (2m)! Bye.");
                 message.guild.tttgame = undefined;
             });
             if (randomturn) {
@@ -196,7 +190,6 @@ export default class extends Command {
             });
 
             col.on("collect", async (button) => {
-                await button.deferUpdate();
                 if (button.customID === "ttt_c_vsyes") {
                     col.stop("ok");
                     const res = button.guild.tttgame.grid.map(buttonMap);
@@ -215,17 +208,15 @@ export default class extends Command {
                     });
                     col2.on('collect', async (button) => {
                         if (button.customID === "ttt_g_terminate") {
-                            await button.reply("You ended this game! See you soon!");
                             return col2.stop("stoped");
                         }
                         const userRes = parseInt(button.customID.split("_")[2]);
                         if (button.guild.tttgame.isPositionTaken(userRes + 1)) return button.deferUpdate();
                         button.guild.tttgame = button.guild.tttgame.makeMove(userRes + 1, button.guild.tttgame.currentMark());
-                        await button.deferUpdate();
                         if (button.guild.tttgame.isGameOver()) {
                             if (button.guild.tttgame.hasWinner()) {
                                 const res = button.guild.tttgame.grid.map(buttonMap);
-                                finalMsg.edit({
+                                button.update({
                                     content: `${button.user.toString()} won this game!`,
                                     allowedMentions: { parse: ["users"] },
                                     components: [[res[0].setDisabled(true), res[1].setDisabled(true), res[2].setDisabled(true)], [res[3].setDisabled(true), res[4].setDisabled(true), res[5].setDisabled(true)], [res[6].setDisabled(true), res[7].setDisabled(true), res[8].setDisabled(true)], [terminateButton.setDisabled(true)]]
@@ -233,7 +224,7 @@ export default class extends Command {
                                 return col2.stop("winner");
                             } else if (button.guild.tttgame.isGameDraw()) {
                                 const res = button.guild.tttgame.grid.map(buttonMap);
-                                finalMsg.edit({
+                                button.update({
                                     content: `Great draw!`,
                                     allowedMentions: { parse: ["users"] },
                                     components: [[res[0].setDisabled(true), res[1].setDisabled(true), res[2].setDisabled(true)], [res[3].setDisabled(true), res[4].setDisabled(true), res[5].setDisabled(true)], [res[6].setDisabled(true), res[7].setDisabled(true), res[8].setDisabled(true)], [terminateButton.setDisabled(true)]]
@@ -242,21 +233,20 @@ export default class extends Command {
                             }
                         }
                         const res = button.guild.tttgame.grid.map(buttonMap);
-                        finalMsg.edit({
+                        await button.update({
                             content: `${button.guild.tttgame.currentMark() === "X" ? message.author.toString() : user.toString()}'s turn`,
                             allowedMentions: { parse: ["users"] },
                             components: [[res[0], res[1], res[2]], [res[3], res[4], res[5]], [res[6], res[7], res[8]], [terminateButton]]
                         });
                     })
-                    col2.on('end', (c, r) => {
-                        if (r === "idle" || r === "stoped") {
-                            const res = message.guild.tttgame.grid.map(buttonMap);
-                            finalMsg.edit({
-                                content: r === "idle" ? "Timeout (2m)" : `Game terminated by ${c.last().user.toString()}`,
-                                components: [[res[0].setDisabled(true), res[1].setDisabled(true), res[2].setDisabled(true)], [res[3].setDisabled(true), res[4].setDisabled(true), res[5].setDisabled(true)], [res[6].setDisabled(true), res[7].setDisabled(true), res[8].setDisabled(true)], [terminateButton.setDisabled(true)]]
-                            });
-                            if (r === "idle") message.channel.send("Waiting time is over (2m)! Bye.");
-                        }
+                    col2.on('end', async (c, r) => {
+                        const res = message.guild.tttgame.grid.map(buttonMap);
+                        if (r === "stoped") await c.last().update({
+                            content: r === "idle" ? "Timeout (2m)" : `Game terminated by ${c.last().user.toString()}`,
+                            components: [[res[0].setDisabled(true), res[1].setDisabled(true), res[2].setDisabled(true)], [res[3].setDisabled(true), res[4].setDisabled(true), res[5].setDisabled(true)], [res[6].setDisabled(true), res[7].setDisabled(true), res[8].setDisabled(true)], [terminateButton.setDisabled(true)]]
+                        });
+                        if (r === "stoped") c.last().followUp("You ended this game! See you soon!");
+                        if (r === "idle") message.channel.send("Waiting time is over (2m)! Bye.");
                         message.guild.tttgame = undefined;
                     })
                 } else if (button.customID === "ttt_c_vsno") {
@@ -264,10 +254,10 @@ export default class extends Command {
                 }
             });
             col.on("end", async (c, r) => {
-                if (r === "ok") return msg_response.edit({ content: "Accepted", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
+                if (r === "ok") return c.last().update({ content: "Accepted", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
                 else {
-                    if (r === "rejected") await msg_response.edit({ content: "The user declined the invitation. Try it with someone else.", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
-                    else if (r === "time") await msg_response.edit("Time's up. Try it with someone else.", { components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
+                    if (r === "rejected") await c.last().update({ content: "The user declined the invitation. Try it with someone else.", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
+                    else if (r === "time") await msg_response.edit({ content: "Time's up. Try it with someone else.", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
                     message.guild.tttgame = undefined;
                 }
             })

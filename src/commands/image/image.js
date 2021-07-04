@@ -63,31 +63,29 @@ export default class extends Command {
 
         const collector = msg.createMessageComponentInteractionCollector({ filter, idle: 30000 });
         collector.on('collect', async (button) => {
-            await button.deferUpdate();
             if (button.customID === 'image_c_next') {
-
                 if (max !== i) {
                     i++
                     embed.setImage(urls[i])
                     embed.setFooter(`${i + 1}/${max + 1}`)
-                    await msg.edit({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(((max === i ? [but_back.setDisabled(false), but_stop, but_next.setDisabled(true)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])))] });
+                    await button.update({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(((max === i ? [but_back.setDisabled(false), but_stop, but_next.setDisabled(true)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])))] });
                 }
-
             }
             if (button.customID === 'image_c_back') {
                 if (i !== 0) {
                     i--
                     embed.setImage(urls[i])
                     embed.setFooter(`${i + 1}/${max + 1}`)
-                    await msg.edit({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(((i === 0 ? [but_back.setDisabled(true), but_stop, but_next.setDisabled(false)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])))] });
+                    await button.update({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(((i === 0 ? [but_back.setDisabled(true), but_stop, but_next.setDisabled(false)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])))] });
                 }
             }
             if (button.customID === 'image_c_stop') {
-                collector.stop();
+                collector.stop("stoped");
             }
         })
-        collector.on('end', () => {
-            msg.edit({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back.setDisabled(true), but_stop.setDisabled(true), but_next.setDisabled(true)])] });
+        collector.on('end', (c, r) => {
+            if (r === "stoped") c.last().update({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back.setDisabled(true), but_stop.setDisabled(true), but_next.setDisabled(true)])] })
+            else msg.edit({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back.setDisabled(true), but_stop.setDisabled(true), but_next.setDisabled(true)])] });
         });
     }
 }
