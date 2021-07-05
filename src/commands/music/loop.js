@@ -7,8 +7,11 @@ export default class extends Command {
     this.guildonly = true;
   }
   async run(bot, message, args) {
+    const channel = message.member.voice.channel;
+    if (!channel) return message.channel.send("You need to be in a voice channel to loop music!");
     const queue = bot.distube.getQueue(message);
     if (!queue) return message.channel.send(`There is nothing playing.`);
+    if (queue.voiceChannel.id !== channel.id) return message.channel.send("You are not on the same voice channel as me.");
     let mode = null;
     switch (args[1]) {
       case "off":
