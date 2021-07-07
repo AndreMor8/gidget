@@ -21,23 +21,23 @@ export default class extends Command {
           let evaluated = e;
           if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
           const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
-          m.edit({ content: arr[0], code: "js" });
+          m.edit(Discord.Formatters.codeBlock("js", arr[0]));
         })).catch((e => {
           let evaluated = e;
           if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
           const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
-          m.edit({ content: arr[0], code: "js" });
+          m.edit(Discord.Formatters.codeBlock("js", arr[0]));
         }));
       } else {
         if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
         const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
-        await message.channel.send({ content: arr[0], code: "js" });
+        await message.channel.send(Discord.Formatters.codeBlock("js", arr[0]));
       }
     } catch (err) {
       let algo = err;
       if (typeof algo !== "string") algo = util.inspect(algo, { depth: 0 });
       const arr = Discord.Util.splitMessage(algo, { maxLength: 1950, char: "" });
-      await message.channel.send({ content: arr[0], code: "js" });
+      await message.channel.send(Discord.Formatters.codeBlock("js", arr[0]));
     }
   }
 }

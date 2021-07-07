@@ -1,4 +1,4 @@
-import { Role, Util, Collection } from "discord.js";
+import { Role, Util, Collection, Formatters } from "discord.js";
 export default class extends Command {
   constructor(options) {
     super(options)
@@ -45,7 +45,7 @@ export default class extends Command {
     });
     const split = Util.splitMessage(text);
     for (const i in split) {
-      await message.channel.send({ content: "Channel structure of " + message.guild.name + (member ? (" for " + (member.user ? member.user.tag : member.name)) : "") + "\n" + split[i], code: true });
+      await message.channel.send(Formatters.codeBlock("Channel structure of " + message.guild.name + (member ? (" for " + (member.user ? member.user.tag : member.name)) : "") + "\n" + split[i]));
     }
   }
 }

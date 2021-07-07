@@ -25,6 +25,6 @@ jobs:
     - name: Installing project dependencies
       run: npm install --legacy-peer-deps
     - name: Doing things with Discord.js
-      run: cd ./node_modules/discord.js && npm i -D gen-esm-wrapper --legacy-peer-deps && npx gen-esm-wrapper ./src/index.js ./src/index.mjs
+      run: npm i -g gen-esm-wrapper && cd ./node_modules/discord.js && gen-esm-wrapper ./src/index.js ./src/index.mjs
     - name: Executing CI test script
       run: npm test

@@ -1,7 +1,7 @@
 import util from 'util';
 import ch from "child_process";
 const exec = util.promisify(ch.exec);
-import { Util } from "discord.js";
+import { Util, Formatters } from "discord.js";
 export default class extends Command {
     constructor(options) {
         super(options)
@@ -17,19 +17,19 @@ export default class extends Command {
                 if (!stdout && !stderr) return message.channel.send("Command executed, but no output");
                 if (stdout) {
                     const text = Util.splitMessage(stdout, { maxLength: 1950, char: "" });
-                    message.channel.send({ content: text[0], code: "sh" });
+                    message.channel.send(Formatters.codeBlock("sh", text[0]));
                 }
                 if (stderr) {
                     const text = Util.splitMessage(stderr, { maxLength: 1950, char: "" });
-                    message.channel.send({ content: text[0], code: "sh" });
+                    message.channel.send(Formatters.codeBlock("sh", text[0]));
                 }
             }).catch(e => {
                 const text = Util.splitMessage(util.inspect(e, { depth: 0 }), { maxLength: 1950, char: "" });
-                message.channel.send({ content: text[0], code: "sh" });
+                message.channel.send(Formatters.codeBlock("sh", text[0]));
             });
         } catch (error) {
             const text = Util.splitMessage(util.inspect(error, { depth: 0 }), { maxLength: 1950, char: "" });
-            await message.channel.send({ content: text[0], code: "sh" });
+            await message.channel.send(Formatters.codeBlock("sh", text[0]));
         }
     }
 }
