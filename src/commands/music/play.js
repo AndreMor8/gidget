@@ -1,3 +1,4 @@
+import ytpl from "@distube/ytpl";
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -14,6 +15,12 @@ export default class extends Command {
 
     if (!args[1]) return message.channel.send("Please enter a YouTube link or search term.");
 
-    await bot.distube.play(message, args.slice(1).join(" "));
+    const result = (await bot.distube.search(args.slice(1).join(" "), { limit: 1, type: ytpl.validateID(args.slice(1).join(" ")) ? 'playlist' : 'video' }))[0];
+
+    if (!result) return message.channel.send("I didn't find any video. Please try again with another term.");
+
+    await bot.distube.playVoiceChannel(channel, result, { member: message.member, textChannel: message.channel });
+
+    if (queue) return message.channel.send(`${result.type === "playlist" ? "Playlist: " : ""}**${result.name}** has been added to the queue!${result.type === "playlist" ? " (check g%queue for results)" : ""}`)
   }
 }

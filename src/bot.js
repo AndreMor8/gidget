@@ -67,7 +67,7 @@ bot.doneBanners = new Discord.Collection();
 bot.distube = new DisTube.default(bot, {
   emitNewSongOnly: true,
   leaveOnFinish: true,
-  savePreviousSongs: false,
+  savePreviousSongs: true,
   youtubeCookie: process.env.COOKIETEXT,
   youtubeIdentityToken: process.env.YT_IDENTITY
 });
@@ -76,17 +76,11 @@ bot.memberVotes = new Discord.Collection();
 //DisTube events
 bot.distube.on("playSong", (queue, song) => {
   queue.textChannel.send(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`);
-}).on("addSong", (queue, song) => {
-  queue.textChannel.send(`**${song.name}** has been added to the queue!`);
-}).on("addList", (queue, playlist) => {
-  queue.textChannel.send(`Playlist: **${playlist.name}** has been added to the queue (${playlist.songs.length} songs)!`);
 }).on("error", (channel, e) => {
   channel.send(`Some error ocurred. Here's a debug: ${e}`);
   console.error(e);
 }).on("empty", channel => {
   channel.send("Queue deleted");
-}).on("searchNoResult", message => {
-  message.channel.send(`I didn't find any video. Please try again with another term.`);
 }).on("finishSong", (queue) => {
   bot.memberVotes.delete(queue.voiceChannel.guild.id);
 }).on("initQueue", (queue) => {

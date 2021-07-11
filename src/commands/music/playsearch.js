@@ -1,3 +1,5 @@
+import ytdl from "ytdl-core";
+import ytpl from "@distube/ytpl";
 import { MessageEmbed } from "discord.js";
 export default class extends Command {
   constructor(options) {
@@ -18,7 +20,7 @@ export default class extends Command {
     if (!args[1]) return message.channel.send("Please enter a search term.");
     if (args.slice(1).join(" ").length > 250) return message.channel.send("The maximum size of the search term is 250 characters.");
     if (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(args[1])) return message.channel.send("YouTube links should go in the `play` command");
-    if ((await import("ytdl-core")).default.validateID(args[1]) || (await import("@distube/ytpl")).default.validateID(args[1])) return message.channel.send("YouTube IDs should go in the `play` command");
+    if (ytdl.validateID(args[1]) || ytpl.validateID(args[1])) return message.channel.send("YouTube IDs should go in the `play` command");
     try {
       message.channel.startTyping();
       const videos = await bot.distube.search(args.slice(1).join(" "), { safeSearch: !message.channel.nsfw });
