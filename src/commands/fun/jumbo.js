@@ -13,7 +13,7 @@ export default class extends Command {
     async run(bot, message, args) {
         if (!args[1]) return message.channel.send("Put some emoji");
         const parsed = parser.parse(args[1]);
-        const cachedemoji = message.guild.emojis.cache.get(args[1]) || message.guild.emojis.cache.find(e => e.name === args[1]) || bot.emojis.cache.get(args[1]) || bot.emojis.cache.find(e => e.name === args[1]);
+        const cachedemoji = message.guild?.emojis.cache.get(args[1]) || message.guild?.emojis.cache.find(e => e.name === args[1]) || bot.emojis.cache.get(args[1]) || bot.emojis.cache.find(e => e.name === args[1]);
         const matched = args[1].match(regex);
         if (matched) {
             const ext = args[1].startsWith("<a:") ? ("gif") : ("png");
