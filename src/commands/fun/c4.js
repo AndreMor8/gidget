@@ -26,7 +26,6 @@ export default class extends Command {
             bot: [0n, 32768n]
         };
         this.aliases = ["fourinrow"];
-        this.guildonly = true;
     }
     async run(bot, message, args) {
         const easy_but = new MessageButton()
@@ -56,37 +55,38 @@ export default class extends Command {
                 } else if (button.customID === "c4_c_hardmode") {
                     this.run(bot, message, ["c4", "hard"]);
                 }
-                button.update({ content: msg.content, components: [new MessageActionRow().addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)])] });
+                button.update({ content: msg.content, components: [[easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)]] });
                 col.stop("ok");
             });
             return;
         }
-        if (message.guild.game) return message.channel.send("There is already a game going. Please wait for it to finish.");
-        let user = (["hard", "medium", "easy"].includes(args[1].toLowerCase()) ? bot.user : (message.mentions.users.first() || message.guild.members.cache.get(args[1]) || await message.guild.members.fetch(args[1] || "123").catch(() => { }) || message.guild.members.cache.find(e => (e.user?.username === args.slice(1).join(" ")) || (e.user?.tag === args.slice(1).join(" ") || (e.displayName === args.slice(1).join(" "))))));
+        if (message.channel.game) return message.channel.send("There is already a game going on this channel. Please wait for it to finish or go to another channel.");
+        let user = (["hard", "medium", "easy"].includes(args[1].toLowerCase()) ? bot.user : (message.guild ? message.mentions.users.first() || message.guild.members.cache.get(args[1]) || await message.guild.members.fetch(args[1] || "123").catch(() => { }) || message.guild.members.cache.find(e => (e.user?.username === args.slice(1).join(" ")) || (e.user?.tag === args.slice(1).join(" ") || (e.displayName === args.slice(1).join(" ")))) : bot.user));
         if (user?.user) user = user.user;
         if (!user || user.id === message.author.id || (user.bot && user.id !== bot.user.id)) return message.channel.send("Invalid member!");
         await user.fetch();
         if (turns.get(user.id)) return message.channel.send("This user is playing the same game on another server! Try with someone else.");
-        message.guild.game = user.id === bot.user.id ? (new Connect4AI()) : (new Connect4());
+        if (!message.guild) await message.author.createDM();
+        message.channel.game = user.id === bot.user.id ? (new Connect4AI()) : (new Connect4());
         if (user.id === bot.user.id) {
             const difficulty = ["hard", "medium", "easy"].includes(args[1].toLowerCase()) ? args[1].toLowerCase() : "medium";
             turns.set(message.author.id, 1);
-            const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
+            const res = await displayConnectFourBoard(displayBoard(message.channel.game.ascii()), message.channel.game);
             await message.channel.send({
                 content: `${message.author.toString()}, it's your turn! [🔴]`,
                 files: [{ attachment: res, name: "connect4.gif" }],
                 allowedMentions: { parse: ["users"] }
             });
-            const col2 = message.channel.createMessageCollector({ filter: msg => (([message.author.id].includes(msg.author.id) && msg.content === "terminate") || (turns.get(msg.author.id) === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), idle: 120000 });
+            const col2 = message.channel.createMessageCollector({ filter: msg => (([message.author.id].includes(msg.author.id) && msg.content === "terminate") || (turns.get(msg.author.id) === msg.channel.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.channel.game.canPlay(parseInt(msg.content) - 1) && !message.channel.game.gameStatus().gameOver)), idle: 120000 });
             col2.on('collect', async (msg) => {
                 if (msg.content === "terminate") {
                     message.channel.send(`You ended this game! See you soon!`);
                     return col2.stop("stoped");
                 }
-                msg.guild.game.play(parseInt(msg.content) - 1);
-                if (msg.guild.game.gameStatus().gameOver && msg.guild.game.gameStatus().solution) {
-                    console.log(message.guild.game.gameStatus());
-                    const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), msg.guild.game);
+                msg.channel.game.play(parseInt(msg.content) - 1);
+                if (msg.channel.game.gameStatus().gameOver && msg.channel.game.gameStatus().solution) {
+                    console.log(message.channel.game.gameStatus());
+                    const res = await displayConnectFourBoard(displayBoard(message.channel.game.ascii()), msg.channel.game);
                     message.channel.send({
                         content: `${message.author.toString()} won this game!`,
                         files: [{ attachment: res, name: "connect4.gif" }],
@@ -94,13 +94,13 @@ export default class extends Command {
                     });
                     return col2.stop("winner");
                 }
-                else if (msg.guild.game.gameStatus().gameOver) {
+                else if (msg.channel.game.gameStatus().gameOver) {
                     return col2.stop("tier");
                 }
-                msg.guild.game.playAI(difficulty);
-                if (msg.guild.game.gameStatus().gameOver && msg.guild.game.gameStatus().solution) {
-                    console.log(message.guild.game.gameStatus());
-                    const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), msg.guild.game);
+                msg.channel.game.playAI(difficulty);
+                if (msg.channel.game.gameStatus().gameOver && msg.channel.game.gameStatus().solution) {
+                    console.log(message.channel.game.gameStatus());
+                    const res = await displayConnectFourBoard(displayBoard(message.channel.game.ascii()), msg.channel.game);
                     message.channel.send({
                         content: `${bot.user.toString()} won this game!`,
                         files: [{ attachment: res, name: "connect4.gif" }],
@@ -108,8 +108,8 @@ export default class extends Command {
                     });
                     return col2.stop("loser");
                 }
-                else if (msg.guild.game.gameStatus().gameOver) {
-                    const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
+                else if (msg.channel.game.gameStatus().gameOver) {
+                    const res = await displayConnectFourBoard(displayBoard(message.channel.game.ascii()), message.channel.game);
                     message.channel.send({
                         content: `Great tier!`,
                         files: [{ attachment: res, name: "connect4.gif" }],
@@ -117,7 +117,7 @@ export default class extends Command {
                     });
                     return col2.stop("tier");
                 }
-                const res = await displayConnectFourBoard(displayBoard(msg.guild.game.ascii()), msg.guild.game);
+                const res = await displayConnectFourBoard(displayBoard(msg.channel.game.ascii()), msg.channel.game);
                 message.channel.send({
                     content: `${message.author.toString()}, it's your turn! [🔴]`,
                     files: [{ attachment: res, name: "connect4.gif" }],
@@ -125,7 +125,7 @@ export default class extends Command {
                 });
             })
             col2.on('end', async (c, r) => {
-                message.guild.game = null;
+                message.channel.game = null;
                 turns.delete(message.author.id);
                 let doc = await c4top.findOne({ difficulty, userId: message.author.id });
                 if (!doc) {
@@ -171,21 +171,21 @@ export default class extends Command {
                     const generatedTurn = Math.floor(Math.random() * 2) + 1;
                     turns.set(user.id, generatedTurn);
                     turns.set(message.author.id, generatedTurn == 2 ? 1 : 2);
-                    const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
+                    const res = await displayConnectFourBoard(displayBoard(message.channel.game.ascii()), message.channel.game);
                     await message.channel.send({
                         content: `${turns.get(message.author.id) == 1 ? message.author.toString() : user.toString()}, it's your turn! [🔴]`,
                         files: [{ attachment: res, name: "connect4.gif" }],
                         allowedMentions: { parse: ["users"] }
                     });
-                    const col2 = message.channel.createMessageCollector({ filter: msg => (([user.id, message.author.id].includes(msg.author.id) && msg.content === "terminate") || (turns.get(msg.author.id) === msg.guild.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.guild.game.canPlay(parseInt(msg.content) - 1) && !message.guild.game.gameStatus().gameOver)), idle: 120000 });
+                    const col2 = message.channel.createMessageCollector({ filter: msg => (([user.id, message.author.id].includes(msg.author.id) && msg.content === "terminate") || (turns.get(msg.author.id) === msg.channel.game.gameStatus().currentPlayer && !isNaN(msg.content) && (Number(msg.content) >= 1 && Number(msg.content) <= 7) && message.channel.game.canPlay(parseInt(msg.content) - 1) && !message.channel.game.gameStatus().gameOver)), idle: 120000 });
                     col2.on('collect', async (msg) => {
                         if (msg.content === "terminate") {
                             message.channel.send(`${msg.author.toString()} ended this game! See you soon!`, { allowedMentions: { parse: ["users"] } });
                             return col2.stop("stoped");
                         }
-                        msg.guild.game.play(parseInt(msg.content) - 1);
-                        if (msg.guild.game.gameStatus().gameOver && msg.guild.game.gameStatus().solution) {
-                            const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), msg.guild.game);
+                        msg.channel.game.play(parseInt(msg.content) - 1);
+                        if (msg.channel.game.gameStatus().gameOver && msg.channel.game.gameStatus().solution) {
+                            const res = await displayConnectFourBoard(displayBoard(message.channel.game.ascii()), msg.channel.game);
                             message.channel.send({
                                 content: `${msg.author.toString()} won this game!`,
                                 files: [{ attachment: res, name: "connect4.gif" }],
@@ -193,8 +193,8 @@ export default class extends Command {
                             });
                             return col2.stop("winner");
                         }
-                        else if (msg.guild.game.gameStatus().gameOver) {
-                            const res = await displayConnectFourBoard(displayBoard(message.guild.game.ascii()), message.guild.game);
+                        else if (msg.channel.game.gameStatus().gameOver) {
+                            const res = await displayConnectFourBoard(displayBoard(message.channel.game.ascii()), message.channel.game);
                             message.channel.send({
                                 content: `Great tier!`,
                                 files: [{ attachment: res, name: "connect4.gif" }],
@@ -202,7 +202,7 @@ export default class extends Command {
                             });
                             return col2.stop("tier");
                         }
-                        const res = await displayConnectFourBoard(displayBoard(msg.guild.game.ascii()), msg.guild.game);
+                        const res = await displayConnectFourBoard(displayBoard(msg.channel.game.ascii()), msg.channel.game);
                         message.channel.send({
                             content: `${turns.get(message.author.id) == turns.get(msg.author.id) ? user.toString() : message.author.toString()}, it's your turn! [${turns.get(msg.author.id) == 2 ? "🔴" : "🟡"}]`,
                             files: [{ attachment: res, name: "connect4.gif" }],
@@ -210,7 +210,7 @@ export default class extends Command {
                         });
                     })
                     col2.on('end', (c, r) => {
-                        message.guild.game = null;
+                        message.channel.game = null;
                         turns.delete(user.id);
                         turns.delete(message.author.id);
                         if (r === "idle") {
@@ -222,11 +222,11 @@ export default class extends Command {
                 }
             });
             col.on("end", (c, r) => {
-                if (r === "ok") return c.last().update({ content: "Accepted", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
+                if (r === "ok") return c.last().update({ content: "Accepted", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
                 else {
-                    message.guild.game = undefined;
-                    if (r === "rejected") c.last().update({ content: "The user declined the invitation. Try it with someone else.", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
-                    else if (r === "time") msg_response.edit({ content: "Time's up. Try it with someone else.", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
+                    message.channel.game = undefined;
+                    if (r === "rejected") c.last().update({ content: "The user declined the invitation. Try it with someone else.", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
+                    else if (r === "time") msg_response.edit({ content: "Time's up. Try it with someone else.", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
                 }
             })
         }
