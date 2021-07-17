@@ -8,6 +8,7 @@ export default async (bot, interaction) => {
         if (!command) return interaction.reply({ content: "That command doesn't exist", ephemeral: true });
         if (!interaction.guild && command.guildonly) return interaction.reply("This command only works on servers");
         if (interaction.guild) {
+            if (!bot.guilds.cache.has(interaction.guild.id) && command.requireBotInstance) return interaction.reply("Please invite the real bot");
             const userperms = interaction.member.permissions;
             const userchannelperms = interaction.channel.permissionsFor(interaction.member.id);
             const botperms = interaction.guild.me.permissions;
@@ -31,6 +32,7 @@ export default async (bot, interaction) => {
         }
     }
     if (interaction.isSelectMenu() && interaction.customID === "selectroles_f") {
+        if (!bot.guilds.cache.has(interaction.guild.id)) return interaction.deferUpdate();
         if (!interaction.guild.me.permissions.has("MANAGE_ROLES")) return interaction.reply({ content: "I don't have permissions to add roles. Contact an administrator to fix the problem.", ephemeral: true })
         const roles = interaction.values?.map(e => e.split("_")[3]) || [];
         if (!roles.length) return interaction.deferUpdate();
