@@ -3,8 +3,8 @@ import { MessageEmbed } from "discord.js";
 export default class extends SlashCommand {
     constructor(options) {
         super(options);
-        this.description = "Make the bot repeat you";
-        this.options = [
+        this.deployOptions.description = "Make the bot repeat you";
+        this.deployOptions.options = [
             {
                 name: "to-say",
                 description: "Why else, what I will repeat.",

@@ -1,11 +1,11 @@
-import db from '../database/models/selectroles.js';
+import db from '../../database/models/selectroles.js';
 import { MessageEmbed, MessageSelectMenu } from "discord.js";
 
 export default class extends SlashCommand {
     constructor(options) {
         super(options);
-        this.description = "Use Discord's new menu selector to add self-roles to users in just 1 step.";
-        this.options = [
+        this.deployOptions.description = "Use Discord's new menu selector to add self-roles to users in just 1 step.";
+        this.deployOptions.options = [
             {
                 name: "add",
                 description: "Add roles(options) to use in a message later",
@@ -95,7 +95,6 @@ export default class extends SlashCommand {
         }
     }
     async run(bot, interaction) {
-        if (!bot.guilds.cache.has(interaction.guild.id)) return interaction.reply("Please invite the real bot");
         const doc = await db.findOne({ guildId: interaction.guild.id })
         switch (interaction.options.first().name) {
             case 'add': {

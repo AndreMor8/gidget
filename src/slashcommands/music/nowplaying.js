@@ -2,18 +2,17 @@ import moment from "moment";
 import "moment-duration-format";
 import { MessageEmbed } from "discord.js";
 
-export default class extends Command {
+export default class extends SlashCommand {
   constructor(options) {
     super(options);
-    this.aliases = ["np"];
-    this.description = "Shows the song that is currently playing.";
+    this.deployOptions.description = "Shows the song that is currently playing.";
     this.guildonly = true;
   }
-  async run(bot, message) {
+  async run(bot, interaction) {
 
-    const queue = bot.distube.getQueue(message);
-    if (!queue) return message.channel.send("There is nothing playing.");
-
+    const queue = bot.distube.getQueue(interaction.guild.me.voice);
+    if (!queue) return interaction.reply("There is nothing playing.");
+    if (!queue.songs[0].duration) return interaction.reply({ content: `Sorry, I can't detect duration from unknown links.\nCurrent time: **${queue.formattedCurrentTime}**`, ephemeral: true })
     const suma = moment.duration(queue.currentTime, "seconds")._milliseconds;
 
     const embed_success = new MessageEmbed()
@@ -32,7 +31,7 @@ export default class extends Command {
         )}**`,
       ].join("\n"))
       .setColor(0xffff00);
-    await message.channel.send({ embeds: [embed_success] });
+    await interaction.reply({ embeds: [embed_success], ephemeral: true });
   }
 }
 

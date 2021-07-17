@@ -3,8 +3,8 @@ import { MessageEmbed } from "discord.js";
 export default class extends SlashCommand {
     constructor(options) {
         super(options);
-        this.description = "Confess something to others on this server!";
-        this.options = [
+        this.deployOptions.description = "Confess something to others on this server!";
+        this.deployOptions.options = [
             {
                 name: "message",
                 description: "What do you want to confess?",
@@ -21,7 +21,6 @@ export default class extends SlashCommand {
         this.guildonly = true;
     }
     async run(bot, interaction) {
-        if(!bot.guilds.cache.has(interaction.guild.id)) return interaction.reply({ content: "Please invite the real bot", ephemeral: true })
         const data = interaction.guild.cache.confessionconfig ? interaction.guild.confessionconfig : await interaction.guild.getConfessionConfig();
         if (!data.channelID) return interaction.reply({ content: "The server hasn't set up a confession channel yet!\nDo it with `g%confessionconfig channel <channel>`", ephemeral: true });
         const user_anon = interaction.options.get("anon")?.value;

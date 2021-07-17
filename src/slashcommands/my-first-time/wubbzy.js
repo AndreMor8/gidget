@@ -1,7 +1,7 @@
 export default class extends SlashCommand {
     constructor(options) {
         super(options);
-        this.description = "Hello Wubbzy!";
+        this.deployOptions.description = "Hello Wubbzy!";
         this.onlyguild = true;
     }
     async run(bot, interaction) {
