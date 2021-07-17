@@ -1,5 +1,5 @@
 import ytdl from "ytdl-core";
-import { isURL } from 'distube/dist/Util.js';
+import { isURL } from 'distube/dist/util.js';
 import ytpl from "@distube/ytpl";
 import { MessageEmbed, MessageButton } from "discord.js";
 export default class extends SlashCommand {
