@@ -74,18 +74,14 @@ bot.distube = new DisTube.default(bot, {
 bot.memberVotes = new Discord.Collection();
 
 //DisTube events
-bot.distube.on("playSong", (queue, song) => {
-  queue.textChannel.send(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`);
-}).on("error", (channel, e) => {
+bot.distube
+  .on("playSong", (queue, song) => queue.textChannel.send(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`))
+  .on("error", (channel, e) => {
   channel.send(`Some error ocurred. Here's a debug: ${e}`);
   console.error(e);
-}).on("empty", channel => {
-  channel.send("Queue deleted");
-}).on("finishSong", (queue) => {
-  bot.memberVotes.delete(queue.voiceChannel.guild.id);
-}).on("initQueue", (queue) => {
-  queue.setVolume(100);
-});
+}).on("empty", channel => channel.send("Queue deleted"))
+  .on("finishSong", (queue) => bot.memberVotes.delete(queue.voiceChannel.guild.id))
+  .on("initQueue", (queue) => queue.setVolume(100));
 
 (async () => {
   //Database
