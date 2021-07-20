@@ -234,8 +234,8 @@ export default class extends SlashCommand {
                 if (!msg) return interaction.reply("[add-to-instance.message] Invalid message ID!");
                 if (msg.author.id !== bot.user.id) return interaction.reply("[add-to-instance.message] That message is not mine...");
                 if (msg.components.length >= 5) return interaction.reply(`[add-to-instance.message] This message already has all 5 action rows filled.
-                Only up to 5 action rows are allowed in a message.
-                A select menu occupies the entire action row.`);
+Only up to 5 action rows are allowed in a message.
+A select menu occupies the entire action row.`);
                 await msg.edit({ components: msg.components.concat([new MessageActionRow().addComponents([menu])]) }).catch(() => { });
                 interaction.reply("Message edited. Test it ;)");
             }
