@@ -92,6 +92,6 @@ export default class extends Command {
       .setURL(`https://discordapp.com/channels/${message.guild.id}/${channel.id}/${channel.lastMessageID}`)
       .setLabel("Last channel message")
       .setDisabled(channel.lastMessageID ? false : true);
-    await message.channel.send({ embeds: [embed], components: ["news", "text", "news_thread", "public_thread", "private_thread"].includes(channel.type) ? [new MessageActionRow().addComponents([but_link_msg])] : undefined });
+    await message.channel.send({ embeds: [embed], components: channel.isText() ? [new MessageActionRow().addComponents([but_link_msg])] : undefined });
   }
 }

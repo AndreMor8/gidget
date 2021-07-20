@@ -28,6 +28,7 @@ export default async (bot, reaction, user) => {
     channelId: reaction.message.channel.id,
     emojiId: reaction.emoji.id || reaction.emoji.name
   });
+
   if (msgDocument2) {
     await bot.users.fetch(user.id);
     if (reaction.message.channel.permissionsFor(bot.user.id).has("MANAGE_MESSAGES")) await reaction.users.remove(user);
@@ -65,7 +66,7 @@ export default async (bot, reaction, user) => {
         }
       }
     }
-    const todesc = msgDocument2.desc.replace(/%AUTHOR%/g, user.toString());
+    const todesc = msgDocument2.desc?.replace(/%AUTHOR%/g, user.toString());
     reaction.message.guild.channels
       .create(`${user.username}s-ticket`, {
         type: "text",
@@ -87,8 +88,9 @@ export default async (bot, reaction, user) => {
               /%AUTHOR%/g,
               user.toString()
             );
-            ch.send(tosend);
+            ch.send({ content: tosend, allowedMentions: { parse: ['users', 'roles', 'everyone'] } });
           }
+          ch.send("**WARNING:** This ticket was created using version 1 of Gidget. In version 2 this system has changed from reactions to buttons and requires the re-creation of the ticket. Reaction tickets will stop working on August 1.\n\nPlease re-create your ticket.");
         });
       });
   }

@@ -75,7 +75,7 @@ export default async (bot, member) => {
     } finally {
       if (welcome.enabled && welcome.text) {
         const channel = member.guild.channels.cache.get(welcome.channelID);
-        if (channel && ["news", "text"].includes(channel.type) && channel.permissionsFor(member.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
+        if (channel && channel.isText() && channel.permissionsFor(member.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
           const finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
           await channel.send(finalText || "?", { allowedMentions: { users: [member.id] } }).catch(() => { });
         }

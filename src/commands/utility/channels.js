@@ -2,7 +2,7 @@ import { Role, Util, Collection, Formatters } from "discord.js";
 export default class extends Command {
   constructor(options) {
     super(options)
-    this.description = "Channel structure for a server....";
+    this.description = "Channel structure for a server...";
   }
   async run(bot, message, args) {
     if (!message.guild)

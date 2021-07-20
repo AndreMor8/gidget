@@ -5,17 +5,17 @@ import moment from "moment";
 import "moment-duration-format";
 import { promisify } from "util";
 const usagePercent = promisify(cpuStat.usagePercent);
-export default class extends Command {
+export default class extends SlashCommand {
   constructor(options) {
     super(options)
-    this.description = "Bot stats";
+    this.deployOptions.description = "See how the bot is doing at home.";
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 16384n]
     };
   }
-  async run(bot, message) {
-    message.channel.startTyping();
+  async run(bot, interaction) {
+    await interaction.defer({ ephemeral: true });
     const percent = await usagePercent();
     const memoryU = `Resident Set: ${memory(process.memoryUsage.rss())}\nHeap Used: ${memory(process.memoryUsage().heapUsed)}`;
     const vcs = (await bot.shard.broadcastEval(c => c.voice.adapters.size)).reduce((a, c) => a + c, 0);
@@ -40,8 +40,7 @@ export default class extends Command {
       .addField("• Platform", `\`\`${os.platform()}\`\``, true)
       .setFooter("Gidget stats");
 
-    await message.channel.send({ embeds: [embedStats], components: [new Discord.MessageActionRow().addComponents([new Discord.MessageButton().setStyle("LINK").setLabel("Gidget Dashboard status").setURL("https://gidget.xyz/stats")])] });
-    message.channel.stopTyping();
+    await interaction.editReply({ ephemeral: true, embeds: [embedStats], components: [new Discord.MessageActionRow().addComponents([new Discord.MessageButton().setStyle("LINK").setLabel("Gidget Dashboard status").setURL("https://gidget.xyz/stats")])] });
   }
 }
 

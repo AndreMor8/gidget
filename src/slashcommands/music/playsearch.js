@@ -1,5 +1,5 @@
 import ytdl from "ytdl-core";
-import { isURL } from 'distube/dist/util.js';
+import { isURL } from 'distube';
 import ytpl from "@distube/ytpl";
 import { MessageEmbed, MessageButton } from "discord.js";
 export default class extends SlashCommand {
@@ -35,7 +35,7 @@ export default class extends SlashCommand {
       const buttons = [];
       let i = 0;
       for (const elements of videos) {
-        if (text.length < 1750) {
+        if (text.length < 1750 && i !== 10) {
           text += `${i + 1}. **${elements.name}**\n${elements.type === "playlist" ? "Type: Playlist" : `Duration: ${elements.formattedDuration}`}\n\n`;
           buttons.push(new MessageButton().setStyle("PRIMARY").setCustomID(`ps_func_${i + 1}`).setLabel((i + 1).toString()));
         } else break;

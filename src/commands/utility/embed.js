@@ -16,7 +16,7 @@ export default class extends Command {
       channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => { }) || message.channel;
       if (channel.guild.id !== message.guild.id)
         return message.channel.send("That channel is from another guild");
-      if (!["text", "news"].includes(channel.type))
+      if (!channel.isText())
         return message.channel.send("That isn't a text channel!");
       if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"]))
         return message.channel.send("I don't have permissions!");

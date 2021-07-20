@@ -51,7 +51,7 @@ export default class extends SlashCommand {
       default: {
         const data = interaction.guild.cache.confessionconfig ? interaction.guild.confessionconfig : await interaction.guild.getConfessionConfig();
         if (!data?.channelID) return interaction.reply("Set a channel!\n`confessionconfig channel`")
-        interaction.reply(`Confession config for ${interaction.guild.name}\n\n**Channel**: <#${data.channelID}>\n**Optional anonymity**: ${data.anon ? "Enabled" : "Disabled"}\n\nAvaliable modes: \`channel\`, \`anon\`, \`disable\`, \`get\``);
+        interaction.reply(`Confession config for ${interaction.guild.name}\n\n**Channel**: <#${data.channelID}>\n**Optional anonymity**: ${data.anon ? "Enabled" : "Disabled"}`);
       }
     }
   }

@@ -7,14 +7,19 @@ new Discord.MessageButton().setLabel("AndreMor's page").setStyle("LINK").setURL(
 new Discord.MessageButton().setLabel("Discord.js documentation").setStyle("LINK").setURL("https://discord.js.org/#/docs/")];
 const action = Discord.MessageActionRow.prototype.addComponents.apply(new Discord.MessageActionRow(), buttons)
 const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | [top.gg](https://top.gg/bot/694306281736896573) | [DiscordBotList](https://discordbotlist.com/bots/gidget) | [Discord Boats](https://discord.boats/bot/694306281736896573)`;
-export default class extends Command {
+export default class extends SlashCommand {
   constructor(options) {
     super(options);
-    this.aliases = ["h"];
-    this.description = "Help command";
+    this.deployOptions.description = "Know how to use the bot with this command! (both slash and normal commands)";
+    this.deployOptions.options = [{
+      name: "to",
+      description: "Command or category to go to.",
+      type: "STRING",
+      required: false
+    }]
   }
   // eslint-disable-next-line require-await
-  async run(bot, message, args) {
+  async run(bot, interaction) {
     const c = bot.commands;
     const arr = [];
     for (const o of Object.entries(def)) {
@@ -26,37 +31,38 @@ export default class extends Command {
         commands: c.filter(z => z.category === o[0]).map(e => e)
       })
     }
-    if (args[1] && arr.find(d => d.catname === args[1])) {
-      const g = arr.find(d => d.catname === args[1]);
-      if (checkEmbed(message.channel)) {
+    const to = interaction.options.get("to")?.value;
+    if (to && arr.find(d => d.catname === to)) {
+      const g = arr.find(d => d.catname === to);
+      if (checkEmbed(interaction.channel)) {
         const embed = new Discord.MessageEmbed()
           .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
           .setColor("#FF8000")
           .setTitle(g.cat + " (" + g.commands.length + " commands)")
           .setDescription(Discord.Util.splitMessage(g.commands.filter(s => {
-            if (s.secret) return false
-            if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false
-            return true
+            if (s.secret) return false;
+            if (s.onlyguild && (interaction.guild ? (interaction.guild.id !== process.env.GUILD_ID) : true)) return false;
+            return true;
           }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0])
           .setTimestamp()
-        message.channel.send({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(buttons[1])] });
+        interaction.reply({ embeds: [embed], components: [[buttons[1]]], ephemeral: true });
       } else {
         const str = `__**${g.cat + " (" + g.commands.length + " commands)"}**__\n\n${Discord.Util.splitMessage(g.commands.filter(s => {
           if (s.secret) return false;
-          if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false;
+          if (s.onlyguild && (interaction.guild ? (interaction.guild.id !== process.env.GUILD_ID) : true)) return false;
           return true;
         }, { maxLength: 1800 }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0]}`;
-        message.channel.send({ content: str, components: [new Discord.MessageActionRow().addComponents(buttons[1])] });
+        interaction.reply({ content: str, components: [[buttons[1]]], ephemeral: true });
       }
       return;
-    } else if (args[1] && (bot.commands.get(args[1].toLowerCase()) || bot.commands.find(c => c.aliases.includes(args[1].toLowerCase())))) {
-      const command = bot.commands.get(args[1].toLowerCase()) || bot.commands.find(c => c.aliases.includes(args[1].toLowerCase()))
-      if (command.dev || command.owner) return message.channel.send("Exclusive command for the owner or developers");
+    } else if (to && (bot.commands.get(to.toLowerCase()) || bot.commands.find(c => c.aliases.includes(to.toLowerCase())))) {
+      const command = bot.commands.get(to.toLowerCase()) || bot.commands.find(c => c.aliases.includes(to.toLowerCase()));
+      if (command.dev || command.owner) return interaction.reply({ ephemeral: true, content: "Exclusive command for the owner or developers" });
       let alias = "Without alias";
       if (command.aliases.length !== 0) {
         alias = command.aliases.join(", ");
       }
-      if (checkEmbed(message.channel)) {
+      if (checkEmbed(interaction.channel)) {
         const embed = new Discord.MessageEmbed()
           .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
           .setTitle(`Gidget help - ${command.name}`)
@@ -66,33 +72,32 @@ export default class extends Command {
           .addField("Environment", (command.guildonly || command.onlyguild) ? "Server" : "Server and DMs")
           .addField("Alias", alias)
           .setColor('#FFFFFF')
-          .setFooter('Requested by: ' + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
           .setTimestamp();
-        message.channel.send({ embeds: [embed] });
+        interaction.reply({ embeds: [embed], ephemeral: true });
       } else {
         const perms = `User: \`${!(new Discord.Permissions(command.permissions.user[0]).has(8n)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[0]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``;
         const perms_channel = `User: \`${!(new Discord.Permissions(command.permissions.user[1]).has(8n)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[1]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``;
         const str = `__**Gidget help - ${command.name}**__\n\n__Description__: ${command.description ? command.description : "Without description"}\n__Required permissions__: ${perms}\n__Required permissions (channel)__: ${perms_channel}\n__Environment__: ${(command.guildonly || command.onlyguild) ? "Server" : "Server and DMs"}\n__Alias__: ${alias}`;
-        message.channel.send(str);
+        interaction.reply({ content: str, ephemeral: true });
       }
       return;
     } else {
       const text = "Use `help <category>` to obtain the category's commands\n\n" + Discord.Util.splitMessage(arr.filter(s => {
         if (s.secret) return false;
-        if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false;
+        if (s.onlyguild && (interaction.guild ? (interaction.guild.id !== process.env.GUILD_ID) : true)) return false;
         return true;
       }).map(s => "**" + s.catname + "**: " + s.cat).join("\n"))[0];
-      if (checkEmbed(message.channel)) {
+      if (checkEmbed(interaction.channel)) {
         const embed = new Discord.MessageEmbed()
           .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
           .setColor("#BDBDBD")
           .setTitle("Help command")
           .addField("Bot lists", botlists)
           .setDescription(text || "?");
-        message.channel.send({ embeds: [embed], components: [action] });
+        interaction.reply({ embeds: [embed], components: [action], ephemeral: true });
       } else {
         const str = `__**Help command**__\n\n${text}`;
-        message.channel.send({ content: str, components: [action] });
+        interaction.reply({ content: str, components: [action], ephemeral: true });
       }
       return;
     }

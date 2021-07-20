@@ -21,6 +21,7 @@ class SlashCommandOnlyCommand extends Command {
         this.description = `**(Slash command)** ${options.description}`;
     }
     async run(bot, message) {
+        if (message.deletable) await message.delete();
         await message.channel.send("This is a slash command, please use it in the Discord interface.");
     }
 }
@@ -33,10 +34,9 @@ export async function registerCommands(bot, dir) {
     // Loop through each file.
     for (const file of files) {
         const stat = await fs.lstat(path.join(__dirname, dir, file));
-        if (stat.isDirectory()) // If file is a directory, recursive call recurDir
+        if (stat.isDirectory())
             await registerCommands(bot, path.join(dir, file));
         else {
-            // Check if file is a .js file.
             if (file.endsWith(".js")) {
                 const cmdName = file.substring(0, file.indexOf(".js"));
                 try {
@@ -62,10 +62,9 @@ export async function registerEvents(bot, dir) {
     // Loop through each file.
     for (const file of files) {
         const stat = await fs.lstat(path.join(__dirname, dir, file));
-        if (stat.isDirectory()) // If file is a directory, recursive call recurDir
+        if (stat.isDirectory())
             await registerEvents(bot, path.join(dir, file));
         else {
-            // Check if file is a .js file.
             if (file.endsWith(".js")) {
                 const eventName = file.substring(0, file.indexOf(".js"));
                 try {
@@ -92,10 +91,9 @@ export async function registerSlashCommands(bot, dir) {
     // Loop through each file.
     for (const file of files) {
         const stat = await fs.lstat(path.join(__dirname, dir, file));
-        if (stat.isDirectory()) // If file is a directory, recursive call recurDir
+        if (stat.isDirectory())
             await registerSlashCommands(bot, path.join(dir, file));
         else {
-            // Check if file is a .js file.
             if (file.endsWith(".js")) {
                 const name = file.substring(0, file.indexOf(".js"));
                 try {

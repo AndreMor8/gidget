@@ -1,4 +1,7 @@
+import tickets from "../../database/models/ticket.js";
+import tmembers from "../../database/models/tmembers.js";
 import Discord from 'discord.js-light';
+
 const internalCooldown = new Set();
 
 export default async (bot, interaction) => {
@@ -48,6 +51,63 @@ export default async (bot, interaction) => {
                 const notManagedRoles = roles.filter(e => !rolesToManage.includes(e));
                 interaction.reply({ content: `I've added/removed the requested roles except for: ${notManagedRoles.map(e => `<@&${e}>`).join(", ")}. Contact an administrator to fix the problem.`, ephemeral: true })
             }
+        }
+    }
+    if (interaction.isButton() && interaction.customID === "ticket_f") {
+        const doc = await tickets.findOne({
+            guildId: { $eq: interaction.guildID },
+            messageId: { $eq: interaction.message.id },
+            channelId: { $eq: interaction.channelID }
+        });
+
+        if (doc) {
+            const { categoryId } = doc;
+            await bot.users.fetch(interaction.user.id);
+            const doc2 = await tmembers.findOne({
+                guildId: { $eq: interaction.guildID },
+                from: { $eq: interaction.message.id },
+                memberId: { $eq: interaction.user.id }
+            });
+            if (doc2) return interaction.reply({ content: "You already have a ticket!", ephemeral: true }).catch(() => { });
+            const cat = interaction.guild.channels.cache.get(categoryId) || await interaction.guild.channels.fetch(categoryId).catch(() => { });
+            if (!cat) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+            if (!cat.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+            const todesc = doc.desc?.replace(/%AUTHOR%/g, interaction.user.toString());
+            const ch = await interaction.guild.channels
+                .create(`${interaction.user.username}s-ticket`, {
+                    type: "text",
+                    topic: todesc,
+                    parent: cat,
+                    reason: "User created a ticket!"
+                }).catch(() => { });
+            if (!ch) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+            const tmp = await ch.createOverwrite(interaction.user.id, {
+                VIEW_CHANNEL: true,
+                SEND_MESSAGES: true,
+                EMBED_LINKS: true,
+                ATTACH_FILES: true
+            }, { type: 1 }).catch(() => { });
+            if (!tmp) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+
+            await tmembers.create({
+                guildId: interaction.guild.id,
+                channelId: ch.id,
+                memberId: interaction.user.id,
+                from: interaction.message.id
+            });
+
+            if (doc.welcomemsg && ch.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
+                const tosend = doc.welcomemsg.replace(
+                    /%AUTHOR%/g,
+                    interaction.user.toString()
+                );
+                ch.send({ content: tosend, allowedMentions: { parse: ['users', 'roles', 'everyone'] } }).catch(() => { });
+            }
+            await interaction.reply({ content: `Your ticket has been created! -> ${ch}`, ephemeral: true });
+
+        } else {
+            await interaction.deferUpdate();
+            await interaction.message.delete();
         }
     }
 }

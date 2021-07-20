@@ -16,6 +16,7 @@ import Discord from 'discord.js-light';
 import './structures.js';
 
 import DisTube from 'distube';
+import { inspect } from 'util';
 
 //Bot client
 const bot = new Discord.Client({
@@ -77,9 +78,9 @@ bot.memberVotes = new Discord.Collection();
 bot.distube
   .on("playSong", (queue, song) => queue.textChannel.send(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`))
   .on("error", (channel, e) => {
-  channel.send(`Some error ocurred. Here's a debug: ${e}`);
-  console.error(e);
-}).on("empty", channel => channel.send("Queue deleted"))
+    channel.send(`Some error ocurred. Here's a debug: ${e}`);
+    console.error(e);
+  }).on("empty", queue => queue.textChannel.send("Queue deleted"))
   .on("finishSong", (queue) => bot.memberVotes.delete(queue.voiceChannel.guild.id))
   .on("initQueue", (queue) => queue.setVolume(100));
 
@@ -101,6 +102,8 @@ bot.distube
 });
 process.on("unhandledRejection", error => {
   console.error("Unhandled promise rejection:", error);
+  //This will be useful to finding unknown errors;
+  if (error.requestData?.json) console.error(inspect(error.requestData.json, { depth: 5 }));
 });
 
 process.on("uncaughtException", err => {

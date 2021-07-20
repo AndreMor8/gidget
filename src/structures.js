@@ -85,7 +85,7 @@ Structures.extend('Guild', Guild => {
         }
 
         async setConfessionChannel(channel) {
-            if (channel.type !== "text" && channel.type !== "news") throw new StructureError("Only text channels are allowed!");
+            if (!channel.isText()) throw new StructureError("Only text channels are allowed!");
             let doc = await confessions.findOneAndUpdate({ guildID: { $eq: this.id } }, { $set: { channelID: channel.id } }, { new: true });
             if (!doc) {
                 doc = await confessions.create({

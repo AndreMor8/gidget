@@ -46,7 +46,7 @@ export default class extends Command {
                 const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.get(args[2]) || message.guild.channels.cache.find(e => e.name === args.slice(2).join(" ")) || await message.guild.channels.fetch(args[2] || "123").catch(() => { });
                 if (!channel)
                     return message.channel.send("Invalid channel");
-                if (channel.type !== "text" && channel.type !== "news")
+                if (!channel.isText())
                     return message.channel.send("That isn't a text-based channel");
                 if (!channel.permissionsFor(message.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
                     return message.channel.send("I don't have permissions for send messages in that channel");
@@ -103,7 +103,7 @@ export default class extends Command {
                 const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.get(args[2]) || message.guild.channels.cache.find(e => e.name === args.slice(2).join(" "));
                 if (!channel)
                     return message.channel.send("Invalid channel");
-                if (channel.type !== "text" && channel.type !== "news")
+                if (!channel.isText())
                     return message.channel.send("That isn't a text-based channel");
                 if (!channel.permissionsFor(message.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
                     return message.channel.send("I don't have permissions for send messages in that channel");
