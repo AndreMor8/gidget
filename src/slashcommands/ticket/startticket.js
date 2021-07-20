@@ -21,13 +21,13 @@ export default class extends SlashCommand {
       {
         name: "embed-title",
         type: "STRING",
-        description: "A title to differentiate the embed from others.",
+        description: "A title to differentiate the embed from others. (MAX 256 CHARACTERS)",
         required: true
       },
       {
         name: "button-text",
         type: "STRING",
-        description: "A text to put on the button",
+        description: "A text to put on the button (MAX 80 CHARACTERS)",
         required: false
       },
       {
@@ -50,12 +50,14 @@ export default class extends SlashCommand {
     if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return interaction.reply("[startticket.text-channel] I don't have the `SEND_MESSAGES` and the `EMBED_LINKS` permission in that channel.");
     const category = interaction.options.get("category-channel").channel;
     if (category.type !== "category") return interaction.reply("[startticket.category-channel] This isn't a category channel!");
-    if (!category.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply("[startticket.category-channel] I don't have the `MANAGE_CHANNELS` and `MANAGE_ROLES` (Manage Permissions) permissions in that channel.");
+    if (!category.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply("[startticket.category-channel] I don't have the `VIEW_CHANNEL`, `MANAGE_CHANNELS` and `MANAGE_ROLES` (Manage Permissions) permissions in that channel.");
     const pre_emoji = interaction.options.get("button-emoji")?.value;
     if (interaction.guild.emojis.cache.size < 1) await interaction.guild.emojis.fetch();
+    if (interaction.options.get("embed-title").value.length > 256) return interaction.reply("[startticket.embed-title] You can only put up to 256 characters max.")
     const emoji = (pre_emoji ? (bot.emojis.cache.get(pre_emoji)?.identifier || bot.emojis.cache.find(e => e.name === pre_emoji || e.toString() === pre_emoji)?.identifier || (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(pre_emoji) ? pre_emoji : undefined)) : undefined);
     const button_text = interaction.options.get("button-text")?.value;
     if (!emoji && !button_text) return interaction.reply("You need at least one text or one emoji for the button.");
+    if (button_text?.length > 80) return interaction.reply("[startticket.button-text] You can only put up to 80 characters max.")
     try {
       const embed = new Discord.MessageEmbed()
         .setTitle(interaction.options.get("embed-title").value)

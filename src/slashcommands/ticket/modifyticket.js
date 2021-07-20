@@ -83,7 +83,7 @@ export default class extends SlashCommand {
           {
             name: "msg",
             type: "STRING",
-            description: "Welcome message",
+            description: "Welcome message (MAX 2000 CHARACTERS)",
             required: false
           }
         ]
@@ -91,7 +91,7 @@ export default class extends SlashCommand {
       {
         name: "desc",
         type: "SUB_COMMAND",
-        description: "The message that will appear in the ticket description",
+        description: "The message that will appear in the ticket topic",
         options: [{
           name: "message",
           type: "STRING",
@@ -101,7 +101,7 @@ export default class extends SlashCommand {
         {
           name: "description",
           type: "STRING",
-          description: "The content of the description",
+          description: "The content of the description/topic (MAX 1024 CHARACTERS)",
           required: false
         }]
       }
@@ -167,14 +167,20 @@ export default class extends SlashCommand {
         break;
       case "welcome-msg": {
         const set = subcommand.options.find(e => e.name === "msg")?.value;
-        if (set) await msgDocument.updateOne({ $set: { welcomemsg: set } });
+        if (set) {
+          if (set.replace("%AUTHOR%", interaction.user.toString()).length > 2000) return interaction.reply("You can only put up to 2000 characters max.");
+          await msgDocument.updateOne({ $set: { welcomemsg: set } });
+        }
         else await msgDocument.updateOne({ $unset: { welcomemsg: "" } });
         interaction.reply(set ? "Welcome message for the ticket changed correctly" : "Welcome message disabled")
       }
         break;
       case "desc": {
         const set = subcommand.options.find(e => e.name === "description")?.value;
-        if (set) await msgDocument.updateOne({ $set: { desc: set } });
+        if (set) {
+          if (set.replace("%AUTHOR%", interaction.user.toString()).length > 1024) return interaction.reply("You can only put up to 1024 characters max.");
+          await msgDocument.updateOne({ $set: { desc: set } });
+        }
         else await msgDocument.updateOne({ $unset: { desc: "" } });
         interaction.reply(set ? "Description for the ticket changed correctly" : "Text channel description disabled")
       }
