@@ -90,7 +90,7 @@ export default async (bot, reaction, user) => {
             );
             ch.send({ content: tosend, allowedMentions: { parse: ['users', 'roles', 'everyone'] } });
           }
-          ch.send("**WARNING:** This ticket was created using version 1 of Gidget. In version 2 this system has changed from reactions to buttons and requires the re-creation of the ticket. Reaction tickets will stop working on August 1.\n\nPlease re-create your ticket.");
+          ch.send("**WARNING:** This ticket was created using version 1 of Gidget. In version 2 this system has changed from reactions to buttons and requires the re-creation of the ticket system. Reaction tickets will stop working on August 1.\n\nPlease re-create your ticket system.");
         });
       });
   }

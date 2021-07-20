@@ -120,7 +120,7 @@ export default class extends SlashCommand {
     const { manual } = msgDocument;
     switch (interaction.options.first().name) {
       case "get": {
-        if (msgDocument.emojiId) await interaction.reply("**WARNING:** This ticket was created using version 1 of Gidget. In version 2 this system has changed from reactions to buttons and requires the re-creation of the ticket. Reaction tickets will stop working on August 1.\n\nPlease re-create your ticket.");
+        if (msgDocument.emojiId) await interaction.reply("**WARNING:** This ticket was created using version 1 of Gidget. In version 2 this system has changed from reactions to buttons and requires the re-creation of the ticket system. Reaction tickets will stop working on August 1.\n\nPlease re-create your ticket system.");
         interaction.reply({
           embeds: [new MessageEmbed()
             .setTitle(interaction.guild.name + " ticket config")
