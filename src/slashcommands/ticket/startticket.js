@@ -59,7 +59,7 @@ export default class extends SlashCommand {
     try {
       const embed = new Discord.MessageEmbed()
         .setTitle(interaction.options.get("embed-title").value)
-        .setDescription(`Press ${emoji ? (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(emoji) ? emoji : `<${(emoji.startsWith("a") ? "" : ":") + emoji}>`) : "the button"} to create a ticket.'`)
+        .setDescription(`Press ${emoji ? (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(emoji) ? emoji : `<${(emoji.startsWith("a") ? "" : ":") + emoji}>`) : "the button"} to create a ticket.`)
         .setColor("RANDOM")
         .setFooter('You can only have one ticket at a time');
       const button = new Discord.MessageButton()
