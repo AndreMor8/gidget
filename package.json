@@ -39,7 +39,7 @@
     "express": "^4.17.1",
     "ffmpeg-static": "^4.4.0",
     "file-type": "^16.5.1",
-    "general-search-engine": "^1.4.0",
+    "general-search-engine": "^1.4.1",
     "gif-encoder": "^0.7.2",
     "gifsicle": "^5.2.0",
     "google-it": "^1.6.2",
