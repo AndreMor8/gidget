@@ -230,13 +230,13 @@ export default class extends SlashCommand {
                 if (!channel.isText()) return interaction.reply("[add-to-instance.channel] That isn't a text-based channel!")
                 if (!channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return interaction.reply("[add-to-instance.channel] I don't have permissions to send messages in that channel!");
 
-                const msg = await channel.messages.fetch(interaction.options.get("add-to-instance").options.find(e => e.name === "message").value).catch(() => {});
-                if(!msg) return interaction.reply("[add-to-instance.message] Invalid message ID!");
-                if(msg.author.id !== bot.user.id) return interaction.reply("[add-to-instance.message] That message is not mine...");
-                if(msg.components >= 5) return interaction.reply(`[add-to-instance.message] This message already has all 5 action rows filled.
+                const msg = await channel.messages.fetch(interaction.options.get("add-to-instance").options.find(e => e.name === "message").value).catch(() => { });
+                if (!msg) return interaction.reply("[add-to-instance.message] Invalid message ID!");
+                if (msg.author.id !== bot.user.id) return interaction.reply("[add-to-instance.message] That message is not mine...");
+                if (msg.components.length >= 5) return interaction.reply(`[add-to-instance.message] This message already has all 5 action rows filled.
                 Only up to 5 action rows are allowed in a message.
                 A select menu occupies the entire action row.`);
-                await msg.edit({ components: msg.components.concat([new MessageActionRow().addComponents([menu])]) }).catch(() => {});
+                await msg.edit({ components: msg.components.concat([new MessageActionRow().addComponents([menu])]) }).catch(() => { });
                 interaction.reply("Message edited. Test it ;)");
             }
                 break;
