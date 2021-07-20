@@ -33,8 +33,8 @@ export default class extends SlashCommand {
             bot.memberVotes.set(interaction.guild.id, []);
             memberVoted = bot.memberVotes.get(interaction.guild.id);
           }
-          if (!memberVoted.includes(interaction.author.id)) {
-            memberVoted.push(interaction.author.id);
+          if (!memberVoted.includes(interaction.user.id)) {
+            memberVoted.push(interaction.user.id);
             if (memberVoted.length < memberRequired) {
               return await interaction.reply(`Skipping? (${memberVoted.length}/${memberRequired})`);
             }
