@@ -129,6 +129,8 @@ async function resize(url) {
     if (isSvg(buf)) {
         return await svg2img(buf, { format: "png", width: SIZE, height: SIZE });
     } else if (process.platform === "win32") {
+        //npm i jimp
+        //https://sharp.pixelplumbing.com/install#canvas-and-windows
         const Jimp = (await import("jimp")).default;
         const pre_buf = await Jimp.read(buf);
         pre_buf.resize(SIZE, SIZE);

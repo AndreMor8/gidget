@@ -1,5 +1,4 @@
 //Copied from https://github.com/gumlet/gif-resize/blob/f5f4366dd7b8c4ba9c932e2d702e2941fe9d7e17/src/index.js
-import gifsicle from 'gifsicle';
 import execa from 'execa';
 
 export default opts => async buf => {
@@ -71,7 +70,7 @@ export default opts => async buf => {
 	args.push('--output', "-");
 
 	try {
-		const gif_output = await execa(gifsicle, args, {input: buf, encoding: null});
+		const gif_output = await execa("gifsicle", args, {input: buf, encoding: null});
 		return gif_output.stdout;
 	} catch (error) {
 		error.message = error.stderr || error.message;

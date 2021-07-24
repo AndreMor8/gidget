@@ -2,7 +2,7 @@ FROM node:16-alpine
 WORKDIR /home/gidget
 ENV NODE_ENV="production"
 # Install system dependencies
-RUN apk add --no-cache curl bash git libqrencode build-base g++ autoconf automake libtool libpng libpng-dev jpeg-dev pango-dev cairo-dev giflib-dev
+RUN apk add --no-cache curl bash git libqrencode build-base g++ autoconf automake libtool libpng libpng-dev jpeg-dev pango-dev cairo-dev giflib-dev gifsicle
 # Making free space
 RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
 # Installing project dependencies

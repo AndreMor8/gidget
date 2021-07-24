@@ -1,5 +1,5 @@
 import { MessageButton } from 'discord.js';
-import Board from 'tictactoe-board';
+import Board from '../../utils/tictactoe-board.js';
 import ai from 'tictactoe-complex-ai';
 
 export default class extends Command {

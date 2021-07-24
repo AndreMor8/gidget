@@ -93,19 +93,21 @@ async function render(url) {
     const pre_buf = await res.buffer();
     const type = await FileType.fromBuffer(pre_buf);
     if (type?.mime === "image/gif") {
-        const buffer = await gifResize({ width: 48, interlaced: true })(pre_buf);
+        const buffer = await gifResize({ width: 48, height: 48, interlaced: true })(pre_buf);
         return { pre_type: "gif", buffer };
     } else if (isSvg(pre_buf)) {
         return { pre_type: "svg", buffer: await svg2img(pre_buf, { format: "png", width: 48, height: 48 }) };
     } else if (process.platform === "win32") {
+        //npm i jimp
+        //https://sharp.pixelplumbing.com/install#canvas-and-windows
         const Jimp = (await import("jimp")).default;
         const img = await Jimp.read(pre_buf);
-        img.resize(48, Jimp.AUTO);
+        img.resize(48, 48);
         const buffer = await img.getBufferAsync(Jimp.MIME_PNG);
         return { pre_type: "image", buffer };
     } else {
         const sharp = (await import("sharp")).default;
-        const buffer = await sharp(pre_buf).resize(48).png().toBuffer();
+        const buffer = await sharp(pre_buf).resize(48, 48).png().toBuffer();
         return { pre_type: "image", buffer };
     }
 }

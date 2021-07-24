@@ -61,7 +61,7 @@ export default async (bot, message, nolevel = false) => {
           await message.channel.send("Something happened! Here's a debug: " + err).catch(() => { });
         } finally {
           internalCooldown.delete(message.author.id);
-          message.channel.stopTyping();
+          message.channel.stopTyping(true);
         }
       }
     } else {

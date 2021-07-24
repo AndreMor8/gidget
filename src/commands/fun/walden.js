@@ -1,9 +1,13 @@
 import path from 'path';
 import commons from '../../utils/commons.js';
-const { __dirname } = commons(import.meta.url);
 import Discord from 'discord.js';
-import Jimp from 'jimp';
-let font;
+import Canvas from 'canvas';
+import canvasTxt from '../../utils/canvas-txt.js';
+import { isURL } from 'distube';
+
+const { __dirname } = commons(import.meta.url);
+let image;
+
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -14,90 +18,66 @@ export default class extends Command {
     }
   }
   async run(bot, message, args) {
-    if (!args[1])
-      return message.channel.send("Usage: `walden [<32>/<64>] <text>`");
-    if (args[1] === "64") {
-      await px64(message, args.slice(2));
-    } else if (args[1] === "32") {
-      await px32(message, args.slice(2));
-    } else {
-      await px32(message, args.slice(1));
+    try {
+      const mode = ['image', 'text'].includes(args[1]) ? args[1] : undefined;
+
+      if (mode === "text") {
+        const text = args.slice(2).join(" ");
+        if (!text) return message.channel.send("Usage: `walden text <text>`");
+        message.channel.startTyping();
+        if (!image) image = await Canvas.loadImage(path.join(__dirname, "../../assets/walden-says.png"));
+        const canvas = Canvas.createCanvas(854, 450);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0);
+        ctx.fillStyle = "black";
+        const ctxt = new canvasTxt({ fontSize: 27 });
+        const { height } = ctxt.drawText(ctx, text, 400, 43, 271, 195);
+        if (height > 182) return message.channel.send("There is a limit of 7 lines. Your text exceeded that limit.")
+        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "walden.png");
+        await message.channel.send({ files: [attachment] });
+        message.channel.stopTyping();
+      } else if (mode === "image") {
+        const ok = message.attachments.first()?.url || (isURL(args[2]) ? args[2] : undefined);
+        if (!ok) return message.channel.send("Usage: `walden image <link/attachment>`");
+        message.channel.startTyping();
+        if (!image) image = await Canvas.loadImage(path.join(__dirname, "../../assets/walden-says.png"));
+        const canvas = Canvas.createCanvas(854, 450);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0);
+        const userImage = await Canvas.loadImage(ok);
+        roundRectAndDraw(ctx, 402.7, 49.5, 265, 188.4, 36.5, 11, userImage);
+        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "walden.png");
+        await message.channel.send({ files: [attachment] });
+        message.channel.stopTyping();
+
+      } else return message.channel.send("Usage: `walden <mode> <arg>`\nAvailable modes: `text`, `image`");
+    } catch (err) {
+      message.channel.stopTyping();
+      message.channel.send(`Error: ${err}`);
     }
   }
 }
 
-async function px32(message, args) {
-  if (!args[0])
-    return message.channel.send("Usage: `walden [<32>/<64>] <text>`");
-  if (args.join(" ").length > 80)
-    return message.channel.send("There's a 80 characters limit.");
-  message.channel.startTyping();
-  if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-  const meme = await Jimp.read(path.join(__dirname, "../../assets/walden-says.png"));
-  const pre_text = args.join(" ").split("");
-  let realtext = "";
-  let post_text = "";
-  for (let i = 0; i < pre_text.length; i++) {
-    post_text += pre_text[i];
-    if (pre_text[i] === " ") {
-      post_text = " ";
-      realtext += pre_text[i];
-      continue;
-    }
-    if (post_text.length > 14) {
-      realtext += " " + pre_text[i];
-      post_text = " ";
-    } else {
-      realtext += pre_text[i];
-    }
+function roundRectAndDraw(ctx, x, y, width, height, radius, line, image) {
+  if (typeof radius === "undefined") {
+    radius = 5;
   }
-  meme.print(font, 403, 20, {
-    text: realtext,
-    alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-    alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-  }, 263, 249);
-
-  const render = await meme.getBufferAsync(Jimp.MIME_PNG);
-
-  const attachment = new Discord.MessageAttachment(render, "walden.png");
-  await message.channel.send({ files: [attachment] });
-  message.channel.stopTyping();
-}
-
-async function px64(message, args) {
-  if (!args[0])
-    return message.channel.send("Usage: `walden [<32>/<64>] <text>`");
-  if (args.join(" ").length > 16)
-    return message.channel.send("There's a 16 characters limit.");
-  message.channel.startTyping();
-  if (!font) font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-  const meme = await Jimp.read(path.join(__dirname, "../../assets/walden-says.png"));
-  const pre_text = args.join(" ").split("");
-  let realtext = "";
-  let post_text = "";
-  for (let i = 0; i < pre_text.length; i++) {
-    post_text += pre_text[i];
-    if (pre_text[i] === " ") {
-      post_text = " ";
-      realtext += pre_text[i];
-      continue;
-    }
-    if (post_text.length > 6) {
-      realtext += " " + pre_text[i];
-      post_text = " ";
-    } else {
-      realtext += pre_text[i];
-    }
-  }
-  meme.print(font, 382, 15, {
-    text: realtext,
-    alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-    alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-  }, 300, 260);
-
-  const render = await meme.getBufferAsync(Jimp.MIME_PNG);
-
-  const attachment = new Discord.MessageAttachment(render, "walden.png");
-  await message.channel.send({ files: [attachment] });
-  message.channel.stopTyping();
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.lineWidth = line;
+  ctx.stroke();
+  ctx.clip();
+  if (image) ctx.drawImage(image, x, y, width, height);
+  ctx.lineWidth = 1;
+  ctx.closePath();
+  ctx.restore();
 }

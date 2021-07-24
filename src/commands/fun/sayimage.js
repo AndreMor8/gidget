@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
-import algo from 'discord-emoji-canvas';
-const { Canvas, fillWithEmoji } = algo;
+import Canvas from 'canvas';
+import fillWithEmoji from '../../utils/fillWithEmoji.js';
+
 export default class extends Command {
     constructor(options) {
         super(options);

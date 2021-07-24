@@ -19,11 +19,11 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
-    if(!args[1]) return message.channel.send("Usage: `qr ['encode'] <text> [-<dot_size>]` or `qr decode [url/attachment]`");
+    if (!args[1]) return message.channel.send("Usage: `qr ['encode'] <text> [-<dot_size>]` or `qr decode [url/attachment]`");
     switch (args[1].toLowerCase()) {
       case 'decode': {
         const source = message.attachments.first() ? message.attachments.first().url : args[2];
-        if(!source) return message.channel.send("Usage: `qr decode [url/attachment]`");
+        if (!source) return message.channel.send("Usage: `qr decode [url/attachment]`");
         if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm.test(source)) return message.channel.send("Invalid image or URL!");
         try {
           message.channel.startTyping();
@@ -33,18 +33,18 @@ export default class extends Command {
           const ctx = canvas.getContext("2d");
           ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
           const code = jsQR(ctx.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height);
-          if(code) {
-            if(!code.data) return message.channel.send("I couldn't read any QR code. Try again");
+          if (code) {
+            if (!code.data) return message.channel.send("I couldn't read any QR code. Try again");
             const newstr = Util.splitMessage(code.data, { limit: 2000, char: " " });
             message.channel.stopTyping(true);
-         await message.channel.send("`Output:` " + newstr[0]);
+            await message.channel.send("`Output:` " + newstr[0]);
           } else {
             message.channel.stopTyping(true);
-         await message.channel.send("I couldn't read any QR code. Try again")
+            await message.channel.send("I couldn't read any QR code. Try again")
           }
         } catch (err) {
           message.channel.stopTyping(true);
-       await message.channel.send(err.toString());
+          await message.channel.send(err.toString());
         }
       }
         break;
@@ -59,8 +59,8 @@ export default class extends Command {
         }
         if (isNaN(dotsize)) return message.channel.send("Only numbers allowed");
         const dot_size = parseInt(dotsize);
-        if(dot_size < 1 || dot_size > 12) return message.channel.send("Invalid dot size. Allowable values are to 1 to 12");
-        if(!args[1]) return message.channel.send("Usage: `qr ['encode'] <text> [-<dot_size>]` or `qr decode [url/attachment]`");
+        if (dot_size < 1 || dot_size > 12) return message.channel.send("Invalid dot size. Allowable values are to 1 to 12");
+        if (!args[1]) return message.channel.send("Usage: `qr ['encode'] <text> [-<dot_size>]` or `qr decode [url/attachment]`");
         const encoder = new qrenc.Encoder;
         encoder.on("end", (buf) => {
           const att = new MessageAttachment(buf, "qr.png");
@@ -85,17 +85,19 @@ async function resize(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error("Status code: " + res.status);
   const buf = await res.buffer();
-  if(isSvg(buf)) {
+  if (isSvg(buf)) {
     return await svg2img(buf, { format: "png", width: SIZE, height: SIZE });
   } else if (process.platform === "win32") {
-      const Jimp = (await import("jimp")).default;
-      const pre_buf = await Jimp.read(buf);
-      pre_buf.resize(SIZE, SIZE);
-      const newbuf = await pre_buf.getBufferAsync(Jimp.MIME_PNG);
-      return newbuf;
+    //npm i jimp
+    //https://sharp.pixelplumbing.com/install#canvas-and-windows
+    const Jimp = (await import("jimp")).default;
+    const pre_buf = await Jimp.read(buf);
+    pre_buf.resize(SIZE, SIZE);
+    const newbuf = await pre_buf.getBufferAsync(Jimp.MIME_PNG);
+    return newbuf;
   } else {
-      const sharp = (await import("sharp")).default;
-      const newbuf = await sharp(buf).resize(SIZE, SIZE).png().toBuffer();
-      return newbuf;
+    const sharp = (await import("sharp")).default;
+    const newbuf = await sharp(buf).resize(SIZE, SIZE).png().toBuffer();
+    return newbuf;
   }
 }
