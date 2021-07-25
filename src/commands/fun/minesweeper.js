@@ -1,3 +1,4 @@
+import { Util } from 'discord.js';
 import BombSweeper from '../../utils/bombsweeper.js';
 
 export default class extends Command {
@@ -41,17 +42,18 @@ export default class extends Command {
             }
         });
         col.on("end", async (c, r) => {
+            await Util.delayFor(1000);
             if (r === "win") {
-                await to_edit.edit(`__Minesweeper Game__ (${message.author}) (Won)\n\n${message.author.mine.showToUser()}`);
+                if(!to_edit.deleted) await to_edit.edit(`__Minesweeper Game__ (${message.author}) (Won)\n\n${message.author.mine.showToUser()}`);
                 await message.channel.send("You have won the minesweeper game :)");
             } else if (r === "loss") {
-                await to_edit.edit(`__Minesweeper Game__ (${message.author}) (Lost)\n\n${message.author.mine.showToUser()}`);
+                if(!to_edit.deleted) await to_edit.edit(`__Minesweeper Game__ (${message.author}) (Lost)\n\n${message.author.mine.showToUser()}`);
                 await message.channel.send("You lost the minesweeper game :(");
             } else if (r === "exit") {
-                await to_edit.delete().catch(() => { });
+                if(!to_edit.deleted) await to_edit.delete().catch(() => { });
                 await message.channel.send("Well, it seems you don't want to play minesweeper.");
             } else if (r === "idle") {
-                to_edit.edit(`__Minesweeper Game__ (${message.author}) (5m timeout)\n\n${message.author.mine.showToUser()}`);
+                if(!to_edit.deleted) to_edit.edit(`__Minesweeper Game__ (${message.author}) (5m timeout)\n\n${message.author.mine.showToUser()}`);
                 await message.channel.send("Time's up (5m)");
             }
             message.author.mine = null;
