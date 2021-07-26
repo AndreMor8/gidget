@@ -16,17 +16,17 @@ export default class extends Command {
     try {
       let evaluated = eval(args.slice(1).join(" "));
       if (evaluated instanceof Promise) {
-        const m = await message.channel.send("Evaluating promise...");
-        evaluated.then((e => {
+        const m = message.channel.send("Evaluating promise...");
+        evaluated.then((async e => {
           let evaluated = e;
           if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
           const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
-          m.edit(Discord.Formatters.codeBlock("js", arr[0]));
-        })).catch((e => {
+          (await m).edit(Discord.Formatters.codeBlock("js", arr[0]));
+        })).catch((async e => {
           let evaluated = e;
           if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
           const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
-          m.edit(Discord.Formatters.codeBlock("js", arr[0]));
+          (await m).edit(Discord.Formatters.codeBlock("js", arr[0]));
         }));
       } else {
         if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
