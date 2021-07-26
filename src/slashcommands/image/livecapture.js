@@ -8,40 +8,45 @@ import execa from 'execa';
 import ffmpeg from 'ffmpeg-static';
 const timer = new Set();
 const { __dirname } = commons(import.meta.url);
-export default class extends Command {
+export default class extends SlashCommand {
   constructor(options) {
-    super(options)
-    this.description = "Take a screenshot from a live YouTube stream.";
-    this.aliases = ["lc"];
+    super(options);
+    this.deployOptions.description = "Take a screenshot from a live YouTube stream.";
+    this.deployOptions.options = [
+      {
+        name: "video",
+        type: "STRING",
+        description: "The live video you want to screenshot",
+        required: true
+      }
+    ];
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 32768n]
     }
   }
-  async run(bot, message, args) {
-    //Fallback
-    if (!args[1]) return message.channel.send("Put a live stream video from YouTube");
+  async run(bot, interaction) {
     //Check valid YouTube URL
-    const check = ytdl.validateURL(args[1]) || ytdl.validateID(args[1]);
-    if (!check) return message.channel.send("Invalid URL!");
+    const check = ytdl.validateURL(interaction.options.get("video").value) || ytdl.validateID(interaction.options.get("video").value);
+    if (!check) return interaction.reply("Invalid URL!");
     //Cooldown
-    if (message.author.id !== "577000793094488085") {
-      if (!timer.has(message.author.id)) {
-        timer.add(message.author.id);
+    if (interaction.user.id !== "577000793094488085") {
+      if (!timer.has(interaction.user.id)) {
+        timer.add(interaction.user.id);
         setTimeout(() => {
-          timer.delete(message.author.id);
+          timer.delete(interaction.user.id);
         }, 60000);
       } else {
-        return message.channel.send("Don't overload this command! (1 min cooldown)");
+        return interaction.reply({ content: "Don't overload this command! (1 min cooldown)", ephemeral: true });
       }
     }
     //Obtain video information
-    const info = await ytdl.getBasicInfo(args[1]);
+    const info = await ytdl.getBasicInfo(interaction.options.get("video").value);
     //Check if is live video
-    if (info.videoDetails.lengthSeconds != 0) return message.channel.send("This isn't a live stream video!");
+    if (info.videoDetails.lengthSeconds != 0) return interaction.reply("This isn't a live stream video!");
     try {
       //Download the video
-      const stream = ytdl(args[1], { filter: "videoandaudio" });
+      const stream = ytdl(interaction.options.get("video").value, { filter: "videoandaudio" });
       //Return a Promise
       return await new Promise((s, r) => {
         //Some random name for the temp file
@@ -54,11 +59,10 @@ export default class extends Command {
         //Put data on it.
         stream.pipe(file);
         //Loading...
-        message.channel.startTyping();
+        interaction.defer();
         //Any download error
         stream.on("error", () => {
-          message.channel.stopTyping();
-          message.channel.send("Looks like this video isn't compatible with FFMPEG :(");
+          interaction.editReply("Looks like this video isn't compatible with FFMPEG :(");
           s();
         });
         stream.on('progress', (a, b) => {
@@ -76,7 +80,7 @@ export default class extends Command {
                 const buf = await fs.promises.readFile(pathPNG);
                 //Send to Discord
                 const att = new MessageAttachment(buf, "image.png");
-                await message.channel.send({ files: [att] });
+                await interaction.editReply({ files: [att] });
                 s();
               })
               //Any errors here
@@ -85,14 +89,14 @@ export default class extends Command {
               .finally(() => {
                 fs.promises.unlink(pathMP4).catch(() => { });
                 fs.promises.unlink(pathPNG).catch(() => { });
-                message.channel.stopTyping(true);
               });
           }
         });
       });
     } catch (err) {
       //Errors
-      message.channel.send(err.toString());
+      if (interaction.replied) interaction.editReply(err.toString());
+      else interaction.reply(err.toString());
     }
   }
 }

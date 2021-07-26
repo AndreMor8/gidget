@@ -27,9 +27,14 @@ export default async (bot, interaction) => {
             internalCooldown.add(interaction.user.id);
             await command.run(bot, interaction);
         } catch (err) {
-            if (err.name === "StructureError") return interaction.reply(err.message).catch(() => { });
+            if (err.name === "StructureError") {
+                if (interaction.replied) await interaction.editReply(err.message).catch(() => { });
+                else await interaction.reply(err.message).catch(() => { });
+                return;
+            }
             console.error(err);
-            await interaction.reply("Something happened! Here's a debug: " + err).catch(() => { });
+            if (interaction.replied) await interaction.editReply("Something happened! Here's a debug: " + err).catch(() => { });
+            else await interaction.reply("Something happened! Here's a debug: " + err).catch(() => { });
         } finally {
             internalCooldown.delete(interaction.user.id);
         }
