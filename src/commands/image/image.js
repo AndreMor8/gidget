@@ -43,7 +43,8 @@ export default class extends Command {
         const but_back = new Discord.MessageButton()
             .setCustomID("image_c_back")
             .setStyle("SECONDARY")
-            .setLabel("Back");
+            .setLabel("Back")
+            .setDisabled(true);
 
         const but_stop = new Discord.MessageButton()
             .setCustomID("image_c_stop")
@@ -85,7 +86,7 @@ export default class extends Command {
         })
         collector.on('end', (c, r) => {
             if (r === "stoped") c.last().update({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back.setDisabled(true), but_stop.setDisabled(true), but_next.setDisabled(true)])] })
-            else msg.edit({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back.setDisabled(true), but_stop.setDisabled(true), but_next.setDisabled(true)])] });
+            else if (!message.deleted) msg.edit({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back.setDisabled(true), but_stop.setDisabled(true), but_next.setDisabled(true)])] }).catch(() => { });
         });
     }
 }
