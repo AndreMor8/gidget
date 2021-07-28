@@ -91,6 +91,40 @@ bot.distube
   await registerCommands(bot, "../commands");
   await registerEvents(bot, "../events");
   await registerSlashCommands(bot, "../slashcommands");
+  //temporal solution
+  bot.ws.addListener("INTERACTION_CREATE", async (raw) => {
+    const interaction = new Discord.CommandInteraction(bot, raw);
+    if (interaction.isCommand() && raw.data.target_id) {
+      const command = bot.slashCommands.filter(e => !!e.deployOptions.type).get(interaction.commandName);
+      if (!command) return interaction.reply({ content: "That command doesn't exist", ephemeral: true });
+      if (!interaction.guild && command.guildonly) return interaction.reply("This command only works on servers");
+      if (interaction.guild) {
+        if (!bot.guilds.cache.has(interaction.guild.id) && command.requireBotInstance) return interaction.reply("Please invite the real bot");
+        const userperms = interaction.member.permissions;
+        const userchannelperms = interaction.channel.permissionsFor(interaction.member.id);
+        const botperms = interaction.guild.me.permissions;
+        const botchannelperms = interaction.channel.permissionsFor(bot.user.id);
+        if (interaction.user.id !== "577000793094488085") {
+          if (!userperms.has(command.permissions.user[0])) return interaction.reply({ content: "You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[0]).has(8n)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`", ephemeral: true });
+          if (!userchannelperms.has(command.permissions.user[1])) return interaction.reply({ content: "You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[1]).has(8n)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`", ephemeral: true });
+        }
+        if (!botperms.has(command.permissions.bot[0])) return interaction.reply({ content: "Sorry, I don't have sufficient permissions to run that command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.bot[0]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`", ephemeral: true });
+        if (!botchannelperms.has(command.permissions.bot[1])) return interaction.reply({ content: "Sorry, I don't have sufficient permissions to run that command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.bot[1]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`", ephemeral: true });
+      }
+      try {
+        await command.run(bot, raw, interaction);
+      } catch (err) {
+        if (err.name === "StructureError") {
+          if (interaction.replied) await interaction.editReply(err.message).catch(() => { });
+          else await interaction.reply(err.message).catch(() => { });
+          return;
+        }
+        console.error(err);
+        if (interaction.replied) await interaction.editReply("Something happened! Here's a debug: " + err).catch(() => { });
+        else await interaction.reply("Something happened! Here's a debug: " + err).catch(() => { });
+      }
+    }
+  });
   //Login with Discord
   if (process.argv[2] !== "ci") {
     await bot.login();

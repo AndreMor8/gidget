@@ -582,7 +582,7 @@ Structures.extend("GuildMember", (GuildMember) => {
         async deleteWarn(id, reason = "") {
             const warns = this.cache.warns ? this.warns : await this.getWarns();
             this.cache.warns = false;
-            const deleted = await memberwarns.findById(id);
+            const deleted = await memberwarns.findById(id).catch(() => { });
             if (!deleted) throw new StructureError("That ID doesn't exist!");
             if (deleted.memberId !== this.id) throw new StructureError("That ID doesn't exist!");
             if (deleted.guildId !== this.guild.id) throw new StructureError("That ID doesn't exist!");

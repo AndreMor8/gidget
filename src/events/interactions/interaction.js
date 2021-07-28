@@ -9,6 +9,7 @@ export default async (bot, interaction) => {
         if (internalCooldown.has(interaction.user.id)) return interaction.reply({ content: "Calm down! Wait until the previous command finished executing.", ephemeral: true });
         const command = bot.slashCommands.get(interaction.commandName);
         if (!command) return interaction.reply({ content: "That command doesn't exist", ephemeral: true });
+        if (command.deployOptions.type) return;
         if (!interaction.guild && command.guildonly) return interaction.reply("This command only works on servers");
         if (interaction.guild) {
             if (!bot.guilds.cache.has(interaction.guild.id) && command.requireBotInstance) return interaction.reply("Please invite the real bot");
