@@ -1,5 +1,4 @@
 import MessageModel from "../database/models/poll.js";
-import { Util } from "discord.js";
 let i = 0;
 let cache;
 
@@ -29,24 +28,21 @@ export default (bot, reupdate = false) => {
           if (new Date().getTime() >= date) {
             const channel = bot.channels.cache.get(msgDocument[i].channelId);
             if (channel) {
-              const message = await channel.messages
-                .fetch(msgDocument[i].messageId)
-                .catch(() => { });
+              const message = await channel.messages.fetch(msgDocument[i].messageId).catch(() => { });
               if (message) {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
-                  message.reactions.cache.each(r => {
+                  for(const r of message.reactions.cache.array()) {
                     const tosee = r.emoji.identifier;
-                    if (!msgDocument[i].reactions.includes(tosee)) return;
+                    if (!msgDocument[i].reactions.includes(tosee)) continue;
                     if (r.partial) {
-                      r.fetch().then(r => {
+                      await r.fetch().then(r => {
                         text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
                       }).catch(() => { });
                     } else {
                       text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
                     }
-                  });
-                  await Util.delayFor(1500);
+                  }
                   const embed = message.embeds[0];
                   embed.setDescription(text).setTitle("Poll completed");
                   await message.edit({embeds: [embed]});
