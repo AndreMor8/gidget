@@ -15,7 +15,7 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send('Usage: `restrict <member> [reason]` or `restrict role <role>`')
     if (args[1] === 'role') {
-      if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
+      if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply(`You do not have permission to execute this command.`)
       if (!args[2]) return message.channel.send('Please mention the role or enter the role ID.')
       const roleobj = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]);
       if (!roleobj) return message.channel.send('That role isn\'t valid.')

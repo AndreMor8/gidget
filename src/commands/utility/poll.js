@@ -145,22 +145,26 @@ export default class extends Command {
         })
         .then(
           async poll => {
-            if (msg.deletable) msg.delete();
-            if (reactions.length) {
-              for(const reaction of reactions) {
-                await poll.react(reaction);
+            try {
+              if (msg.deletable) msg.delete();
+              if (reactions.length) {
+                for (const reaction of reactions) {
+                  await poll.react(reaction);
+                }
+              } else {
+                await poll.react("Perfecto:460279003673001985");
+                await poll.react("WaldenNo:612137351166033950");
               }
-            } else {
-              await poll.react("Perfecto:460279003673001985");
-              await poll.react("WaldenNo:612137351166033950");
+              const newMessage = new MessageModel({
+                messageId: poll.id,
+                channelId: poll.channel.id,
+                date: new Date(Date.now() + time),
+                reactions: poll.reactions.cache.map(e => e.emoji.identifier)
+              })
+              await newMessage.save().then(() => interval(bot, true))
+            } catch (err) {
+              message.channel.send(`Error when creating timed poll: ${err}`);
             }
-            const newMessage = new MessageModel({
-              messageId: poll.id,
-              channelId: poll.channel.id,
-              date: new Date(Date.now() + time),
-              reactions: poll.reactions.cache.map(e => e.emoji.identifier)
-            })
-            newMessage.save().then(() => interval(bot, true)).catch(() => msg.channel.send("Could not save the message and the time in database."));
           },
           error => {
             console.log(error);

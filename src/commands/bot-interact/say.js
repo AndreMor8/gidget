@@ -9,7 +9,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     if (message.deletable) await message.delete();
-    if (!args[1]) return message.reply(`Nothing to say?`);
+    if (!args[1]) return message.channel.send(`${message.author}, nothing to say?`);
     await message.channel.send(args.slice(1).join(" "));
   }
 }
