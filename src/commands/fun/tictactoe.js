@@ -60,7 +60,7 @@ export default class extends Command {
         if (!message.guild) await message.author.createDM();
 
         //STARTING GAME
-        message.channel.tttgame = new Board.default();
+        message.channel.tttgame = new Board();
         const terminateButton = new MessageButton()
             .setCustomID("ttt_g_terminate")
             .setLabel("Terminate")
