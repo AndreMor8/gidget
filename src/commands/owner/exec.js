@@ -12,14 +12,14 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Put some command to send to the console");
     try {
-      exec(args.slice(1).join(" ")).then(e => {
+      exec(args.slice(1).join(" ")).then(async e => {
         const { stdout, stderr } = e;
         if (!stdout && !stderr) return message.channel.send("Command executed, but no output");
-        if (stdout) send(message, stdout)
-        if (stderr) send(message, stderr)
-      }).catch(e => send(message, e, true));
+        if (stdout) await send(message, stdout)
+        if (stderr) await send(message, stderr)
+      }).catch(async e => await send(message, e, true));
     } catch (error) {
-      send(message, error, true)
+      await send(message, error, true)
     }
   }
 }
