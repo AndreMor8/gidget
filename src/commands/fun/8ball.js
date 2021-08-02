@@ -47,8 +47,6 @@ export default class extends Command {
         await button.update({ embeds: [ballembed.spliceFields(1, 1).addField("Answer", arr[Math.floor(Math.random() * arr.length)])] });
       }
     });
-    col.on("end", () => {
-      msg.edit({ components: [new Discord.MessageActionRow().addComponents([but_redo.setDisabled(true)])] });
-    });
+    col.on("end", () => msg.edit({ components: [new Discord.MessageActionRow().addComponents([but_redo.setDisabled(true)])] }));
   }
 }

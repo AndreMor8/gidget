@@ -2,7 +2,7 @@ const timer = new Set();
 export default class extends Command {
   constructor(options) {
     super(options);
-    this.description = "Reestablish roles for new members";
+    this.description = "Reestablish emojis for new members";
     this.guildonly = true;
     this.permissions = {
       user: [0n, 0n],
@@ -22,8 +22,7 @@ export default class extends Command {
       return message.channel.send("You cannot use this command, wait 6 hours!");
     }
     const col = message.guild.emojis.cache.filter(e => e.roles.cache.first());
-    if (!col.first())
-      return message.channel.send("There are no emojis to update");
+    if (!col.first()) return message.channel.send("There are no emojis to update");
 
     col.each(e => {
       const c = e.roles.cache;

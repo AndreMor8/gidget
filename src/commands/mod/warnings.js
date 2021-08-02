@@ -15,9 +15,7 @@ export default class extends Command {
     const embed = new MessageEmbed()
     .setTitle(`Warnings of ${member.user.tag}`)
     .setFooter("Contact an admin to see how to be pardoned.");
-    for(const i in warns) {
-      embed.addField(`Case #${parseInt(i) + 1}`, `ID: ${warns[i]._id}\nReason: ${warns[i].reason || "*None*"}`);
-    }
+    for(const i in warns) embed.addField(`Case #${parseInt(i) + 1}`, `ID: ${warns[i]._id}\nReason: ${warns[i].reason || "*None*"}`)
     message.channel.send({embeds: [embed]});
   }
 }

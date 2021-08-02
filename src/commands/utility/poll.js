@@ -78,9 +78,7 @@ export default class extends Command {
       try {
         if (msg.deletable) msg.delete();
         if (reactions.length) {
-          for (const reaction of reactions) {
-            await poll.react(reaction);
-          }
+          for (const reaction of reactions) await poll.react(reaction);
         } else {
           await poll.react("Perfecto:460279003673001985");
           await poll.react("WaldenNo:612137351166033950");

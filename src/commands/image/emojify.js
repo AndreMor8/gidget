@@ -39,9 +39,7 @@ export default class extends Command {
             url = args[1];
         }
         const parsed = parser.parse(args[1]);
-        if (parsed.length >= 1) {
-            url = parsed[0].url;
-        }
+        if (parsed.length >= 1) url = parsed[0].url
         if (!url) return message.channel.send("Invalid URL!");
         const { pre_type, buffer } = await render(url);
 
@@ -69,20 +67,15 @@ export default class extends Command {
                 col.on("collect", (msg) => {
                     message.guild.emojis.create((pre_type == "svg") ? buffer : url, msg.content, { reason: "emojify command" }).then((e) => {
                         button.editReply(`Emoji created correctly! -> ${e.toString()}`);
-                    }).catch(e => {
-                        button.editReply("Error: " + e);
-                    }).finally(() => {
+                    }).catch(e => button.editReply("Error: " + e))
+                    .finally(() => {
                         msg.delete();
                         col.stop();
                     });
                 });
-                col.on("end", (c, r) => {
-                    if (r === "time") button.editReply("Time's up!");
-                });
+                col.on("end", (c, r) => { if (r === "time") button.editReply("Time's up!") });
             });
-            butcol.on("end", (c, r) => {
-                if (r === "idle") here.edit({ components: [new MessageActionRow().addComponents([but_add.setDisabled(true)])] });
-            })
+            butcol.on("end", (c, r) => { if (r === "idle") here.edit({ components: [new MessageActionRow().addComponents([but_add.setDisabled(true)])] }) })
         }
     }
 }

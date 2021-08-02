@@ -22,11 +22,8 @@ export default function (sharder) {
       const todelete = req.query["delete"];
       if (todelete) {
         const post = await deleteCache(todelete);
-        if (post) {
-          res.status(200).send("Good.");
-        } else {
-          res.status(404).send("Something's bad. Maybe server ID doesn't exist");
-        }
+        if (post) res.status(200).send("Good.")
+        else res.status(404).send("Something's bad. Maybe server ID doesn't exist");
       } else {
         res.status(200).send("Specify a server!");
       }

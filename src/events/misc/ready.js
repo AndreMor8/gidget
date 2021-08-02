@@ -15,14 +15,10 @@ export default async bot => {
   }
   //"De-restriction" function once the penalty time has expired
   const doc = await MessageModel2.findOne();
-  if (doc) {
-    tempmute(bot);
-  }
+  if (doc) tempmute(bot);
   //Polls have a limit, with this we edit them so that they mark "Poll completed"
   const doc2 = await MessageModel3.findOne();
-  if (doc2) {
-    poll(bot);
-  }
+  if (doc2) poll(bot);
 
   //WWD will have this always :jiggler:
   banners(bot);

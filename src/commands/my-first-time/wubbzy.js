@@ -9,13 +9,10 @@ export default class extends Command {
     const text = "Wubbzy is ";
     if (args[1]) {
       const number = parseInt(args[1]);
-      if (!isNaN(number) && number < 5 && number >= 0) {
-     await message.channel.send(text + wubbzy[number] + " <a:WubbzyFaceA:612311062611492900>");
-      } else {
-     await message.channel.send(text + wubbzy[Math.floor(Math.random() * 5)] + " <a:WubbzyFaceA:612311062611492900>");
-      }
+      if (!isNaN(number) && number < 5 && number >= 0) await message.channel.send(text + wubbzy[number] + " <a:WubbzyFaceA:612311062611492900>")
+      else await message.channel.send(text + wubbzy[Math.floor(Math.random() * 5)] + " <a:WubbzyFaceA:612311062611492900>")
     } else {
-   await message.channel.send(text + wubbzy[Math.floor(Math.random() * 5)] + " <a:WubbzyFaceA:612311062611492900>");
+      await message.channel.send(text + wubbzy[Math.floor(Math.random() * 5)] + " <a:WubbzyFaceA:612311062611492900>");
     }
   }
 }

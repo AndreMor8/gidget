@@ -7,6 +7,6 @@ export default class extends Command {
     this.description = "Wubby";
   }
   async run(bot, message) {
- await message.channel.send("<:Wubby:665434218163208192>")
+    await message.channel.send("<:Wubby:665434218163208192>")
   }
 }

@@ -20,39 +20,33 @@ const g = {
   frame: 0,
 };
 const getFrame = (i) =>
-  [
-    {
+  [{
       x: g.x,
       y: g.y,
       w: g.w * g.scale,
       h: g.h * g.scale,
-    },
-    {
+    },{
       x: g.x - 4,
       y: g.y + 12,
       w: g.w * g.scale + 4,
       h: g.h * g.scale - 12,
-    },
-    {
+    },{
       x: g.x - 12,
       y: g.y + 18,
       w: g.w * g.scale + 12,
       h: g.h * g.scale - 18,
-    },
-    {
+    },{
       x: g.x - 12,
       y: g.y + 12,
       w: g.w * g.scale + 4,
       h: g.h * g.scale - 12,
-    },
-    {
+    },{
       x: g.x - 4,
       y: g.y,
       w: g.w * g.scale,
       h: g.h * g.scale,
     },
   ][i];
-
 /**
  * Remove partially transparent & #00ff00 (bg color) green pixels.
  */
@@ -64,7 +58,6 @@ function optimizeFrameColors(data) {
     data[i + 3] = data[i + 3] > 127 ? 255 : 0;
   }
 }
-
 /**
  * Render gif.
  *
@@ -92,9 +85,7 @@ function render(sprite, character, frames, size, delay) {
     gif.setTransparent(0x00ff00);
     gif.setRepeat(0);
     const chunks = [];
-    gif.on("data", (b) => {
-      chunks.push(b)
-    })
+    gif.on("data", (b) => chunks.push(b))
     gif.on("end", () => {
       const buffer = Buffer.concat(chunks);
       s(buffer);

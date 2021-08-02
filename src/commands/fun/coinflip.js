@@ -21,8 +21,6 @@ export default class extends Command {
         await button.update(`You got: **${arr[Math.floor(Math.random() * 2)]}**!`);
       }
     });
-    col.on("end", () => {
-      msg.edit({ content: msg.content, components: [new MessageActionRow().addComponents([but_redo.setDisabled(true)])] });
-    });
+    col.on("end", () => msg.edit({ content: msg.content, components: [new MessageActionRow().addComponents([but_redo.setDisabled(true)])] }));
   }
 }

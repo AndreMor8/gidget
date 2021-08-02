@@ -34,52 +34,36 @@ export default class extends Command {
         }
           break;
         case 'bots': {
-          const messages = await message.channel.messages.fetch({
-            limit: number
-          }, false);
+          const messages = await message.channel.messages.fetch({ limit: number }, false);
           messages.sweep(m => !m.author.bot);
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          bot.setTimeout(() => {
-            if (!thing.deleted) thing.delete()
-          }, 5000);
+          bot.setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
         }
           break;
         case 'attachments': {
-          const messages = await message.channel.messages.fetch({
-            limit: number
-          }, false);
+          const messages = await message.channel.messages.fetch({ limit: number }, false);
           messages.sweep(m => !m.attachments.first());
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          bot.setTimeout(() => {
-            if (!thing.deleted) thing.delete()
-          }, 5000);
+          bot.setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
         }
           break;
         case 'embeds': {
-          const messages = await message.channel.messages.fetch({
-            limit: number
-          }, false);
+          const messages = await message.channel.messages.fetch({ limit: number }, false);
           messages.sweep(m => !m.embeds[0]);
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          bot.setTimeout(() => {
-            if (!thing.deleted) thing.delete()
-          }, 5000);
+          bot.setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
         }
           break;
         case 'with': {
           if (!safe(args.slice(3).join(" "))) return message.channel.send("This is not a valid or safe regex.");
-          const messages = await message.channel.messages.fetch({
-            limit: number
-          }, false);
+          const messages = await message.channel.messages.fetch({ limit: number }, false);
           messages.sweep(m => !(new RegExp(args.slice(3).join(" "), "gmi").test(m.content)));
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          bot.setTimeout(() => {
-            if (!thing.deleted) thing.delete()
-          }, 5000);
+          bot.setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
         }
           break;
         default: {
@@ -89,13 +73,9 @@ export default class extends Command {
         }
       }
     } else {
-      if (isNaN(number)) {
-        await message.channel.send('That isn\'t a number!');
-      } else if (number > 100) {
-        await message.channel.send('I can only delete 100 messages at a time.');
-      } else if (number < 1) {
-        await message.channel.send('I don\'t think 0 or less is what you want to delete.');
-      }
+      if (isNaN(number)) await message.channel.send('That isn\'t a number!')
+      else if (number > 100) await message.channel.send('I can only delete 100 messages at a time.')
+      else if (number < 1) await message.channel.send('I don\'t think 0 or less is what you want to delete.')
     }
   }
 }

@@ -16,18 +16,12 @@ export default class extends Command {
       let text = ``;
       if (m.type === "member") {
         if (bot.users.cache.get(m.id)) {
-          if (bot.users.cache.get(m.id).bot) {
-            text += `[🤖] ${bot.users.cache.get(m.id).tag}:\n`;
-          } else {
-            text += `[🙎] ${bot.users.cache.get(m.id).tag}:\n`;
-          }
+          if (bot.users.cache.get(m.id).bot) text += `[🤖] ${bot.users.cache.get(m.id).tag}:\n`;
+          else text += `[🙎] ${bot.users.cache.get(m.id).tag}:\n`;
         } else {
           message.guild.members.fetch(m.id).then(n => {
-            if (n.user.bot) {
-              text += `[🤖] ${n.user.tag}:\n`;
-            } else {
-              text += `[🙎] ${n.user.tag}:\n`;
-            }
+            if (n.user.bot) text += `[🤖] ${n.user.tag}:\n`;
+            else text += `[🙎] ${n.user.tag}:\n`;
           })
         }
       }
@@ -38,20 +32,16 @@ export default class extends Command {
         text += `\t✅ => ${m.allow.toArray().join(", ")}`
       }
       if (m.deny.bitfield !== 0) {
-        if (doit) {
-          text += `\n\t❌ => ${m.deny.toArray().join(", ")}`
-        } else {
-          text += `\t❌ => ${m.deny.toArray().join(", ")}`
-        }
+        if (doit)text += `\n\t❌ => ${m.deny.toArray().join(", ")}`
+        else text += `\t❌ => ${m.deny.toArray().join(", ")}`
+
       }
       return text;
     });
     if (!permissions[0]) return message.channel.send("There are no channel overrides here.")
     else {
       const contents = Util.splitMessage(`\`\`\`${permissions.join("\n\n")}\n${channel.permissionsLocked ? "The channel is synchronized with its parent category." : "The channel is not synchronized with its parent category."}\nChannel overrides for #${channel.name}\`\`\``, { maxLength: 2000 });
-      for (const content of contents) {
-        message.channel.send(content);
-      }
+      for (const content of contents) message.channel.send(content)
     }
   }
 }

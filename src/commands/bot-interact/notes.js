@@ -53,9 +53,7 @@ export default class extends Command {
           .setColor("BLUE")
           .setTimestamp();
 
-        for(const i in arr) {
-          embed.addField(`${parseInt(i) + 1}.`, arr[i].note);
-        }
+        for(const i in arr) embed.addField(`${parseInt(i) + 1}.`, arr[i].note);
 
         await message.channel.send({embeds: [embed]});
     }

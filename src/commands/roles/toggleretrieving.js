@@ -11,7 +11,6 @@ export default class extends Command {
     };
   }
   async run(bot, message) {
-    if (!message.guild) return message.channel.send("This command only works on servers");
     if (!message.member.permissions.has("MANAGE_ROLES")) return message.channel.send("You don't have permission to modify that.")
     if (!message.guild.me.permissions.has("MANAGE_ROLES")) return message.channel.send("I don't have the `MANAGE_ROLES` permission.")
     const msgDocument = await MessageModel.findOne({ guildId: message.guild.id });

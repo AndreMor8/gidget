@@ -29,15 +29,11 @@ export default class extends Command {
         embed.addField("Redirects to", invite.channel.name + "\n" + invite.channel.toString(), true)
         embed.addField("\u200b", "\u200b", true)
           .addField("Features", invite.guild.features.join("\n") ? invite.guild.features.join("\n") : "Without features", true)
-        if (invite.guild.splashURL()) {
-          embed.setThumbnail(invite.guild.splashURL({ format: "png" }))
-        }
-        if (invite.guild.bannerURL()) {
-          embed.setImage(invite.guild.bannerURL({ format: "png" }))
-        }
+        if (invite.guild.splashURL()) embed.setThumbnail(invite.guild.splashURL({ format: "png" }))
+        if (invite.guild.bannerURL()) embed.setImage(invite.guild.bannerURL({ format: "png" }))
       }
       embed.addField("Inviter", invite.inviter ? invite.inviter.tag + "\n" + invite.inviter.toString() : "None", true)
-      await message.channel.send({embeds: [embed]});
+      await message.channel.send({ embeds: [embed] });
     } catch (err) {
       if (err.message === "Unknown Invite") return message.channel.send("The API says that invitation is unknown.");
       else return message.channel.send("Something happened when I was trying to collect the information. Here's a debug: " + err);

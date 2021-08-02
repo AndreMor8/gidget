@@ -18,15 +18,12 @@ export default async (bot, member) => {
       });
 
       //List roles
-      const roles = member.roles.cache
-        .filter(r => !r.deleted && !r.managed && r.id !== member.guild.id)
-        .map(r => r.id);
+      const roles = member.roles.cache.filter(r => !r.deleted && !r.managed && r.id !== member.guild.id).map(r => r.id);
 
       //Save to the DB
       if (roles.length) {
-        if (msgDocument) {
-          msgDocument.updateOne({ roles: roles }).catch(console.error);
-        } else {
+        if (msgDocument) msgDocument.updateOne({ roles: roles }).catch(console.error);
+        else {
           const dbMsgModel = new MessageModel({
             guildid: member.guild.id,
             memberid: member.user.id,

@@ -50,16 +50,13 @@ export default class extends Command {
 */
       const perms = role.permissions.toArray();
       let permstext = "";
-      if (perms.indexOf('ADMINISTRATOR') === -1) {
-        permstext = perms.join(', ') || "Without permissions.";
-      } else {
-        permstext = 'ADMINISTRATOR (This role has all the permissions)';
-      }
+      if (perms.indexOf('ADMINISTRATOR') === -1) permstext = perms.join(', ') || "Without permissions.";
+      else permstext = 'ADMINISTRATOR (This role has all the permissions)';
+
 
       let channel = args[args.length - 1];
       if (channel.charAt(0) == "-") {
-        channel =
-          message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() ||
+        channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() ||
           message.guild.channels.cache.get(channel.substring(1)) ||
           await message.guild.channels.fetch(channel.substring(1)).catch(() => { }) ||
           message.channel;
@@ -69,11 +66,8 @@ export default class extends Command {
 
       const perms2 = role.permissionsIn(channel).toArray();
       let permstext2 = "";
-      if (perms2.indexOf("ADMINISTRATOR") === -1) {
-        permstext2 = perms2.join(", ") || "Without permissions.";
-      } else {
-        permstext2 = "ADMINISTRATOR (This role has all the permissions)";
-      }
+      if (perms2.indexOf("ADMINISTRATOR") === -1) permstext2 = perms2.join(", ") || "Without permissions.";
+      else permstext2 = "ADMINISTRATOR (This role has all the permissions)";
 
       const embed = new Discord.MessageEmbed()
         .setColor(role.hexColor)

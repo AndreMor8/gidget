@@ -12,12 +12,10 @@ export default class extends Command {
     }
   }
   async run(bot, message, args) {
-    if(!args[1]) return message.channel.send("Put someone's ID");
+    if (!args[1]) return message.channel.send("Put someone's ID");
     const msgDocument = MessageModel.findOne({ guildid: message.guild.id, memberid: args[1] });
-    if (msgDocument) {
-      await msgDocument.deleteOne().then(() => message.channel.send("I removed that user from my database")).catch(err => message.channel.send("Some error ocurred. Here's a debug: " + err));
-    } else {
-      await message.channel.send('That user isn\'t in my database');
-    }
+    if (msgDocument) await msgDocument.deleteOne().then(() => message.channel.send("I removed that user from my database"))
+    .catch(err => message.channel.send("Some error ocurred. Here's a debug: " + err));
+    else await message.channel.send('That user isn\'t in my database')
   }
 }

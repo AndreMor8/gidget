@@ -26,8 +26,6 @@ export default class extends Command {
       const res = await r.json();
       if (res.error) return message.channel.send({ embeds: [new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message)] });
       await message.channel.send({ embeds: [new MessageEmbed(res)] });
-    }).catch((err) => {
-      return message.channel.send(`An error occurred while consulting the documentation: ${err.message}`)
-    });
+    }).catch((err) => message.channel.send(`An error occurred while consulting the documentation: ${err.message}`));
   }
 }

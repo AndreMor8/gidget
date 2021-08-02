@@ -5,38 +5,32 @@ export default class extends SlashCommand {
   constructor(options) {
     super(options);
     this.deployOptions.description = "Start listening tickets";
-    this.deployOptions.options = [
-      {
+    this.deployOptions.options = [{
         name: "text-channel",
         type: "CHANNEL",
         description: "Channel where to put the message of the bot.",
         required: true
-      },
-      {
+      },{
         name: "category-channel",
         type: "CHANNEL",
         description: "Channel where to put the tickets.",
         required: true
-      },
-      {
+      },{
         name: "embed-title",
         type: "STRING",
         description: "A title to differentiate the embed from others. (MAX 256 CHARACTERS)",
         required: true
-      },
-      {
+      },{
         name: "button-text",
         type: "STRING",
         description: "A text to put on the button (MAX 80 CHARACTERS)",
         required: false
-      },
-      {
+      },{
         name: "button-emoji",
         type: "STRING",
         description: "A valid emoji for the button",
         required: false
-      }
-    ]
+      }]
     this.guildonly = true;
     this.permissions = {
       user: [8n, 0n],
@@ -44,7 +38,6 @@ export default class extends SlashCommand {
     };
   }
   async run(bot, interaction) {
-
     const channel = interaction.options.get("text-channel").channel;
     if (!channel.isText()) return interaction.reply("[startticket.text-channel] This isn't a text-based channel!");
     if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return interaction.reply("[startticket.text-channel] I don't have the `SEND_MESSAGES` and the `EMBED_LINKS` permission in that channel.");
