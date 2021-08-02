@@ -16,12 +16,9 @@ export default class extends Command {
       channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => { }) || message.channel;
       if (channel.guild.id !== message.guild.id)
         return message.channel.send("That channel is from another guild");
-      if (!channel.isText())
-        return message.channel.send("That isn't a text channel!");
-      if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"]))
-        return message.channel.send("I don't have permissions!");
-      if (!channel.permissionsFor(message.author.id).has(["SEND_MESSAGES", "EMBED_LINKS"]))
-        return message.channel.send("You don't have permissions!");
+      if (!channel.isText()) return message.channel.send("That isn't a text channel!");
+      if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have permissions!");
+      if (!channel.permissionsFor(message.author.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("You don't have permissions!");
     } else {
       channel = message.channel;
     }
@@ -37,19 +34,16 @@ export default class extends Command {
     const embed = new MessageEmbed();
     const collector = message.channel.createMessageCollector({ filter: (m) => m.author.id === message.author.id, idle: 120000 });
     collector.on("collect", async (m) => {
-      if (m.content.toLowerCase() === "exit")
-        return collector.stop("Exited");
+      if (m.content.toLowerCase() === "exit") return collector.stop("Exited");
       if (m.content.toLowerCase() === "preview")
         return message.channel.send("Here's a preview of your embed", embed).then(msg => bot.setTimeout(() => {
           if (!msg.deleted) msg.delete();
         }, 15000));
       switch (i) {
         case 0:
-          if (m.content.toLowerCase() === "none") {
-            msgContent = undefined;
-          } else {
-            msgContent = m.content;
-          }
+          if (m.content.toLowerCase() === "none") msgContent = undefined
+          else msgContent = m.content;
+          
           i++;
           await message.channel.send(questions[i]);
           break;
@@ -99,28 +93,24 @@ export default class extends Command {
           }
           break;
         case 4:
-          if (m.content === "none") {
-            i++;
-          } else {
+          if (m.content === "none")i++;
+          else {
             embed.setTitle(m.content);
             i++;
           }
           await message.channel.send(questions[i]);
           break;
         case 5:
-          if (m.content === "none") {
-            i++;
-          } else if (linkregex.test(m.content)) {
+          if (m.content === "none") i++;
+          else if (linkregex.test(m.content)) {
             embed.setURL(m.content);
             i++;
-          } else
-            return message.channel.send("Invalid URL");
+          } else return message.channel.send("Invalid URL");
           await message.channel.send(questions[i]);
           break;
         case 6:
-          if (m.content === "none") {
-            i++;
-          } else {
+          if (m.content === "none") i++;
+          else {
             embed.setDescription(m.content);
             i++;
           }
@@ -209,28 +199,18 @@ export default class extends Command {
         return fields(message, embed).then(embed => {
           channel.send({ content: msgContent, embeds: [embed] });
         }).catch(reason => {
-          if (reason === "idle") {
-            message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
-          } else if (reason === "no") {
-            message.channel.send("It seems you don't want an embed.");
-          } else {
-            message.channel.send("Collector ended with reason: " + reason).catch(() => { });
-          }
+          if (reason === "idle") message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
+          else if (reason === "no") message.channel.send("It seems you don't want an embed.");
+          else message.channel.send("Collector ended with reason: " + reason).catch(() => { });
         }).finally(() => {
           actual.delete(message.author.id);
         });
       }
       actual.delete(message.author.id);
-      if (reason === "Exited") {
-        message.channel.send("It seems you don't want an embed.");
-      }
-      else if (reason === "Finished") {
-        channel.send({ content: msgContent, embeds: [embed] });
-      } else if (reason === "idle") {
-        message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
-      } else {
-        message.channel.send("Collector ended with reason: " + reason).catch(() => { });
-      }
+      if (reason === "Exited") message.channel.send("It seems you don't want an embed.");
+      else if (reason === "Finished") channel.send({ content: msgContent, embeds: [embed] });
+      else if (reason === "idle") message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
+      else message.channel.send("Collector ended with reason: " + reason).catch(() => { });
     });
   }
 }
@@ -286,11 +266,8 @@ function fields(message, embed) {
       }
     })
     collector.on("end", (collected, reason) => {
-      if (reason === "OK") {
-        resolve(embed);
-      } else {
-        reject(reason);
-      }
+      if (reason === "OK") resolve(embed);
+      else reject(reason);
     })
   })
 }

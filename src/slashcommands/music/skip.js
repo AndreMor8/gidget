@@ -11,7 +11,6 @@ export default class extends SlashCommand {
     this.guildonly = true;
   }
   async run(bot, interaction) {
-
     const channel = interaction.member.voice.channel;
     if (!channel) return await interaction.reply("You need to be in a voice channel to pause music!");
 

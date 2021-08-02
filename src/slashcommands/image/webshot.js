@@ -6,26 +6,22 @@ export default class extends SlashCommand {
   constructor(options) {
     super(options);
     this.deployOptions.description = "Take a screenshot of a web page";
-    this.deployOptions.options = [
-      {
+    this.deployOptions.options = [{
         name: "site",
         type: "STRING",
         description: "The web page you want to screenshot",
         required: true
-      },
-      {
+      }, {
         name: "y",
         description: "Where on the page to go vertically",
         type: "STRING",
         required: false
-      },
-      {
+      }, {
         name: "x",
         description: "Where on the page to go horizontally",
         type: "STRING",
         required: false
-      }
-    ];
+      }];
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 32768n]
@@ -35,9 +31,7 @@ export default class extends SlashCommand {
     if (interaction.user.id !== "577000793094488085") {
       if (!timer.has(interaction.user.id)) {
         timer.add(interaction.user.id);
-        setTimeout(() => {
-          timer.delete(interaction.user.id);
-        }, 30000);
+        setTimeout(() => timer.delete(interaction.user.id), 30000);
       } else {
         return interaction.reply({ content: "Don't overload this command! (30 sec cooldown)", ephemeral: true });
       }
@@ -65,9 +59,7 @@ async function pup(interaction, url, options) {
         "auth-token": process.env.PUPPETEER_TOKEN,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        url, x: options?.x, y: options?.y, nsfw: interaction.channel.nsfw
-      })
+      body: JSON.stringify({ url, x: options?.x, y: options?.y, nsfw: interaction.channel.nsfw })
     });
     if (!res.ok) throw new Error(await res.text() || (res.status + " " + res.statusText));
     else {

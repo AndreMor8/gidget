@@ -18,7 +18,6 @@ export default class extends SlashCommand {
     const queue = bot.distube.getQueue(interaction.guild.me.voice);
     if (!queue) return await interaction.reply(`There is nothing playing.`);
     if (queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
-
     if (!interaction.options.get("volume")) return await interaction.reply(`The current volume is: ${queue.volume}`);
 
     const number = parseInt(interaction.options.get("volume").value);

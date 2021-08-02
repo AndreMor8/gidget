@@ -30,29 +30,18 @@ export default class {
     // Parse all to integers
     [x, y, width, height] = [x, y, width, height].map(el => parseInt(el))
 
-    if (width <= 0 || height <= 0 || this.fontSize <= 0) {
-      //width or height or font size cannot be 0
-      return
-    }
-
+    if (width <= 0 || height <= 0 || this.fontSize <= 0) return
     // End points
     const xEnd = x + width
     const yEnd = y + height
 
-    if (this.textSize) {
-      console.error(
-        '%cCanvas-Txt:',
-        'font-weight: bold;',
-        'textSize is depricated and has been renamed to fontSize'
-      )
-    }
+    if (this.textSize) console.error('%cCanvas-Txt:', 'font-weight: bold;', 'textSize is depricated and has been renamed to fontSize')
 
     const { fontStyle, fontVariant, fontWeight, fontSize, font } = this
     const style = `${fontStyle} ${fontVariant} ${fontWeight} ${fontSize}px ${font}`
     ctx.font = style
 
     let txtY = y + height / 2 + parseInt(this.fontSize) / 2
-
     let textanchor
 
     if (this.align === 'right') {
@@ -101,15 +90,11 @@ export default class {
             while (temptext.substr(textlen, 1) != ' ' && textlen != 0) {
               textlen--
             }
-            if (textlen == 0) {
-              textlen = backup
-            }
+            if (textlen == 0) textlen = backup
             texttoprint = temptext.substr(0, textlen)
           }
 
-          texttoprint = this.justify
-            ? this.justifyLine(ctx, texttoprint, spaceWidth, SPACE, width)
-            : texttoprint
+          texttoprint = this.justify ? this.justifyLine(ctx, texttoprint, spaceWidth, SPACE, width) : texttoprint
 
           temptext = temptext.substr(textlen)
           textwidth = ctx.measureText(temptext).width
@@ -121,9 +106,8 @@ export default class {
       }
       // end foreach temptextarray
     })
-    const charHeight = this.lineHeight
-      ? this.lineHeight
-      : this.getTextHeight(ctx, mytext, style) //close approximation of height with width
+    //close approximation of height with width
+    const charHeight = this.lineHeight ? this.lineHeight : this.getTextHeight(ctx, mytext, style) 
     const vheight = charHeight * (textarray.length - 1)
     const negoffset = vheight / 2
 
@@ -166,7 +150,6 @@ export default class {
       ctx.lineTo(xEnd, debugY)
       ctx.stroke()
     }
-
     const TEXT_HEIGHT = vheight + charHeight
 
     return { height: TEXT_HEIGHT }
@@ -204,7 +187,6 @@ export default class {
     const text = line.trim()
 
     const lineWidth = ctx.measureText(text).width
-
     const nbSpaces = text.split(/\s+/).length - 1
     const nbSpacesToInsert = Math.floor((width - lineWidth) / spaceWidth)
 
@@ -215,9 +197,7 @@ export default class {
     let extraSpaces = nbSpacesToInsert - nbSpaces * nbSpacesMinimum
 
     let spaces = []
-    for (let i = 0; i < nbSpacesMinimum; i++) {
-      spaces.push(spaceChar)
-    }
+    for (let i = 0; i < nbSpacesMinimum; i++) spaces.push(spaceChar)
     spaces = spaces.join('')
 
     const justifiedText = text.replace(/\s+/g, match => {
@@ -228,5 +208,4 @@ export default class {
 
     return justifiedText
   }
-
 }

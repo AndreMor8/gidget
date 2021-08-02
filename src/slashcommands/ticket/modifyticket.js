@@ -5,8 +5,7 @@ export default class extends SlashCommand {
   constructor(options) {
     super(options);
     this.deployOptions.description = "Modify the ticket system";
-    this.deployOptions.options = [
-      {
+    this.deployOptions.options = [{
         name: "get",
         type: "SUB_COMMAND",
         description: "Get the current ticket configuration",
@@ -18,77 +17,62 @@ export default class extends SlashCommand {
             required: true
           }
         ]
-      },
-      {
+      }, {
         name: "set-roles",
         description: "These roles can close tickets.",
         type: "SUB_COMMAND",
-        options: [
-          {
+        options: [{
             name: "message",
             type: "STRING",
             description: "Message ID that relates a ticket system",
             required: true
-          },
-          {
+          }, {
             name: "roles",
             type: "STRING",
             description: "Roles that can close tickets.",
             required: false
-          }
-        ]
-      },
-      {
+          }]
+      }, {
         name: "manual",
         type: "SUB_COMMAND",
         description: "Configure whether the users who created the ticket can close it by themselves.",
-        options: [
-          {
+        options: [{
             name: "message",
             type: "STRING",
             description: "Message ID that relates a ticket system",
             required: true
-          }
-        ]
-      },
-      {
+          }]
+      }, {
         name: "category",
         type: "SUB_COMMAND",
         description: "Configure where the new tickets will go.",
-        options: [
-          {
+        options: [{
             name: "message",
             type: "STRING",
             description: "Message ID that relates a ticket system",
             required: true
-          },
-          {
+          }, {
             name: "channel",
             type: "CHANNEL",
             description: "Category channel where the tickets will be.",
             required: true
           }]
-      },
-      {
+      }, {
         name: "welcome-msg",
         type: "SUB_COMMAND",
         description: "Welcome the user to the ticket with this",
-        options: [
-          {
+        options: [{
             name: "message",
             type: "STRING",
             description: "Message ID that relates a ticket system",
             required: true
-          },
-          {
+          }, {
             name: "msg",
             type: "STRING",
             description: "Welcome message (MAX 2000 CHARACTERS)",
             required: false
-          }
-        ]
-      },
-      {
+          }]
+      }, {
         name: "desc",
         type: "SUB_COMMAND",
         description: "The message that will appear in the ticket topic",
@@ -97,15 +81,13 @@ export default class extends SlashCommand {
           type: "STRING",
           description: "Message ID that relates a ticket system",
           required: true
-        },
-        {
+        }, {
           name: "description",
           type: "STRING",
           description: "The content of the description/topic (MAX 1024 CHARACTERS)",
           required: false
         }]
-      }
-    ]
+      }]
     this.guildonly = true;
     this.permissions = {
       user: [8n, 0n],

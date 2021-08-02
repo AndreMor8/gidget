@@ -14,7 +14,6 @@ export default class extends SlashCommand {
   }
   //temporal solution, use interaction later.
   async run(bot, raw, interaction) {
-
     /*
     const status = {
       online: "Online",
@@ -60,13 +59,9 @@ export default class extends SlashCommand {
     const thing = !user.bot ? (await getPremiumType(user)) : undefined;
     let finaltext = "";
     if (!user.bot) {
-      if (thing.value < 0) {
-        finaltext = "[*I don't know*](https://gidget.xyz/api/auth/)";
-      } else if (thing.type === "db") {
-        finaltext = premiumtext[thing.value] + " (DB)";
-      } else {
-        finaltext = premiumtext[thing.value];
-      }
+      if (thing.value < 0) finaltext = "[*I don't know*](https://gidget.xyz/api/auth/)";
+      else if (thing.type === "db") finaltext = premiumtext[thing.value] + " (DB)";
+      else finaltext = premiumtext[thing.value];
     }
     /*
     const status2 = "";
@@ -159,18 +154,11 @@ export default class extends SlashCommand {
           permstext2 = "ADMINISTRATOR (All permissions)";
         }
 
-        embed
-          .addField("Full Username", user.tag + "\n" + user.toString(), true)
+        embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
           .addField("ID", user.id, true)
-          .addField(
-            "Nickname",
-            member.nickname ? `${member.nickname}` : "None",
-            true
-          )
+          .addField("Nickname", member.nickname ? `${member.nickname}` : "None", true)
           .addField("Bot?", user.bot ? "Yes" : "No", true);
-        if (!user.bot) {
-          embed.addField("Nitro type", finaltext, true);
-        }
+        if (!user.bot) embed.addField("Nitro type", finaltext, true);
         embed
           /*.addField("Status", status2, true)
             .addField("Presence", ptext, true)*/
@@ -179,30 +167,16 @@ export default class extends SlashCommand {
           .addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
           .addField("Still being verified?", member.pending ? "**Yes**" : "No")
         /*.addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");*/
-        if (!user.bot) {
-          embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No");
-        }
-        embed.addField(
-          `Joined ${interaction.guild.name} at`,
-          bot.botIntl.format(member.joinedAt)
-        )
+        if (!user.bot)embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No");
+        embed.addField(`Joined ${interaction.guild.name} at`, bot.botIntl.format(member.joinedAt))
           .addField("Joined Discord At", bot.botIntl.format(user.createdAt))
-          .addField(
-            "Roles",
-            `${member.roles.cache
-              .filter(r => r.id !== interaction.guild.id)
-              .map(roles => `${roles}`)
-              .join(" **|** ") || "No Roles"}`
-          );
+          .addField("Roles", `${member.roles.cache.filter(r => r.id !== interaction.guild.id).map(roles => `${roles}`).join(" **|** ") || "No Roles"}`);
         await interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (err) {
-        embed
-          .addField("Full Username", user.tag + "\n" + user.toString(), true)
+        embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
           .addField("ID", user.id, true)
           .addField("Bot?", user.bot ? "Yes" : "No", true);
-        if (!user.bot) {
-          embed.addField("Nitro type", finaltext, true);
-        }
+        if (!user.bot) embed.addField("Nitro type", finaltext, true); 
         embed
           /*.addField("Status", status2, true)
             .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)*/
@@ -211,20 +185,14 @@ export default class extends SlashCommand {
             "Last Message",
             user.lastMessage ? user.lastMessage.url : "Without fetch about that"
           )*/
-          .addField(
-            "Joined Discord At",
-            bot.botIntl.format(user.createdAt)
-          );
+          .addField("Joined Discord At", bot.botIntl.format(user.createdAt));
         await interaction.reply({ embeds: [embed], ephemeral: true });
       }
     } else {
-      embed
-        .addField("Full Username", user.tag + "\n" + user.toString(), true)
+      embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
         .addField("ID", user.id, true)
         .addField("Bot?", user.bot ? "Yes" : "No", true);
-      if (!user.bot) {
-        embed.addField("Nitro type", finaltext, true);
-      }
+      if (!user.bot) embed.addField("Nitro type", finaltext, true);
       embed
         /*.addField("Status", status2, true)
           .addField("Presence", ptext, true)*/
@@ -233,10 +201,7 @@ export default class extends SlashCommand {
           "Last Message",
           user.lastMessage ? user.lastMessage.url : "Without fetch about that"
         )*/
-        .addField(
-          "Joined Discord At",
-          bot.botIntl.format(user.createdAt)
-        );
+        .addField("Joined Discord At", bot.botIntl.format(user.createdAt));
       await interaction.reply({ embeds: [embed], ephemeral: true });
     }
   }

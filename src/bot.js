@@ -50,12 +50,8 @@ const bot = new Discord.Client({
 //top.gg
 if (process.env.EXTERNAL === "yes") {
   bot.dbl = new DBL(process.env.DBLKEY, bot);
-  bot.dbl.on("posted", () => {
-    console.log("tog.gg: Server count posted!");
-  });
-  bot.dbl.on("error", e => {
-    console.error("top.gg: Error:", e);
-  });
+  bot.dbl.on("posted", () => console.log("tog.gg: Server count posted!"));
+  bot.dbl.on("error", e => console.error("top.gg: Error:", e));
 }
 
 bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
@@ -77,12 +73,13 @@ bot.memberVotes = new Discord.Collection();
 //DisTube events
 bot.distube
   .on("playSong", (queue, song) => queue.textChannel.send(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`))
+  .on("empty", queue => queue.textChannel.send("Queue deleted"))
+  .on("finishSong", (queue) => bot.memberVotes.delete(queue.voiceChannel.guild.id))
+  .on("initQueue", (queue) => queue.setVolume(100))
   .on("error", (channel, e) => {
     channel.send(`Some error ocurred. Here's a debug: ${e}`);
     console.error(e);
-  }).on("empty", queue => queue.textChannel.send("Queue deleted"))
-  .on("finishSong", (queue) => bot.memberVotes.delete(queue.voiceChannel.guild.id))
-  .on("initQueue", (queue) => queue.setVolume(100));
+  });
 
 (async () => {
   //Database

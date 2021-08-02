@@ -183,7 +183,6 @@ export default class DiscordXp {
     user.xp -= xp;
     user.level = Math.floor(0.1 * Math.sqrt(user.xp));
 
-
     user.save().catch(e => console.log(`Failed to subtract xp: ${e}`));
 
     return user;
@@ -218,7 +217,6 @@ export default class DiscordXp {
 
   static async fetchLeaderboard(guildId, limit) {
     if (!guildId) throw new TypeError("A guild id was not provided.");
-
     const users = await levels.find({ guildID: guildId }).sort([['xp', 'descending']]).exec();
 
     return (limit && (typeof limit === "number")) ? users.slice(0, limit) : users;
@@ -237,16 +235,16 @@ export default class DiscordXp {
 
     const computedArray = leaderboard.map(key => {
       return {
-      guildID: key.guildID,
-      userID: key.userID,
-      xp: key.xp,
-      level: key.level,
-      position: (leaderboard.findIndex(i => i.guildID === key.guildID && i.userID === key.userID) + 1),
-      username: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).username : "Unknown",
-      discriminator: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).discriminator : "0000",
-      mention: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).toString() : `<@!` + key.userID + `>`,
-      tag: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).tag : "Unknown (" + key.userID + ")",
-    }
+        guildID: key.guildID,
+        userID: key.userID,
+        xp: key.xp,
+        level: key.level,
+        position: (leaderboard.findIndex(i => i.guildID === key.guildID && i.userID === key.userID) + 1),
+        username: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).username : "Unknown",
+        discriminator: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).discriminator : "0000",
+        mention: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).toString() : `<@!` + key.userID + `>`,
+        tag: client.users.cache.get(key.userID) ? client.users.cache.get(key.userID).tag : "Unknown (" + key.userID + ")",
+      }
     });
 
     return computedArray;

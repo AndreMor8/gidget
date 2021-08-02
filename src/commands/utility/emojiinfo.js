@@ -11,28 +11,21 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
-    if (!message.guild)
-      return message.channel.send("This command only works on servers.");
-    if (!args[1])
-      return message.channel.send("Usage: emoji <emoji>");
+    if (!message.guild) return message.channel.send("This command only works on servers.");
+    if (!args[1]) return message.channel.send("Usage: emoji <emoji>");
     let emoji = bot.emojis.cache.get(args[1]) ||
       bot.emojis.cache.find(e => e.name === args[1]) || await message.guild.emojis.fetch(args[1]).catch(() => { });
     if (!emoji) {
       const e = Util.parseEmoji(args[1]);
-      if (!e.id)
-        emoji = bot.emojis.cache.find(a => a.name === e.name);
-      else
-        emoji = bot.emojis.cache.get(e.id) || await message.guild.emojis.fetch(e.id).catch(() => { });
-      if (!emoji)
-        return message.channel.send("Invalid emoji!");
+      if (!e.id) emoji = bot.emojis.cache.find(a => a.name === e.name);
+      else emoji = bot.emojis.cache.get(e.id) || await message.guild.emojis.fetch(e.id).catch(() => { });
+      if (!emoji) return message.channel.send("Invalid emoji!");
     }
 
     let auth = emoji.author;
     if (!auth && message.guild.me.permissions.has("MANAGE_EMOJIS") && emoji.guild.id === message.guild.id) {
       auth = await emoji.fetchAuthor();
-    } else if (!auth) {
-      auth = "*Without perms to see that*";
-    }
+    } else if (!auth) auth = "*Without perms to see that*";
     const embed = new MessageEmbed()
       .setTitle("Emoji info for " + emoji.name)
       .setThumbnail(emoji.url)

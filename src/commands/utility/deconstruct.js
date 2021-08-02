@@ -10,12 +10,9 @@ export default class extends Command {
     };
   }
   async run(bot, message, args) {
-    if (!args[1])
-      return message.channel.send("Put a snowflake. Clue: It's a ID");
-    if (args[1].length > 19)
-      return message.channel.send("I don't think Discord's snowflakes have gotten to those points.");
-    if (!Number(args[1]))
-      return message.channel.send("Put a real snowflake!");
+    if (!args[1]) return message.channel.send("Put a snowflake. Clue: It's a ID");
+    if (args[1].length > 19) return message.channel.send("I don't think Discord's snowflakes have gotten to those points.");
+    if (!Number(args[1])) return message.channel.send("Put a real snowflake!");
     const data = SnowflakeUtil.deconstruct(args[1]);
     const embed = new MessageEmbed()
       .setTitle("Deconstructed snowflake")

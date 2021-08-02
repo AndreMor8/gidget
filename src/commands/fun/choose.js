@@ -34,8 +34,6 @@ export default class extends Command {
         await button.update({ embeds: [embed.spliceFields(1, 1).addField("I choose...", `**${tochoose[Math.floor(Math.random() * tochoose.length)]}**`)] });
       }
     });
-    col.on("end", () => {
-      msg.edit({ components: [new MessageActionRow().addComponents([but_redo.setDisabled(true)])] });
-    });
+    col.on("end", () => msg.edit({ components: [new MessageActionRow().addComponents([but_redo.setDisabled(true)])] }));
   }
 }

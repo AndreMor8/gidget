@@ -20,11 +20,8 @@ export default async (bot, message, nolevel = false) => {
       }
     }
     let PREFIX;
-    if (message.guild) {
-      PREFIX = message.guild.cache.prefix ? message.guild.prefix : await message.guild.getPrefix();
-    } else {
-      PREFIX = "g%";
-    }
+    if (message.guild) PREFIX = message.guild.cache.prefix ? message.guild.prefix : await message.guild.getPrefix();
+    else PREFIX = "g%";
     if (message.content.startsWith(PREFIX)) {
       if (internalCooldown.has(message.author.id)) return;
       //Command message code
@@ -94,9 +91,7 @@ export default async (bot, message, nolevel = false) => {
             if (!msgDocument2.nolevel.includes(message.channel.id)) {
               if (!timer.get(message.author.id)) {
                 timer.set(message.author.id, true);
-                setTimeout(() => {
-                  timer.delete(message.author.id);
-                }, 120000);
+                setTimeout(() => timer.delete(message.author.id), 120000);
                 const randomAmountOfXp = Math.floor(Math.random() * 9) + 1; // Min 1, Max 10
                 const hasLeveledUp = await Levels.appendXp(
                   message.author.id,
@@ -113,9 +108,7 @@ export default async (bot, message, nolevel = false) => {
                 }
                 if (hasLeveledUp && msgDocument2.levelnotif) {
                   const user = await Levels.fetch(message.author.id, message.guild.id);
-                  await message.channel.send(
-                    `${message.author}, congratulations! You have leveled up to **${user.level}**. :tada:`
-                  ).catch(() => { });
+                  await message.channel.send(`${message.author}, congratulations! You have leveled up to **${user.level}**. :tada:`).catch(() => { });
                 }
               }
             }
@@ -142,9 +135,7 @@ export default async (bot, message, nolevel = false) => {
                   .addField("Message flags", msg.flags.toArray().join(", ") || "*Without flags*", true)
                   .addField("Channel", msg.channel.toString())
                   .setFooter("Mentioned by: " + message.author.tag, message.author.displayAvatarURL({ format: "png", dynamic: true }));
-                if (msg.attachments.first()) {
-                  embed.setImage(msg.attachments.first().url);
-                }
+                if (msg.attachments.first()) embed.setImage(msg.attachments.first().url);
                 await message.channel.send({ embeds: [embed] });
               }
             }

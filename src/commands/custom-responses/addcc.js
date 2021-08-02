@@ -14,10 +14,7 @@ export default class extends Command {
     const realargs = args.slice(1).join(" ").split(" | ");
     if (!realargs[0] || !realargs[1]) return message.channel.send("Usage: `addcc <match> | <response>`\nThe cases here are global, insensitive, and multi-line.");
     if (!safeRegex(realargs[0])) return message.channel.send("This isn't a safe regex/string...");
-    await message.guild.addCustomResponse(realargs[0], {
-      content: realargs[1],
-      files: message.attachments.map(e => e.url),
-    })
+    await message.guild.addCustomResponse(realargs[0], { content: realargs[1], files: message.attachments.map(e => e.url) })
     await message.channel.send("Custom response set correctly");
   }
 }

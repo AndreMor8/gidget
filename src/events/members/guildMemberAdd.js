@@ -93,9 +93,7 @@ export default async (bot, member) => {
     .setTitle("Welcome to Wow Wow Discord!, " + member.user.username)
     .setColor("#FEE58D")
     .setThumbnail("https://cdn.discordapp.com/emojis/494666575773696001.png")
-    .setDescription(
-      `This server is dedicated to fans of the [Wow! Wow! Wubbzy!](https://wubbzy.fandom.com/wiki/Wow!_Wow!_Wubbzy!) show.\n\nIf you are one of them, we are happy to have you here! <:WubbzyLove:608130212076453928>`
-    )
+    .setDescription(`This server is dedicated to fans of the [Wow! Wow! Wubbzy!](https://wubbzy.fandom.com/wiki/Wow!_Wow!_Wubbzy!) show.\n\nIf you are one of them, we are happy to have you here! <:WubbzyLove:608130212076453928>`)
     .addField(
       "Yo soy alguien que habla español!",
       `Bienvenido a Wow Wow Discord, la comunidad de la serie infantil [Wow! Wow! Wubbzy!](https://wubbzy.fandom.com/es/wiki/Wow!_Wow!_Wubbzy!).\nPara obtener el rol español, espera los 10 minutos, ve a <#622977956863672362> y reacciona a [este mensaje](https://ptb.discordapp.com/channels/402555684849451028/622977956863672362/698991384140447765).\nEsperamos que disfrutes tu estancia en <#636781007189835779>`
