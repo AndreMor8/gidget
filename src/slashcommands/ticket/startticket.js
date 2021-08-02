@@ -10,22 +10,22 @@ export default class extends SlashCommand {
         type: "CHANNEL",
         description: "Channel where to put the message of the bot.",
         required: true
-      },{
+      }, {
         name: "category-channel",
         type: "CHANNEL",
         description: "Channel where to put the tickets.",
         required: true
-      },{
+      }, {
         name: "embed-title",
         type: "STRING",
         description: "A title to differentiate the embed from others. (MAX 256 CHARACTERS)",
         required: true
-      },{
+      }, {
         name: "button-text",
         type: "STRING",
         description: "A text to put on the button (MAX 80 CHARACTERS)",
         required: false
-      },{
+      }, {
         name: "button-emoji",
         type: "STRING",
         description: "A valid emoji for the button",

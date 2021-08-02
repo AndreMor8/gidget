@@ -19,7 +19,7 @@ export default class extends SlashCommand {
       .setDescription([
         `Now playing: **[${queue.songs[0].name}](${queue.songs[0].url})**`,
         `Time: **${moment.duration(queue.currentTime, "seconds").format()} / ${moment.duration(queue.songs[0].duration, "seconds").format()}**`,
-        `Progress Bar:`, `**${createProgressBar(suma, moment.duration(queue.songs[0].duration, "seconds")._milliseconds,15)}**`,
+        `Progress Bar:`, `**${createProgressBar(suma, moment.duration(queue.songs[0].duration, "seconds")._milliseconds, 15)}**`,
       ].join("\n"))
       .setColor(0xffff00);
     await interaction.reply({ embeds: [embed_success], ephemeral: true });

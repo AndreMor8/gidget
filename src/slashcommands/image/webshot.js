@@ -11,12 +11,12 @@ export default class extends SlashCommand {
         type: "STRING",
         description: "The web page you want to screenshot",
         required: true
-      },{
+      }, {
         name: "y",
         description: "Where on the page to go vertically",
         type: "STRING",
         required: false
-      },{
+      }, {
         name: "x",
         description: "Where on the page to go horizontally",
         type: "STRING",

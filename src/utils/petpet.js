@@ -25,22 +25,22 @@ const getFrame = (i) =>
       y: g.y,
       w: g.w * g.scale,
       h: g.h * g.scale,
-    },{
+    }, {
       x: g.x - 4,
       y: g.y + 12,
       w: g.w * g.scale + 4,
       h: g.h * g.scale - 12,
-    },{
+    }, {
       x: g.x - 12,
       y: g.y + 18,
       w: g.w * g.scale + 12,
       h: g.h * g.scale - 18,
-    },{
+    }, {
       x: g.x - 12,
       y: g.y + 12,
       w: g.w * g.scale + 4,
       h: g.h * g.scale - 12,
-    },{
+    }, {
       x: g.x - 4,
       y: g.y,
       w: g.w * g.scale,

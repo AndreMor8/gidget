@@ -24,7 +24,7 @@ export default class extends Command {
   }
 }
 
-const send = (message, txt, inspect = false) => {
+const send = async (message, txt, inspect = false) => {
   const text = Util.splitMessage(inspect ? util.inspect(txt, { depth: 0 }) : txt, { maxLength: 1950, char: "" });
   await message.channel.send(Formatters.codeBlock("sh", text[0]));
 }

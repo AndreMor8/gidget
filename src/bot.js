@@ -79,7 +79,7 @@ bot.distube
   .on("error", (channel, e) => {
     channel.send(`Some error ocurred. Here's a debug: ${e}`);
     console.error(e);
-  })
+  });
 
 (async () => {
   //Database

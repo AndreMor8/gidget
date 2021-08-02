@@ -14,23 +14,23 @@ export default class extends SlashCommand {
         description: "The role to add if selected.",
         type: "ROLE",
         required: true
-      },{
+      }, {
         name: "role-name",
         description: "The name that will be displayed to the user, by default current role name. (MAX 25 CHARACTERS)",
         type: "STRING",
         required: false
-      },{
+      }, {
         name: "description",
         description: "A short description for the role option (MAX 50 CHARACTERS)",
         type: "STRING",
         required: false
-      },{
+      }, {
         name: "emoji",
         description: "A valid emoji",
         type: "STRING",
         required: false
       }]
-    },{
+    }, {
       name: "remove",
       description: "Remove roles(options)",
       type: "SUB_COMMAND",
@@ -39,21 +39,21 @@ export default class extends SlashCommand {
         description: "The role to remove from the list",
         type: "ROLE",
         required: false
-      },{
+      }, {
         name: "role-name",
         description: "This is in case you removed the role. Put the name previously set to delete it from the list.",
         type: "STRING",
         required: false
       }]
-    },{
+    }, {
       name: "clear",
       description: "Clear the added roles, so you can start another message with another list",
       type: "SUB_COMMAND"
-    },{
+    }, {
       name: "view",
       description: "Check out the roles you added",
       type: "SUB_COMMAND",
-    },{
+    }, {
       name: "create-instance",
       description: "Create a message with a list of the provided roles.",
       type: "SUB_COMMAND",
@@ -62,18 +62,18 @@ export default class extends SlashCommand {
           description: "On which channel will I send that message?",
           type: "CHANNEL",
           required: true
-        },{
+        }, {
           name: "content",
           description: "Default message top content (MAX 2000 CHARACTERS)",
           type: "STRING",
           required: true
-        },{
+        }, {
           name: "placeholder",
           description: "Text that will appear when the user views the menu without anything selected. (MAX 100 CHARACTERS)",
           type: "STRING",
           required: false
         }]
-    },{
+    }, {
       name: "add-to-instance",
       description: "Add this menu to a ready-made message from the bot. Useful when creating an embed with the command.",
       type: "SUB_COMMAND",
@@ -82,12 +82,12 @@ export default class extends SlashCommand {
           description: "On which channel is this message located?",
           type: "CHANNEL",
           required: true,
-        },{
+        }, {
           name: "message",
           description: "ID of the message to add the component to.",
           type: "STRING",
           required: true
-        },{
+        }, {
           name: "placeholder",
           description: "Text that will appear when the user views the menu without anything selected. (MAX 100 CHARACTERS)",
           type: "STRING",

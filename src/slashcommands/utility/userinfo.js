@@ -156,7 +156,7 @@ export default class extends SlashCommand {
 
         embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
           .addField("ID", user.id, true)
-          .addField("Nickname",member.nickname ? `${member.nickname}` : "None",true)
+          .addField("Nickname", member.nickname ? `${member.nickname}` : "None", true)
           .addField("Bot?", user.bot ? "Yes" : "No", true);
         if (!user.bot) embed.addField("Nitro type", finaltext, true);
         embed
@@ -170,7 +170,7 @@ export default class extends SlashCommand {
         if (!user.bot)embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No");
         embed.addField(`Joined ${interaction.guild.name} at`, bot.botIntl.format(member.joinedAt))
           .addField("Joined Discord At", bot.botIntl.format(user.createdAt))
-          .addField("Roles",`${member.roles.cache.filter(r => r.id !== interaction.guild.id).map(roles => `${roles}`).join(" **|** ") || "No Roles"}`);
+          .addField("Roles", `${member.roles.cache.filter(r => r.id !== interaction.guild.id).map(roles => `${roles}`).join(" **|** ") || "No Roles"}`);
         await interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (err) {
         embed.addField("Full Username", user.tag + "\n" + user.toString(), true)

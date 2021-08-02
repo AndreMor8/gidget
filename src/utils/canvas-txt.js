@@ -35,7 +35,7 @@ export default class {
     const xEnd = x + width
     const yEnd = y + height
 
-    if (this.textSize) console.error('%cCanvas-Txt:','font-weight: bold;','textSize is depricated and has been renamed to fontSize')
+    if (this.textSize) console.error('%cCanvas-Txt:', 'font-weight: bold;', 'textSize is depricated and has been renamed to fontSize')
 
     const { fontStyle, fontVariant, fontWeight, fontSize, font } = this
     const style = `${fontStyle} ${fontVariant} ${fontWeight} ${fontSize}px ${font}`
