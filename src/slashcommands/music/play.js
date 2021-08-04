@@ -20,7 +20,7 @@ export default class extends SlashCommand {
       if (!channel) return interaction.reply("You need to be in a voice channel to play music!");
       const queue = bot.distube.getQueue(interaction.guild.me.voice);
       if (queue && queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
-      if (!channel.joinable || !channel.speakable) return interaction.reply("I don't have permissions to connect and speak in your channel!");
+      if (!channel.joinable || (channel.type !== "stage" && !channel.speakable)) return interaction.reply("I don't have permissions to connect and speak in your channel!");
 
       await interaction.defer();
 
