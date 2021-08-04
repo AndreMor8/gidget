@@ -22,7 +22,7 @@ export default async bot => {
 
   //WWD will have this always :jiggler:
   banners(bot);
-  
+
   //Show the inviter on the welcome message. Luckily, fetch invites do not have a rate-limit
   try {
     const guildsToFetch = bot.guilds.cache.filter(e => e.me.permissions.has("MANAGE_GUILD")).array();
@@ -37,6 +37,6 @@ export default async bot => {
   }
 
   //All internal operations ended
-  presence(bot);
+  await presence(bot);
   console.log(`Gidget is alive! Version ${bot.botVersion} from shard ${bot.shard?.ids[0] || 0}`);
 };
