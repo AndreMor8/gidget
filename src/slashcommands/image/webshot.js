@@ -59,7 +59,7 @@ async function pup(interaction, url, options) {
         "auth-token": process.env.PUPPETEER_TOKEN,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ url, x: options?.x, y: options?.y, nsfw: interaction.channel.nsfw })
+      body: JSON.stringify({ url, x: options?.x, y: options?.y, nsfw: interaction.channel?.nsfw || false })
     });
     if (!res.ok) throw new Error(await res.text() || (res.status + " " + res.statusText));
     else {
