@@ -31,7 +31,7 @@
     "cpu-stat": "2.0.1",
     "crypto-js": "^4.1.1",
     "dblapi.js": "^2.4.1",
-    "discord.js-light": "git+https://github.com/timotejroiko/discord.js-light.git#c3a51b1a3b76c8f83e66d6baa3f4b1a927af4ce2",
+    "discord.js-light": "^4.0.5",
     "distube": "^3.0.0-alpha.17",
     "dotenv": "^10.0.0",
     "execa": "^5.1.1",
