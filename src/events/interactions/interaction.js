@@ -1,6 +1,7 @@
 import tickets from "../../database/models/ticket.js";
 import tmembers from "../../database/models/tmembers.js";
 import Discord from 'discord.js-light';
+import fetch from 'node-fetch';
 
 const internalCooldown = new Set();
 
@@ -59,57 +60,71 @@ export default async (bot, interaction) => {
       }
     }
   }
-  if (interaction.isButton() && interaction.customID === "ticket_f") {
-    const doc = await tickets.findOne({
-      guildId: { $eq: interaction.guildID },
-      messageId: { $eq: interaction.message.id },
-      channelId: { $eq: interaction.channelID }
-    });
-
-    if (doc) {
-      const { categoryId } = doc;
-      await bot.users.fetch(interaction.user.id);
-      const doc2 = await tmembers.findOne({
+  if (interaction.isButton()) {
+    if (interaction.customID === "ticket_f") {
+      const doc = await tickets.findOne({
         guildId: { $eq: interaction.guildID },
-        from: { $eq: interaction.message.id },
-        memberId: { $eq: interaction.user.id }
-      });
-      if (doc2) return interaction.reply({ content: "You already have a ticket!", ephemeral: true }).catch(() => { });
-      const cat = interaction.guild.channels.cache.get(categoryId) || await interaction.guild.channels.fetch(categoryId).catch(() => { });
-      if (!cat) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
-      if (!cat.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
-      const todesc = doc.desc?.replace(/%AUTHOR%/g, interaction.user.toString());
-      const ch = await interaction.guild.channels
-        .create(`${interaction.user.username}s-ticket`, {
-          type: "text",
-          topic: todesc,
-          parent: cat,
-          reason: "User created a ticket!"
-        }).catch(() => { });
-      if (!ch) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
-      const tmp = await ch.createOverwrite(interaction.user.id, {
-        VIEW_CHANNEL: true,
-        SEND_MESSAGES: true,
-        EMBED_LINKS: true,
-        ATTACH_FILES: true
-      }, { type: 1 }).catch(() => { });
-      if (!tmp) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
-
-      await tmembers.create({
-        guildId: interaction.guild.id,
-        channelId: ch.id,
-        memberId: interaction.user.id,
-        from: interaction.message.id
+        messageId: { $eq: interaction.message.id },
+        channelId: { $eq: interaction.channelID }
       });
 
-      if (doc.welcomemsg && ch.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
-        const tosend = doc.welcomemsg.replace(/%AUTHOR%/g, interaction.user.toString());
-        ch.send({ content: tosend, allowedMentions: { parse: ['users', 'roles', 'everyone'] } }).catch(() => { });
+      if (doc) {
+        const { categoryId } = doc;
+        await bot.users.fetch(interaction.user.id);
+        const doc2 = await tmembers.findOne({
+          guildId: { $eq: interaction.guildID },
+          from: { $eq: interaction.message.id },
+          memberId: { $eq: interaction.user.id }
+        });
+        if (doc2) return interaction.reply({ content: "You already have a ticket!", ephemeral: true }).catch(() => { });
+        const cat = interaction.guild.channels.cache.get(categoryId) || await interaction.guild.channels.fetch(categoryId).catch(() => { });
+        if (!cat) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+        if (!cat.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+        const todesc = doc.desc?.replace(/%AUTHOR%/g, interaction.user.toString());
+        const ch = await interaction.guild.channels
+          .create(`${interaction.user.username}s-ticket`, {
+            type: "text",
+            topic: todesc,
+            parent: cat,
+            reason: "User created a ticket!"
+          }).catch(() => { });
+        if (!ch) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+        const tmp = await ch.createOverwrite(interaction.user.id, {
+          VIEW_CHANNEL: true,
+          SEND_MESSAGES: true,
+          EMBED_LINKS: true,
+          ATTACH_FILES: true
+        }, { type: 1 }).catch(() => { });
+        if (!tmp) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+
+        await tmembers.create({
+          guildId: interaction.guild.id,
+          channelId: ch.id,
+          memberId: interaction.user.id,
+          from: interaction.message.id
+        });
+
+        if (doc.welcomemsg && ch.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
+          const tosend = doc.welcomemsg.replace(/%AUTHOR%/g, interaction.user.toString());
+          ch.send({ content: tosend, allowedMentions: { parse: ['users', 'roles', 'everyone'] } }).catch(() => { });
+        }
+        await interaction.reply({ content: `Your ticket has been created! -> ${ch}`, ephemeral: true });
+      } else {
+        await interaction.deferUpdate();
+        await interaction.message.delete();
       }
-      await interaction.reply({ content: `Your ticket has been created! -> ${ch}`, ephemeral: true });
-    } else {
-      await interaction.deferUpdate();
-      await interaction.message.delete();
+    } else if (interaction.customID.startsWith("ww_hb")) {
+      const [, , mode, id] = interaction.customID.split("_");
+      if (mode === "publish") {
+        const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/publish`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
+        if (!res.ok) return interaction.reply({ content: `Error: ${res.text()}` });
+        else await interaction.update({ embeds: [new Discord.MessageEmbed(interaction.message.embeds[0]).setColor("GREEN").setFooter("Approved on").setTimestamp(new Date())], components: [] });
+        
+      } else if (mode === "reject") {
+        const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/reject`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
+        if (!res.ok) return interaction.reply({ content: `Error: ${res.text()}` });
+        else interaction.update({ embeds: [new Discord.MessageEmbed(interaction.message.embeds[0]).setColor("RED").setFooter("Rejected on").setTimestamp(new Date())], components: [] });
+      }
     }
   }
 }
