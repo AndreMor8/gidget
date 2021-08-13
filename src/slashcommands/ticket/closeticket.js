@@ -28,7 +28,7 @@ export default class extends SlashCommand {
     const finish = async (staff = false) => {
       try {
         await interaction.reply("Closing ticket...");
-        const member = interaction.guild.members.cache.get(memberId) || await interaction.guild.members.cache.fetch(memberId).catch(() => { });
+        const member = interaction.guild.members.cache.get(memberId) || await interaction.guild.members.fetch(memberId).catch(() => { });
         await interaction.channel.delete(Util.splitMessage(`Ticket from ${member?.user.tag || memberId} closed by ${interaction.user.tag} ${reason ? `with reason: ${reason}` : ""}`, { maxLength: 500 })[0]);
         await member?.send(Util.splitMessage(staff ? reason ? "Your ticket was closed by " + interaction.user.tag + " with reason: " + reason : "Your ticket was closed by " + interaction.user.tag : 'You have successfully closed your ticket.', { maxLength: 2000 })[0]).catch(() => { });
         await doc2.deleteOne();
