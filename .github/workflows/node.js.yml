@@ -23,8 +23,6 @@ jobs:
     - name: Installing APT dependencies
       run: sudo apt-get update && sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev libtool qrencode gifsicle
     - name: Installing project dependencies
-      run: npm install --legacy-peer-deps
-    - name: Doing things with Discord.js
-      run: npm i -g gen-esm-wrapper && cd ./node_modules/discord.js && gen-esm-wrapper ./src/index.js ./src/index.mjs
+      run: npm ci
     - name: Executing CI test script
       run: npm test
