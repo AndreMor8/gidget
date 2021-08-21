@@ -22,7 +22,7 @@ export default class extends Command {
         const arg = args.slice(2).join(" ").split(" | ");
         if (!arg[0] || !arg[1]) return message.channel.send("Usage: `wubmeme text <text1> | <text2>`");
 
-        message.channel.startTyping();
+        message.channel.sendTyping();
 
         if (!img) img = await Canvas.loadImage(path.join(__dirname, "../../assets/wubmeme.png"));
         const canvas = Canvas.createCanvas(2210, 2210);
@@ -37,11 +37,11 @@ export default class extends Command {
         if (height2 > 1030) return message.channel.send("[text 2] There is a limit of 10 lines. Your text exceeded that limit.")
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "wubmeme.png");
         await message.channel.send({ files: [attachment] });
-        message.channel.stopTyping();
+        
       } else if (mode === "image") {
         const yes = [args[2], args[3]];
         if (!yes.every(e => isURL(e))) return message.channel.send(args[2] ? "Invalid links!" : "Usage: `wubmeme image <link> <link>`");
-        message.channel.startTyping();
+        message.channel.sendTyping();
 
         if (!img) img = await Canvas.loadImage(path.join(__dirname, "../../assets/wubmeme.png"));
         const canvas = Canvas.createCanvas(2210, 2210);
@@ -56,10 +56,10 @@ export default class extends Command {
 
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "wubmeme.png");
         await message.channel.send({ files: [attachment] });
-        message.channel.stopTyping();
+        
       } else message.channel.send("Use: `wubmeme <mode> <...args>`\nAvailable modes: `text`, `image`")
     } catch (err) {
-      message.channel.stopTyping();
+      
       message.channel.send(`Error: ${err}`);
     }
   }

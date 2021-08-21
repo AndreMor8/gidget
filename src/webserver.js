@@ -1,7 +1,6 @@
+import { guildNoCache } from './extensions.js';
 import express from 'express';
-/**
- * @param {object} bot - Discord Client.
- */
+
 export default function (sharder) {
   const app = express();
   app.get("/ping", (req, res) => {
@@ -35,14 +34,10 @@ export default function (sharder) {
   const listener = app.listen(process.env.PORT, () => {
     console.log("Your app is listening on port " + listener.address().port);
   });
-  /**
-   * @param {string} guildID - Server ID to delete cache.
-   * @returns {Promise<boolean>} Always true (when the server is found).
-   */
   async function deleteCache(guildID) {
     if (isNaN(guildID)) return false;
     const res = await sharder.broadcastEval((c, { g }) => {
-      return c.guilds.cache.get(g)?.noCache();
+      return guildNoCache(c.guilds.cache.get(g));
     }, { context: { g: guildID } });
     if (res.find(e => Boolean(e))) return true;
     else return false;

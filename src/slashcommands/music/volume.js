@@ -5,7 +5,7 @@ export default class extends SlashCommand {
     this.deployOptions.description = "Change or see the volume dispatcher (0-100)";
     this.deployOptions.options = [{
       name: "volume",
-      type: "STRING",
+      type: "INTEGER",
       description: "New value for volume",
       required: false
     }]
@@ -18,9 +18,9 @@ export default class extends SlashCommand {
     const queue = bot.distube.getQueue(interaction.guild.me.voice);
     if (!queue) return await interaction.reply(`There is nothing playing.`);
     if (queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
-    if (!interaction.options.get("volume")) return await interaction.reply(`The current volume is: ${queue.volume}`);
+    if (!interaction.options.getInteger("volume", false)) return await interaction.reply(`The current volume is: ${queue.volume}`);
 
-    const number = parseInt(interaction.options.get("volume").value);
+    const number = interaction.options.getInteger("volume", false);
 
     if (!number) return await interaction.reply("Invalid volume!");
     if (number < 0) return await interaction.reply("Invalid volume!");

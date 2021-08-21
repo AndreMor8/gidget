@@ -1,3 +1,4 @@
+import { getMessageLinksConfig, setMessageLinksConfig } from "../../extensions.js";
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -9,8 +10,8 @@ export default class extends Command {
     }
   }
   async run(bot, message) {
-    const thing = message.guild.cache.messagelinksconfig ? message.guild.messagelinksconfig : await message.guild.getMessageLinksConfig();
-    await message.guild.setMessageLinksConfig(!thing.enabled);
-    await message.channel.send("You have " + (!thing.enabled ? "enabled" : "disabled") + " the message link detection system");
+    const thing = await getMessageLinksConfig(message.guild);
+    await setMessageLinksConfig(message.guild, !thing.enabled);
+    await message.channel.send("You have " + (thing.enabled ? "enabled" : "disabled") + " the message link detection system");
   }
 }

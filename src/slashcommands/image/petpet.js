@@ -7,17 +7,17 @@ export default class extends SlashCommand {
     super(options);
     this.deployOptions.name = "petpet";
     this.deployOptions.description = undefined;
-    this.deployOptions.type = 2;
+    this.deployOptions.type = 'USER';
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 32768n]
     }
   }
-  async run(bot, raw, interaction) {
-    let source = await bot.users.fetch(raw.data.target_id).catch(() => { });
+  async run(bot, interaction) {
+    let source = await bot.users.fetch(interaction.targetId).catch(() => { });
     if (!source) return interaction.reply("Invalid user!");
     source = source.displayAvatarURL({ format: "png", size: 128 });
-    await interaction.defer();
+    await interaction.deferReply();
     const torender = await Canvas.loadImage(source);
     const buf = await petpet(torender, delay);
     await interaction.editReply({

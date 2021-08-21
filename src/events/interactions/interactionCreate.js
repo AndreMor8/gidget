@@ -6,11 +6,10 @@ import fetch from 'node-fetch';
 const internalCooldown = new Set();
 
 export default async (bot, interaction) => {
-  if (interaction.isCommand()) {
+  if (interaction.isCommand() || interaction.isContextMenu()) {
     if (internalCooldown.has(interaction.user.id)) return interaction.reply({ content: "Calm down! Wait until the previous command finished executing.", ephemeral: true });
     const command = bot.slashCommands.get(interaction.commandName);
     if (!command) return interaction.reply({ content: "That command doesn't exist", ephemeral: true });
-    if (command.deployOptions.type) return;
     if (!interaction.guild && command.guildonly) return interaction.reply("This command only works on servers");
     if (interaction.guild) {
       if (!bot.guilds.cache.has(interaction.guild.id) && command.requireBotInstance) return interaction.reply("Please invite the real bot");
@@ -41,7 +40,7 @@ export default async (bot, interaction) => {
       internalCooldown.delete(interaction.user.id);
     }
   }
-  if (interaction.isSelectMenu() && interaction.customID === "selectroles_f") {
+  if (interaction.isSelectMenu() && interaction.customId === "selectroles_f") {
     if (!bot.guilds.cache.has(interaction.guild.id)) return interaction.deferUpdate();
     if (!interaction.guild.me.permissions.has("MANAGE_ROLES")) return interaction.reply({ content: "I don't have permissions to add roles. Contact an administrator to fix the problem.", ephemeral: true })
     const roles = interaction.values?.map(e => e.split("_")[3]) || [];
@@ -61,18 +60,18 @@ export default async (bot, interaction) => {
     }
   }
   if (interaction.isButton()) {
-    if (interaction.customID === "ticket_f") {
+    if (interaction.customId === "ticket_f") {
       const doc = await tickets.findOne({
-        guildId: { $eq: interaction.guildID },
+        guildId: { $eq: interaction.guildId },
         messageId: { $eq: interaction.message.id },
-        channelId: { $eq: interaction.channelID }
+        channelId: { $eq: interaction.channelId }
       });
 
       if (doc) {
         const { categoryId } = doc;
         await bot.users.fetch(interaction.user.id);
         const doc2 = await tmembers.findOne({
-          guildId: { $eq: interaction.guildID },
+          guildId: { $eq: interaction.guildId },
           from: { $eq: interaction.message.id },
           memberId: { $eq: interaction.user.id }
         });
@@ -83,13 +82,13 @@ export default async (bot, interaction) => {
         const todesc = doc.desc?.replace(/%AUTHOR%/g, interaction.user.toString());
         const ch = await interaction.guild.channels
           .create(`${interaction.user.username}s-ticket`, {
-            type: "text",
+            type: "GUILD_TEXT",
             topic: todesc,
             parent: cat,
             reason: "User created a ticket!"
           }).catch(() => { });
         if (!ch) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
-        const tmp = await ch.createOverwrite(interaction.user.id, {
+        const tmp = await ch.permissionOverwrites.create(interaction.user.id, {
           VIEW_CHANNEL: true,
           SEND_MESSAGES: true,
           EMBED_LINKS: true,
@@ -113,13 +112,13 @@ export default async (bot, interaction) => {
         await interaction.deferUpdate();
         await interaction.message.delete();
       }
-    } else if (interaction.customID.startsWith("ww_hb")) {
-      const [, , mode, id] = interaction.customID.split("_");
+    } else if (interaction.customId.startsWith("ww_hb")) {
+      const [, , mode, id] = interaction.customId.split("_");
       if (mode === "publish") {
         const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/publish`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
         if (!res.ok) return interaction.reply({ content: `Error: ${await res.text()}` });
         else await interaction.update({ embeds: [new Discord.MessageEmbed(interaction.message.embeds[0]).setColor("GREEN").setFooter("Approved on").setTimestamp(new Date())], components: [] });
-        
+
       } else if (mode === "reject") {
         const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/reject`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
         if (!res.ok) return interaction.reply({ content: `Error: ${await res.text()}` });

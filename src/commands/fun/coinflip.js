@@ -7,7 +7,7 @@ export default class extends Command {
   async run(bot, message) {
     const arr = ["Heads", "Tails"];
     const but_redo = new MessageButton()
-      .setCustomID("coinflip_c_redo")
+      .setCustomId("coinflip_c_redo")
       .setStyle("PRIMARY")
       .setLabel("Retry");
     const msg = await message.channel.send({ content: `You got: **${arr[Math.floor(Math.random() * 2)]}**!`, components: [new MessageActionRow().addComponents([but_redo])] });
@@ -15,9 +15,9 @@ export default class extends Command {
       if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%coinflip`", ephemeral: true });
       return button.user.id === message.author.id;
     };
-    const col = msg.createMessageComponentInteractionCollector({ filter, idle: 15000 });
+    const col = msg.createMessageComponentCollector({ filter, idle: 15000 });
     col.on("collect", async (button) => {
-      if (button.customID === "coinflip_c_redo") {
+      if (button.customId === "coinflip_c_redo") {
         await button.update(`You got: **${arr[Math.floor(Math.random() * 2)]}**!`);
       }
     });

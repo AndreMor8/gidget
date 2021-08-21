@@ -1,3 +1,4 @@
+import { getAutoPostChannels, setAutoPostChannel, deleteAutoPostChannel } from "../../extensions.js";
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -13,33 +14,33 @@ export default class extends Command {
     switch (args[1]) {
       case 'add': {
         if (!args[2]) message.channel.send("Please put a channel!");
-        const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id && e.type === "news").first() || message.guild.channels.cache.get(args[2]) || await message.guild.channels.fetch(args[2] || "123").catch(() => { });
+        const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id && e.type === "GUILD_NEWS").first() || message.guild.channels.cache.get(args[2]) || await message.guild.channels.fetch(args[2] || "123").catch(() => { });
         if (!channel) return message.channel.send("A valid channel has not been set. Only news channels are allowed.");
         if (!channel.permissionsFor(message.guild.me.id).has(["SEND_MESSAGES", "MANAGE_MESSAGES"])) return message.channel.send("I don't have the permissions to crosspost on that channel.\nGive me the permissions to manage messages and send messages.");
-        await message.guild.setAutoPostChannel(channel);
+        await setAutoPostChannel(message.guild, channel);
         message.channel.send(`The ${channel} channel has been added for crossposting!`);
       }
         break;
       case 'delete': {
         if (!args[2]) message.channel.send("Please put a channel!");
-        let channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id && e.type === "news").first() || message.guild.channels.cache.get(args[2]) || await message.guild.channels.fetch(args[2] || "123").catch(() => { });
+        let channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id && e.type === "GUILD_NEWS").first() || message.guild.channels.cache.get(args[2]) || await message.guild.channels.fetch(args[2] || "123").catch(() => { });
         if (!channel) {
           if (args[2].length > 20) return message.channel.send("Invalid channel!");
           if (isNaN(args[2])) return message.channel.send("Invalid channel");
           await message.channel.send("I did not detect a valid channel. Trying with ID...");
           channel = args[2];
         }
-        await message.guild.deleteAutoPostChannel(channel);
+        await deleteAutoPostChannel(message.guild, channel);
         message.channel.send("The mentioned channel has been removed from the list.");
       }
         break;
       case 'get': {
-        const doc = message.guild.cache.autopostchannels ? message.guild.autopostchannels : await message.guild.getAutoPostChannels();
+        const doc = await getAutoPostChannels(message.guild);
         const str = doc.map(e => `<#${e}>`).join("\n");
         message.channel.send(`List of channels for automatic crossposting:\n\n${str || "*no channels added*"}`);
       }
         break;
-      default: 
+      default:
         message.channel.send("Modes: `add`, `delete`, `get`");
     }
   }

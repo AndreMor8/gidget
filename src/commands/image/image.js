@@ -19,12 +19,12 @@ export default class extends Command {
     if (!results.length) return message.channel.send("I didn't find anything.")
 
     if (results.some(e => checkCleanUrl(`https://${e.from}/`)) && !message.channel.nsfw) {
-      message.channel.stopTyping(true);
+      
       return message.channel.send("Your search includes NSFW content. To order this content go to an NSFW channel.");
     }
 
     if (results.some(e => (bot.badwords.isProfane(e.title.toLowerCase()))) && !message.channel.nsfw) {
-      message.channel.stopTyping(true);
+      
       return message.channel.send("Your search includes NSFW content. To order this content go to an NSFW channel.");
     }
 
@@ -39,18 +39,18 @@ export default class extends Command {
       .setColor("RANDOM");
 
     const but_back = new Discord.MessageButton()
-      .setCustomID("image_c_back")
+      .setCustomId("image_c_back")
       .setStyle("SECONDARY")
       .setLabel("Back")
       .setDisabled(true);
 
     const but_stop = new Discord.MessageButton()
-      .setCustomID("image_c_stop")
+      .setCustomId("image_c_stop")
       .setStyle("DANGER")
       .setLabel("Stop");
 
     const but_next = new Discord.MessageButton()
-      .setCustomID("image_c_next")
+      .setCustomId("image_c_next")
       .setStyle("SECONDARY")
       .setLabel("Next");
 
@@ -60,9 +60,9 @@ export default class extends Command {
     };
     const msg = await message.channel.send({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back, but_stop, but_next])] });
 
-    const collector = msg.createMessageComponentInteractionCollector({ filter, idle: 30000 });
+    const collector = msg.createMessageComponentCollector({ filter, idle: 30000 });
     collector.on('collect', async (button) => {
-      if (button.customID === 'image_c_next') {
+      if (button.customId === 'image_c_next') {
         if (max !== i) {
           i++
           embed.setImage(urls[i])
@@ -70,7 +70,7 @@ export default class extends Command {
           await button.update({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(((max === i ? [but_back.setDisabled(false), but_stop, but_next.setDisabled(true)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])))] });
         }
       }
-      if (button.customID === 'image_c_back') {
+      if (button.customId === 'image_c_back') {
         if (i !== 0) {
           i--
           embed.setImage(urls[i])
@@ -78,7 +78,7 @@ export default class extends Command {
           await button.update({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(((i === 0 ? [but_back.setDisabled(true), but_stop, but_next.setDisabled(false)] : [but_back.setDisabled(false), but_stop, but_next.setDisabled(false)])))] });
         }
       }
-      if (button.customID === 'image_c_stop') collector.stop("stoped")
+      if (button.customId === 'image_c_stop') collector.stop("stoped")
     })
     collector.on('end', (c, r) => {
       if (r === "stoped") c.last().update({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([but_back.setDisabled(true), but_stop.setDisabled(true), but_next.setDisabled(true)])] })

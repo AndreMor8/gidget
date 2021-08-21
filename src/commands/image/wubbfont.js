@@ -20,7 +20,7 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Put something");
     const text = args.slice(1).join(" ")
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const canvas = Canvas.createCanvas(WIDTH, HEIGHT);
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = '#2E3192';

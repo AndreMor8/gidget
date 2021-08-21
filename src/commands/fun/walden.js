@@ -24,7 +24,7 @@ export default class extends Command {
       if (mode === "text") {
         const text = args.slice(2).join(" ");
         if (!text) return message.channel.send("Usage: `walden text <text>`");
-        message.channel.startTyping();
+        message.channel.sendTyping();
         if (!image) image = await Canvas.loadImage(path.join(__dirname, "../../assets/walden-says.png"));
         const canvas = Canvas.createCanvas(854, 450);
         const ctx = canvas.getContext("2d");
@@ -35,11 +35,11 @@ export default class extends Command {
         if (height > 182) return message.channel.send("There is a limit of 7 lines. Your text exceeded that limit.")
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "walden.png");
         await message.channel.send({ files: [attachment] });
-        message.channel.stopTyping();
+        
       } else if (mode === "image") {
         const ok = message.attachments.first()?.url || (isURL(args[2]) ? args[2] : undefined);
         if (!ok) return message.channel.send("Usage: `walden image <link/attachment>`");
-        message.channel.startTyping();
+        message.channel.sendTyping();
         if (!image) image = await Canvas.loadImage(path.join(__dirname, "../../assets/walden-says.png"));
         const canvas = Canvas.createCanvas(854, 450);
         const ctx = canvas.getContext("2d");
@@ -48,11 +48,11 @@ export default class extends Command {
         roundRectAndDraw(ctx, 402.7, 49.5, 265, 188.4, 36.5, 11, userImage);
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "walden.png");
         await message.channel.send({ files: [attachment] });
-        message.channel.stopTyping();
+        
 
       } else return message.channel.send("Usage: `walden <mode> <arg>`\nAvailable modes: `text`, `image`");
     } catch (err) {
-      message.channel.stopTyping();
+      
       message.channel.send(`Error: ${err}`);
     }
   }

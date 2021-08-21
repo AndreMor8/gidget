@@ -32,7 +32,7 @@ export default (bot, reupdate = false) => {
               if (message) {
                 let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
-                  for(const r of message.reactions.cache.array()) {
+                  for (const r of [...message.reactions.cache.values()]) {
                     const tosee = r.emoji.identifier;
                     if (!msgDocument[i].reactions.includes(tosee)) continue;
                     if (r.partial) {
@@ -45,9 +45,9 @@ export default (bot, reupdate = false) => {
                   }
                   const embed = message.embeds[0];
                   embed.setDescription(text).setTitle("Poll completed");
-                  await message.edit({embeds: [embed]});
+                  await message.edit({ embeds: [embed] });
                   if (message.guild.me.permissions.has("MANAGE_MESSAGES")) {
-                    message.reactions.removeAll().catch(() => {});
+                    message.reactions.removeAll().catch(() => { });
                   }
                 }
               }

@@ -15,6 +15,6 @@ export default class extends SlashCommand {
     this.onlyguild = true;
   }
   async run(bot, interaction) {
-    await interaction.reply({ embeds: [new MessageEmbed().setTitle("Say command").setDescription(interaction.options.get("to-say").value)] });
+    await interaction.reply({ embeds: [new MessageEmbed().setTitle("Say command").setDescription(interaction.options.getString("to-say", true))] });
   }
 }

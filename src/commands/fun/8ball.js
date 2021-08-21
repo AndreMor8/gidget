@@ -32,7 +32,7 @@ export default class extends Command {
       .addField("Answer", arr[Math.floor(Math.random() * arr.length)]);
 
     const but_redo = new Discord.MessageButton()
-      .setCustomID("8ball_c_redo")
+      .setCustomId("8ball_c_redo")
       .setStyle("PRIMARY")
       .setLabel("Retry");
 
@@ -41,9 +41,9 @@ export default class extends Command {
       if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%8ball <question>`", ephemeral: true });
       return button.user.id === message.author.id;
     };
-    const col = msg.createMessageComponentInteractionCollector({ filter, idle: 15000 });
+    const col = msg.createMessageComponentCollector({ filter, idle: 15000 });
     col.on("collect", async (button) => {
-      if (button.customID === "8ball_c_redo") {
+      if (button.customId === "8ball_c_redo") {
         await button.update({ embeds: [ballembed.spliceFields(1, 1).addField("Answer", arr[Math.floor(Math.random() * arr.length)])] });
       }
     });

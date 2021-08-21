@@ -20,7 +20,7 @@ export default class extends Command {
       .setColor("RANDOM")
       .setTimestamp();
     const but_redo = new MessageButton()
-      .setCustomID("choose_c_redo")
+      .setCustomId("choose_c_redo")
       .setStyle("PRIMARY")
       .setLabel("Retry");
     const msg = await message.channel.send({ embeds: [embed], components: [new MessageActionRow().addComponents([but_redo])] });
@@ -28,9 +28,9 @@ export default class extends Command {
       if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%choose <response1> | <response2> | <response(n)>`", ephemeral: true });
       return button.user.id === message.author.id;
     };
-    const col = msg.createMessageComponentInteractionCollector({ filter, idle: 15000 });
+    const col = msg.createMessageComponentCollector({ filter, idle: 15000 });
     col.on("collect", async (button) => {
-      if (button.customID === "choose_c_redo") {
+      if (button.customId === "choose_c_redo") {
         await button.update({ embeds: [embed.spliceFields(1, 1).addField("I choose...", `**${tochoose[Math.floor(Math.random() * tochoose.length)]}**`)] });
       }
     });

@@ -13,7 +13,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     try {
-      message.channel.startTyping();
+      message.channel.sendTyping();
       let filter1;
       const filters = await ytsr.getFilters(args.slice(1).join(" "));
       filter1 = filters.get("Type").find(o => o.name === "Video");
@@ -55,7 +55,7 @@ export default class extends Command {
       await msg.react("◀️");
       await msg.react("▶️");
       await msg.react("⏹️");
-      message.channel.stopTyping();
+      
       let collector = msg.createReactionCollector(filter, { idle: 20000 });
       collector.on("collect", async (reaction, user) => {
         if (reaction.emoji.name === "▶️") {
@@ -130,7 +130,7 @@ export default class extends Command {
         }
       });
     } catch (err) {
-      message.channel.stopTyping();
+      
       await message.channel.send("Some error ocurred. Here's a debug: " + err);
     }
   }

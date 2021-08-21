@@ -6,88 +6,88 @@ export default class extends SlashCommand {
     super(options);
     this.deployOptions.description = "Modify the ticket system";
     this.deployOptions.options = [{
-        name: "get",
-        type: "SUB_COMMAND",
-        description: "Get the current ticket configuration",
-        options: [
-          {
-            name: "message",
-            type: "STRING",
-            description: "Message ID that relates a ticket system",
-            required: true
-          }
-        ]
-      }, {
-        name: "set-roles",
-        description: "These roles can close tickets.",
-        type: "SUB_COMMAND",
-        options: [{
-            name: "message",
-            type: "STRING",
-            description: "Message ID that relates a ticket system",
-            required: true
-          }, {
-            name: "roles",
-            type: "STRING",
-            description: "Roles that can close tickets.",
-            required: false
-          }]
-      }, {
-        name: "manual",
-        type: "SUB_COMMAND",
-        description: "Configure whether the users who created the ticket can close it by themselves.",
-        options: [{
-            name: "message",
-            type: "STRING",
-            description: "Message ID that relates a ticket system",
-            required: true
-          }]
-      }, {
-        name: "category",
-        type: "SUB_COMMAND",
-        description: "Configure where the new tickets will go.",
-        options: [{
-            name: "message",
-            type: "STRING",
-            description: "Message ID that relates a ticket system",
-            required: true
-          }, {
-            name: "channel",
-            type: "CHANNEL",
-            description: "Category channel where the tickets will be.",
-            required: true
-          }]
-      }, {
-        name: "welcome-msg",
-        type: "SUB_COMMAND",
-        description: "Welcome the user to the ticket with this",
-        options: [{
-            name: "message",
-            type: "STRING",
-            description: "Message ID that relates a ticket system",
-            required: true
-          }, {
-            name: "msg",
-            type: "STRING",
-            description: "Welcome message (MAX 2000 CHARACTERS)",
-            required: false
-          }]
-      }, {
-        name: "desc",
-        type: "SUB_COMMAND",
-        description: "The message that will appear in the ticket topic",
-        options: [{
+      name: "get",
+      type: "SUB_COMMAND",
+      description: "Get the current ticket configuration",
+      options: [
+        {
           name: "message",
           type: "STRING",
           description: "Message ID that relates a ticket system",
           required: true
-        }, {
-          name: "description",
-          type: "STRING",
-          description: "The content of the description/topic (MAX 1024 CHARACTERS)",
-          required: false
-        }]
+        }
+      ]
+    }, {
+      name: "set-roles",
+      description: "These roles can close tickets.",
+      type: "SUB_COMMAND",
+      options: [{
+        name: "message",
+        type: "STRING",
+        description: "Message ID that relates a ticket system",
+        required: true
+      }, {
+        name: "roles",
+        type: "STRING",
+        description: "Roles that can close tickets.",
+        required: false
       }]
+    }, {
+      name: "manual",
+      type: "SUB_COMMAND",
+      description: "Configure whether the users who created the ticket can close it by themselves.",
+      options: [{
+        name: "message",
+        type: "STRING",
+        description: "Message ID that relates a ticket system",
+        required: true
+      }]
+    }, {
+      name: "category",
+      type: "SUB_COMMAND",
+      description: "Configure where the new tickets will go.",
+      options: [{
+        name: "message",
+        type: "STRING",
+        description: "Message ID that relates a ticket system",
+        required: true
+      }, {
+        name: "channel",
+        type: "CHANNEL",
+        description: "Category channel where the tickets will be.",
+        required: true
+      }]
+    }, {
+      name: "welcome-msg",
+      type: "SUB_COMMAND",
+      description: "Welcome the user to the ticket with this",
+      options: [{
+        name: "message",
+        type: "STRING",
+        description: "Message ID that relates a ticket system",
+        required: true
+      }, {
+        name: "msg",
+        type: "STRING",
+        description: "Welcome message (MAX 2000 CHARACTERS)",
+        required: false
+      }]
+    }, {
+      name: "desc",
+      type: "SUB_COMMAND",
+      description: "The message that will appear in the ticket topic",
+      options: [{
+        name: "message",
+        type: "STRING",
+        description: "Message ID that relates a ticket system",
+        required: true
+      }, {
+        name: "description",
+        type: "STRING",
+        description: "The content of the description/topic (MAX 1024 CHARACTERS)",
+        required: false
+      }]
+    }]
     this.guildonly = true;
     this.permissions = {
       user: [8n, 0n],
@@ -95,12 +95,12 @@ export default class extends SlashCommand {
     };
   }
   async run(bot, interaction) {
-    const subcommand = interaction.options.first();
-    const msgID = subcommand.options.find(e => e.name === "message").value;
+    const subcommand = interaction.options.getSubcommand();
+    const msgID = subcommand.options.getString("message", true);
     const msgDocument = await MessageModel.findOne({ guildId: { $eq: interaction.guild.id }, messageId: { $eq: msgID } });
     if (!msgDocument) return interaction.reply("I can't find a ticket system in that message.");
     const { manual } = msgDocument;
-    switch (interaction.options.first().name) {
+    switch (subcommand) {
       case "get": {
         interaction.reply({
           embeds: [new MessageEmbed()
@@ -116,7 +116,7 @@ export default class extends SlashCommand {
       }
         break;
       case "set-roles": {
-        const roles = subcommand.options.find(e => e.name === "roles")?.value.split(" ");
+        const roles = interaction.options.getString("roles", false);
         if (!roles) {
           await msgDocument.updateOne({ $set: { roles: [] } });
           interaction.reply("No one will be able to close tickets unless they have `MANAGE_CHANNELS` permission on the ticket category.");
@@ -139,15 +139,15 @@ export default class extends SlashCommand {
         interaction.reply(interaction.reply(!manual ? "Now the people who created the tickets can close them themselves." : "Now only those with the permissions or roles set will be able to close tickets."));
         break;
       case "category": {
-        const channel = subcommand.options.find(e => e.name === "channel").channel;
-        if (channel.type !== "category") return interaction.reply("Invalid channel type");
+        const channel = interaction.options.getChannel("channel", true);
+        if (channel.type !== "GUILD_CATEGORY") return interaction.reply("Invalid channel type");
         if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply("I don't have the `MANAGE_CHANNELS` permission in that channel.");
         await msgDocument.updateOne({ categoryId: channel.id });
         interaction.reply("Category channel updated correctly.")
       }
         break;
       case "welcome-msg": {
-        const set = subcommand.options.find(e => e.name === "msg")?.value;
+        const set = interaction.options.getString("msg", false);
         if (set) {
           if (set.replace("%AUTHOR%", interaction.user.toString()).length > 2000) return interaction.reply("You can only put up to 2000 characters max.");
           await msgDocument.updateOne({ $set: { welcomemsg: set } });
@@ -157,7 +157,7 @@ export default class extends SlashCommand {
       }
         break;
       case "desc": {
-        const set = subcommand.options.find(e => e.name === "description")?.value;
+        const set = interaction.options.getString("description", false);
         if (set) {
           if (set.replace("%AUTHOR%", interaction.user.toString()).length > 1024) return interaction.reply("You can only put up to 1024 characters max.");
           await msgDocument.updateOne({ $set: { desc: set } });

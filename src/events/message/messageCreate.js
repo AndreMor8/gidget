@@ -1,3 +1,4 @@
+import { getPrefix, getCustomResponses, getLevelConfig, getMessageLinksConfig, getAutoPostChannels } from "../../extensions.js";
 import Discord from "discord.js";
 import Levels from "../../utils/discord-xp.js";
 const timer = new Discord.Collection();
@@ -13,14 +14,14 @@ export default async (bot, message, nolevel = false) => {
     //For the moment this is a code for only 1 server
     if (message.guild) {
       if (message.guild.id === process.env.GUILD_ID && !message.channel.nsfw) {
-        if (bot.badwords.isProfane(message.content.toLowerCase()) && (message.channel.parentID !== "621560838041501696")) {
+        if (bot.badwords.isProfane(message.content.toLowerCase()) && (message.channel.parentId !== "621560838041501696")) {
           await message.delete();
           return await message.channel.send(`${message.author}, swearing is not allowed in this server!`);
         }
       }
     }
     let PREFIX;
-    if (message.guild) PREFIX = message.guild.cache.prefix ? message.guild.prefix : await message.guild.getPrefix();
+    if (message.guild) PREFIX = await getPrefix(message.guild);
     else PREFIX = "g%";
     if (message.content.startsWith(PREFIX)) {
       if (internalCooldown.has(message.author.id)) return;
@@ -58,7 +59,6 @@ export default async (bot, message, nolevel = false) => {
           await message.channel.send("Something happened! Here's a debug: " + err).catch(() => { });
         } finally {
           internalCooldown.delete(message.author.id);
-          message.channel.stopTyping(true);
         }
       }
     } else {
@@ -66,7 +66,7 @@ export default async (bot, message, nolevel = false) => {
       //For the moment, guild-only things
       if (message.guild) {
         // Autoresponses
-        const msgDocument = message.guild.cache.customresponses ? message.guild.customresponses : await message.guild.getCustomResponses();
+        const msgDocument = await getCustomResponses(message.guild);
         if (msgDocument) {
           const { responses } = msgDocument;
           if (responses) {
@@ -86,7 +86,7 @@ export default async (bot, message, nolevel = false) => {
 
         // Level system
         if (!nolevel) {
-          const msgDocument2 = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig();
+          const msgDocument2 = await getLevelConfig(message.guild);
           if (msgDocument2 && msgDocument2.levelsystem) {
             if (!msgDocument2.nolevel.includes(message.channel.id)) {
               if (!timer.get(message.author.id)) {
@@ -116,7 +116,7 @@ export default async (bot, message, nolevel = false) => {
         }
 
         //Message links system
-        const mls = message.guild.cache.messagelinksconfig ? message.guild.messagelinksconfig : await message.guild.getMessageLinksConfig();
+        const mls = await getMessageLinksConfig(message.guild);
         if (mls && mls.enabled) {
           const regex = /((http|https):\/\/)((www|canary|ptb)\.)?(discordapp|discord)\.com\/channels\/[0-9]{17,20}\/[0-9]{17,20}\/[0-9]{17,20}/gmi;
           const matches = message.content.match(regex);
@@ -143,15 +143,13 @@ export default async (bot, message, nolevel = false) => {
         }
 
         //Autocrossposting
-        const acp = message.guild.cache.autopostchannels ? message.guild.autopostchannels : await message.guild.getAutoPostChannels();
-        if (acp.includes(message.channel.id) && message.channel.type === "news") {
+        const acp = await getAutoPostChannels(message.guild);
+        if (acp.includes(message.channel.id) && message.channel.type === "GUILD_NEWS") {
           message.crosspost().catch(() => { });
         }
       }
     }
   } catch (err) {
     console.log(err);
-  } finally {
-    message.channel.stopTyping(true);
   }
 };

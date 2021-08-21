@@ -21,7 +21,7 @@ export default class extends Command {
         case 'users': {
           if (!args[3])
             return message.channel.send("Mention or put the ID of the people whom you want their messages to be deleted.\n`purge users <number> <mentions>`");
-          const authors = message.mentions.users.size ? message.mentions.users.keyArray() : args.slice(3);
+          const authors = message.mentions.users.size ? [...message.mentions.users.keys()] : args.slice(3);
           const messages = await message.channel.messages.fetch({
             limit: number
           }, false);

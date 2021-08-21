@@ -4,6 +4,7 @@ import tempmuteconfig from '../../database/models/muterole.js';
 import tempmute from '../../database/models/mutedmembers.js';
 import tempmutesystem from '../../utils/tempmute.js';
 import Discord from "discord.js";
+import { getWelcome, getInviteCount } from "../../extensions.js";
 
 export default async (bot, member) => {
 
@@ -21,7 +22,7 @@ export default async (bot, member) => {
       if (member.guild.me.permissions.has("MANAGE_ROLES")) {
         const { roles } = msgDocument;
         const col = member.guild.roles.cache.filter(role => roles.includes(role.id) && (!role.deleted && role.editable && !role.managed));
-        if(col.size >= 1)await member.roles.add(col, "Retrieving roles").catch(() => { });
+        if (col.size >= 1) await member.roles.add(col, "Retrieving roles").catch(() => { });
       }
       msgDocument.deleteOne();
     }
@@ -37,13 +38,13 @@ export default async (bot, member) => {
       }
     }
     tempmutesystem(bot, true);
-  } else if(data && (Date.now() > data.date.getTime())) {
+  } else if (data && (Date.now() > data.date.getTime())) {
     await data.deleteOne();
     tempmutesystem(bot, true);
   }
 
   //WELCOME SYSTEM
-  const welcome = member.guild.cache.welcome ? member.guild.welcome : await member.guild.getWelcome();
+  const welcome = await getWelcome(member.guild);
 
   if (welcome) {
     let inviterMention = "Unknown";
@@ -52,7 +53,7 @@ export default async (bot, member) => {
     try {
       if (((/%INVITER%/gmi.test(welcome.text)) || (/%INVITER%/gmi.test(welcome.dmmessage))) && member.guild.me.permissions.has("MANAGE_GUILD")) {
         const invitesBefore = member.guild.inviteCount;
-        const invitesAfter = await member.guild.getInviteCount();
+        const invitesAfter = await getInviteCount(member.guild);
         for (const inviter in invitesAfter) {
           if (invitesBefore[inviter] === (invitesAfter[inviter] - 1)) {
             inviterMention = (inviter === member.guild.id) ? "System" : ("<@!" + inviter + ">");
@@ -70,7 +71,7 @@ export default async (bot, member) => {
     } catch (err) {
       console.log(err);
       if (member.guild.me.permissions.has("MANAGE_GUILD")) {
-        member.guild.inviteCount = await member.guild.getInviteCount();
+        member.guild.inviteCount = await getInviteCount(member.guild);
       }
     } finally {
       if (welcome.enabled && welcome.text) {

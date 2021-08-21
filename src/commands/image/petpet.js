@@ -44,14 +44,14 @@ export default class extends Command {
       if (parsed.length >= 1) source = parsed[0].url;
 
       if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm.test(source)) return message.channel.send("Invalid user, emoji or image!");
-      message.channel.startTyping();
+      message.channel.sendTyping();
       const res = await fetch(source);
       if (!res.ok) return message.channel.send("Status code: " + res.status);
       source = await res.buffer();
       if (isSvg(source)) source = await svg2img(source, { format: "png", width: 112, height: 112 })
       const torender = await Canvas.loadImage(source);
       const buf = await petpet(torender, delay);
-      message.channel.stopTyping(true);
+      
       await message.channel.send({
         content: (post ? undefined : "Usage: `petpet [user/emoji/image/attachment] [-<FPS>]`"),
         files: [{
@@ -60,7 +60,7 @@ export default class extends Command {
         }]
       });
     } catch (error) {
-      message.channel.stopTyping(true);
+      
       await message.channel.send("Error: " + error);
     }
   }

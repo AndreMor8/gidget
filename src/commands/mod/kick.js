@@ -10,7 +10,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Usage: `kick (<user> [reason] || <users>)`")
-    const users = message.mentions.members.clone().filter(e => (e.kickable) && (e.id !== message.guild.ownerID) && (e.roles.highest.comparePositionTo(message.member.roles.highest) < 0)).array();
+    const users = [...message.mentions.members.clone().filter(e => (e.kickable) && (e.id !== message.guild.ownerId) && (e.roles.highest.comparePositionTo(message.member.roles.highest) < 0)).values()];
     for (const thing of args.slice(1)) {
       if (thing.length > 19) continue;
       if (/^<@!?(\d+)>$/.test(thing)) continue;
@@ -19,7 +19,7 @@ export default class extends Command {
       if (user) {
         if (user.kickable) {
           if (!users.some(e => e.id === user.id)) {
-            if ((message.guild.ownerID !== user.id) && (user.roles.highest.comparePositionTo(message.member.roles.highest) < 0)) {
+            if ((message.guild.ownerId !== user.id) && (user.roles.highest.comparePositionTo(message.member.roles.highest) < 0)) {
               users.push(user);
             }
           } else continue;

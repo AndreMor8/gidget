@@ -1,3 +1,4 @@
+import { getConfessionConfig } from "../../extensions.js";
 import { MessageEmbed } from "discord.js";
 
 export default class extends SlashCommand {
@@ -21,9 +22,9 @@ export default class extends SlashCommand {
     this.guildonly = true;
   }
   async run(bot, interaction) {
-    const data = interaction.guild.cache.confessionconfig ? interaction.guild.confessionconfig : await interaction.guild.getConfessionConfig();
+    const data = await getConfessionConfig(interaction.guild);
     if (!data.channelID) return interaction.reply({ content: "The server hasn't set up a confession channel yet!\nDo it with `g%confessionconfig channel <channel>`", ephemeral: true });
-    const user_anon = interaction.options.get("anon")?.value;
+    const user_anon = interaction.options.getBoolean("anon", false);
     if (!data.anon && user_anon) return interaction.reply({ content: 'Sorry, the server does not accept anonymous confessions.', ephemeral: true });
     const channel = interaction.guild.channels.cache.get(data.channelID);
     if (!channel) return interaction.reply({ content: "It seems that the channel set by the admin does not exist!\nSet the channel again with `g%confessionconfig channel <channel>`", ephemeral: true })
@@ -31,7 +32,7 @@ export default class extends SlashCommand {
     const embed = new MessageEmbed()
       .setTitle("New confession")
       .setAuthor(user_anon ? "Anonymous" : interaction.user.tag, user_anon ? undefined : interaction.user.displayAvatarURL({ dynamic: true }))
-      .setDescription(interaction.options.get("message").value)
+      .setDescription(interaction.options.getString("message", true))
       .setTimestamp()
       .setColor("RANDOM");
     await channel.send({ embeds: [embed] });

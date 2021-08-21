@@ -23,7 +23,7 @@ export default class extends SlashCommand {
 		if (!queue) return interaction.reply(`There is nothing playing.`);
 		if (queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
 
-		const exp = interaction.options.get("to-seek").value.split(":");
+		const exp = interaction.options.getString("to-seek", true).split(":");
 		//More support?
 		const sec = exp[exp.length - 1]
 		const min = exp[exp.length - 2] || "0"

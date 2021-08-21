@@ -10,9 +10,4 @@ export default async (bot, message) => {
   
   const rrres = await model4.findOneAndDelete({ messageId: message.id });
   if (rrres) bot.cachedMessageReactions.delete(message.id);
-
-  /*if (message.partial) return;
-  if (!message.guild) return;
-
-  message.channel?.setSnipe(message);*/
 };

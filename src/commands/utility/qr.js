@@ -26,7 +26,7 @@ export default class extends Command {
         if (!source) return message.channel.send("Usage: `qr decode [url/attachment]`");
         if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm.test(source)) return message.channel.send("Invalid image or URL!");
         try {
-          message.channel.startTyping();
+          message.channel.sendTyping();
           const buf = await resize(source);
           const image = await Canvas.loadImage(buf);
           const canvas = Canvas.createCanvas(SIZE, SIZE);
@@ -36,14 +36,14 @@ export default class extends Command {
           if (code) {
             if (!code.data) return message.channel.send("I couldn't read any QR code. Try again");
             const newstr = Util.splitMessage(code.data, { limit: 2000, char: " " });
-            message.channel.stopTyping(true);
+            
             await message.channel.send("`Output:` " + newstr[0]);
           } else {
-            message.channel.stopTyping(true);
+            
             await message.channel.send("I couldn't read any QR code. Try again")
           }
         } catch (err) {
-          message.channel.stopTyping(true);
+          
           await message.channel.send(err.toString());
         }
       }
@@ -64,14 +64,14 @@ export default class extends Command {
         const encoder = new qrenc.Encoder;
         encoder.on("end", (buf) => {
           const att = new MessageAttachment(buf, "qr.png");
-          message.channel.stopTyping(true);
+          
           message.channel.send({ files: [att] });
         })
         encoder.on("error", (err) => {
-          message.channel.stopTyping(true);
+          
           message.channel.send("Error when encoding QR: " + err);
         });
-        message.channel.startTyping();
+        message.channel.sendTyping();
         encoder.encode(args.slice((args[1] === "encode" ? 2 : 1)).join(" "), null, {
           dot_size,
           margin: 1

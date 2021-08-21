@@ -7,7 +7,6 @@ export default class extends SlashCommand {
       user: [0n, 0n],
       bot: [0n, 0n]
     };
-
   }
   async run(bot, interaction) {
     const channel = interaction.member.voice.channel;

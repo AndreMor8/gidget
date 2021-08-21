@@ -45,7 +45,7 @@ export default class extends Command {
 
         const but_add = new MessageButton()
             .setStyle("PRIMARY")
-            .setCustomID("emojify_c_add2sv")
+            .setCustomId("emojify_c_add2sv")
             .setLabel("Add to server")
             .setDisabled(!(message.guild?.me.permissions.has("MANAGE_EMOJIS") && message.member?.permissions.has("MANAGE_EMOJIS")));
 
@@ -57,7 +57,7 @@ export default class extends Command {
         const here = await message.channel.send({ files: [att], components: [new MessageActionRow().addComponents([but_add])] });
 
         if (!but_add.disabled) {
-            const butcol = here.createMessageComponentInteractionCollector({ filter, idle: 60000 });
+            const butcol = here.createMessageComponentCollector({ filter, idle: 60000 });
             butcol.on("collect", async (button) => {
                 if (!(message.guild?.me.permissions.has("MANAGE_EMOJIS") && message.member?.permissions.has("MANAGE_EMOJIS"))) return button.reply("Nope", true);
                 await button.reply("Tell me the name of the new emoji (30s collector time).");
@@ -68,10 +68,10 @@ export default class extends Command {
                     message.guild.emojis.create((pre_type == "svg") ? buffer : url, msg.content, { reason: "emojify command" }).then((e) => {
                         button.editReply(`Emoji created correctly! -> ${e.toString()}`);
                     }).catch(e => button.editReply("Error: " + e))
-                    .finally(() => {
-                        msg.delete();
-                        col.stop();
-                    });
+                        .finally(() => {
+                            msg.delete();
+                            col.stop();
+                        });
                 });
                 col.on("end", (c, r) => { if (r === "time") button.editReply("Time's up!") });
             });
@@ -86,7 +86,7 @@ async function render(url) {
     const pre_buf = await res.buffer();
     const type = await FileType.fromBuffer(pre_buf);
     if (type?.mime === "image/gif") {
-        const buffer = await gifResize({ width: 48, height: 48, interlaced: true })(pre_buf);
+        const buffer = await gifResize({ width: 48, interlaced: true })(pre_buf);
         return { pre_type: "gif", buffer };
     } else if (isSvg(pre_buf)) {
         return { pre_type: "svg", buffer: await svg2img(pre_buf, { format: "png", width: 48, height: 48 }) };
@@ -95,12 +95,12 @@ async function render(url) {
         //https://sharp.pixelplumbing.com/install#canvas-and-windows
         const Jimp = (await import("jimp")).default;
         const img = await Jimp.read(pre_buf);
-        img.resize(48, 48);
+        img.resize(48);
         const buffer = await img.getBufferAsync(Jimp.MIME_PNG);
         return { pre_type: "image", buffer };
     } else {
         const sharp = (await import("sharp")).default;
-        const buffer = await sharp(pre_buf).resize(48, 48).png().toBuffer();
+        const buffer = await sharp(pre_buf).resize(48).png().toBuffer();
         return { pre_type: "image", buffer };
     }
 }

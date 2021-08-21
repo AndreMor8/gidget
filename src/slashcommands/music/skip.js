@@ -5,7 +5,7 @@ export default class extends SlashCommand {
     this.deployOptions.options = [{
       name: "to",
       description: "Jump to a song in the queue",
-      type: "STRING",
+      type: "INTEGER",
       required: false
     }]
     this.guildonly = true;
@@ -18,8 +18,8 @@ export default class extends SlashCommand {
     if (!queue) return await interaction.reply(`There is nothing playing.`);
     if (queue.voiceChannel.id !== channel.id) return await interaction.reply("You are not on the same voice channel as me.");
 
-    const to_jump = parseInt(interaction.options.get("to")?.value);
-    if (!to_jump && interaction.options.get("to")) return interaction.reply("Invalid song number.");
+    const to_jump = interaction.options.getInteger("to", false);
+    if (!to_jump && interaction.options.getInteger("to", false)) return interaction.reply("Invalid song number.");
 
     if (!to_jump || to_jump === 1) {
       if (!interaction.member.permissions.has("MANAGE_CHANNELS")) {

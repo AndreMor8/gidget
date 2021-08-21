@@ -5,15 +5,14 @@ export default class extends SlashCommand {
   constructor(options) {
     super(options);
     this.deployOptions.name = "userinfo";
-    this.deployOptions.type = 2;
+    this.deployOptions.type = 'USER';
     this.deployOptions.description = undefined;
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 16384n]
     };
   }
-  //temporal solution, use interaction later.
-  async run(bot, raw, interaction) {
+  async run(bot, interaction) {
     /*
     const status = {
       online: "Online",
@@ -44,16 +43,16 @@ export default class extends SlashCommand {
       CUSTOM_STATUS: "Custom status:"
     };
     */
-    let user = bot.users.cache.get(raw.data.target_id);
+    let user = bot.users.cache.get(interaction.targetId);
     if (!user) {
-        try {
-          const fetch = await bot.users.fetch(raw.data.target_id);
-          user = fetch;
-          if (!user) return interaction.reply({content: "Invalid member!", ephemeral: true});
-        } catch (err) {
-          return interaction.reply({content: "Invalid member!", ephemeral: true});
-        }
-  
+      try {
+        const fetch = await bot.users.fetch(interaction.targetId);
+        user = fetch;
+        if (!user) return interaction.reply({ content: "Invalid member!", ephemeral: true });
+      } catch (err) {
+        return interaction.reply({ content: "Invalid member!", ephemeral: true });
+      }
+
     }
     const premiumtext = ["Without Nitro", "Nitro Classic", "***Nitro***"];
     const thing = !user.bot ? (await getPremiumType(user)) : undefined;
@@ -146,7 +145,7 @@ export default class extends SlashCommand {
         } else {
           permstext = "ADMINISTRATOR (All permissions)";
         }
-        const perms2 = member.permissionsIn(raw.channel_id).toArray();
+        const perms2 = member.permissionsIn(interaction.channelId).toArray();
         let permstext2 = "";
         if (perms2.indexOf("ADMINISTRATOR") === -1) {
           permstext2 = perms2.join(", ") || "Without permissions.";
@@ -167,7 +166,7 @@ export default class extends SlashCommand {
           .addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
           .addField("Still being verified?", member.pending ? "**Yes**" : "No")
         /*.addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");*/
-        if (!user.bot)embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No");
+        if (!user.bot) embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No");
         embed.addField(`Joined ${interaction.guild.name} at`, bot.botIntl.format(member.joinedAt))
           .addField("Joined Discord At", bot.botIntl.format(user.createdAt))
           .addField("Roles", `${member.roles.cache.filter(r => r.id !== interaction.guild.id).map(roles => `${roles}`).join(" **|** ") || "No Roles"}`);
@@ -176,7 +175,7 @@ export default class extends SlashCommand {
         embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
           .addField("ID", user.id, true)
           .addField("Bot?", user.bot ? "Yes" : "No", true);
-        if (!user.bot) embed.addField("Nitro type", finaltext, true); 
+        if (!user.bot) embed.addField("Nitro type", finaltext, true);
         embed
           /*.addField("Status", status2, true)
             .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)*/

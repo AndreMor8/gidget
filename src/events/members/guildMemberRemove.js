@@ -1,3 +1,4 @@
+import { getWelcome } from "../../extensions.js";
 import MessageModel from "../../database/models/roles.js";
 import MessageModel2 from "../../database/models/retreiveconfig.js";
 export default async (bot, member) => {
@@ -41,7 +42,7 @@ export default async (bot, member) => {
   }
 
   //GOODBYE SYSTEM
-  const welcome = member.guild.cache.welcome ? member.guild.welcome : await member.guild.getWelcome();
+  const welcome = await getWelcome(member.guild);
   if (welcome && welcome.leaveenabled && welcome.leavetext) {
     const channel = member.guild.channels.cache.get(welcome.leavechannelID);
     if (channel && channel.isText() && channel.permissionsFor(member.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {

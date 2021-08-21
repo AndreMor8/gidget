@@ -24,7 +24,7 @@ export default class extends SlashCommand {
     const { memberId, manual, roles, from } = doc2;
     const doc = await tmembers.findOne({ guildId: { $eq: interaction.guild.id }, messageId: { $eq: from } });
     if (!doc) return interaction.reply("There is no ticket system here.");
-    const reason = interaction.options.get("reason")?.value;
+    const reason = interaction.options.getString("reason", false);
     const finish = async (staff = false) => {
       try {
         await interaction.reply("Closing ticket...");

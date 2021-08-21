@@ -1,6 +1,6 @@
 import ytpl from "@distube/ytpl";
 import { isURL } from 'distube';
-import ytdl from 'ytdl-core';
+import ytdl from '@distube/ytdl-core';
 
 export default class extends SlashCommand {
   constructor(options) {
@@ -20,14 +20,14 @@ export default class extends SlashCommand {
       if (!channel) return interaction.reply("You need to be in a voice channel to play music!");
       const queue = bot.distube.getQueue(interaction.guild.me.voice);
       if (queue && queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
-      if (!channel.joinable || (channel.type !== "stage" && !channel.speakable)) return interaction.reply("I don't have permissions to connect and speak in your channel!");
+      if (!channel.joinable || (channel.type !== "GUILD_STAGE_VOICE" && !channel.speakable)) return interaction.reply("I don't have permissions to connect and speak in your channel!");
 
-      await interaction.defer();
+      await interaction.deferReply();
 
       //End command execution here.
       (async () => {
         let final = null;
-        const wanted = interaction.options.get("song").value;
+        const wanted = interaction.options.getString("song", true);
         try {
           if ((isURL(wanted) && !ytpl.validateID(wanted)) || ytdl.validateID(wanted)) {
             const str = ytdl.validateID(wanted) ? `https://www.youtube.com/watch?v=${wanted}` : wanted;

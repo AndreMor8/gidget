@@ -15,10 +15,10 @@ export default class extends Command {
     if (!message.guild.me.permissions.has("MANAGE_ROLES")) return message.channel.send("I don't have the `MANAGE_ROLES` permission.")
     const msgDocument = await MessageModel.findOne({ guildId: message.guild.id });
     if (!msgDocument) {
-      new MessageModel({
+      await MessageModel.create({
         guildId: message.guild.id,
         enabled: true,
-      }).save().then(() => {
+      }).then(() => {
         message.channel.send("Now I will re-deliver the roles to the members who return to the server\nUse `mlremove <id>` if you need a user not to retrive the roles.");
         bot.rrcache.delete(message.guild.id);
       })

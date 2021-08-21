@@ -19,8 +19,8 @@ export default class extends Command {
       .setColor("BLUE")
       .setTimestamp(data.date)
       .addField("Date", bot.botIntl.format(data.date))
-      .addField("Worker ID", data.workerID.toString(), true)
-      .addField("Process ID", data.processID.toString(), true)
+      .addField("Worker ID", data.workerId.toString(), true)
+      .addField("Process ID", data.processId.toString(), true)
       .addField("Increment", data.increment.toString(), true)
       .addField("Binary representation", data.binary);
     await message.channel.send({ embeds: [embed] });

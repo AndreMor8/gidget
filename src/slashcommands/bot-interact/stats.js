@@ -15,7 +15,7 @@ export default class extends SlashCommand {
     };
   }
   async run(bot, interaction) {
-    await interaction.defer({ ephemeral: true });
+    await interaction.deferReply({ ephemeral: true });
     const percent = await usagePercent();
     const memoryU = `Resident Set: ${memory(process.memoryUsage.rss())}\nHeap Used: ${memory(process.memoryUsage().heapUsed)}`;
     const vcs = (await bot.shard.broadcastEval(c => c.voice.adapters.size)).reduce((a, c) => a + c, 0);

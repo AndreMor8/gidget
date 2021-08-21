@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import ytdl from 'ytdl-core';
+import ytdl from '@distube/ytdl-core';
 import fs from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
@@ -27,7 +27,7 @@ export default class extends SlashCommand {
   }
   async run(bot, interaction) {
     //Check valid YouTube URL
-    const check = ytdl.validateURL(interaction.options.get("video").value) || ytdl.validateID(interaction.options.get("video").value);
+    const check = ytdl.validateURL(interaction.options.getString("video", true)) || ytdl.validateID(interaction.options.getString("video", true));
     if (!check) return interaction.reply("Invalid URL!");
     //Cooldown
     if (interaction.user.id !== "577000793094488085") {
@@ -59,7 +59,7 @@ export default class extends SlashCommand {
         //Put data on it.
         stream.pipe(file);
         //Loading...
-        interaction.defer();
+        interaction.deferReply();
         //Any download error
         stream.on("error", () => {
           interaction.editReply("Looks like this video isn't compatible with FFMPEG :(");

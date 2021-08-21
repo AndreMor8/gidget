@@ -1,3 +1,4 @@
+import { deleteCustomResponse } from '../../extensions.js';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -12,7 +13,7 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Usage: `delcc <id>`\nUse `listcc` for a ID.");
     if (isNaN(args[1])) return message.channel.send("Invalid ID!");
-    await message.guild.deleteCustomResponse(parseInt(args[1]));
+    await deleteCustomResponse(message.guild, parseInt(args[1]));
     await message.channel.send("Custom response deleted correctly");
   }
 }

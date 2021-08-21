@@ -1,3 +1,5 @@
+import { getPrefix, setPrefix } from '../../extensions.js';
+
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -9,8 +11,8 @@ export default class extends Command {
     }
   }
   async run(bot, message, args) {
-    if (!args[1]) return await message.channel.send('The actual prefix is ' + (message.guild.cache.prefix ? message.guild.prefix : await message.guild.getPrefix()));
-    const thing = await message.guild.setPrefix(args.slice(1).join(" "));
+    if (!args[1]) return await message.channel.send('The actual prefix is ' + (await getPrefix(message.guild)));
+    const thing = await setPrefix(message.guild, args.slice(1).join(" "));
     await message.channel.send(`Now the new server prefix is ${thing}`);
   }
 }

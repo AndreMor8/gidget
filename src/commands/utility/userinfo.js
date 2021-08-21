@@ -169,7 +169,6 @@ export default class extends Command {
           .addField("Permissions (General)", `\`${permstext}\``, true)
           .addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
           .addField("Still being verified?", member.pending ? "**Yes**" : "No")
-        /*.addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");*/
         if (!user.bot) embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No");
         embed.addField(`Joined ${message.guild.name} at`, bot.botIntl.format(member.joinedAt))
           .addField("Joined Discord At", bot.botIntl.format(user.createdAt))
@@ -185,10 +184,6 @@ export default class extends Command {
           /*.addField("Status", status2, true)
             .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)*/
           .addField("Flags", `\`${flagtext}\``, true)
-          /*.addField(
-            "Last Message",
-            user.lastMessage ? user.lastMessage.url : "Without fetch about that"
-          )*/
           .addField("Joined Discord At", bot.botIntl.format(user.createdAt));
         await message.channel.send({ embeds: [embed] });
       }
@@ -202,10 +197,6 @@ export default class extends Command {
         /*.addField("Status", status2, true)
           .addField("Presence", ptext, true)*/
         .addField("Flags", `\`${flagtext}\``, true)
-        /*.addField(
-          "Last Message",
-          user.lastMessage ? user.lastMessage.url : "Without fetch about that"
-        )*/
         .addField("Joined Discord At", bot.botIntl.format(user.createdAt));
       await message.channel.send({ embeds: [embed] });
     }

@@ -1,3 +1,4 @@
+import { getCustomResponses } from '../../extensions.js';
 import { MessageEmbed } from 'discord.js';
 export default class extends Command {
   constructor(options) {
@@ -10,7 +11,7 @@ export default class extends Command {
     }
   }
   async run(bot, message) {
-    const msgDocument = (message.guild.cache.customresponses && Object.keys(message.guild.customresponses).length) ? message.guild.customresponses : await message.guild.getCustomResponses();
+    const msgDocument = await getCustomResponses(message.guild);
     if (msgDocument && msgDocument.responses) {
       const { responses } = msgDocument;
       const arr = Object.entries(responses);

@@ -5,6 +5,7 @@ import banners from '../../utils/banner.js';
 import MessageModel2 from '../../database/models/mutedmembers.js';
 import MessageModel3 from '../../database/models/poll.js';
 import discordbl from '../../utils/discordbotlist.js';
+import { getInviteCount } from "../../extensions.js";
 //Start ready event
 export default async bot => {
   //Intervals
@@ -25,9 +26,9 @@ export default async bot => {
 
   //Show the inviter on the welcome message. Luckily, fetch invites do not have a rate-limit
   try {
-    const guildsToFetch = bot.guilds.cache.filter(e => e.me.permissions.has("MANAGE_GUILD")).array();
+    const guildsToFetch = [...bot.guilds.cache.filter(e => e.me.permissions.has("MANAGE_GUILD")).values()];
     for (const guild of guildsToFetch) {
-      guild.inviteCount = await guild.getInviteCount().catch(err => {
+      guild.inviteCount = await getInviteCount(guild).catch(err => {
         console.log(err);
         return {};
       });

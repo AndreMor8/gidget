@@ -30,15 +30,15 @@ export default class extends Command {
   async run(bot, message, args) {
     const easy_but = new MessageButton()
       .setStyle("SUCCESS")
-      .setCustomID("c4_c_easymode")
+      .setCustomId("c4_c_easymode")
       .setLabel("Easy");
     const medium_but = new MessageButton()
       .setStyle("PRIMARY")
-      .setCustomID("c4_c_mediummode")
+      .setCustomId("c4_c_mediummode")
       .setLabel("Medium");
     const hard_but = new MessageButton()
       .setStyle("DANGER")
-      .setCustomID("c4_c_hardmode")
+      .setCustomId("c4_c_hardmode")
       .setLabel("Hard");
     if (!args[1]) {
       const msg = await message.channel.send({ content: `How to play Connect4 on Discord?\n\n1. Do \`g%c4 <someone>\`. It can be me or someone else.\n2. If you selected someone else, the person will be asked if they want to play. If you selected me then the game starts immediately. You can also make it difficult to play with me (easy, medium, hard).\n3. Within the game, they have to mark the column to add a token to it. The winner is the one with 4 tokens aligned together on the table.\n4. If someone no longer wants to play, they can say \`terminate\` to log out.\n5. If no one answers in less than 60 seconds the game is over.\n\nHappy playing! Credits to Lil MARCROCK22#2718 for the logic code and sprites :)`, components: [new MessageActionRow().addComponents([easy_but, medium_but, hard_but])] });
@@ -46,13 +46,13 @@ export default class extends Command {
         if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%c4`", ephemeral: true });
         return button.user.id === message.author.id;
       };
-      const col = msg.createMessageComponentInteractionCollector({ filter, time: 20000 });
+      const col = msg.createMessageComponentCollector({ filter, time: 20000 });
       col.on("collect", (button) => {
-        if (button.customID === "c4_c_easymode") this.run(bot, message, ["c4", "easy"])
-        else if (button.customID === "c4_c_mediummode") this.run(bot, message, ["c4", "medium"])
-        else if (button.customID === "c4_c_hardmode") this.run(bot, message, ["c4", "hard"])
-        
-        button.update({ content: msg.content, components: [[easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)]] });
+        if (button.customId === "c4_c_easymode") this.run(bot, message, ["c4", "easy"])
+        else if (button.customId === "c4_c_mediummode") this.run(bot, message, ["c4", "medium"])
+        else if (button.customId === "c4_c_hardmode") this.run(bot, message, ["c4", "hard"])
+
+        button.update({ content: msg.content, components: [new MessageActionRow.addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)])] });
         col.stop("ok");
       });
       return;
@@ -145,17 +145,17 @@ export default class extends Command {
       });
     } else {
       const but_yes = new MessageButton()
-        .setCustomID("c4_c_vsyes")
+        .setCustomId("c4_c_vsyes")
         .setStyle("SUCCESS")
         .setLabel("Yes");
       const but_no = new MessageButton()
-        .setCustomID("c4_c_vsno")
+        .setCustomId("c4_c_vsno")
         .setStyle("DANGER")
         .setLabel("No");
 
       const msg_response = await message.channel.send({ content: `Hey ${user.toString()}, do you want to play Connect4 with ${message.author.toString()}?`, allowedMentions: { parse: ["users"] }, components: [new MessageActionRow().addComponents([but_yes, but_no])] });
 
-      const col = msg_response.createMessageComponentInteractionCollector({
+      const col = msg_response.createMessageComponentCollector({
         filter: (b) => {
           if (b.user.id !== user.id) b.reply({ content: "You are not the expecting user!", ephemeral: true });
           return b.user.id === user.id;
@@ -163,7 +163,7 @@ export default class extends Command {
       });
 
       col.on("collect", async (button) => {
-        if (button.customID === "c4_c_vsyes") {
+        if (button.customId === "c4_c_vsyes") {
           col.stop("ok");
           const generatedTurn = Math.floor(Math.random() * 2) + 1;
           turns.set(user.id, generatedTurn);
@@ -214,16 +214,16 @@ export default class extends Command {
               message.channel.send("Waiting time is over (2m)! Bye.");
             }
           })
-        } else if (button.customID === "c4_c_vsno") {
+        } else if (button.customId === "c4_c_vsno") {
           col.stop("rejected");
         }
       });
       col.on("end", (c, r) => {
-        if (r === "ok") return c.last().update({ content: "Accepted", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
+        if (r === "ok") return c.last().update({ content: "Accepted", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
         else {
           message.channel.game = undefined;
-          if (r === "rejected") c.last().update({ content: "The user declined the invitation. Try it with someone else.", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
-          else if (r === "time") msg_response.edit({ content: "Time's up. Try it with someone else.", components: [[but_yes.setDisabled(true), but_no.setDisabled(true)]] });
+          if (r === "rejected") c.last().update({ content: "The user declined the invitation. Try it with someone else.", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
+          else if (r === "time") msg_response.edit({ content: "Time's up. Try it with someone else.", components: [new MessageActionRow().addComponents([but_yes.setDisabled(true), but_no.setDisabled(true)])] });
         }
       })
     }

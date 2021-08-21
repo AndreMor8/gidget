@@ -21,24 +21,24 @@ export default class extends Command {
     const allChannels = await message.guild.channels.fetch();
     let col = allChannels;
     if (member) {
-      col = allChannels.filter(c => c.type === "category" ? (c.children.some(r => r.permissionsFor(member.id).has("VIEW_CHANNEL")) || (c.permissionsFor(member.id).has("MANAGE_CHANNELS"))) : (c.permissionsFor(member.id).has("VIEW_CHANNEL")));
+      col = allChannels.filter(c => c.type === "GUILD_CATEGORY" ? (c.children.some(r => r.permissionsFor(member.id).has("VIEW_CHANNEL")) || (c.permissionsFor(member.id).has("MANAGE_CHANNELS"))) : (c.permissionsFor(member.id).has("VIEW_CHANNEL")));
     }
-    const wocat = Util.discordSort(col.filter(c => !c.parent && c.type !== "category"));
-    const textnp = wocat.filter(c => ['text', 'store', 'news'].includes(c.type));
-    const voicenp = wocat.filter(c => c.type === "voice");
+    const wocat = Util.discordSort(col.filter(c => !c.parent && c.type !== "GUILD_CATEGORY"));
+    const textnp = wocat.filter(c => ['GUILD_TEXT', 'GUILD_STORE', 'GUILD_NEWS'].includes(c.type));
+    const voicenp = wocat.filter(c => ['GUILD_VOICE', 'GUILD_STAGE_VOICE'].includes(c.type));
     if (wocat.size >= 1) {
       text += textnp.map(advancedmap).join("\n");
       text += voicenp.map(advancedmap).join("\n");
     }
-    const voiceChannels = col.filter(c => c.type === "voice");
+    const voiceChannels = col.filter(c => ['GUILD_VOICE', 'GUILD_STAGE_VOICE'].includes(c.type));
     const user = Collection.prototype.concat.apply(new Collection(), voiceChannels.map(e => e.members)).filter(e => !message.guild.members.cache.has(e.id)).map(e => e.id);
     if (user.length) await message.guild.members.fetch({ user });
 
-    const cats = Util.discordSort(col.filter(c => c.type === "category"));
+    const cats = Util.discordSort(col.filter(c => c.type === "GUILD_CATEGORY"));
     cats.each(c => {
       const children = c.children.intersect(col);
-      const textp = children.filter(c => ['text', 'store', 'news'].includes(c.type));
-      const voicep = children.filter(c => ['voice', 'stage'].includes(c.type));
+      const textp = children.filter(c => ['GUILD_TEXT', 'GUILD_STORE', 'GUILD_NEWS'].includes(c.type));
+      const voicep = children.filter(c => ['GUILD_VOICE', 'GUILD_STAGE_VOICE'].includes(c.type));
       text += "\n[📂] " + c.name;
       text += textp.size ? ("\n\t" + Util.discordSort(textp).map(advancedmap).join("\n\t")) : "";
       text += voicep.size ? ("\n\t" + Util.discordSort(voicep).map(advancedmap).join("\n\t")) : "";
@@ -50,19 +50,16 @@ export default class extends Command {
   }
 }
 
-/**
- * @param c
- */
 function advancedmap(c) {
   let r = "";
   switch (c.type) {
-    case "news":
+    case "GUILD_NEWS":
       r += "[📢] " + c.name;
       break;
-    case "text":
+    case "GUILD_TEXT":
       r += "[📃] " + c.name;
       break;
-    case "voice":
+    case "GUILD_VOICE":
       r += "[🎙] " + c.name + (c.members.size.toString() ? (c.members.map(d => {
         if (d.user.bot) {
           return "\n\t\t[🤖] " + d.user.tag;
@@ -71,7 +68,7 @@ function advancedmap(c) {
         }
       })).join("") : "")
       break;
-    case "stage":
+    case "GUILD_STAGE_VOICE":
       r += "[👪] " + c.name + (c.members.size.toString() ? (c.members.map(d => {
         if (d.user.bot) {
           return "\n\t\t[🤖] " + d.user.tag;
@@ -80,7 +77,7 @@ function advancedmap(c) {
         }
       })).join("") : "")
       break;
-    case "store":
+    case "GUILD_STORE":
       r += "[🏪] " + c.name;
       break;
     default:

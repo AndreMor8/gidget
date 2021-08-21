@@ -33,7 +33,7 @@ export default class extends Command {
 			await message.channel.send({ embeds: [embed] });
 		} else {
 			const acl = await message.guild.channels.fetch();
-			const allChannels = acl.filter(e => e.type === "voice");
+			const allChannels = acl.filter(e => e.isVoice());
 			switch (args[1].toLowerCase()) {
 				case "enable": {
 					await list.updateOne({ enabled: (list.enabled ? false : true) });
@@ -46,7 +46,7 @@ export default class extends Command {
 					if (!role) return message.channel.send("Invalid role");
 					if (!role.editable || role.managed) return message.channel.send("I can't give that role :(")
 					if (list.list.find(e => e.roleID === role.id)) return message.channel.send("That role is already set in the database");
-					const channels = message.mentions.channels.size ? message.mentions.channels.keyArray() : args.slice(3);
+					const channels = message.mentions.channels.size ? [...message.mentions.channels.keys()] : args.slice(3);
 					if (channels.length < 1) return message.channel.send("No channels selected");
 					const realchannels = [];
 					for (const channel of channels) {
@@ -78,7 +78,7 @@ export default class extends Command {
 					if (!role.editable || role.managed) return message.channel.send("I can't give that role :(")
 					const thing = list.list.find(e => e.roleID === role.id);
 					if (thing) {
-						const channels = message.mentions.channels.size ? message.mentions.channels.keyArray() : args.slice(3);
+						const channels = message.mentions.channels.size ? [...message.mentions.channels.keys()] : args.slice(3);
 						if (channels.length < 1) return message.channel.send("No channels selected");
 						const realchannels = [];
 						for (const channel of channels) {

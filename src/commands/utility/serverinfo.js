@@ -48,7 +48,7 @@ export default class extends Command {
     let active;
     */
     if (server instanceof Discord.Guild) {
-      const cat = server.channels.cache.filter(c => c.type === "category").size;
+      const cat = server.channels.cache.filter(c => c.type === "GUILD_CATEGORY").size;
       if (cat == 1) catname += "1 category";
       else catname += cat + " categories";
 
@@ -138,7 +138,7 @@ export default class extends Command {
       if (server.rulesChannel) embed.addField("Rules channel", server.rulesChannel.toString(), true);
       if (server.publicUpdatesChannel) embed.addField("Discord private updates", server.publicUpdatesChannel.toString(), true);
       embed.addField("Member Count", server.memberCount?.toString() || (broadcastedServer ? broadcastedServer.memberCount?.toString() || "?" : "?"), true)
-        .addField("Channel Count", `${server.channels.cache.filter(c => c.isText() || c.type === "voice").size} (${catname})\nText-based = ${server.channels.cache.filter(c => c.isText()).size}\nVoice = ${server.channels.cache.filter(c => c.type === "voice").size}`, true)
+        .addField("Channel Count", `${server.channels.cache.filter(c => c.isText() || c.isVoice()).size} (${catname})\nText-based = ${server.channels.cache.filter(c => c.isText()).size}\nVoice-based = ${server.channels.cache.filter(c => c.isVoice()).size}`, true)
         .addField("Emojis", `${allEmojis.size.toString()}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
         .addField("Roles", `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, true)
         .addField("Server Boost Level", server.premiumTier.toString(), true)

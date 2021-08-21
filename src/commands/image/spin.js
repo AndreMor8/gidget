@@ -48,7 +48,7 @@ export default class extends Command {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (s, r) => {
       try {
-        message.channel.startTyping();
+        message.channel.sendTyping();
         const algo = await resize(source);
         const image = await Canvas.loadImage(algo);
         const canvas = Canvas.createCanvas(SIZE, SIZE);
@@ -67,7 +67,7 @@ export default class extends Command {
           const pre_buf = Buffer.concat(chunks);
           const buf = await gifResize({ width: 512, height: 512, stretch: true, interlaced: true })(pre_buf);
           const att = new MessageAttachment(buf, "spin.gif");
-          message.channel.stopTyping(true);
+          
           await message.channel.send({ files: [att] }).catch(() => { });
           s();
         })

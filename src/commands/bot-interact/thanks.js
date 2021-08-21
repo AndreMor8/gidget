@@ -7,8 +7,7 @@ export default class extends Command {
 	async run(bot, message) {
 		const embed = new MessageEmbed()
 			.setTitle("Some of the people who helped in some way with this project =D")
-			.addField("Steven Castro", "Current bot hosting")
-			.addField("Awoo", "Access to a free VPS :)")
+			.addField("Awoo", "Current bot hosting, access to a free VPS :)")
 			.addField("Hyuuh", "https://gidget.xyz domain (1 year)")
 			.addField("Ultriax", "Support server creation and design")
 			.addField("GitHub", "[Those who contributed to the bot code](https://github.com/AndreMor8/gidget/graphs/contributors)")

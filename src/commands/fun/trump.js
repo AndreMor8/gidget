@@ -17,7 +17,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Put something...");
-    message.channel.startTyping();
+    message.channel.sendTyping();
     if (!image) image = await Canvas.loadImage(path.join(__dirname, "../../assets/Trump.png"));
     const canvas = Canvas.createCanvas(940, 709);
     const ctx = canvas.getContext("2d");
@@ -30,6 +30,6 @@ export default class extends Command {
     if (height > 192) return message.channel.send("There is a limit of 8 lines. Your text exceeded that limit.")
     const attachment = new MessageAttachment(canvas.toBuffer(), "trump.png");
     await message.channel.send({ files: [attachment] });
-    message.channel.stopTyping();
+    
   }
 }

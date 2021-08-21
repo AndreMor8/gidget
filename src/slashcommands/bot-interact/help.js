@@ -45,14 +45,14 @@ export default class extends SlashCommand {
             return true;
           }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0])
           .setTimestamp()
-        interaction.reply({ embeds: [embed], components: [[buttons[1]]], ephemeral: true });
+        interaction.reply({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([buttons[1]])], ephemeral: true });
       } else {
         const str = `__**${g.cat + " (" + g.commands.length + " commands)"}**__\n\n${Discord.Util.splitMessage(g.commands.filter(s => {
           if (s.secret) return false;
           if (s.onlyguild && (interaction.guild ? (interaction.guild.id !== process.env.GUILD_ID) : true)) return false;
           return true;
         }, { maxLength: 1800 }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0]}`;
-        interaction.reply({ content: str, components: [[buttons[1]]], ephemeral: true });
+        interaction.reply({ content: str, components: [new Discord.MessageActionRow().addComponents([buttons[1]])], ephemeral: true });
       }
       return;
     } else if (to && (bot.commands.get(to.toLowerCase()) || bot.commands.find(c => c.aliases.includes(to.toLowerCase())))) {

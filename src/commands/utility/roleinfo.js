@@ -83,8 +83,8 @@ export default class extends Command {
         .addField('Position', `Role Manager: ${role.position}\nAPI: ${role.rawPosition}`, true)
         .addField('Permissions', '`' + permstext + '`')
         .addField('Permissions (Overwrites)', '`' + permstext2 + '`')
-        .addField('Does it belong to a bot?', role.tags?.botID ? `**Yes** (${role.tags?.botID}, <@!${role.tags?.botID}>)` : "No", true)
-        .addField('Does it belong to a integration?', role.tags?.integrationID ? `**Yes** (${role.tags?.integrationID})` : "No", true)
+        .addField('Does it belong to a bot?', role.tags?.botId ? `**Yes** (${role.tags?.botId}, <@!${role.tags?.botId}>)` : "No", true)
+        .addField('Does it belong to a integration?', role.tags?.integrationId ? `**Yes** (${role.tags?.integrationId})` : "No", true)
         .addField('Is this the role for boosters?', role.tags?.premiumSubscriberRole ? "**Yes**" : "No", true)
         .setTimestamp()
       await message.channel.send({ embeds: [embed] });

@@ -7,21 +7,21 @@ export default class extends SlashCommand {
     super(options);
     this.deployOptions.description = "Take a screenshot of a web page";
     this.deployOptions.options = [{
-        name: "site",
-        type: "STRING",
-        description: "The web page you want to screenshot",
-        required: true
-      }, {
-        name: "y",
-        description: "Where on the page to go vertically",
-        type: "STRING",
-        required: false
-      }, {
-        name: "x",
-        description: "Where on the page to go horizontally",
-        type: "STRING",
-        required: false
-      }];
+      name: "site",
+      type: "STRING",
+      description: "The web page you want to screenshot",
+      required: true
+    }, {
+      name: "y",
+      description: "Where on the page to go vertically",
+      type: "STRING",
+      required: false
+    }, {
+      name: "x",
+      description: "Where on the page to go horizontally",
+      type: "STRING",
+      required: false
+    }];
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 32768n]
@@ -36,7 +36,7 @@ export default class extends SlashCommand {
         return interaction.reply({ content: "Don't overload this command! (30 sec cooldown)", ephemeral: true });
       }
     }
-    const site = interaction.options.get("site").value;
+    const site = interaction.options.getString("site", true);
     const options = {
       y: parseInt(interaction.options.get("y")?.value) || 0,
       x: parseInt(interaction.options.get("x")?.value) || 0
@@ -51,7 +51,7 @@ export default class extends SlashCommand {
  * @param options {object}
  */
 async function pup(interaction, url, options) {
-  const msg = await interaction.defer({ fetchReply: true });
+  const msg = await interaction.deferReply({ fetchReply: true });
   try {
     const res = await fetch(process.env.PUPPETEER_API, {
       method: "POST",
