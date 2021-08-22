@@ -42,7 +42,7 @@ const bot = new Discord.Client({
     GuildMemberManager: {
       maxSize: Infinity,
       sweepInterval: 1800,
-      sweepFilter: () => (member) => member.id === bot.user.id,
+      sweepFilter: () => (member) => member.id !== bot.user.id,
     },
     GuildStickerManager: 0,
     MessageManager: 20,
@@ -57,7 +57,7 @@ const bot = new Discord.Client({
     UserManager: {
       maxSize: Infinity,
       sweepInterval: 1800,
-      sweepFilter: () => (user) => (user.id === bot.user.id) || !(user.mine),
+      sweepFilter: () => (user) => !(user.mine) || user.id !== bot.user.id,
     },
     VoiceStateManager: Infinity
   }),
