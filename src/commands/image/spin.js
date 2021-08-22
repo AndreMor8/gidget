@@ -7,7 +7,7 @@ import gifResize from '../../utils/gifresize.js';
 import parser from 'twemoji-parser';
 import Canvas from 'canvas';
 import GIF from "gif-encoder";
-import { MessageAttachment, User } from 'discord.js';
+import { MessageAttachment } from 'discord.js';
 import isSvg from 'is-svg';
 import svg2img_callback from 'node-svg2img';
 import { promisify } from 'util';
@@ -36,7 +36,6 @@ export default class extends Command {
     if (source.avatar) {
       source = source.displayAvatarURL({ format: "png", size: SIZE });
     }
-    console.log(source)
     if (source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
       const matched = source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
       source = `https://cdn.discordapp.com/emojis/${matched[2]}.png`;
