@@ -16,8 +16,9 @@ export default class extends SlashCommand {
   }
   async run(bot, interaction, song) {
     if (interaction.isCommand()) {
-      const channel = interaction.member.voice.channel;
-      if (!channel) return interaction.reply("You need to be in a voice channel to play music!");
+      const channelId = interaction.member.voice.channelId;
+      if (!channelId) return interaction.reply("You need to be in a voice channel to play music!");
+      const channel = await interaction.guild.channels.fetch(channelId);
       const queue = bot.distube.getQueue(interaction.guild.me.voice);
       if (queue && queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
       if (!channel.joinable || (channel.type !== "GUILD_STAGE_VOICE" && !channel.speakable)) return interaction.reply("I don't have permissions to connect and speak in your channel!");
@@ -46,8 +47,9 @@ export default class extends SlashCommand {
         return interaction.editReply(`${final.type === "playlist" ? "Playlist:" : ""} **${final.name}** has been added to the queue! ${final.type === "playlist" ? "(check g%queue for results)" : ""}`);
       })();
     } else if (interaction.isButton()) {
-      const channel = interaction.member.voice.channel;
+      const channelId = interaction.member.voice.channelId;
       if (!channel) return interaction.editReply("You need to be in a voice channel to play music!");
+      const channel = await interaction.guild.channels.fetch(channelId);
       const queue = bot.distube.getQueue(interaction.guild.me.voice);
       if (queue && queue.voiceChannel.id !== channel.id) return interaction.editReply("You are not on the same voice channel as me.");
 
