@@ -46,8 +46,9 @@ export default class extends Command {
     let offline;
     let active;
     */
+    const channels = await server.channels?.fetch(undefined, { cache: false });
     if (server.me) {
-      const cat = server.channels.cache.filter(c => c.type === "GUILD_CATEGORY").size;
+      const cat = channels.filter(c => c.type === "GUILD_CATEGORY").size;
       if (cat == 1) catname += "1 category";
       else catname += cat + " categories";
 
@@ -68,7 +69,7 @@ export default class extends Command {
 
         const invites = await server.fetchInvites();
 
-        if (invites.first())invitenum = invites.size.toString() + " invites";
+        if (invites.first()) invitenum = invites.size.toString() + " invites";
         else invitenum = "Without invites";
       }
       if (server.bannerURL()) links.push(`[Banner Image](${server.bannerURL({ format: "png", size: 4096 })})`);
@@ -116,7 +117,7 @@ export default class extends Command {
       */
     }
 
-    if (server.splashURL())links.push(`[Invite Splash Image](${server.splashURL({ format: "png", size: 4096 })})`);
+    if (server.splashURL()) links.push(`[Invite Splash Image](${server.splashURL({ format: "png", size: 4096 })})`);
 
     if (server.discoverySplashURL()) links.push("[Discovery Splash image](" + server.discoverySplashURL({ format: "png", size: 4096 }) + ")");
 
@@ -137,7 +138,7 @@ export default class extends Command {
       if (server.rulesChannel) embed.addField("Rules channel", server.rulesChannel.toString(), true);
       if (server.publicUpdatesChannel) embed.addField("Discord private updates", server.publicUpdatesChannel.toString(), true);
       embed.addField("Member Count", server.memberCount?.toString() || (broadcastedServer ? broadcastedServer.memberCount?.toString() || "?" : "?"), true)
-        .addField("Channel Count", `${server.channels.cache.filter(c => c.isText() || c.isVoice()).size} (${catname})\nText-based = ${server.channels.cache.filter(c => c.isText()).size}\nVoice-based = ${server.channels.cache.filter(c => c.isVoice()).size}`, true)
+        .addField("Channel Count", `${channels.filter(c => c.isText() || c.isVoice()).size} (${catname})\nText-based = ${channels.filter(c => c.isText()).size}\nVoice-based = ${channels.filter(c => c.isVoice()).size}`, true)
         .addField("Emojis", `${allEmojis.size.toString()}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
         .addField("Roles", `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, true)
         .addField("Server Boost Level", server.premiumTier.toString(), true)
