@@ -31,6 +31,7 @@ const bot = new Discord.Client({
       sweepFilter: () => (ch) => {
         if(ch.game) return false;
         if(ch.tttgame) return false;
+        if(bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
         return true;
       },
       sweepInterval: 1800,
