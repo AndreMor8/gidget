@@ -1,4 +1,3 @@
-import Discord from 'discord.js';
 import Canvas from 'canvas';
 import svg2img_callback from 'node-svg2img';
 import { promisify } from 'util';
@@ -35,7 +34,7 @@ export default class extends Command {
       const delay = parseInt(1000 / fpsnumber);
       let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => (e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ") || e.username?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase() || e.tag?.toLowerCase() === args.slice(1).join(" ")?.toLowerCase())) || await bot.users.fetch(args[1]).catch(() => { }) || args[1]) : message.author)
       if (!source) return message.channel.send("Invalid user, emoji or image!");
-      if (source instanceof Discord.User) source = source.displayAvatarURL({ format: "png", size: 128 })
+      if (source.avatar) source = source.displayAvatarURL({ format: "png", size: 128 })
       if (source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
         const matched = source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
         source = `https://cdn.discordapp.com/emojis/${matched[2]}.png`;

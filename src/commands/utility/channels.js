@@ -1,4 +1,4 @@
-import { Role, Util, Collection, Formatters } from "discord.js";
+import { Util, Collection, Formatters } from "discord.js";
 export default class extends Command {
   constructor(options) {
     super(options)
@@ -17,7 +17,7 @@ export default class extends Command {
       message.mentions.roles.first() ||
       message.guild.roles.cache.get(args[1]) ||
       message.guild.roles.cache.find(e => e.name === args.slice(1).join(" "));
-    const member = (eeee instanceof Role) ? eeee : await eeee?.fetch?.({ cache: true });
+    const member = (eeee?.members) ? eeee : await eeee?.fetch?.({ cache: true });
     const allChannels = await message.guild.channels.fetch();
     let col = allChannels;
     if (member) {

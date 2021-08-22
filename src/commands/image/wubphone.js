@@ -3,7 +3,7 @@ import commons from '../../utils/commons.js'
 const { __dirname } = commons(import.meta.url);
 import path from 'path';
 import Canvas from 'canvas';
-import { MessageAttachment, User } from 'discord.js';
+import { MessageAttachment } from 'discord.js';
 let sprite;
 
 export default class extends Command {
@@ -25,7 +25,7 @@ export default class extends Command {
     const sources = [source1, source2, source3, source4];
     const realsources = [];
     for (const i in sources) {
-      if (sources[i] && sources[i] instanceof User) realsources[i] = sources[i].displayAvatarURL({ size: 64, format: "png" });
+      if (sources[i] && sources[i].avatar) realsources[i] = sources[i].displayAvatarURL({ size: 64, format: "png" });
 
     }
     const canvasimages = [];

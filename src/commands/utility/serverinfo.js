@@ -22,7 +22,6 @@ export default class extends Command {
     }
     if (!server) server = await bot.fetchGuildPreview(args[1]).catch(() => { });
     if (!server) return message.channel.send("Invalid name/ID!\nSearch by name only works if the bot is on that server\nSearch by ID only works whether the bot is on that server or if it is a discoverable server");
-    //if ((server instanceof Discord.Guild) && !server.available) return message.channel.send("That server is not available.\nPossibly the server is in an outage.");
     const servericon = server.iconURL({ dynamic: true, size: 4096 });
     //¯\_(ツ)_/¯
     const links = [`[Guild](https://discord.com/channels/${server.id})`];
@@ -47,7 +46,7 @@ export default class extends Command {
     let offline;
     let active;
     */
-    if (server instanceof Discord.Guild) {
+    if (server.me) {
       const cat = server.channels.cache.filter(c => c.type === "GUILD_CATEGORY").size;
       if (cat == 1) catname += "1 category";
       else catname += cat + " categories";
@@ -124,10 +123,10 @@ export default class extends Command {
     const embed = new Discord.MessageEmbed()
       .setTitle("Server info")
       .setAuthor(server.name, servericon)
-      .addField("Name", `${server.name} ${(server instanceof Discord.Guild) ? (" (" + server.nameAcronym + ")") : ""}`, true)
+      .addField("Name", `${server.name} ${(server.nameAcronym) ? (" (" + server.nameAcronym + ")") : ""}`, true)
       .addField("ID", server.id, true)
     if (server.description) embed.addField("Description", server.description, true);
-    if (server instanceof Discord.Guild) {
+    if (server.me) {
       const owner = await server.fetchOwner();
       embed.addField("Server Owner", owner.user.tag + "\n" + owner.toString(), true)
         .addField("Server Create Date", bot.botIntl.format(server.createdAt), true)
@@ -152,7 +151,7 @@ export default class extends Command {
       }
     }
     embed.addField("Features", server.features.join("\n") || "None", true)
-      .setThumbnail((server instanceof Discord.Guild) ? server.bannerURL({ format: "png", size: 128 }) : server.discoverySplashURL({ format: "png", size: 128 }))
+      .setThumbnail((server.banner) ? server.bannerURL({ format: "png", size: 128 }) : server.discoverySplashURL({ format: "png", size: 128 }))
       .setImage(server.splashURL({ format: "png", size: 128 }))
       .setColor("#FF00FF")
       .setTimestamp();
