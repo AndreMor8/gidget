@@ -14,12 +14,12 @@ export default class extends SlashCommand {
     }, {
       name: "y",
       description: "Where on the page to go vertically",
-      type: "STRING",
+      type: "NUMBER",
       required: false
     }, {
       name: "x",
       description: "Where on the page to go horizontally",
-      type: "STRING",
+      type: "NUMBER",
       required: false
     }];
     this.permissions = {
@@ -38,8 +38,8 @@ export default class extends SlashCommand {
     }
     const site = interaction.options.getString("site", true);
     const options = {
-      y: parseInt(interaction.options.get("y")?.value) || 0,
-      x: parseInt(interaction.options.get("x")?.value) || 0
+      y: parseInt(interaction.options.getNumber("y", false)) || 0,
+      x: parseInt(interaction.options.getNumber("x", false)) || 0
     };
     await pup(interaction, site.startsWith("http://") || site.startsWith("https://") ? site : `http://${site}`, options);
   }

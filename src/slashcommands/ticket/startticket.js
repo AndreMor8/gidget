@@ -46,7 +46,7 @@ export default class extends SlashCommand {
     if (!category.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply("[startticket.category-channel] I don't have the `VIEW_CHANNEL`, `MANAGE_CHANNELS` and `MANAGE_ROLES` (Manage Permissions) permissions in that channel.");
     const pre_emoji = interaction.options.getString("button-emoji", false);
     if (interaction.guild.emojis.cache.size < 1) await interaction.guild.emojis.fetch();
-    if (interaction.options.get("embed-title").value.length > 256) return interaction.reply("[startticket.embed-title] You can only put up to 256 characters max.")
+    if (interaction.options.getString("embed-title", true).length > 256) return interaction.reply("[startticket.embed-title] You can only put up to 256 characters max.")
     const emoji = (pre_emoji ? (bot.emojis.cache.get(pre_emoji)?.identifier || bot.emojis.cache.find(e => e.name === pre_emoji || e.toString() === pre_emoji)?.identifier || (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(pre_emoji) ? pre_emoji : undefined)) : undefined);
     const button_text = interaction.options.getString("button-text", false);
     if (!emoji && !button_text) return interaction.reply("You need at least one text or one emoji for the button.");

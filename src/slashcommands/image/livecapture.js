@@ -41,12 +41,12 @@ export default class extends SlashCommand {
       }
     }
     //Obtain video information
-    const info = await ytdl.getBasicInfo(interaction.options.get("video").value);
+    const info = await ytdl.getBasicInfo(interaction.options.getString("video"));
     //Check if is live video
     if (info.videoDetails.lengthSeconds != 0) return interaction.reply("This isn't a live stream video!");
     try {
       //Download the video
-      const stream = ytdl(interaction.options.get("video").value, { filter: "videoandaudio" });
+      const stream = ytdl(interaction.options.getString("video"), { filter: "videoandaudio" });
       //Return a Promise
       return await new Promise((s, r) => {
         //Some random name for the temp file

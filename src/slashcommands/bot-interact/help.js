@@ -31,7 +31,7 @@ export default class extends SlashCommand {
         commands: c.filter(z => z.category === o[0]).map(e => e)
       })
     }
-    const to = interaction.options.get("to")?.value;
+    const to = interaction.options.getString("to", false);
     if (to && arr.find(d => d.catname === to)) {
       const g = arr.find(d => d.catname === to);
       if (checkEmbed(interaction.channel)) {
