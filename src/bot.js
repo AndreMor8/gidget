@@ -28,12 +28,12 @@ const bot = new Discord.Client({
     BaseGuildEmojiManager: 0,
     ChannelManager: {
       maxSize: Infinity,
-      sweepFilter: (ch) => (!ch.game) || (!ch.tttgame),
+      sweepFilter: () => (ch) => !(ch.game) || !(ch.tttgame),
       sweepInterval: 1800,
     },
     GuildChannelManager: {
       maxSize: Infinity,
-      sweepFilter: (ch) => !(ch.game) || !(ch.tttgame) || !(bot.distube.voices.collection.some(e => e.channel?.id === ch.id)),
+      sweepFilter: () => (ch) => !(ch.game) || !(ch.tttgame) || !(bot.distube.voices.collection.some(e => e.channel?.id === ch.id)),
       sweepInterval: 1800,
     },
     GuildBanManager: 0,
@@ -42,7 +42,7 @@ const bot = new Discord.Client({
     GuildMemberManager: {
       maxSize: Infinity,
       sweepInterval: 1800,
-      sweepFilter: (member) => member.id === bot.user.id,
+      sweepFilter: () => (member) => member.id === bot.user.id,
     },
     GuildStickerManager: 0,
     MessageManager: 20,
@@ -57,7 +57,7 @@ const bot = new Discord.Client({
     UserManager: {
       maxSize: Infinity,
       sweepInterval: 1800,
-      sweepFilter: (user) => (user.id === bot.user.id) || (!user.mine),
+      sweepFilter: () => (user) => (user.id === bot.user.id) || !(user.mine),
     },
     VoiceStateManager: Infinity
   }),
