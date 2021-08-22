@@ -36,7 +36,7 @@ export default async (bot, message, nolevel = false) => {
         //Always fetch channel
         await message.channel.fetch({ cache: true }).catch(() => { });
         //Always fetch member
-        await message.member.fetch({ cache: true }).catch(() => { });
+        await message.member?.fetch({ cache: true }).catch(() => { });
 
         if (command.owner && message.author.id !== "577000793094488085") return message.channel.send("Only AndreMor can use this command");
         if (command.dev && message.author.id !== "577000793094488085") {
