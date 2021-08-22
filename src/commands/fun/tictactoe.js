@@ -52,8 +52,6 @@ export default class extends Command {
     let user = (["hard", "medium", "easy", "expert"].includes(args[1].toLowerCase()) ? bot.user : (message.guild ? message.mentions.users.first() || message.guild.members.cache.get(args[1]) || await message.guild.members.fetch(args[1] || "123").catch(() => { }) || message.guild.members.cache.find(e => (e.user?.username === args.slice(1).join(" ")) || (e.user?.tag === args.slice(1).join(" ") || (e.displayName === args.slice(1).join(" ")))) : bot.user));
     if (user?.user) user = user.user;
     if (!user || user.id === message.author.id || (user.bot && user.id !== bot.user.id)) return message.channel.send("Invalid member!");
-    await user.fetch();
-    if (!message.guild) await message.author.createDM();
 
     //STARTING GAME
     message.channel.tttgame = new Board();
