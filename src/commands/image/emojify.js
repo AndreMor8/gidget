@@ -47,7 +47,7 @@ export default class extends Command {
             .setStyle("PRIMARY")
             .setCustomId("emojify_c_add2sv")
             .setLabel("Add to server")
-            .setDisabled(!(message.guild?.me.permissions.has("MANAGE_EMOJIS") && message.member?.permissions.has("MANAGE_EMOJIS")));
+            .setDisabled(!(message.guild?.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS") && message.member?.permissions.has("MANAGE_EMOJIS_AND_STICKERS")));
 
         const att = new MessageAttachment(buffer, `emoji.${force ? "png" : "gif"}`);
         const filter = (button) => {
@@ -59,7 +59,7 @@ export default class extends Command {
         if (!but_add.disabled) {
             const butcol = here.createMessageComponentCollector({ filter, idle: 60000 });
             butcol.on("collect", async (button) => {
-                if (!(message.guild?.me.permissions.has("MANAGE_EMOJIS") && message.member?.permissions.has("MANAGE_EMOJIS"))) return button.reply("Nope", true);
+                if (!(message.guild?.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS") && message.member?.permissions.has("MANAGE_EMOJIS_AND_STICKERS"))) return button.reply("Nope", true);
                 await button.reply("Tell me the name of the new emoji (30s collector time).");
                 butcol.stop("a");
                 here.edit({ components: [new MessageActionRow().addComponents([but_add.setDisabled(true)])] });

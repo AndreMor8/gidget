@@ -23,7 +23,7 @@ export default class extends Command {
     }
 
     let auth = emoji.author;
-    if (!auth && message.guild.me.permissions.has("MANAGE_EMOJIS") && emoji.guild.id === message.guild.id) {
+    if (!auth && message.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS") && emoji.guild.id === message.guild.id) {
       auth = await emoji.fetchAuthor();
     } else if (!auth) auth = "*Without perms to see that*";
     const embed = new MessageEmbed()
