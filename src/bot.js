@@ -61,7 +61,7 @@ const bot = new Discord.Client({
     ReactionManager: 0,
     ReactionUserManager: 0,
     RoleManager: Infinity,
-    StageInstanceManager: 0,
+    StageInstanceManager: Infinity,
     ThreadManager: 0,
     ThreadMemberManager: 0,
     UserManager: {
