@@ -103,7 +103,7 @@ export default class extends SlashCommand {
   }
   async run(bot, interaction) {
     const doc = await db.findOne({ guildId: interaction.guild.id })
-    switch (interaction.options.first().name) {
+    switch (interaction.options.getSubcommand()) {
       case 'add': {
         if (doc?.roles.length > 25) return interaction.reply("You can only have 25 roles(options) per list.")
         const option = {

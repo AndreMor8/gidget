@@ -7,9 +7,13 @@ const internalCooldown = new Set();
 
 export default async (bot, interaction) => {
   if (interaction.isCommand() || interaction.isContextMenu()) {
-    if(!interaction.guild) {
-      await interaction.author.fetch({ cache: true }).catch(() => {});
-      await interaction.author.createDM({ cache: true }).catch(() => {});
+    //Always fetch necessary resources
+    if (interaction.guild) {
+      await interaction.member.fetch({ cache: true }).catch(() => { });
+      await interaction.channel.fetch({ cache: true }).catch(() => { });
+    } else {
+      await interaction.author.fetch({ cache: true }).catch(() => { });
+      await interaction.author.createDM().catch(() => { });
     }
     if (internalCooldown.has(interaction.user.id)) return interaction.reply({ content: "Calm down! Wait until the previous command finished executing.", ephemeral: true });
     const command = bot.slashCommands.get(interaction.commandName);
@@ -45,7 +49,7 @@ export default async (bot, interaction) => {
     }
   }
   if (interaction.isSelectMenu() && interaction.customId === "selectroles_f") {
-    await interaction.member.fetch({ cache: true }).catch(() => {});
+    await interaction.member.fetch({ cache: true }).catch(() => { });
     if (!bot.guilds.cache.has(interaction.guild.id)) return interaction.deferUpdate();
     if (!interaction.guild.me.permissions.has("MANAGE_ROLES")) return interaction.reply({ content: "I don't have permissions to add roles. Contact an administrator to fix the problem.", ephemeral: true })
     const roles = interaction.values?.map(e => e.split("_")[3]) || [];

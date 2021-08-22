@@ -1,15 +1,14 @@
 import db from '../../database/models/voicerole.js';
 
 export default async (bot, oldState, newState) => {
-
   const member = newState.member || oldState.member;
   const guild = newState.guild || oldState.guild;
   //VOICEROLE
   if (member && guild.me.permissions.has("MANAGE_ROLES")) {
     const list = await db.findOne({ guildID: { $eq: guild.id } }).lean();
     if (list && list.enabled) {
-      const thing1 = list.list.find(e => e.channels.includes(newState?.channelId));
-      const thing2 = list.list.find(e => e.channels.includes(oldState?.channelId));
+      const thing1 = list.list.find(e => e.channels.includes(newState.channelId));
+      const thing2 = list.list.find(e => e.channels.includes(oldState.channelId));
       if (thing1 && !thing2) {
         if (!member.roles.cache.has(thing1.roleID)) {
           const algo = guild.roles.cache.get(thing1.roleID);

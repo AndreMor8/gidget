@@ -7,7 +7,7 @@ const internalCooldown = new Set();
 
 export default async (bot, message, nolevel = false) => {
   if (message.author.bot) return;
-  if (message.guild && !message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return;
+  if (message.guild && !message.channel.permissionsFor(bot.user.id)?.has("SEND_MESSAGES")) return;
   try {
     //All-time message code
     if (message.guild) {
@@ -21,7 +21,7 @@ export default async (bot, message, nolevel = false) => {
       //Always fetch user
       await message.author.fetch({ cache: true }).catch(() => { });
       //Always fetch author's DM.
-      await message.author.createDM({ cache: true }).catch(() => { });
+      await message.author.createDM().catch(() => { });
     }
     const PREFIX = message.guild ? await getPrefix(message.guild) : "g%";
     if (message.content.startsWith(PREFIX)) {
@@ -33,6 +33,8 @@ export default async (bot, message, nolevel = false) => {
       if (!args[0]) return;
       const command = bot.commands.get(args[0].toLowerCase()) || bot.commands.find(a => a.aliases.includes(args[0].toLowerCase()));
       if (command) {
+        //Always fetch channel
+        await message.channel.fetch({ cache: true }).catch(() => { });
         //Always fetch member
         await message.member.fetch({ cache: true }).catch(() => { });
 
