@@ -39,7 +39,7 @@ const bot = new Discord.Client({
     },
     GuildChannelManager: {
       maxSize: Infinity,
-      sweepFilter: () => () => (ch) => {
+      sweepFilter: () => (ch) => {
         if (ch.game) return false;
         if (ch.tttgame) return false;
         if (bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
