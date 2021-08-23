@@ -38,7 +38,7 @@ export default function (sharder) {
     if (isNaN(guildID)) return false;
     const res = await sharder.broadcastEval((c, { g, guildNoCache }) => {
       return guildNoCache(c.guilds.cache.get(g));
-    }, { context: { g: guildID } });
+    }, { context: { g: guildID, guildNoCache } });
     if (res.find(e => Boolean(e))) return true;
     else return false;
   }
