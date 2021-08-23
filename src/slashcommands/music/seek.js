@@ -17,11 +17,11 @@ export default class extends SlashCommand {
 		};
 	}
 	async run(bot, interaction) {
-		const channel = interaction.member.voice.channel;
+		const channel = interaction.member.voice.channelId;
 		if (!channel) return interaction.reply("You need to be in a voice channel to seek music!");
 		const queue = bot.distube.getQueue(interaction.guild.me.voice);
 		if (!queue) return interaction.reply(`There is nothing playing.`);
-		if (queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
+		if (queue.voiceChannel.id !== channel) return interaction.reply("You are not on the same voice channel as me.");
 
 		const exp = interaction.options.getString("to-seek", true).split(":");
 		//More support?

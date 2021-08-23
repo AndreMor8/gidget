@@ -29,9 +29,10 @@ const bot = new Discord.Client({
     ChannelManager: {
       maxSize: Infinity,
       sweepFilter: () => (ch) => {
-        if(ch.game) return false;
-        if(ch.tttgame) return false;
-        if(bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
+        if (ch.game) return false;
+        if (ch.tttgame) return false;
+        if (bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
+        if (ch.isVoice() && ch.members.has(bot.user.id)) return false;
         return true;
       },
       sweepInterval: 1800,
@@ -39,9 +40,10 @@ const bot = new Discord.Client({
     GuildChannelManager: {
       maxSize: Infinity,
       sweepFilter: () => () => (ch) => {
-        if(ch.game) return false;
-        if(ch.tttgame) return false;
-        if(bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
+        if (ch.game) return false;
+        if (ch.tttgame) return false;
+        if (bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
+        if (ch.isVoice() && ch.members.has(bot.user.id)) return false;
         return true;
       },
       sweepInterval: 1800,
@@ -68,8 +70,8 @@ const bot = new Discord.Client({
       maxSize: Infinity,
       sweepInterval: 1800,
       sweepFilter: () => (user) => {
-        if(user.id === bot.user.id) return false;
-        if(user.mine) return false;
+        if (user.id === bot.user.id) return false;
+        if (user.mine) return false;
         return true;
       },
     },

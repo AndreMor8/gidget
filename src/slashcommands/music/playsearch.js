@@ -19,10 +19,10 @@ export default class extends SlashCommand {
     };
   }
   async run(bot, interaction) {
-    const channel = interaction.member.voice.channel;
+    const channel = interaction.member.voice.channelId;
     if (!channel) return interaction.reply("You need to be in a voice channel to play music!");
     const queue = bot.distube.getQueue(interaction.guild.me.voice);
-    if (queue && queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
+    if (queue && queue.voiceChannel.id !== channel) return interaction.reply("You are not on the same voice channel as me.");
     const tosearch = interaction.options.getString("term", true);
     if (tosearch > 200) return interaction.reply("The maximum size of the search term is 200 characters.");
     if (isURL(tosearch)) return interaction.reply("YouTube links should go in the `play` command");

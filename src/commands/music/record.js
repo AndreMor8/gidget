@@ -9,9 +9,9 @@ export default class extends Command {
         this.description = "record your voice";
     }
     async run(/*bot, message, args*/) {
-        /*const channel = message.member.voice.channel;
+        /*const channel = message.member.voice.channelId;
         if (!channel) return message.reply("you must join a voice channel");
-        const connection = joinVoiceChannel({ channelId: channel.id, guildId: channel.guild.id, adapterCreator: message.guild.voiceAdapterCreator, selfDeaf: false });
+        const connection = joinVoiceChannel({ channelId: channel, guildId: channel.guild.id, adapterCreator: message.guild.voiceAdapterCreator, selfDeaf: false });
         await entersState(connection, VoiceConnectionStatus.Ready, 20e3);
         connection.playOpusPacket(SILENCE_FRAME);
         const receiver = createVoiceReceiver(connection);

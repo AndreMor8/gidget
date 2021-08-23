@@ -11,12 +11,12 @@ export default class extends SlashCommand {
     this.guildonly = true;
   }
   async run(bot, interaction) {
-    const channel = interaction.member.voice.channel;
+    const channel = interaction.member.voice.channelId;
     if (!channel) return await interaction.reply("You need to be in a voice channel to pause music!");
 
     const queue = bot.distube.getQueue(interaction.guild.me.voice);
     if (!queue) return await interaction.reply(`There is nothing playing.`);
-    if (queue.voiceChannel.id !== channel.id) return await interaction.reply("You are not on the same voice channel as me.");
+    if (queue.voiceChannel.id !== channel) return await interaction.reply("You are not on the same voice channel as me.");
 
     const to_jump = interaction.options.getInteger("to", false);
     if (!to_jump && interaction.options.getInteger("to", false)) return interaction.reply("Invalid song number.");
