@@ -1,4 +1,3 @@
-import { guildNoCache } from './extensions.js';
 import express from 'express';
 
 export default function (sharder) {
@@ -36,9 +35,28 @@ export default function (sharder) {
   });
   async function deleteCache(guildID) {
     if (isNaN(guildID)) return false;
-    const res = await sharder.broadcastEval((c, { g, guildNoCache }) => {
+    const res = await sharder.broadcastEval((c, { g }) => {
+      function guildNoCache(guild) {
+        if (!guild) return false;
+        if (!guild.cache) guild.cache = {};
+        guild.cache.customresponses = false;
+        guild.customresponses = {};
+        guild.cache.prefix = false;
+        guild.prefix = {};
+        guild.cache.levelconfig = false;
+        guild.levelconfig = {};
+        guild.cache.messagelinksconfig = false;
+        guild.messagelinksconfig = {};
+        guild.cache.welcome = false;
+        guild.welcome = {};
+        guild.autopostchannels = [];
+        guild.cache.autopostchannels = false;
+        guild.warnsconfig = {};
+        guild.cache.warnsconfig = false;
+        return true;
+      }
       return guildNoCache(c.guilds.cache.get(g));
-    }, { context: { g: guildID, guildNoCache } });
+    }, { context: { g: guildID } });
     if (res.find(e => Boolean(e))) return true;
     else return false;
   }
