@@ -308,42 +308,42 @@ export async function setWelcome(guild, tochange, newData) {
   switch (tochange) {
     case 0: {
       await doc.updateOne({ enabled: newData });
-      this.welcome.enabled = newData;
+      guild.welcome.enabled = newData;
     }
       break;
     case 1: {
       await doc.updateOne({ channelID: newData });
-      this.welcome.channelID = newData;
+      guild.welcome.channelID = newData;
     }
       break;
     case 2: {
       await doc.updateOne({ text: newData });
-      this.welcome.text = newData;
+      guild.welcome.text = newData;
     }
       break;
     case 3: {
       await doc.updateOne({ dmenabled: newData });
-      this.welcome.dmenabled = newData;
+      guild.welcome.dmenabled = newData;
     }
       break;
     case 4: {
       await doc.updateOne({ dmtext: newData });
-      this.welcome.dmtext = newData;
+      guild.welcome.dmtext = newData;
     }
       break;
     case 5: {
       await doc.updateOne({ leaveenabled: newData });
-      this.welcome.leaveenabled = newData;
+      guild.welcome.leaveenabled = newData;
     }
       break;
     case 6: {
       await doc.updateOne({ leavechannelID: newData });
-      this.welcome.leavechannelID = newData;
+      guild.welcome.leavechannelID = newData;
     }
       break;
     case 7: {
       await doc.updateOne({ leavetext: newData });
-      this.welcome.leavetext = newData;
+      guild.welcome.leavetext = newData;
     }
       break;
     default:
@@ -356,7 +356,7 @@ export async function getWarnConfig(guild) {
   let doc = await guildwarnconfig.findOne({ guildid: { $eq: guild.id } });
   if (!doc) {
     doc = await guildwarnconfig.create({
-      guildid: this.id,
+      guildid: guild.id,
       role: false,
       kick: false,
       ban: false
