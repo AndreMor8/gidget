@@ -1,6 +1,7 @@
 // swiftcord/src/Canvas.js
 import Canvas from "canvas";
 import path from 'path';
+import { getBuffer } from "../extensions.js";
 import commons from './commons.js';
 const { __dirname } = commons(import.meta.url);
 Canvas.registerFont(path.join(__dirname, "/../assets/manrope-bold-font.ttf"), { family: 'Manrope', weight: "regular", style: "normal" });
@@ -72,7 +73,7 @@ export default async ({ username, discrim, level, rank, neededXP, currentXP, ava
 	ctx.arc(257 + 18.5 + widthXP, 147.5 + 18.5 + 36.25, 18.75, 1.5 * Math.PI, 0.5 * Math.PI, false);
 	ctx.fill();
 
-	const avatar = await Canvas.loadImage(avatarURL);
+	const avatar = await Canvas.loadImage(await getBuffer(avatarURL));
 	ctx.arc(160, 141, 150 / 2, 0, Math.PI * 2);
 	ctx.clip();
 	ctx.drawImage(avatar, 85, 66, 150, 150);

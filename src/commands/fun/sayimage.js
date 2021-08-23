@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
 import Canvas from 'canvas';
 import fillWithEmoji from '../../utils/fillWithEmoji.js';
+import { getBuffer } from '../../extensions.js';
 
 export default class extends Command {
   constructor(options) {
@@ -32,8 +33,8 @@ export default class extends Command {
     ctx.closePath()
     ctx.clip()
 
-    const url = miembro.user.displayAvatarURL({ format: 'png', dynamic: false, size: 1024 })
-    const image = await Canvas.loadImage(url)
+    const buf = await getBuffer(miembro.user.displayAvatarURL({ format: 'png', dynamic: false, size: 1024 }));
+    const image = await Canvas.loadImage(buf);
     ctx.drawImage(image, x, y, radius * 2, radius * 2)
 
     ctx.restore()

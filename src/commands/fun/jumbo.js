@@ -2,6 +2,7 @@ import parser from 'twemoji-parser';
 import svg2img_callback from 'node-svg2img';
 import { promisify } from 'util';
 import { MessageAttachment } from 'discord.js';
+import { getBuffer } from '../../extensions.js';
 const svg2img = promisify(svg2img_callback);
 const regex = /<?(a:|:)\w*:(\d{17}|\d{18})>/;
 
@@ -24,7 +25,7 @@ export default class extends Command {
     } else if (parsed.length >= 1) {
       const number = parseInt(args[2]);
       const size = number && ((number <= 1024) && (number > 0)) ? number : 150;
-      const buf = await svg2img(parsed[0].url, { format: "png", width: size, height: size });
+      const buf = await svg2img(await getBuffer(parsed[0].url), { format: "png", width: size, height: size });
       const att = new MessageAttachment(buf, "twemoji.png");
       await message.channel.send({ content: (number ? undefined : "In Twemoji mode you can resize the image up to 1024.\n`jumbo <emoji> [size]`"), files: [att] });
     } else if (cachedemoji) {

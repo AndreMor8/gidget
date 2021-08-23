@@ -3,6 +3,7 @@ import commons from '../../utils/commons.js';
 const { __dirname } = commons(import.meta.url);
 import Discord from "discord.js";
 import Canvas from "canvas";
+import { getBuffer } from '../../extensions.js';
 let background;
 export default class extends Command {
   constructor(options) {
@@ -21,13 +22,13 @@ export default class extends Command {
     if (!background) background = await Canvas.loadImage(path.join(__dirname, "../../assets/Batman-Slaps-Robin.jpg"));
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-    const avatar = await Canvas.loadImage(message.author.displayAvatarURL({ format: 'png' }));
-    const avatarmen = await Canvas.loadImage(user.user.displayAvatarURL({ format: 'png' }));
+    const avatar = await Canvas.loadImage(await getBuffer(message.author.displayAvatarURL({ format: 'png' })));
+    const avatarmen = await Canvas.loadImage(await getBuffer(user.user.displayAvatarURL({ format: 'png' })));
 
     ctx.drawImage(avatar, 270, 50, 160, 160);
     ctx.drawImage(avatarmen, 452, 205, 160, 160);
 
-    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'btslap.png')
+    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'btslap.png');
     message.channel.send({ files: [attachment] });
   }
 }

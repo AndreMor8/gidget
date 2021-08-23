@@ -5,6 +5,7 @@ import path from 'path';
 import Canvas from 'canvas';
 import { MessageAttachment } from 'discord.js';
 let sprite;
+import { getBuffer } from '../../extensions.js';
 
 export default class extends Command {
   constructor(options) {
@@ -29,7 +30,7 @@ export default class extends Command {
 
     }
     const canvasimages = [];
-    for (const i in realsources) canvasimages[i] = await Canvas.loadImage(realsources[i])
+    for (const i in realsources) canvasimages[i] = await Canvas.loadImage(await getBuffer(realsources[i]));
     const canvas = Canvas.createCanvas(1280, 720);
     const ctx = canvas.getContext("2d");
     ctx.drawImage(sprite, 0, 0)

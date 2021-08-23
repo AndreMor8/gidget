@@ -1,6 +1,7 @@
 //Copied from https://www.npmjs.com/package/discord-emoji-canvas / https://github.com/abh80/discord-emoji-canvas
 import Canvas from "canvas";
 import { parse } from "twemoji-parser";
+import { getBuffer } from "../extensions.js";
 export default async (ctx, text, x, y) => {
   if (!ctx) throw new Error(`(discord-emoji-canvas) No Context was provided`);
   if (!text) throw new Error("(discord-emoji-canvas) No Text was provided");
@@ -22,7 +23,7 @@ export default async (ctx, text, x, y) => {
     //checking if custom emote or not
     const matched = ent.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
     if (matched) {
-      const img = await Canvas.loadImage(`https://cdn.discordapp.com/emojis/${matched[2]}.png`);
+      const img = await Canvas.loadImage(await getBuffer(`https://cdn.discordapp.com/emojis/${matched[2]}.png`));
       ctx.drawImage(img, x + currWidth + emojiSideMargin, y + emojiUpMargin - fontSize - baseLine, fontSize, fontSize);
       currWidth += fontSize + emojiSideMargin * 2 + fontSize / 5;
     } else if (parsed.length > 0) {

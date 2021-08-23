@@ -1,4 +1,5 @@
 import Canvas from 'canvas';
+import { getBuffer } from '../../extensions.js';
 import petpet from '../../utils/petpet.js';
 const fpsnumber = 16;
 const delay = parseInt(1000 / fpsnumber);
@@ -16,7 +17,7 @@ export default class extends SlashCommand {
   async run(bot, interaction) {
     let source = await bot.users.fetch(interaction.targetId).catch(() => { });
     if (!source) return interaction.reply("Invalid user!");
-    source = source.displayAvatarURL({ format: "png", size: 128 });
+    source = await getBuffer(source.displayAvatarURL({ format: "png", size: 128 }));
     await interaction.deferReply();
     const torender = await Canvas.loadImage(source);
     const buf = await petpet(torender, delay);
