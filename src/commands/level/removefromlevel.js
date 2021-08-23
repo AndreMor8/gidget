@@ -1,3 +1,4 @@
+import { getLevelConfig } from "../../extensions.js";
 import Levels from "../../utils/discord-xp.js";
 
 export default class extends Command {
@@ -16,7 +17,7 @@ export default class extends Command {
     const level = parseInt(args[1]);
     if (level !== 0 && !level) return message.channel.send("Invalid level");
     if (level < 0) return message.channel.send("Invalid number!");
-    const msgDocument = message.guild.cache.levelconfig ? message.guild.levelconfig : await message.guild.getLevelConfig();
+    const msgDocument = await getLevelConfig(message.guild);
     if (!msgDocument) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!");
     if (msgDocument && !msgDocument.levelsystem) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!");
     const removed = await Levels.removeFromLevel(message.guild.id, level);
