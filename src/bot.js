@@ -16,6 +16,14 @@ import Discord from 'discord.js-light';
 import DisTube from 'distube';
 import { inspect } from 'util';
 
+const channelFilter = (ch) => {
+  if (ch.game) return false;
+  if (ch.tttgame) return false;
+  if (bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
+  if (ch.isVoice() && ch.members.has(bot.user.id)) return false;
+  return true;
+};
+
 //Bot client
 const bot = new Discord.Client({
   ws: {
@@ -28,24 +36,12 @@ const bot = new Discord.Client({
     BaseGuildEmojiManager: 0,
     ChannelManager: {
       maxSize: Infinity,
-      sweepFilter: () => (ch) => {
-        if (ch.game) return false;
-        if (ch.tttgame) return false;
-        if (bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
-        if (ch.isVoice() && ch.members.has(bot.user.id)) return false;
-        return true;
-      },
+      sweepFilter: () => channelFilter,
       sweepInterval: 1800,
     },
     GuildChannelManager: {
       maxSize: Infinity,
-      sweepFilter: () => (ch) => {
-        if (ch.game) return false;
-        if (ch.tttgame) return false;
-        if (bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
-        if (ch.isVoice() && ch.members.has(bot.user.id)) return false;
-        return true;
-      },
+      sweepFilter: () => channelFilter,
       sweepInterval: 1800,
     },
     GuildBanManager: 0,
@@ -54,7 +50,11 @@ const bot = new Discord.Client({
     GuildMemberManager: {
       maxSize: Infinity,
       sweepInterval: 1800,
-      sweepFilter: () => (member) => member.id !== bot.user.id,
+      sweepFilter: () => (member) => {
+        if (member.id === bot.user.id) return false;
+        if (member.voice.channelId && bot.distube.voices.collection.some(e => e.channel.id === member.voice.channelId)) return false;
+        return true;
+      },
     },
     GuildStickerManager: 0,
     MessageManager: 20,
