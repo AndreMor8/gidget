@@ -52,7 +52,7 @@ export default class extends Command {
         else if (button.customId === "c4_c_mediummode") this.run(bot, message, ["c4", "medium"])
         else if (button.customId === "c4_c_hardmode") this.run(bot, message, ["c4", "hard"])
 
-        button.update({ content: msg.content, components: [new MessageActionRow.addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)])] });
+        button.update({ content: msg.content, components: [new MessageActionRow().addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)])] });
         col.stop("ok");
       });
       return;
