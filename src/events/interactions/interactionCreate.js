@@ -23,8 +23,10 @@ export default async (bot, interaction) => {
       if (!bot.guilds.cache.has(interaction.guild.id) && command.requireBotInstance) return interaction.reply("Please invite the real bot");
       const userperms = interaction.member.permissions;
       const userchannelperms = interaction.channel.permissionsFor(interaction.member.id);
+      if(!userchannelperms) return;
       const botperms = interaction.guild.me.permissions;
       const botchannelperms = interaction.channel.permissionsFor(bot.user.id);
+      if(!botchannelperms) return;
       if (interaction.user.id !== "577000793094488085") {
         if (!userperms.has(command.permissions.user[0])) return interaction.reply("You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[0]).has(8n)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
         if (!userchannelperms.has(command.permissions.user[1])) return interaction.reply("You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[1]).has(8n)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
