@@ -28,7 +28,7 @@ export default class extends Command {
           messages.sweep(m => !authors.includes(m.author.id));
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          bot.setTimeout(() => {
+          setTimeout(() => {
             if (!thing.deleted) thing.delete()
           }, 5000);
         }
@@ -38,7 +38,7 @@ export default class extends Command {
           messages.sweep(m => !m.author.bot);
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          bot.setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
+          setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
         }
           break;
         case 'attachments': {
@@ -46,7 +46,7 @@ export default class extends Command {
           messages.sweep(m => !m.attachments.first());
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          bot.setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
+          setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
         }
           break;
         case 'embeds': {
@@ -54,7 +54,7 @@ export default class extends Command {
           messages.sweep(m => !m.embeds[0]);
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          bot.setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
+          setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
         }
           break;
         case 'with': {
@@ -63,7 +63,7 @@ export default class extends Command {
           messages.sweep(m => !(new RegExp(args.slice(3).join(" "), "gmi").test(m.content)));
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          bot.setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
+          setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
         }
           break;
         default: {

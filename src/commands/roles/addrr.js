@@ -36,14 +36,14 @@ export default class extends Command {
 								emoji = emojiName;
 							} else {
 								return msg.channel.send("Emoji does not exist. Try again.")
-									.then(msg => bot.setTimeout(() => { if (!msg.deleted) msg.delete() }, 2000))
+									.then(msg => setTimeout(() => { if (!msg.deleted) msg.delete() }, 2000))
 									.catch(err => console.log(err));
 							}
 						}
 						const role = msg.guild.roles.cache.get(roleName) || msg.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
 						if (!role) {
 							msg.channel.send("Role does not exist. Try again.")
-								.then(msg => bot.setTimeout(() => {
+								.then(msg => setTimeout(() => {
 									if (!msg.deleted) msg.delete();
 								}, 2000))
 								.catch(err => console.log(err));

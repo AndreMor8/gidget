@@ -36,7 +36,7 @@ export default class extends Command {
     collector.on("collect", async (m) => {
       if (m.content.toLowerCase() === "exit") return collector.stop("Exited");
       if (m.content.toLowerCase() === "preview")
-        return message.channel.send("Here's a preview of your embed", embed).then(msg => bot.setTimeout(() => {
+        return message.channel.send("Here's a preview of your embed", embed).then(msg => setTimeout(() => {
           if (!msg.deleted) msg.delete();
         }, 15000));
       switch (i) {
