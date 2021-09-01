@@ -33,3 +33,5 @@ function createProgressBar(current, total, max) {
   const remain = max - progress;
   return `${["▬".repeat(progress), "<a:KicketyKickBallA:649698360978178061>", "▬".repeat(remain)].join("")} ${percentageText}%`
 }
+
+/By: Kirzu~#3444
