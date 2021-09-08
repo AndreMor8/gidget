@@ -14,7 +14,7 @@ export default class extends Command {
     const embed = new MessageEmbed()
       .setTitle(`Widget information for ${json.name}`)
       .addField("Enabled instant invite?", (json.instant_invite ? `[Yes](${json.instant_invite})` : "No") || "?")
-      .addField("Voice channels", Util.splitMessage(json.channels.sort((b, a) => b.position - a.position).map(e => `${e.name} (${e.id})`).join("\n"), { maxLength: 950 })[0] || "No channels")
+      .addField("Voice channels", json.channels.length > 0 ? Util.splitMessage(json.channels.sort((b, a) => b.position - a.position).map(e => `${e.name} (${e.id})`).join("\n"), { maxLength: 1024 })[0] : "No channels")
       .addField("Member Count", (json.members.length > 99) ? "100 or more" : json.members.length.toString())
       .addField("Presence Count", json.presence_count.toString())
       .addField("Links", `[Widget JSON](https://discord.com/api/guilds/${json.id}/widget.json) - [Widget](https://discord.com/widget?id=${json.id}&theme=dark) - [Widget Image](https://discord.com/api/v7/guilds/${json.id}/widget.png)`);

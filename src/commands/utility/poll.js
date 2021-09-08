@@ -81,7 +81,7 @@ export default class extends Command {
           for (const reaction of reactions) await poll.react(reaction);
         } else {
           await poll.react("Perfecto:460279003673001985");
-          await poll.react("WaldenNo:612137351166033950");
+          await poll.react("WaldenNo:873584832603652117");
         }
         await Discord.Util.delayFor(1000);
         await pollDb.create({
@@ -92,7 +92,6 @@ export default class extends Command {
         }).then(() => interval(bot, true));
       } catch (err) {
         await message.channel.send(`Error when creating timed poll: ${err}`);
-        await msg.react("❌");
       }
     }
   }
