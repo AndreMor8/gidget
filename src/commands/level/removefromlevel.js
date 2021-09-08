@@ -21,6 +21,6 @@ export default class extends Command {
     if (!msgDocument) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!");
     if (msgDocument && !msgDocument.levelsystem) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!");
     const removed = await Levels.removeFromLevel(message.guild.id, level);
-    await message.channel.send(`${removed.n} users lower than or equal to that level have been removed from the database.`);
+    await message.channel.send(`${removed.deletedCount} users lower than or equal to that level have been removed from the database.`);
   }
 }

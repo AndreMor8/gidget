@@ -30,7 +30,7 @@ export default class extends Command {
       const url = args[3] || message.attachments.first()?.url;
       if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(url)) return message.channel.send("Put a valid image URL, or upload a file next to the command.");
       const res = await fetch(url);
-      if (!res.ok) return message.channel.send(`Status code returned ${res.status} (${res.statusText})`);
+      if (!res.ok) return message.channel.send(`Status code returned ${res.status}`);
       const doc = await banner.findOne({ guildID: message.guild.id });
       if (!doc) await banner.create({ guildID: message.guild.id, banners: [{ url, hour }] });
       else {

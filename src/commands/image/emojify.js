@@ -82,7 +82,7 @@ export default class extends Command {
 
 async function render(url) {
     const res = await fetch(url);
-    if (!res.ok) throw new Error(`Status code returned ${res.status} (${res.statusText})`);
+    if (!res.ok) throw new Error(`Status code returned ${res.status}`);
     const pre_buf = await res.buffer();
     const type = await FileType.fromBuffer(pre_buf);
     if (type?.mime === "image/gif") {

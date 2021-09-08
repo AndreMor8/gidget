@@ -61,7 +61,7 @@ async function pup(interaction, url, options) {
       },
       body: JSON.stringify({ url, x: options?.x, y: options?.y, nsfw: interaction.channel?.nsfw || false })
     });
-    if (!res.ok) throw new Error(await res.text() || (res.status + " " + res.statusText));
+    if (!res.ok) throw new Error(await res.text() || (res.status));
     else {
       const att = new Discord.MessageAttachment(await res.buffer(), "capture.png");
       const time = "Time: " + (Date.now() - (msg.editedTimestamp || msg.createdTimestamp)) / 1000 + "s";

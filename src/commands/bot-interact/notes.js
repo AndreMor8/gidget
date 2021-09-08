@@ -21,7 +21,7 @@ export default class extends Command {
         if (!args[2]) return await message.channel.send("Put the note ID or put `all` to delete all your notes");
         if (args[2] === "all") {
           const results = await notes.deleteMany({ userID: { $eq: message.author.id } });
-          await message.channel.send(`I have deleted ${results.n} notes of yours.`);
+          await message.channel.send(`I have deleted ${results.deletedCount} notes of yours.`);
         } else {
           const o = parseInt(args[2]);
           if (!o) return await message.channel.send("Invalid ID!");
