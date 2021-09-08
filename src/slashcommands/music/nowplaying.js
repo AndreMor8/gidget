@@ -19,7 +19,7 @@ export default class extends SlashCommand {
       .setDescription([
         `Now playing: **[${queue.songs[0].name}](${queue.songs[0].url})**`,
         `Time: **${moment.duration(queue.currentTime, "seconds").format()} / ${moment.duration(queue.songs[0].duration, "seconds").format()}**`,
-        `Progress Bar:`, `**${createProgressBar(moment.duration(queue.songs[0].duration, "seconds")._milliseconds, suma, 15)}**`,
+        `Progress Bar:`, `**${createProgressBar(suma, moment.duration(queue.songs[0].duration, "seconds")._milliseconds, 15)}**`,
       ].join("\n"))
       .setColor(0xffff00);
     await interaction.reply({ embeds: [embed_success], ephemeral: true });
@@ -29,7 +29,7 @@ export default class extends SlashCommand {
 function createProgressBar(current, total, max) {
   const percentage = current / total;
   const percentageText = Math.round(percentage * 100);
-  const progress = Math.round(max * (current / total));
+  const progress = Math.round(max * percentage);
   const remain = max - progress;
   return `${["▬".repeat(progress), "<a:KicketyKickBallA:649698360978178061>", "▬".repeat(remain)].join("")} ${percentageText}%`
 }
