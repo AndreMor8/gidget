@@ -1,24 +1,24 @@
-import Discord from 'discord.js';
-import Canvas from 'canvas';
-import fillWithEmoji from '../../utils/fillWithEmoji.js';
-import { getBuffer } from '../../extensions.js';
+import Discord from 'discord.js';
+import Canvas from 'canvas';
+import fillWithEmoji from '../../utils/fillWithEmoji.js';
+import { getBuffer } from '../../extensions.js';
 
 export default class extends Command {
   constructor(options) {
-    super(options);
-    this.description = "Fake quote";
-    this.secret = true;
+    super(options);
+    this.description = "Fake quote";
+    this.secret = true;
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 32768n]
-    };
-    this.aliases = ["fakequote"];
+    };
+    this.aliases = ["fakequote"];
   }
   async run(bot, message, args) {
-    const miembro = message.mentions.members.first();
-    if (!miembro) return message.channel.send("Mention someone");
-    const mensaje = args.slice(2).join(" ");
-    if (!mensaje) return message.channel.send("Put some message");
+    const miembro = message.mentions.members.first();
+    if (!miembro) return message.channel.send("Mention someone");
+    const mensaje = args.slice(2).join(" ");
+    if (!mensaje) return message.channel.send("Put some message");
 
     const canvas = Canvas.createCanvas(600, 69)
     const ctx = canvas.getContext('2d')
@@ -33,8 +33,8 @@ export default class extends Command {
     ctx.closePath()
     ctx.clip()
 
-    const buf = await getBuffer(miembro.user.displayAvatarURL({ format: 'png', dynamic: false, size: 1024 }));
-    const image = await Canvas.loadImage(buf);
+    const buf = await getBuffer(miembro.user.displayAvatarURL({ format: 'png', dynamic: false, size: 1024 }));
+    const image = await Canvas.loadImage(buf);
     ctx.drawImage(image, x, y, radius * 2, radius * 2)
 
     ctx.restore()
@@ -58,7 +58,7 @@ export default class extends Command {
     hour = (hour < 10 ? "0" : "") + hour
     min = (min < 10 ? "0" : "") + min
 
-    ctx.fillText(`Today at ${hour}:${min} ${tt}`, 66 + largo + 8, 27);
+    ctx.fillText(`Today at ${hour}:${min} ${tt}`, 66 + largo + 8, 27);
 
     ctx.font = "11.2px Sans Serif"
     ctx.fillStyle = "#72767d"

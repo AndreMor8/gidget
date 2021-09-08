@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 //[{ banner: "url", hour: 5 }] (new york)
 
 const sch = new mongoose.Schema({
@@ -8,6 +8,6 @@ const sch = new mongoose.Schema({
     hour: { type: Number, required: true }
   }],
   enabled: { type: Boolean, default: true }
-});
+});
 
-export default mongoose.model("banner", sch);
+export default mongoose.model("banner", sch);

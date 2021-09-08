@@ -1,11 +1,11 @@
-import Discord from "discord.js";
-import fetch from 'node-fetch';
-const timer = new Set();
+import Discord from "discord.js";
+import fetch from 'node-fetch';
+const timer = new Set();
 
 export default class extends SlashCommand {
   constructor(options) {
-    super(options);
-    this.deployOptions.description = "Take a screenshot of a web page";
+    super(options);
+    this.deployOptions.description = "Take a screenshot of a web page";
     this.deployOptions.options = [{
       name: "site",
       type: "STRING",
@@ -21,7 +21,7 @@ export default class extends SlashCommand {
       description: "Where on the page to go horizontally",
       type: "NUMBER",
       required: false
-    }];
+    }];
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 32768n]
@@ -30,18 +30,18 @@ export default class extends SlashCommand {
   async run(bot, interaction) {
     if (interaction.user.id !== "577000793094488085") {
       if (!timer.has(interaction.user.id)) {
-        timer.add(interaction.user.id);
-        setTimeout(() => timer.delete(interaction.user.id), 30000);
+        timer.add(interaction.user.id);
+        setTimeout(() => timer.delete(interaction.user.id), 30000);
       } else {
-        return interaction.reply({ content: "Don't overload this command! (30 sec cooldown)", ephemeral: true });
+        return interaction.reply({ content: "Don't overload this command! (30 sec cooldown)", ephemeral: true });
       }
     }
-    const site = interaction.options.getString("site", true);
+    const site = interaction.options.getString("site", true);
     const options = {
       y: parseInt(interaction.options.getNumber("y", false)) || 0,
       x: parseInt(interaction.options.getNumber("x", false)) || 0
-    };
-    await pup(interaction, site.startsWith("http://") || site.startsWith("https://") ? site : `http://${site}`, options);
+    };
+    await pup(interaction, site.startsWith("http://") || site.startsWith("https://") ? site : `http://${site}`, options);
   }
 }
 
@@ -51,7 +51,7 @@ export default class extends SlashCommand {
  * @param options {object}
  */
 async function pup(interaction, url, options) {
-  const msg = await interaction.deferReply({ fetchReply: true });
+  const msg = await interaction.deferReply({ fetchReply: true });
   try {
     const res = await fetch(process.env.PUPPETEER_API, {
       method: "POST",
@@ -60,14 +60,14 @@ async function pup(interaction, url, options) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ url, x: options?.x, y: options?.y, nsfw: interaction.channel?.nsfw || false })
-    });
-    if (!res.ok) throw new Error(await res.text() || (res.status));
+    });
+    if (!res.ok) throw new Error(await res.text() || (res.status));
     else {
-      const att = new Discord.MessageAttachment(await res.buffer(), "capture.png");
-      const time = "Time: " + (Date.now() - (msg.editedTimestamp || msg.createdTimestamp)) / 1000 + "s";
-      await interaction.editReply({ content: time, files: [att] });
+      const att = new Discord.MessageAttachment(await res.buffer(), "capture.png");
+      const time = "Time: " + (Date.now() - (msg.editedTimestamp || msg.createdTimestamp)) / 1000 + "s";
+      await interaction.editReply({ content: time, files: [att] });
     }
   } catch (err) {
-    interaction.editReply(err.toString());
+    interaction.editReply(err.toString());
   }
 }

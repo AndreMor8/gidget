@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 const sch = new mongoose.Schema({
   guildId: { type: String, required: true },
@@ -8,5 +8,5 @@ const sch = new mongoose.Schema({
     description: { type: String, default: null },
     emoji: { type: String, default: null }
   }]
-});
-export default mongoose.model('selectrole', sch);
+});
+export default mongoose.model('selectrole', sch);

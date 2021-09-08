@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 const MessageSchema = new mongoose.Schema({
   guildid: { type: String, required: true },
@@ -9,6 +9,6 @@ const MessageSchema = new mongoose.Schema({
   kicktime: { type: Number, default: 0 },
   ban: { type: Boolean, required: true },
   bantime: { type: Number, default: 0 }
-});
+});
 
-export default mongoose.model('warn-system', MessageSchema);
+export default mongoose.model('warn-system', MessageSchema);

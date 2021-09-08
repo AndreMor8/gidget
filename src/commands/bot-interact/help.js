@@ -1,22 +1,22 @@
-import def from "../../assets/definitions.json";
-import Discord from "discord.js-light";
+import def from "../../assets/definitions.json";
+import Discord from "discord.js-light";
 const buttons = [new Discord.MessageButton().setLabel("Gidget's dashboard").setStyle("LINK").setURL("https://gidget.xyz"),
 new Discord.MessageButton().setLabel("Bot's documentation").setStyle("LINK").setURL("https://docs.gidget.xyz"),
 new Discord.MessageButton().setLabel("Source code").setStyle("LINK").setURL("https://github.com/AndreMor8/gidget"),
 new Discord.MessageButton().setLabel("AndreMor's page").setStyle("LINK").setURL("https://andremor.ml"),
-new Discord.MessageButton().setLabel("Discord.js documentation").setStyle("LINK").setURL("https://discord.js.org/#/docs/")];
+new Discord.MessageButton().setLabel("Discord.js documentation").setStyle("LINK").setURL("https://discord.js.org/#/docs/")];
 const action = Discord.MessageActionRow.prototype.addComponents.apply(new Discord.MessageActionRow(), buttons)
-const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | [top.gg](https://top.gg/bot/694306281736896573) | [DiscordBotList](https://discordbotlist.com/bots/gidget) | [Discord Boats](https://discord.boats/bot/694306281736896573)`;
+const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | [top.gg](https://top.gg/bot/694306281736896573) | [DiscordBotList](https://discordbotlist.com/bots/gidget) | [Discord Boats](https://discord.boats/bot/694306281736896573)`;
 export default class extends Command {
   constructor(options) {
-    super(options);
-    this.aliases = ["h"];
-    this.description = "Help command";
+    super(options);
+    this.aliases = ["h"];
+    this.description = "Help command";
   }
   // eslint-disable-next-line require-await
   async run(bot, message, args) {
-    const c = bot.commands;
-    const arr = [];
+    const c = bot.commands;
+    const arr = [];
     for (const o of Object.entries(def)) {
       arr.push({
         catname: o[0],
@@ -27,7 +27,7 @@ export default class extends Command {
       })
     }
     if (args[1] && arr.find(d => d.catname === args[1])) {
-      const g = arr.find(d => d.catname === args[1]);
+      const g = arr.find(d => d.catname === args[1]);
       if (checkEmbed(message.channel)) {
         const embed = new Discord.MessageEmbed()
           .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
@@ -39,22 +39,22 @@ export default class extends Command {
             return true
           }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0])
           .setTimestamp()
-        message.channel.send({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(buttons[1])] });
+        message.channel.send({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents(buttons[1])] });
       } else {
         const str = `__**${g.cat + " (" + g.commands.length + " commands)"}**__\n\n${Discord.Util.splitMessage(g.commands.filter(s => {
-          if (s.secret) return false;
-          if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false;
-          return true;
-        }, { maxLength: 1800 }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0]}`;
-        message.channel.send({ content: str, components: [new Discord.MessageActionRow().addComponents(buttons[1])] });
+          if (s.secret) return false;
+          if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false;
+          return true;
+        }, { maxLength: 1800 }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0]}`;
+        message.channel.send({ content: str, components: [new Discord.MessageActionRow().addComponents(buttons[1])] });
       }
-      return;
+      return;
     } else if (args[1] && (bot.commands.get(args[1].toLowerCase()) || bot.commands.find(c => c.aliases.includes(args[1].toLowerCase())))) {
       const command = bot.commands.get(args[1].toLowerCase()) || bot.commands.find(c => c.aliases.includes(args[1].toLowerCase()))
-      if (command.dev || command.owner) return message.channel.send("Exclusive command for the owner or developers");
-      let alias = "Without alias";
+      if (command.dev || command.owner) return message.channel.send("Exclusive command for the owner or developers");
+      let alias = "Without alias";
       if (command.aliases.length !== 0) {
-        alias = command.aliases.join(", ");
+        alias = command.aliases.join(", ");
       }
       if (checkEmbed(message.channel)) {
         const embed = new Discord.MessageEmbed()
@@ -67,34 +67,34 @@ export default class extends Command {
           .addField("Alias", alias)
           .setColor('#FFFFFF')
           .setFooter('Requested by: ' + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
-          .setTimestamp();
-        message.channel.send({ embeds: [embed] });
+          .setTimestamp();
+        message.channel.send({ embeds: [embed] });
       } else {
-        const perms = `User: \`${!(new Discord.Permissions(command.permissions.user[0]).has(8n)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[0]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``;
-        const perms_channel = `User: \`${!(new Discord.Permissions(command.permissions.user[1]).has(8n)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[1]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``;
-        const str = `__**Gidget help - ${command.name}**__\n\n__Description__: ${command.description ? command.description : "Without description"}\n__Required permissions__: ${perms}\n__Required permissions (channel)__: ${perms_channel}\n__Environment__: ${(command.guildonly || command.onlyguild) ? "Server" : "Server and DMs"}\n__Alias__: ${alias}`;
-        message.channel.send(str);
+        const perms = `User: \`${!(new Discord.Permissions(command.permissions.user[0]).has(8n)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[0]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``;
+        const perms_channel = `User: \`${!(new Discord.Permissions(command.permissions.user[1]).has(8n)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[1]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``;
+        const str = `__**Gidget help - ${command.name}**__\n\n__Description__: ${command.description ? command.description : "Without description"}\n__Required permissions__: ${perms}\n__Required permissions (channel)__: ${perms_channel}\n__Environment__: ${(command.guildonly || command.onlyguild) ? "Server" : "Server and DMs"}\n__Alias__: ${alias}`;
+        message.channel.send(str);
       }
-      return;
+      return;
     } else {
       const text = "Use `help <category>` to obtain the category's commands\n\n" + Discord.Util.splitMessage(arr.filter(s => {
-        if (s.secret) return false;
-        if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false;
-        return true;
-      }).map(s => "**" + s.catname + "**: " + s.cat).join("\n"))[0];
+        if (s.secret) return false;
+        if (s.onlyguild && (message.guild ? (message.guild.id !== process.env.GUILD_ID) : true)) return false;
+        return true;
+      }).map(s => "**" + s.catname + "**: " + s.cat).join("\n"))[0];
       if (checkEmbed(message.channel)) {
         const embed = new Discord.MessageEmbed()
           .setThumbnail("https://vignette.wikia.nocookie.net/wubbzy/images/7/7d/Gidget.png")
           .setColor("#BDBDBD")
           .setTitle("Help command")
           .addField("Bot lists", botlists)
-          .setDescription(text || "?");
-        message.channel.send({ embeds: [embed], components: [action] });
+          .setDescription(text || "?");
+        message.channel.send({ embeds: [embed], components: [action] });
       } else {
-        const str = `__**Help command**__\n\n${text}`;
-        message.channel.send({ content: str, components: [action] });
+        const str = `__**Help command**__\n\n${text}`;
+        message.channel.send({ content: str, components: [action] });
       }
-      return;
+      return;
     }
   }
 }
@@ -105,6 +105,6 @@ export default class extends Command {
  * @returns {boolean} "true" if you can send embeds, otherwise "false".
  */
 function checkEmbed(channel) {
-  if (!channel.guild) return true;
-  return channel.permissionsFor(channel.guild.me.id).has(16384n);
+  if (!channel.guild) return true;
+  return channel.permissionsFor(channel.guild.me.id).has(16384n);
 }

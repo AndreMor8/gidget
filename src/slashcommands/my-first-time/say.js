@@ -1,9 +1,9 @@
-import { MessageEmbed } from "discord.js";
+import { MessageEmbed } from "discord.js";
 
 export default class extends SlashCommand {
   constructor(options) {
-    super(options);
-    this.deployOptions.description = "Make the bot repeat you";
+    super(options);
+    this.deployOptions.description = "Make the bot repeat you";
     this.deployOptions.options = [
       {
         name: "to-say",
@@ -12,9 +12,9 @@ export default class extends SlashCommand {
         required: true
       }
     ]
-    this.onlyguild = true;
+    this.onlyguild = true;
   }
   async run(bot, interaction) {
-    await interaction.reply({ embeds: [new MessageEmbed().setTitle("Say command").setDescription(interaction.options.getString("to-say", true))] });
+    await interaction.reply({ embeds: [new MessageEmbed().setTitle("Say command").setDescription(interaction.options.getString("to-say", true))] });
   }
 }

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 const MessageSchema = new mongoose.Schema({
   guildId: { type: String, required: true },
@@ -10,6 +10,6 @@ const MessageSchema = new mongoose.Schema({
   manual: { type: Boolean },
   welcomemsg: { type: String },
   desc: { type: String }
-});
+});
 
-export default mongoose.model('ticket', MessageSchema);
+export default mongoose.model('ticket', MessageSchema);

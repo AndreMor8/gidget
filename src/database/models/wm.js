@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema({
   author: { type: String, required: true },
@@ -6,6 +6,6 @@ const schema = new mongoose.Schema({
   description: { type: String, required: true },
   link: { type: String, required: true },
   date: { type: Date, required: true }
-});
+});
 
-export default mongoose.model('wubbzymedia-a', schema);
+export default mongoose.model('wubbzymedia-a', schema);

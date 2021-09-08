@@ -1,95 +1,95 @@
-import MessageModel from "../../database/models/roles.js";
-import MessageModel2 from "../../database/models/retreiveconfig.js";
-import tempmuteconfig from '../../database/models/muterole.js';
-import tempmute from '../../database/models/mutedmembers.js';
-import tempmutesystem from '../../utils/tempmute.js';
-import Discord from "discord.js";
-import { getWelcome, getInviteCount } from "../../extensions.js";
+import MessageModel from "../../database/models/roles.js";
+import MessageModel2 from "../../database/models/retreiveconfig.js";
+import tempmuteconfig from '../../database/models/muterole.js';
+import tempmute from '../../database/models/mutedmembers.js';
+import tempmutesystem from '../../utils/tempmute.js';
+import Discord from "discord.js";
+import { getWelcome, getInviteCount } from "../../extensions.js";
 
 export default async (bot, member) => {
 
   //RETRIVING ROLES
-  let verify = bot.rrcache.get(member.guild.id);
+  let verify = bot.rrcache.get(member.guild.id);
   if (!verify) {
-    verify = await MessageModel2.findOne({ guildId: member.guild.id });
+    verify = await MessageModel2.findOne({ guildId: member.guild.id });
   }
   if (verify && verify.enabled) {
     const msgDocument = await MessageModel.findOne({
       guildid: member.guild.id,
       memberid: member.user.id
-    });
+    });
     if (msgDocument) {
       if (member.guild.me.permissions.has("MANAGE_ROLES")) {
-        const { roles } = msgDocument;
-        const col = member.guild.roles.cache.filter(role => roles.includes(role.id) && (!role.deleted && role.editable && !role.managed));
-        if (col.size >= 1) await member.roles.add(col, "Retrieving roles").catch(() => { });
+        const { roles } = msgDocument;
+        const col = member.guild.roles.cache.filter(role => roles.includes(role.id) && (!role.deleted && role.editable && !role.managed));
+        if (col.size >= 1) await member.roles.add(col, "Retrieving roles").catch(() => { });
       }
-      msgDocument.deleteOne();
+      msgDocument.deleteOne();
     }
   }
 
   //TEMPMUTE -> PERSIST
-  const data = await tempmute.findOne({ memberId: { $eq: member.id }, guildId: { $eq: member.guild.id } });
+  const data = await tempmute.findOne({ memberId: { $eq: member.id }, guildId: { $eq: member.guild.id } });
   if (data && (Date.now() < data.date.getTime())) {
-    const guildData = await tempmuteconfig.findOne({ guildid: { $eq: member.guild.id } });
+    const guildData = await tempmuteconfig.findOne({ guildid: { $eq: member.guild.id } });
     if (guildData) {
       if (member.guild.me.permissions.has("MANAGE_ROLES")) {
-        member.roles.add(guildData.muteroleid, "Temprestrict - Persist").catch(() => { });
+        member.roles.add(guildData.muteroleid, "Temprestrict - Persist").catch(() => { });
       }
     }
-    tempmutesystem(bot, true);
+    tempmutesystem(bot, true);
   } else if (data && (Date.now() > data.date.getTime())) {
-    await data.deleteOne();
-    tempmutesystem(bot, true);
+    await data.deleteOne();
+    tempmutesystem(bot, true);
   }
 
   //WELCOME SYSTEM
-  const welcome = await getWelcome(member.guild);
+  const welcome = await getWelcome(member.guild);
 
   if (welcome) {
-    let inviterMention = "Unknown";
-    let inviterTag = "Unknown";
-    let inviterId = "Unknown";
+    let inviterMention = "Unknown";
+    let inviterTag = "Unknown";
+    let inviterId = "Unknown";
     try {
       if (((/%INVITER%/gmi.test(welcome.text)) || (/%INVITER%/gmi.test(welcome.dmmessage))) && member.guild.me.permissions.has("MANAGE_GUILD")) {
-        const invitesBefore = member.guild.inviteCount;
-        const invitesAfter = await getInviteCount(member.guild);
+        const invitesBefore = member.guild.inviteCount;
+        const invitesAfter = await getInviteCount(member.guild);
         for (const inviter in invitesAfter) {
           if (invitesBefore[inviter] === (invitesAfter[inviter] - 1)) {
-            inviterMention = (inviter === member.guild.id) ? "System" : ("<@!" + inviter + ">");
-            inviterId = inviter;
+            inviterMention = (inviter === member.guild.id) ? "System" : ("<@!" + inviter + ">");
+            inviterId = inviter;
             if (inviter !== member.guild.id) {
-              const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(() => { });
-              if (t) inviterTag = t;
+              const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(() => { });
+              if (t) inviterTag = t;
             } else {
-              inviterTag = "System";
+              inviterTag = "System";
             }
           }
         }
-        member.guild.inviteCount = invitesAfter;
+        member.guild.inviteCount = invitesAfter;
       }
     } catch (err) {
-      console.log(err);
+      console.log(err);
       if (member.guild.me.permissions.has("MANAGE_GUILD")) {
-        member.guild.inviteCount = await getInviteCount(member.guild);
+        member.guild.inviteCount = await getInviteCount(member.guild);
       }
     } finally {
       if (welcome.enabled && welcome.text) {
-        const channel = member.guild.channels.cache.get(welcome.channelID);
+        const channel = member.guild.channels.cache.get(welcome.channelID);
         if (channel && channel.isText() && channel.permissionsFor(member.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
-          const finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
-          await channel.send(finalText || "?", { allowedMentions: { users: [member.id] } }).catch(() => { });
+          const finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
+          await channel.send(finalText || "?", { allowedMentions: { users: [member.id] } }).catch(() => { });
         }
       }
       if (welcome.dmenabled && welcome.dmtext) {
-        const finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
-        await member.send(finalText || "?").catch(() => { });
+        const finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
+        await member.send(finalText || "?").catch(() => { });
       }
     }
   }
 
   //Things for Wow Wow Discord
-  if (member.guild.id !== "402555684849451028") return;
+  if (member.guild.id !== "402555684849451028") return;
   const embed = new Discord.MessageEmbed()
     .setTitle("Welcome to Wow Wow Discord!, " + member.user.username)
     .setColor("#FEE58D")
@@ -112,6 +112,6 @@ export default async (bot, member) => {
       `Not everything is covered by the rules. Following [Discord ToS](https://discord.com/terms) is an example of this, because everyone should know that.\n\nWe hope you have a friendly experience here! <:WubbzyHi:494666575773696001>`
     )
     .setFooter("Thanks for joining!")
-    .setTimestamp();
-  await member.send({ embeds: [embed] }).catch(() => { });
-};
+    .setTimestamp();
+  await member.send({ embeds: [embed] }).catch(() => { });
+};

@@ -6,6 +6,6 @@ const schema = new mongoose.Schema({
   loses: { type: Number, default: 0 },
   difficulty: { type: String, default: "medium" },
   cacheName: { type: String }
-});
+});
 
-export default mongoose.model('c4top', schema);
+export default mongoose.model('c4top', schema);

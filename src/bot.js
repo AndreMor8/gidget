@@ -1,28 +1,28 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import dotenv from 'dotenv';
+dotenv.config();
 //Database
-import database from "./database/database.js";
+import database from "./database/database.js";
 
 //Registry for commands and events
-import { registerCommands, registerEvents, registerSlashCommands } from './utils/registry.js';
+import { registerCommands, registerEvents, registerSlashCommands } from './utils/registry.js';
 
 //Other packages
-import DBL from 'dblapi.js';
-import b from "./utils/badwords.js";
+import DBL from 'dblapi.js';
+import b from "./utils/badwords.js";
 
 //Discord import
-import Discord from 'discord.js-light';
+import Discord from 'discord.js-light';
 
-import DisTube from 'distube';
-import { inspect } from 'util';
+import DisTube from 'distube';
+import { inspect } from 'util';
 
 const channelFilter = (ch) => {
-  if (ch.game) return false;
-  if (ch.tttgame) return false;
-  if (bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
-  if (ch.isVoice() && ch.members.has(bot.user.id)) return false;
-  return true;
-};
+  if (ch.game) return false;
+  if (ch.tttgame) return false;
+  if (bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
+  if (ch.isVoice() && ch.members.has(bot.user.id)) return false;
+  return true;
+};
 
 //Bot client
 const bot = new Discord.Client({
@@ -51,9 +51,9 @@ const bot = new Discord.Client({
       maxSize: Infinity,
       sweepInterval: 1800,
       sweepFilter: () => (member) => {
-        if (member.id === bot.user.id) return false;
-        if (member.voice.channelId && bot.distube.voices.collection.some(e => e.channel.id === member.voice.channelId)) return false;
-        return true;
+        if (member.id === bot.user.id) return false;
+        if (member.voice.channelId && bot.distube.voices.collection.some(e => e.channel.id === member.voice.channelId)) return false;
+        return true;
       },
     },
     GuildStickerManager: 0,
@@ -70,9 +70,9 @@ const bot = new Discord.Client({
       maxSize: Infinity,
       sweepInterval: 1800,
       sweepFilter: () => (user) => {
-        if (user.id === bot.user.id) return false;
-        if (user.mine) return false;
-        return true;
+        if (user.id === bot.user.id) return false;
+        if (user.mine) return false;
+        return true;
       },
     },
     VoiceStateManager: Infinity
@@ -89,22 +89,22 @@ const bot = new Discord.Client({
   },
   restGlobalRateLimit: 50,
   intents: 32511
-});
+});
 
 //top.gg
 if (process.env.EXTERNAL === "yes") {
-  bot.dbl = new DBL(process.env.DBLKEY, bot);
-  bot.dbl.on("posted", () => console.log("tog.gg: Server count posted!"));
-  bot.dbl.on("error", e => console.error("top.gg: Error:", e));
+  bot.dbl = new DBL(process.env.DBLKEY, bot);
+  bot.dbl.on("posted", () => console.log("tog.gg: Server count posted!"));
+  bot.dbl.on("error", e => console.error("top.gg: Error:", e));
 }
 
-bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
-bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
-bot.botVersion = "2.20";
+bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
+bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
+bot.botVersion = "2.20";
 //Cache system
-bot.cachedMessageReactions = new Discord.Collection();
-bot.rrcache = new Discord.Collection();
-bot.doneBanners = new Discord.Collection();
+bot.cachedMessageReactions = new Discord.Collection();
+bot.rrcache = new Discord.Collection();
+bot.doneBanners = new Discord.Collection();
 bot.distube = new DisTube.default(bot, {
   emitNewSongOnly: true,
   leaveOnFinish: true,
@@ -112,8 +112,8 @@ bot.distube = new DisTube.default(bot, {
   youtubeCookie: process.env.COOKIETEXT,
   youtubeIdentityToken: process.env.YT_IDENTITY,
   youtubeDL: true
-});
-bot.memberVotes = new Discord.Collection();
+});
+bot.memberVotes = new Discord.Collection();
 
 //DisTube events
 bot.distube
@@ -122,34 +122,34 @@ bot.distube
   .on("finishSong", (queue) => bot.memberVotes.delete(queue.voiceChannel.guild.id))
   .on("initQueue", (queue) => queue.setVolume(100))
   .on("error", (channel, e) => {
-    channel.send(`Some error ocurred. Here's a debug: ${e}`);
-    console.error(e);
-  });
+    channel.send(`Some error ocurred. Here's a debug: ${e}`);
+    console.error(e);
+  });
 
 (async () => {
   //Database
-  if (process.argv[2] !== "ci") await database();
+  if (process.argv[2] !== "ci") await database();
   //Registers
-  await registerCommands(bot, "../commands");
-  await registerEvents(bot, "../events");
-  await registerSlashCommands(bot, "../slashcommands");
+  await registerCommands(bot, "../commands");
+  await registerEvents(bot, "../events");
+  await registerSlashCommands(bot, "../slashcommands");
   //Login with Discord
   if (process.argv[2] !== "ci") {
-    await bot.login();
-    if (global.gc) setTimeout(() => global.gc(), 60000);
-  } else process.exit();
+    await bot.login();
+    if (global.gc) setTimeout(() => global.gc(), 60000);
+  } else process.exit();
 })().catch(err => {
-  console.log(err);
-  process.exit(1);
-});
+  console.log(err);
+  process.exit(1);
+});
 process.on("unhandledRejection", error => {
-  console.error("Unhandled promise rejection:", error);
-  //This will be useful to finding unknown errors;
-  if (error.requestData?.json) console.error(inspect(error.requestData.json, { depth: 5 }));
-});
+  console.error("Unhandled promise rejection:", error);
+  //This will be useful to finding unknown errors;
+  if (error.requestData?.json) console.error(inspect(error.requestData.json, { depth: 5 }));
+});
 
 process.on("uncaughtException", err => {
-  bot.destroy();
-  console.error("Uncaught exception:", err);
-  process.exit(1);
-});
+  bot.destroy();
+  console.error("Uncaught exception:", err);
+  process.exit(1);
+});

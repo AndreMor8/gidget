@@ -1,9 +1,9 @@
-import { getConfessionConfig, setConfessionChannel, setConfessionAnon, deleteConfessionConfig } from "../../extensions.js";
+import { getConfessionConfig, setConfessionChannel, setConfessionAnon, deleteConfessionConfig } from "../../extensions.js";
 
 export default class extends SlashCommand {
   constructor(options) {
-    super(options);
-    this.deployOptions.description = "Configure the confessions on your server!";
+    super(options);
+    this.deployOptions.description = "Configure the confessions on your server!";
     this.deployOptions.options = [
       {
         name: "get",
@@ -27,7 +27,7 @@ export default class extends SlashCommand {
         type: "SUB_COMMAND"
       },
     ]
-    this.guildonly = true;
+    this.guildonly = true;
     this.permissions = {
       user: [8n, 0n],
       bot: [0n, 0n]
@@ -36,24 +36,24 @@ export default class extends SlashCommand {
   async run(bot, interaction) {
     switch (interaction.options.getSubcommand()) {
       case 'channel': {
-        const channel = interaction.options.getChannel("channel", false);
-        if (channel && !channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return interaction.reply("I don't have the permissions to send embeds on that channel.\nGive me the permissions to send messages and embed links!");
-        if (!channel) await deleteConfessionConfig(interaction.guild);
-        else await setConfessionChannel(interaction.guild, channel);
-        interaction.reply(channel ? "The channel has been set correctly." : "I've deleted the confession channel ID from my database. Re-enable the system with `confessionconfig channel <channel>`.");
+        const channel = interaction.options.getChannel("channel", false);
+        if (channel && !channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return interaction.reply("I don't have the permissions to send embeds on that channel.\nGive me the permissions to send messages and embed links!");
+        if (!channel) await deleteConfessionConfig(interaction.guild);
+        else await setConfessionChannel(interaction.guild, channel);
+        interaction.reply(channel ? "The channel has been set correctly." : "I've deleted the confession channel ID from my database. Re-enable the system with `confessionconfig channel <channel>`.");
       }
-        break;
+        break;
       case 'anon': {
-        const res = await setConfessionAnon(interaction.guild);
-        if (res) interaction.reply("Optional anonymity for confessions has been enabled!\n\n**WARNING**: The `confession` command is a ephemeral slash command. This means that no one, not even a bot, will be able to see who published it, if the user chose anonymity. The bot is not responsible for the content that the user sends there!");
-        else interaction.reply("Optional anonymity for confessions has been disabled!");
+        const res = await setConfessionAnon(interaction.guild);
+        if (res) interaction.reply("Optional anonymity for confessions has been enabled!\n\n**WARNING**: The `confession` command is a ephemeral slash command. This means that no one, not even a bot, will be able to see who published it, if the user chose anonymity. The bot is not responsible for the content that the user sends there!");
+        else interaction.reply("Optional anonymity for confessions has been disabled!");
       }
-        break;
+        break;
       case 'get':
       default: {
-        const data = await getConfessionConfig(interaction.guild);
+        const data = await getConfessionConfig(interaction.guild);
         if (!data?.channelID) return interaction.reply("Set a channel!\n`confessionconfig channel`")
-        interaction.reply(`Confession config for ${interaction.guild.name}\n\n**Channel**: <#${data.channelID}>\n**Optional anonymity**: ${data.anon ? "Enabled" : "Disabled"}`);
+        interaction.reply(`Confession config for ${interaction.guild.name}\n\n**Channel**: <#${data.channelID}>\n**Optional anonymity**: ${data.anon ? "Enabled" : "Disabled"}`);
       }
     }
   }

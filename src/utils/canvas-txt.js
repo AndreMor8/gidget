@@ -2,20 +2,20 @@
 //Added stroke compatibility
 
 // Hair space character for precise justification
-const SPACE = '\u200a';
+const SPACE = '\u200a';
 
 export default class {
   constructor({ debug = false, align = 'center', vAlign = 'middle', fontSize = 14, fontWeight = '', fontStyle = '', fontVariant = '', font = 'Arial', lineHeight = null, justify = false }) {
-    this.debug = debug;
-    this.align = align;
-    this.vAlign = vAlign;
-    this.fontSize = fontSize;
-    this.fontWeight = fontWeight;
-    this.fontStyle = fontStyle;
-    this.fontVariant = fontVariant;
-    this.font = font;
-    this.lineHeight = lineHeight;
-    this.justify = justify;
+    this.debug = debug;
+    this.align = align;
+    this.vAlign = vAlign;
+    this.fontSize = fontSize;
+    this.fontWeight = fontWeight;
+    this.fontStyle = fontStyle;
+    this.fontVariant = fontVariant;
+    this.font = font;
+    this.lineHeight = lineHeight;
+    this.justify = justify;
   }
   /**
    *
@@ -35,7 +35,7 @@ export default class {
     const xEnd = x + width
     const yEnd = y + height
 
-    if (this.textSize) console.error('%cCanvas-Txt:', 'font-weight: bold;', 'textSize is depricated and has been renamed to fontSize')
+    if (this.textSize) console.error('%cCanvas-Txt:', 'font-weight: bold;', 'textSize is depricated and has been renamed to fontSize')
 
     const { fontStyle, fontVariant, fontWeight, fontSize, font } = this
     const style = `${fontStyle} ${fontVariant} ${fontWeight} ${fontSize}px ${font}`
@@ -197,7 +197,7 @@ export default class {
     let extraSpaces = nbSpacesToInsert - nbSpaces * nbSpacesMinimum
 
     let spaces = []
-    for (let i = 0; i < nbSpacesMinimum; i++) spaces.push(spaceChar)
+    for (let i = 0; i < nbSpacesMinimum; i++) spaces.push(spaceChar)
     spaces = spaces.join('')
 
     const justifiedText = text.replace(/\s+/g, match => {

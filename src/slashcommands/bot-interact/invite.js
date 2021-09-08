@@ -1,9 +1,9 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 
 export default class extends SlashCommand {
   constructor(options) {
-    super(options);
-    this.deployOptions.description = "Receive a link to invite the bot";
+    super(options);
+    this.deployOptions.description = "Receive a link to invite the bot";
   }
   async run(bot, interaction) {
     await interaction.reply({
@@ -14,6 +14,6 @@ export default class extends SlashCommand {
         .addField("Support server", "https://discord.gg/KDy4gJ7")
         .addField("Wow Wow Discord", "https://discord.gg/5qx9ZcV\nIf you are a fan of the Wubbzy series, join this server! It's managed by 4 big fans of the series :)")],
       ephemeral: true
-    });
+    });
   }
 }

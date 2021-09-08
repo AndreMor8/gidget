@@ -1,66 +1,66 @@
-import MessageModel from "../database/models/poll.js";
-let i = 0;
-let cache;
+import MessageModel from "../database/models/poll.js";
+let i = 0;
+let cache;
 
 export default (bot, reupdate = false) => {
   if (i === 1 && reupdate) {
-    i = 0;
-    clearInterval(interval);
+    i = 0;
+    clearInterval(interval);
   }
   if (i === 0) {
-    i++;
+    i++;
     //Still untested
     // eslint-disable-next-line no-var
     var interval = setInterval(async () => {
-      let msgDocument;
+      let msgDocument;
       if (cache && !reupdate) {
-        msgDocument = cache;
+        msgDocument = cache;
       } else {
-        const all = await MessageModel.find();
-        msgDocument = all.filter(e => bot.channels.cache.has(e.channelId));
-        cache = msgDocument;
-        reupdate = false;
+        const all = await MessageModel.find();
+        msgDocument = all.filter(e => bot.channels.cache.has(e.channelId));
+        cache = msgDocument;
+        reupdate = false;
       }
-      const test = msgDocument[0];
+      const test = msgDocument[0];
       if (test) {
         for (const i in msgDocument) {
-          const date = msgDocument[i].date.getTime();
+          const date = msgDocument[i].date.getTime();
           if (new Date().getTime() >= date) {
-            const channel = bot.channels.cache.get(msgDocument[i].channelId);
+            const channel = bot.channels.cache.get(msgDocument[i].channelId);
             if (channel) {
-              const message = await channel.messages.fetch(msgDocument[i].messageId).catch(() => { });
+              const message = await channel.messages.fetch(msgDocument[i].messageId).catch(() => { });
               if (message) {
-                let text = "";
+                let text = "";
                 if (message.reactions && message.reactions.cache.first()) {
                   for (const r of [...message.reactions.cache.values()]) {
-                    const tosee = r.emoji.identifier;
-                    if (!msgDocument[i].reactions.includes(tosee)) continue;
+                    const tosee = r.emoji.identifier;
+                    if (!msgDocument[i].reactions.includes(tosee)) continue;
                     if (r.partial) {
                       await r.fetch().then(r => {
-                        text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
-                      }).catch(() => { });
+                        text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
+                      }).catch(() => { });
                     } else {
-                      text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
+                      text += r.emoji.toString() + " -> " + (r.count - 1) + " votes\n";
                     }
                   }
-                  const embed = message.embeds[0];
-                  embed.setDescription(text).setTitle("Poll completed");
-                  await message.edit({ embeds: [embed] });
+                  const embed = message.embeds[0];
+                  embed.setDescription(text).setTitle("Poll completed");
+                  await message.edit({ embeds: [embed] });
                   if (message.guild.me.permissions.has("MANAGE_MESSAGES")) {
-                    message.reactions.removeAll().catch(() => { });
+                    message.reactions.removeAll().catch(() => { });
                   }
                 }
               }
             }
-            msgDocument[i].deleteOne();
-            reupdate = true;
+            msgDocument[i].deleteOne();
+            reupdate = true;
           }
         }
       } else {
-        i = 0;
-        cache = undefined;
-        clearInterval(interval);
+        i = 0;
+        cache = undefined;
+        clearInterval(interval);
       }
-    }, 20000);
+    }, 20000);
   }
-};
+};

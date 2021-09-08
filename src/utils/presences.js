@@ -7,10 +7,10 @@ export default async (bot) => {
     [{ name: "with Widget", type: "PLAYING" }],
     [{ name: "with Walden", type: "PLAYING" }],
     [{ name: "with Daizy", type: "PLAYING" }],
-  ];
+  ];
 
   await bot.user.setPresence({
     activities: presences[Math.floor(Math.random() * presences.length)],
     status: "online",
-  });
+  });
 }
