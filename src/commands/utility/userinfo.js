@@ -6,6 +6,7 @@ export default class extends Command {
   constructor(options) {
     super(options);
     this.description = "User info";
+    this.aliases = ["ui", "user"];
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 16384n]
