@@ -24,7 +24,7 @@
     "@sindresorhus/to-milliseconds": "^2.0.0",
     "@vitalets/google-translate-api": "^7.0.0",
     "badwords.js": "^0.1.6",
-    "boats.js": "^2.5.1",
+    "boats.js": "^2.5.3",
     "bombsweeper.js": "^1.0.1",
     "canvas": "^2.8.0",
     "connect4-ai": "^0.1.3",
