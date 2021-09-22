@@ -43,7 +43,7 @@ export default class extends Command {
       embed.addField("Parent", `<#${channel.parentId}>\n\`${channel.parentId}\``, true);
       if (!channel.isThread()) embed.addField("Synchronized with the channel's parent?", channel.permissionsLocked ? "Yes" : "No", true);
     }
-    if (!channel.isThread()) embed.addField("Position", channel.parent ? ("General: " + channel.position + "\nRaw: " + channel.rawPosition) : channel.position, true);
+    if (!channel.isThread()) embed.addField("Position", channel.parent ? ("General: " + channel.position.toString() + "\nRaw: " + channel.rawPosition.toString()) : channel.position.toString(), true);
     switch (channel.type) {
       case 'GUILD_NEWS':
       case 'GUILD_TEXT':

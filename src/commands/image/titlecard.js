@@ -8,7 +8,7 @@ export default class extends Command {
     this.description = "Shows a title card from the Wubbzy show!";
     this.permissions = {
       user: [0n, 0n],
-      bot: [0n, 0n]
+      bot: [0n, 16384n]
     }
   }
   async run(bot, message, args) {

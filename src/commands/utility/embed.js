@@ -14,8 +14,7 @@ export default class extends Command {
     let channel;
     if (message.guild) {
       channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => { }) || message.channel;
-      if (channel.guild.id !== message.guild.id)
-        return message.channel.send("That channel is from another guild");
+      if (channel.guild.id !== message.guild.id) return message.channel.send("That channel is from another guild");
       if (!channel.isText()) return message.channel.send("That isn't a text channel!");
       if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have permissions!");
       if (!channel.permissionsFor(message.author.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("You don't have permissions!");
@@ -34,164 +33,170 @@ export default class extends Command {
     const embed = new MessageEmbed();
     const collector = message.channel.createMessageCollector({ filter: (m) => m.author.id === message.author.id, idle: 120000 });
     collector.on("collect", async (m) => {
-      if (m.content.toLowerCase() === "exit") return collector.stop("Exited");
-      if (m.content.toLowerCase() === "preview")
-        return message.channel.send("Here's a preview of your embed", embed).then(msg => setTimeout(() => {
-          if (!msg.deleted) msg.delete();
-        }, 15000));
-      switch (i) {
-        case 0:
-          if (m.content.toLowerCase() === "none") msgContent = undefined
-          else msgContent = m.content;
-          
-          i++;
-          await message.channel.send(questions[i]);
-          break;
-        case 1:
-          if (m.content === "none") {
-            i = i + 3;
-            await message.channel.send(questions[i]);
-          } else {
-            author = m.content;
+      try {
+        if (m.content.toLowerCase() === "exit") return collector.stop("Exited");
+        if (m.content.toLowerCase() === "preview")
+          return message.channel.send("Here's a preview of your embed", embed).then(msg => setTimeout(() => {
+            if (!msg.deleted) msg.delete();
+          }, 15000));
+        switch (i) {
+          case 0:
+            if (m.content.toLowerCase() === "none") msgContent = undefined
+            else msgContent = m.content;
+
             i++;
             await message.channel.send(questions[i]);
-          }
-          break;
-        case 2:
-          if (m.content === "none") {
-            authorimg = undefined;
-            i++;
-            await message.channel.send(questions[i]);
-          } else {
-            if (!m.attachments.first() && !linkregex.test(m.content))
-              return message.channel.send("Invalid URL");
-            else if (m.attachments.first()) {
-              authorimg = m.attachments.first().url;
+            break;
+          case 1:
+            if (m.content === "none") {
+              i = i + 3;
+              await message.channel.send(questions[i]);
+            } else {
+              author = m.content;
               i++;
-            } else if (linkregex.test(m.content)) {
-              authorimg = m.content;
-              i++;
+              await message.channel.send(questions[i]);
             }
-            await message.channel.send(questions[i]);
-          }
-          break;
-        case 3:
-          if (m.content === "none") {
-            authorlink = undefined;
-            i++;
-            embed.setAuthor(author, authorimg, authorlink);
-            await message.channel.send(questions[i]);
-          } else {
-            if (!linkregex.test(m.content))
-              return message.channel.send("Invalid URL");
+            break;
+          case 2:
+            if (m.content === "none") {
+              authorimg = undefined;
+              i++;
+              await message.channel.send(questions[i]);
+            } else {
+              if (!m.attachments.first() && !linkregex.test(m.content))
+                return message.channel.send("Invalid URL");
+              else if (m.attachments.first()) {
+                authorimg = m.attachments.first().url;
+                i++;
+              } else if (linkregex.test(m.content)) {
+                authorimg = m.content;
+                i++;
+              }
+              await message.channel.send(questions[i]);
+            }
+            break;
+          case 3:
+            if (m.content === "none") {
+              authorlink = undefined;
+              i++;
+              embed.setAuthor(author, authorimg, authorlink);
+              await message.channel.send(questions[i]);
+            } else {
+              if (!linkregex.test(m.content))
+                return message.channel.send("Invalid URL");
+              else {
+                authorlink = m.content;
+                i++;
+              }
+              embed.setAuthor(author, authorimg, authorlink);
+              await message.channel.send(questions[i]);
+            }
+            break;
+          case 4:
+            if (m.content === "none") i++;
             else {
-              authorlink = m.content;
-              i++;
-            }
-            embed.setAuthor(author, authorimg, authorlink);
-            await message.channel.send(questions[i]);
-          }
-          break;
-        case 4:
-          if (m.content === "none")i++;
-          else {
-            embed.setTitle(m.content);
-            i++;
-          }
-          await message.channel.send(questions[i]);
-          break;
-        case 5:
-          if (m.content === "none") i++;
-          else if (linkregex.test(m.content)) {
-            embed.setURL(m.content);
-            i++;
-          } else return message.channel.send("Invalid URL");
-          await message.channel.send(questions[i]);
-          break;
-        case 6:
-          if (m.content === "none") i++;
-          else {
-            embed.setDescription(m.content);
-            i++;
-          }
-          await message.channel.send(questions[i]);
-          break;
-        case 7:
-          if (m.content === "none") {
-            i++;
-            await message.channel.send(questions[i]);
-          } else {
-            if (!m.attachments.first() && !linkregex.test(m.content))
-              return message.channel.send("Invalid URL");
-            else if (m.attachments.first()) {
-              embed.setThumbnail(m.attachments.first().url);
-              i++;
-            } else if (linkregex.test(m.content)) {
-              embed.setThumbnail(m.content);
+              embed.setTitle(m.content);
               i++;
             }
             await message.channel.send(questions[i]);
-          }
-          break;
-        case 8:
-          if (m.content === "none") {
-            i++;
-            await message.channel.send(questions[i]);
-          } else {
-            if (!m.attachments.first() && !linkregex.test(m.content))
-              return message.channel.send("Invalid URL");
-            else if (m.attachments.first()) {
-              embed.setImage(m.attachments.first().url);
+            break;
+          case 5:
+            if (m.content === "none") i++;
+            else if (linkregex.test(m.content)) {
+              embed.setURL(m.content);
               i++;
-            } else if (linkregex.test(m.content)) {
-              embed.setImage(m.content);
-              i++;
-            }
+            } else return message.channel.send("Invalid URL");
             await message.channel.send(questions[i]);
-          }
-          break;
-        case 9:
-          if (m.content === "none") {
-            footer = undefined;
-            i = i + 2;
-          } else {
-            footer = m.content;
-            i++;
-          }
-          await message.channel.send(questions[i]);
-          break;
-        case 10:
-          if (m.content === "none") {
-            i++;
-            embed.setFooter(footer);
-            await message.channel.send(questions[i]);
-          } else {
-            if (!m.attachments.first() && !linkregex.test(m.content))
-              return message.channel.send("Invalid URL");
-            else if (m.attachments.first()) {
-              embed.setFooter(footer, m.attachments.first().url);
-              i++;
-            } else if (linkregex.test(m.content)) {
-              embed.setFooter(footer, m.content);
+            break;
+          case 6:
+            if (m.content === "none") i++;
+            else {
+              embed.setDescription(m.content);
               i++;
             }
             await message.channel.send(questions[i]);
-          }
-          break;
-        case 11:
-          if (m.content !== "none")
-            embed.setColor(m.content);
-          i++;
-          await message.channel.send(questions[i]);
-          break;
-        case 12:
-          if (m.content.toLowerCase() === "yes") {
-            collector.stop("field");
-          } else if (m.content.toLowerCase() === "no" || m.content.toLowerCase() === "none") {
-            collector.stop("Finished");
-          } else
-            return message.channel.send("Invalid option!");
-          break;
+            break;
+          case 7:
+            if (m.content === "none") {
+              i++;
+              await message.channel.send(questions[i]);
+            } else {
+              if (!m.attachments.first() && !linkregex.test(m.content))
+                return message.channel.send("Invalid URL");
+              else if (m.attachments.first()) {
+                embed.setThumbnail(m.attachments.first().url);
+                i++;
+              } else if (linkregex.test(m.content)) {
+                embed.setThumbnail(m.content);
+                i++;
+              }
+              await message.channel.send(questions[i]);
+            }
+            break;
+          case 8:
+            if (m.content === "none") {
+              i++;
+              await message.channel.send(questions[i]);
+            } else {
+              if (!m.attachments.first() && !linkregex.test(m.content))
+                return message.channel.send("Invalid URL");
+              else if (m.attachments.first()) {
+                embed.setImage(m.attachments.first().url);
+                i++;
+              } else if (linkregex.test(m.content)) {
+                embed.setImage(m.content);
+                i++;
+              }
+              await message.channel.send(questions[i]);
+            }
+            break;
+          case 9:
+            if (m.content === "none") {
+              footer = undefined;
+              i = i + 2;
+            } else {
+              footer = m.content;
+              i++;
+            }
+            await message.channel.send(questions[i]);
+            break;
+          case 10:
+            if (m.content === "none") {
+              i++;
+              embed.setFooter(footer);
+              await message.channel.send(questions[i]);
+            } else {
+              if (!m.attachments.first() && !linkregex.test(m.content))
+                return message.channel.send("Invalid URL");
+              else if (m.attachments.first()) {
+                embed.setFooter(footer, m.attachments.first().url);
+                i++;
+              } else if (linkregex.test(m.content)) {
+                embed.setFooter(footer, m.content);
+                i++;
+              }
+              await message.channel.send(questions[i]);
+            }
+            break;
+          case 11:
+            if (m.content !== "none") {
+              if (/^#([a-fA-F0-9]){3}$|[a-fA-F0-9]{6}$/.test(m.content)) embed.setColor(m.content);
+              else return message.channel.send("Invalid color!");
+            }
+            i++;
+            await message.channel.send(questions[i]);
+            break;
+          case 12:
+            if (m.content.toLowerCase() === "yes") {
+              collector.stop("field");
+            } else if (m.content.toLowerCase() === "no" || m.content.toLowerCase() === "none") {
+              collector.stop("Finished");
+            } else
+              return message.channel.send("Invalid option!");
+            break;
+        }
+      } catch (err) {
+        return message.channel.send(`Error: ${err}`);
       }
     });
     collector.on("end", (collected, reason) => {
@@ -225,44 +230,48 @@ function fields(message, embed) {
     message.channel.send(arr[i]);
     const collector = message.channel.createMessageCollector({ filter: (m) => m.author.id === message.author.id, idle: 120000 });
     collector.on("collect", m => {
-      if (m.content.toLowerCase() === "exit") {
-        return collector.stop("no");
-      }
-      if (!m.content) {
-        return message.channel.send("Don't be crazy, put something on, okay?");
-      }
-      switch (i) {
-        case 0:
-          title = m.content
-          i++;
-          message.channel.send(arr[i]);
-          break;
-        case 1:
-          des = m.content
-          i++;
-          message.channel.send(arr[i]);
-          break;
-        case 2:
-          if (m.content.toLowerCase() === "yes") {
-            embed.addField(title, des, true)
+      try {
+        if (m.content.toLowerCase() === "exit") {
+          return collector.stop("no");
+        }
+        if (!m.content) {
+          return message.channel.send("Don't be crazy, put something on, okay?");
+        }
+        switch (i) {
+          case 0:
+            title = m.content
             i++;
-          } else if (m.content.toLowerCase() === "no") {
-            embed.addField(title, des)
-            i++;
-          } else return message.channel.send("Invalid option!");
-          if (o <= 25) message.channel.send(arr[i]);
-          else collector.stop("OK");
-          break;
-        case 3:
-          if (m.content.toLowerCase() === "yes") {
-            title = undefined
-            des = undefined
-            i = 0;
             message.channel.send(arr[i]);
-          } else if (m.content.toLowerCase() === "no") {
-            collector.stop("OK");
-          } else return message.channel.send("Invalid option!");
-          break;
+            break;
+          case 1:
+            des = m.content
+            i++;
+            message.channel.send(arr[i]);
+            break;
+          case 2:
+            if (m.content.toLowerCase() === "yes") {
+              embed.addField(title, des, true)
+              i++;
+            } else if (m.content.toLowerCase() === "no") {
+              embed.addField(title, des)
+              i++;
+            } else return message.channel.send("Invalid option!");
+            if (o <= 25) message.channel.send(arr[i]);
+            else collector.stop("OK");
+            break;
+          case 3:
+            if (m.content.toLowerCase() === "yes") {
+              title = undefined
+              des = undefined
+              i = 0;
+              message.channel.send(arr[i]);
+            } else if (m.content.toLowerCase() === "no") {
+              collector.stop("OK");
+            } else return message.channel.send("Invalid option!");
+            break;
+        }
+      } catch (err) {
+        return message.channel.send(`Error: ${err}`)
       }
     })
     collector.on("end", (collected, reason) => {

@@ -7,7 +7,6 @@ import database from "./database/database.js";
 import { registerCommands, registerEvents, registerSlashCommands } from './utils/registry.js';
 
 //Other packages
-import DBL from 'dblapi.js';
 import b from "./utils/badwords.js";
 
 //Discord import
@@ -21,6 +20,8 @@ const channelFilter = (ch) => {
   if (ch.tttgame) return false;
   if (bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
   if (ch.isVoice() && ch.members.has(bot.user.id)) return false;
+  if (ch.guild?.welcome?.channelID === ch.id) return false;
+  if (ch.guild?.welcome?.leavechannelID === ch.id) return false;
   return true;
 };
 
@@ -91,16 +92,10 @@ const bot = new Discord.Client({
   intents: 32511
 });
 
-//top.gg
-if (process.env.EXTERNAL === "yes") {
-  bot.dbl = new DBL(process.env.DBLKEY, bot);
-  bot.dbl.on("posted", () => console.log("tog.gg: Server count posted!"));
-  bot.dbl.on("error", e => console.error("top.gg: Error:", e));
-}
-
 bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
 bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
 bot.botVersion = "2.20";
+
 //Cache system
 bot.cachedMessageReactions = new Discord.Collection();
 bot.rrcache = new Discord.Collection();

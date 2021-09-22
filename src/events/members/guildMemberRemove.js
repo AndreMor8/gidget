@@ -10,7 +10,7 @@ export default async (bot, member) => {
     //A cache system
     let verify = bot.rrcache.get(member.guild.id);
     if (!verify) {
-      verify = await MessageModel2.findOne({ guildId: member.guild.id });
+      verify = await MessageModel2.findOne({ guildId: member.guild.id }).lean();
     }
     if (verify && verify.enabled) {
       const msgDocument = await MessageModel.findOne({
@@ -38,6 +38,7 @@ export default async (bot, member) => {
           msgDocument.deleteOne();
         }
       }
+      bot.rrcache.set(member.guild.id, verify);
     }
   }
 

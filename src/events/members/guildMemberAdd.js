@@ -11,7 +11,7 @@ export default async (bot, member) => {
   //RETRIVING ROLES
   let verify = bot.rrcache.get(member.guild.id);
   if (!verify) {
-    verify = await MessageModel2.findOne({ guildId: member.guild.id });
+    verify = await MessageModel2.findOne({ guildId: member.guild.id }).lean();
   }
   if (verify && verify.enabled) {
     const msgDocument = await MessageModel.findOne({
@@ -26,12 +26,13 @@ export default async (bot, member) => {
       }
       msgDocument.deleteOne();
     }
+    bot.rrcache.set(member.guild.id, verify);
   }
 
   //TEMPMUTE -> PERSIST
-  const data = await tempmute.findOne({ memberId: { $eq: member.id }, guildId: { $eq: member.guild.id } });
+  const data = await tempmute.findOne({ memberId: { $eq: member.id }, guildId: { $eq: member.guild.id } }).lean();
   if (data && (Date.now() < data.date.getTime())) {
-    const guildData = await tempmuteconfig.findOne({ guildid: { $eq: member.guild.id } });
+    const guildData = await tempmuteconfig.findOne({ guildid: { $eq: member.guild.id } }).lean();
     if (guildData) {
       if (member.guild.me.permissions.has("MANAGE_ROLES")) {
         member.roles.add(guildData.muteroleid, "Temprestrict - Persist").catch(() => { });
@@ -39,7 +40,7 @@ export default async (bot, member) => {
     }
     tempmutesystem(bot, true);
   } else if (data && (Date.now() > data.date.getTime())) {
-    await data.deleteOne();
+    await tempmute.deleteOne({ memberId: { $eq: member.id }, guildId: { $eq: member.guild.id } });
     tempmutesystem(bot, true);
   }
 
