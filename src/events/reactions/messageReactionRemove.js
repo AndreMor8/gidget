@@ -16,7 +16,7 @@ export default async (bot, reaction, user) => {
     }
   }
 
-  await reaction.message.fetch();
+  await reaction.message.fetch().catch(() => {});
   const cach = bot.cachedMessageReactions.get(reaction.message.id);
   if (typeof cach === "boolean") return
   else if (!cach) {

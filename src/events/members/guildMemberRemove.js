@@ -45,8 +45,8 @@ export default async (bot, member) => {
   //GOODBYE SYSTEM
   const welcome = await getWelcome(member.guild);
   if (welcome && welcome.leaveenabled && welcome.leavetext) {
-    const channel = member.guild.channels.cache.get(welcome.leavechannelID);
-    if (channel && channel.isText() && channel.permissionsFor(member.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
+    const channel = await member.guild.channels.fetch(welcome.leavechannelID);
+    if (channel && channel.isText() && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
       const memberTag = member.user.tag || await bot.users.fetch(member.id).then(e => e.tag).catch(() => { }) || "Unknown";
       const finalText = welcome.leavetext.replace(/%MEMBER%/gmi, member.toString()).replace(/%SERVER%/gmi, member.guild.name).replace(/%MEMBERTAG%/gmi, memberTag).replace(/%MEMBERCOUNT%/, member.guild.memberCount).replace(/%MEMBERID%/, member.id);
       await channel.send(finalText || "?").catch(() => { });

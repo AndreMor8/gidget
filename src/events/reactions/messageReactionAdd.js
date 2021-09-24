@@ -19,7 +19,7 @@ export default async (bot, reaction, user) => {
   };
   await reaction.message.fetch().catch(() => { });
   const cach = bot.cachedMessageReactions.get(reaction.message.id);
-  if (typeof cach === "boolean") return
+  if (typeof cach === "boolean") return;
   else if (!cach) {
     try {
       const msgDocument = await MessageModel.findOne({ messageId: reaction.message.id });
