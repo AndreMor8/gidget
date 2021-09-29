@@ -4,7 +4,7 @@ import tempmuteconfig from '../../database/models/muterole.js';
 import tempmute from '../../database/models/mutedmembers.js';
 import tempmutesystem from '../../utils/tempmute.js';
 import Discord from "discord.js";
-import { getWelcome, getInviteCount } from "../../extensions.js";
+import { getWelcome, getInviteCount, setWelcome } from "../../extensions.js";
 
 export default async (bot, member) => {
 
@@ -76,11 +76,12 @@ export default async (bot, member) => {
       }
     } finally {
       if (welcome.enabled && welcome.text) {
-        const channel = await member.guild.channels.fetch(welcome.channelID);
+        const channel = await member.guild.channels.fetch(welcome.channelID).catch(() => { });
         if (channel && channel.isText() && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
           const finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
           await channel.send(finalText || "?", { allowedMentions: { users: [member.id] } }).catch(() => { });
         }
+        if (!channel) await setWelcome(member.guild, 0, false);
       }
       if (welcome.dmenabled && welcome.dmtext) {
         const finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);

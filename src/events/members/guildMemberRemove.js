@@ -1,4 +1,4 @@
-import { getWelcome } from "../../extensions.js";
+import { getWelcome, setWelcome } from "../../extensions.js";
 import MessageModel from "../../database/models/roles.js";
 import MessageModel2 from "../../database/models/retreiveconfig.js";
 export default async (bot, member) => {
@@ -45,11 +45,12 @@ export default async (bot, member) => {
   //GOODBYE SYSTEM
   const welcome = await getWelcome(member.guild);
   if (welcome && welcome.leaveenabled && welcome.leavetext) {
-    const channel = await member.guild.channels.fetch(welcome.leavechannelID);
+    const channel = await member.guild.channels.fetch(welcome.leavechannelID).catch(() => { });
     if (channel && channel.isText() && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
       const memberTag = member.user.tag || await bot.users.fetch(member.id).then(e => e.tag).catch(() => { }) || "Unknown";
       const finalText = welcome.leavetext.replace(/%MEMBER%/gmi, member.toString()).replace(/%SERVER%/gmi, member.guild.name).replace(/%MEMBERTAG%/gmi, memberTag).replace(/%MEMBERCOUNT%/, member.guild.memberCount).replace(/%MEMBERID%/, member.id);
       await channel.send(finalText || "?").catch(() => { });
     }
+    if (!channel) await setWelcome(member.guild, 5, false);
   }
 };

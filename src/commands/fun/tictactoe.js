@@ -37,14 +37,18 @@ export default class extends Command {
         return button.user.id === message.author.id;
       };
       const col = msg.createMessageComponentCollector({ filter, time: 20000 });
-      col.on("collect", (button) => {
-        if (button.customId === "ttt_c_easymode") this.run(bot, message, ["tictactoe", "easy"])
-        else if (button.customId === "ttt_c_mediummode") this.run(bot, message, ["tictactoe", "medium"])
-        else if (button.customId === "ttt_c_hardmode") this.run(bot, message, ["tictactoe", "hard"])
-        else if (button.customId === "ttt_c_expertmode") this.run(bot, message, ["tictactoe", "expert"])
-
-        button.update({ content: msg.content, components: [new MessageActionRow().addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true), expert_but.setDisabled(true)])] });
-        col.stop("ok");
+      col.on("collect", async (button) => {
+        try {
+          col.stop("ok");
+          await button.update({ content: msg.content, components: [new MessageActionRow().addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true), expert_but.setDisabled(true)])] });
+          await message.channel.fetch();
+          if (button.customId === "ttt_c_easymode") await this.run(bot, message, ["tictactoe", "easy"]);
+          else if (button.customId === "ttt_c_mediummode") await this.run(bot, message, ["tictactoe", "medium"]);
+          else if (button.customId === "ttt_c_hardmode") await this.run(bot, message, ["tictactoe", "hard"]);
+          else if (button.customId === "ttt_c_expertmode") await this.run(bot, message, ["tictactoe", "expert"]);
+        } catch (err) {
+          await button.update({ content: `Error: ${err}`, components: [new MessageActionRow().addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true), expert_but.setDisabled(true)])] })
+        }
       });
       return;
     }

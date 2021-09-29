@@ -30,7 +30,7 @@ export default class extends Command {
     switch (args[1].toLowerCase()) {
       case "enable": {
         if (!doc.channelID) return message.channel.send("There is no established channel. Set it before starting the welcome system.");
-        const channel = message.guild.channels.cache.get(doc.channelID);
+        const channel = await message.guild.channels.fetch(doc.channelID).catch(() => { });
         if (!channel) return message.channel.send("The established channel doesn't exist.");
         if (!channel.permissionsFor(message.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
           return message.channel.send("Give me permissions for send messages on the established channel before starting the welcome system.");
@@ -78,7 +78,7 @@ export default class extends Command {
         break;
       case "leaveenable": {
         if (!doc.leavechannelID) return message.channel.send("There is no established channel. Set it before starting the goodbye system.");
-        const channel = message.guild.channels.cache.get(doc.leavechannelID);
+        const channel = await message.guild.channels.fetch(doc.leavechannelID).catch(() => { });
         if (!channel) return message.channel.send("The established channel doesn't exist.");
         if (!channel.permissionsFor(message.guild.me.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
           return message.channel.send("Give me permissions for send messages on the established channel before starting the goodbye system.");

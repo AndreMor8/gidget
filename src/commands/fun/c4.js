@@ -47,13 +47,17 @@ export default class extends Command {
         return button.user.id === message.author.id;
       };
       const col = msg.createMessageComponentCollector({ filter, time: 20000 });
-      col.on("collect", (button) => {
-        if (button.customId === "c4_c_easymode") this.run(bot, message, ["c4", "easy"])
-        else if (button.customId === "c4_c_mediummode") this.run(bot, message, ["c4", "medium"])
-        else if (button.customId === "c4_c_hardmode") this.run(bot, message, ["c4", "hard"])
-
-        button.update({ content: msg.content, components: [new MessageActionRow().addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)])] });
-        col.stop("ok");
+      col.on("collect", async (button) => {
+        try {
+          col.stop("ok");
+          await button.update({ content: msg.content, components: [new MessageActionRow().addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)])] });
+          await message.channel.fetch();
+          if (button.customId === "c4_c_easymode") await this.run(bot, message, ["c4", "easy"]);
+          else if (button.customId === "c4_c_mediummode") await this.run(bot, message, ["c4", "medium"]);
+          else if (button.customId === "c4_c_hardmode") await this.run(bot, message, ["c4", "hard"]);
+        } catch (err) {
+          await button.update({ content: `Error: ${err}`, components: [new MessageActionRow().addComponents([easy_but.setDisabled(true), medium_but.setDisabled(true), hard_but.setDisabled(true)])] })
+        }
       });
       return;
     }
