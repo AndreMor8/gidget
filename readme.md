@@ -15,7 +15,7 @@ The real bot on Discord is *Gidget#2936* with ID *694306281736896573*.
 
 In this repository you can see the source code of Gidget to learn how it works or to add Gidget commands to another bot instances.
 
-Also you are invited to add the bot to your servers using this link: https://discordapp.com/api/oauth2/authorize?client_id=694306281736896573&scope=bot
+Also you are invited to add the bot to your servers using this link: https://discordapp.com/api/oauth2/authorize?client_id=694306281736896573&scope=bot&20applications.commands
 
 If you want to join into the support server, here is the invite link: https://discord.gg/KDy4gJ7
 
