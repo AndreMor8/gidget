@@ -39,7 +39,6 @@ export async function setConfessionAnon(guild) {
 }
 
 export async function setConfessionChannel(guild, channel) {
-  if (!channel.isText()) throw new StructureError("Only text channels are allowed!");
   let doc = await confessions.findOneAndUpdate({ guildID: { $eq: guild.id } }, { $set: { channelID: channel.id } }, { new: true });
   if (!doc) {
     doc = await confessions.create({

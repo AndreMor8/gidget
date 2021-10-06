@@ -1,16 +1,22 @@
 import { MessageEmbed, MessageButton, MessageActionRow } from "discord.js";
 
-export default class extends Command {
+export default class extends SlashCommand {
   constructor(options) {
     super(options);
-    this.description = "Show the info of a certain channel.";
+    this.deployOptions.description = "Show the info of a certain channel.";
+    this.deployOptions.options = [{
+      name: "channel",
+      description: "The channel to obtain information...",
+      type: "CHANNEL",
+      required: true
+    }];
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 16384n]
     };
   }
-  async run(bot, message, args) {
-    if (!message.guild) return message.channel.send("Yes, I know this is a channel, but there are no interesting things I can show you.");
+  async run(bot, interaction) {
+    if (!interaction.guild) return interaction.reply("Yes, I know this is a channel, but there are no interesting things I can show you.");
     const obj = {
       GUILD_TEXT: "Text channel",
       GUILD_VOICE: "Voice channel",
@@ -29,8 +35,7 @@ export default class extends Command {
       4320: "3 days",
       10080: "1 week"
     }
-    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name.replace("#", "") === args.slice(1).join(" ")) || message.guild.channels.cache.find(c => c.parentId === message.channel.parentId && c.position === parseInt(args[1])) || (args[1] ? await message.guild.channels.fetch(args[1] || "123").catch(() => { }) : undefined) || message.channel;
-    if (channel.guild.id !== message.guild.id) return message.channel.send("That channel is from another server!");
+    const channel = interaction.options.getChannel('channel', false) || interaction.channel;
     const embed = new MessageEmbed()
       .setTitle("Channel information for " + channel.name)
       .setColor("RANDOM")
@@ -47,7 +52,7 @@ export default class extends Command {
     switch (channel.type) {
       case 'GUILD_NEWS':
       case 'GUILD_TEXT':
-        embed.addField("Pinned messages", channel.permissionsFor(bot.user.id).has("VIEW_CHANNEL") ? (await channel.messages.fetchPinned(false)).size.toString() : "*Without permissions for see that*", true)
+        embed.addField("Pinned messages", channel.permissionsFor(bot.user.id).has("VIEW_CHANNEL") ? (await channel.messages.fetchPinned(false).catch(() => { return { size: "*Without permissions for see that*" } })).size.toString() : "*Without permissions for see that*", true)
           .addField("Last pin at", channel.lastPinAt ? bot.botIntl.format(channel.lastPinAt) : "*None*", true)
           .addField("NSFW?", channel.nsfw ? "Yes" : "No", true);
         if (channel.type !== "GUILD_NEWS") {
@@ -89,9 +94,9 @@ export default class extends Command {
     }
     const but_link_msg = new MessageButton()
       .setStyle("LINK")
-      .setURL(`https://discordapp.com/channels/${message.guild.id}/${channel.id}/${channel.lastMessageId}`)
+      .setURL(`https://discordapp.com/channels/${interaction.guild.id}/${channel.id}/${channel.lastMessageId}`)
       .setLabel("Last channel message")
       .setDisabled(channel.lastMessageId ? false : true);
-    await message.channel.send({ embeds: [embed], components: channel.isText() ? [new MessageActionRow().addComponents([but_link_msg])] : undefined });
+    await interaction.reply({ embeds: [embed], components: channel.isText() ? [new MessageActionRow().addComponents([but_link_msg])] : undefined });
   }
 }

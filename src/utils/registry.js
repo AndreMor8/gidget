@@ -82,7 +82,7 @@ export async function registerEvents(bot, dir) {
 }
 
 //RECOMMENDED TO EXECUTE THIS AFTER registerCommands FUNCTION.
-export async function registerSlashCommands(bot, dir) {
+export async function registerApplicationCommands(bot, dir) {
   if (!bot.slashCommands) bot.slashCommands = new Collection();
   if (!global.SlashCommand) global.SlashCommand = (await import("file:///" + path.join(__dirname, "slashcommand.js"))).default;
   const arr = dir.split(process.platform === "win32" ? "\\" : "/");
@@ -92,7 +92,7 @@ export async function registerSlashCommands(bot, dir) {
   for (const file of files) {
     const stat = await fs.lstat(path.join(__dirname, dir, file));
     if (stat.isDirectory())
-      await registerSlashCommands(bot, path.join(dir, file));
+      await registerApplicationCommands(bot, path.join(dir, file));
     else {
       if (file.endsWith(".js")) {
         const name = file.substring(0, file.indexOf(".js"));

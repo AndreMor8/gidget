@@ -9,7 +9,6 @@ export default class SlashCommand {
     this.deployOptions = {};
     //Default required command options
     this.name = this.deployOptions.name = opciones.name;
-    this.deployOptions.description = "*Without description*";
     //Options for bot to check on-the-fly
     //Server-only commands
     this.guildonly = false;

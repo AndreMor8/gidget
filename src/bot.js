@@ -4,7 +4,7 @@ dotenv.config();
 import database from "./database/database.js";
 
 //Registry for commands and events
-import { registerCommands, registerEvents, registerSlashCommands } from './utils/registry.js';
+import { registerCommands, registerEvents, registerApplicationCommands } from './utils/registry.js';
 
 //Other packages
 import b from "./utils/badwords.js";
@@ -25,6 +25,8 @@ const channelFilter = (ch) => {
   return true;
 };
 
+const sweepInterval = 1800;
+
 //Bot client
 const bot = new Discord.Client({
   ws: {
@@ -38,19 +40,19 @@ const bot = new Discord.Client({
     ChannelManager: {
       maxSize: Infinity,
       sweepFilter: () => channelFilter,
-      sweepInterval: 1800,
+      sweepInterval
     },
     GuildChannelManager: {
       maxSize: Infinity,
       sweepFilter: () => channelFilter,
-      sweepInterval: 1800,
+      sweepInterval
     },
     GuildBanManager: 0,
     GuildInviteManager: 0,
     GuildManager: Infinity,
     GuildMemberManager: {
       maxSize: Infinity,
-      sweepInterval: 1800,
+      sweepInterval,
       sweepFilter: () => (member) => {
         if (member.id === bot.user.id) return false;
         if (member.voice.channelId && bot.distube.voices.collection.some(e => e.channel.id === member.voice.channelId)) return false;
@@ -65,11 +67,15 @@ const bot = new Discord.Client({
     ReactionUserManager: 0,
     RoleManager: Infinity,
     StageInstanceManager: Infinity,
-    ThreadManager: 0,
+    ThreadManager: {
+      maxSize: Infinity,
+      sweepInterval,
+      sweepFilter: () => channelFilter
+    },
     ThreadMemberManager: 0,
     UserManager: {
       maxSize: Infinity,
-      sweepInterval: 1800,
+      sweepInterval,
       sweepFilter: () => (user) => {
         if (user.id === bot.user.id) return false;
         if (user.mine) return false;
@@ -94,7 +100,7 @@ const bot = new Discord.Client({
 
 bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
 bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
-bot.botVersion = "2.20";
+bot.botVersion = "2.30";
 
 //Cache system
 bot.cachedMessageReactions = new Discord.Collection();
@@ -125,9 +131,9 @@ bot.distube
   //Database
   if (process.argv[2] !== "ci") await database();
   //Registers
-  await registerCommands(bot, "../commands");
+  await registerCommands(bot, "../old_commands");
   await registerEvents(bot, "../events");
-  await registerSlashCommands(bot, "../slashcommands");
+  await registerApplicationCommands(bot, "../new_commands");
   //Login with Discord
   if (process.argv[2] !== "ci") {
     await bot.login();
@@ -139,7 +145,7 @@ bot.distube
 });
 process.on("unhandledRejection", error => {
   console.error("Unhandled promise rejection:", error);
-  //This will be useful to finding unknown errors;
+  //This will be useful to finding unknown errors sometimes
   if (error.requestData?.json) console.error(inspect(error.requestData.json, { depth: 5 }));
 });
 

@@ -16,17 +16,17 @@ export default async (bot, interaction) => {
       await interaction.user.createDM().catch(() => { });
     }
     if (internalCooldown.has(interaction.user.id)) return interaction.reply({ content: "Calm down! Wait until the previous command finished executing.", ephemeral: true });
-    const command = bot.slashCommands.get(interaction.commandName);
+    const command = bot.slashCommands.get(interaction.commandName) || bot.slashCommands.find(e => e.deployOptions.name === interaction.commandName && e.deployOptions.type === e.deployOptions.targetType);
     if (!command) return interaction.reply({ content: "That command doesn't exist", ephemeral: true });
     if (!interaction.guild && command.guildonly) return interaction.reply("This command only works on servers");
     if (interaction.guild) {
       if (!bot.guilds.cache.has(interaction.guild.id) && command.requireBotInstance) return interaction.reply("Please invite the real bot");
       const userperms = interaction.member.permissions;
       const userchannelperms = interaction.channel.permissionsFor(interaction.member.id);
-      if(!userchannelperms) return;
+      if (!userchannelperms) return;
       const botperms = interaction.guild.me.permissions;
       const botchannelperms = interaction.channel.permissionsFor(bot.user.id);
-      if(!botchannelperms) return;
+      if (!botchannelperms) return;
       if (interaction.user.id !== "577000793094488085") {
         if (!userperms.has(command.permissions.user[0])) return interaction.reply("You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[0]).has(8n)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
         if (!userchannelperms.has(command.permissions.user[1])) return interaction.reply("You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[1]).has(8n)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");

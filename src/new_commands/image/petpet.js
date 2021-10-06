@@ -7,7 +7,6 @@ export default class extends SlashCommand {
   constructor(options) {
     super(options);
     this.deployOptions.name = "petpet";
-    this.deployOptions.description = undefined;
     this.deployOptions.type = 'USER';
     this.permissions = {
       user: [0n, 0n],

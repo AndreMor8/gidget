@@ -55,6 +55,7 @@ export default class extends SlashCommand {
         name: "channel",
         type: "CHANNEL",
         description: "Category channel where the tickets will be.",
+        channelTypes: [4],
         required: true
       }]
     }, {
@@ -140,8 +141,7 @@ export default class extends SlashCommand {
         break;
       case "category": {
         const channel = interaction.options.getChannel("channel", true);
-        if (channel.type !== "GUILD_CATEGORY") return interaction.reply("Invalid channel type");
-        if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply("I don't have the `MANAGE_CHANNELS` permission in that channel.");
+        if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply("I don't have the `MANAGE_CHANNELS`, the `MANAGE_ROLES` or the `VIEW_CHANNEL` permission in that channel.");
         await msgDocument.updateOne({ categoryId: channel.id });
         interaction.reply("Category channel updated correctly.")
       }

@@ -18,6 +18,7 @@ export default class extends SlashCommand {
           name: "channel",
           description: "Choose a channel to send user confessions. Default to remove the previously set channel.",
           type: "CHANNEL",
+          channelTypes: [0, 5, 10, 11, 12],
           required: false
         }]
       },

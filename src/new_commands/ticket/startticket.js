@@ -9,11 +9,13 @@ export default class extends SlashCommand {
       name: "text-channel",
       type: "CHANNEL",
       description: "Channel where to put the message of the bot.",
+      channelTypes: [0, 5, 10, 11, 12],
       required: true
     }, {
       name: "category-channel",
       type: "CHANNEL",
       description: "Channel where to put the tickets.",
+      channelTypes: [4],
       required: true
     }, {
       name: "embed-title",
@@ -39,10 +41,8 @@ export default class extends SlashCommand {
   }
   async run(bot, interaction) {
     const channel = interaction.options.getChannel("text-channel", true);
-    if (!channel.isText()) return interaction.reply("[startticket.text-channel] This isn't a text-based channel!");
     if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return interaction.reply("[startticket.text-channel] I don't have the `SEND_MESSAGES` and the `EMBED_LINKS` permission in that channel.");
     const category = interaction.options.getChannel("category-channel", true);
-    if (category.type !== "GUILD_CATEGORY") return interaction.reply("[startticket.category-channel] This isn't a category channel!");
     if (!category.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply("[startticket.category-channel] I don't have the `VIEW_CHANNEL`, `MANAGE_CHANNELS` and `MANAGE_ROLES` (Manage Permissions) permissions in that channel.");
     const pre_emoji = interaction.options.getString("button-emoji", false);
     if (interaction.guild.emojis.cache.size < 1) await interaction.guild.emojis.fetch();

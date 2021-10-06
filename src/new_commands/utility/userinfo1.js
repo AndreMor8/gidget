@@ -5,8 +5,13 @@ export default class extends SlashCommand {
   constructor(options) {
     super(options);
     this.deployOptions.name = "userinfo";
-    this.deployOptions.type = 'USER';
-    this.deployOptions.description = undefined;
+    this.deployOptions.description = "Display user (and member) information"
+    this.deployOptions.options = [{
+      name: 'user',
+      description: 'Select a person to see their information',
+      type: 'USER',
+      required: false,
+    }]
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 16384n]
@@ -43,17 +48,7 @@ export default class extends SlashCommand {
       CUSTOM_STATUS: "Custom status:"
     };
     */
-    let user = bot.users.cache.get(interaction.targetId);
-    if (!user) {
-      try {
-        const fetch = await bot.users.fetch(interaction.targetId);
-        user = fetch;
-        if (!user) return interaction.reply({ content: "Invalid member!", ephemeral: true });
-      } catch (err) {
-        return interaction.reply({ content: "Invalid member!", ephemeral: true });
-      }
-
-    }
+    const user = interaction.options.getUser('user', false) || interaction.user;
     const premiumtext = ["Without Nitro", "Nitro Classic", "***Nitro***"];
     const thing = !user.bot ? (await getPremiumType(user)) : undefined;
     let finaltext = "";

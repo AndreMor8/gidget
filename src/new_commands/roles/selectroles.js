@@ -61,6 +61,7 @@ export default class extends SlashCommand {
         name: "channel",
         description: "On which channel will I send that message?",
         type: "CHANNEL",
+        channelTypes: [0, 5, 10, 11, 12],
         required: true
       }, {
         name: "content",
@@ -81,6 +82,7 @@ export default class extends SlashCommand {
         name: "channel",
         description: "On which channel is this message located?",
         type: "CHANNEL",
+        channelTypes: [0, 5, 10, 11, 12],
         required: true,
       }, {
         name: "message",
@@ -182,7 +184,6 @@ export default class extends SlashCommand {
         const plc = interaction.options.getString("placeholder", false);
         if (plc) menu.setPlaceholder(plc);
         const channel = interaction.options.getChannel("channel", true);
-        if (!channel.isText()) return interaction.reply("[create-instance.channel] That isn't a text-based channel!")
         if (!channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return interaction.reply("[create-instance.channel] I don't have permissions to send messages in that channel!");
         await channel.send({ content: interaction.options.getString("content", true), components: [new MessageActionRow().addComponents([menu])] });
         interaction.reply("Message sent. Test it ;)")
@@ -209,7 +210,6 @@ export default class extends SlashCommand {
         const plc = interaction.options.getString("placeholder", false);
         if (plc) menu.setPlaceholder(plc);
         const channel = interaction.options.getChannel("channel", true);
-        if (!channel.isText()) return interaction.reply("[add-to-instance.channel] That isn't a text-based channel!")
         if (!channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return interaction.reply("[add-to-instance.channel] I don't have permissions to send messages in that channel!");
 
         const msg = await channel.messages.fetch(interaction.options.getString("message", true)).catch(() => { });
