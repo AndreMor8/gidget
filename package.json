@@ -63,6 +63,6 @@
     "twemoji-parser": "^13.1.0"
   },
   "devDependencies": {
-    "eslint": "^7.32.0"
+    "eslint": "^8.0.0"
   }
 }
