@@ -66,7 +66,7 @@ export default class extends Command {
     const thing = !user.bot ? (await getPremiumType(user)) : undefined;
     let finaltext = "";
     if (!user.bot) {
-      if (thing.value < 0) finaltext = "[*I don't know*](https://gidget.xyz/api/auth/)";
+      if (thing.value < 0) finaltext = "[*I don't know*](https://gidget.andremor.ml/api/auth/)";
       else if (thing.type === "db")finaltext = premiumtext[thing.value] + " (DB)";
       else finaltext = premiumtext[thing.value];
     }
