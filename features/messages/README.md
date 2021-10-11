@@ -16,5 +16,3 @@ Use the messages that users send as an activity meter, via a level system. You c
 
 Make the bot reply to messages when they coincide with a special match.
 
-
-

@@ -6,9 +6,9 @@ description: There are many messages. Can I at least automate the cleaning?
 
 Discord can clean messages in bulk, its endpoint is bulkDelete, although users cannot use it.
 
-In Gidget we offer the `purge` command to mass delete messages, and not only that, as we know it is possible to select which messages to delete, well, we can clean messages with certain characteristics :\)
+In Gidget we offer the `purge` command to mass delete messages, and not only that, as we know it is possible to select which messages to delete, well, we can clean messages with certain characteristics :)
 
-```text
+```
 g%purge [mode] <limit> [<args>]
 ```
 
@@ -26,7 +26,7 @@ Note that `<number>` will be the number of messages to collect, and then filter 
 
 The structure would be like this:
 
-```text
+```
 g%purge users <number> <users...>
 g%purge users 100 577000793094488085 224619540263337984 756733721171984444
 ```
@@ -35,19 +35,19 @@ This will query the last X messages and will delete those that have the author I
 
 ### Delete bot messages
 
-```text
+```
 g%purge bots <number>
 ```
 
 ### Delete messages with files
 
-```text
+```
 g%purge attachments <number>
 ```
 
 ### Delete messages with embeds
 
-```text
+```
 g%purge embeds <number>
 ```
 
@@ -59,16 +59,15 @@ This internally makes a `new RegExp()` to the sentence.
 With that you can take advantage of putting regex characters to improve precision when detecting.
 {% endhint %}
 
-```text
+```
 g%purge with <number> <sentence>
 g%purge with 100 this is awful
 ```
 
 ### Default mode
 
-```text
+```
 g%purge <number>
 ```
 
-It's not complicated at all :\)
-
+It's not complicated at all :)

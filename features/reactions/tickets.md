@@ -22,7 +22,7 @@ Something that allows this functionality in general is to have several ticket sy
 
 To create one, use the `g%startticket` command
 
-```text
+```
 g%startticket <channel> <category-for-tickets> <emoji> <title-for-ticket>
 ```
 
@@ -32,7 +32,7 @@ If you forget the arguments, don't worry, the bot will remind you one by one.
 
 Use the `g%modifyticket` command
 
-```text
+```
 g%modifyticket <message> [<mode> [...args]]
 ```
 
@@ -42,7 +42,7 @@ The way to recognize one system with another is with the IDs of each message cre
 
 Use the `g%finishticket` command
 
-```text
+```
 g%finishticket <message>
 ```
 
@@ -58,11 +58,10 @@ For the user who created the ticket to be able to close it, the ticket system mu
 
 Use the `g%closeticket` command
 
-```text
+```
 g%closeticket [reason]
 ```
 
 Once that is done, the ticket channel will be deleted. If the staff closes the ticket, the user will be notified who closed it, and if they did, the reason.
 
 Obviously this doesn't work with normal channels.
-

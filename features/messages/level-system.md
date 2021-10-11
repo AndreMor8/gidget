@@ -19,7 +19,7 @@ To modify the system, you will need the `ADMINISTRATOR` permission
 ### Enabling
 
 {% hint style="success" %}
-The same options are available on the dashboard in the Level system section: [https://gidget.xyz/dashboard](https://gidget.xyz/dashboard).
+The same options are available on the dashboard in the Level system section: [https://gidget.andremor.dev/dashboard](https://gidget.andremor.dev/dashboard).
 {% endhint %}
 
 By default, this feature is disabled in its entirety.
@@ -38,14 +38,14 @@ For this function the `g%setlevelroles` command is used
 
 Use the `add` argument when you want to add a level where the user will be given X roles
 
-```text
+```
 g%setlevelroles add <level> <valid roles>
 g%setlevelroles add 6 669767097512886285
 ```
 
 If you no longer want the bot to give those roles when that level is reached use the `remove` argument
 
-```text
+```
 g%setlevelroles remove <level>
 g%setlevelroles remove 6
 ```
@@ -54,13 +54,13 @@ g%setlevelroles remove 6
 
 For that the `g%modifylevel` command is used
 
-```text
+```
 g%modifylevel <userID> <option> <amount/level>
 ```
 
 The available options are:
 
-* subtract \(xp\)
+* subtract (xp)
 * subtractlevel
 * setlevel
 * appendlevel
@@ -69,10 +69,9 @@ The available options are:
 
 There is also the `delete` argument
 
-```text
+```
 g%modifylevel <userID> delete
 g%modifylevel 577000793094488085 delete
 ```
 
 This argument removes the level that this user had on the server, resetting his total XP to 0.
-

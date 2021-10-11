@@ -7,7 +7,7 @@ description: 'User returning to the server: Where are my roles?'
 {% hint style="danger" %}
 Since the bot does not have the Presence Intent, AndreMor plans to remove this feature.
 
-Roles will only be retrieved to users who, before leaving the server, have been in the bot's cache. \(they do an action in front of the bot or are connected to a voice channel\)
+Roles will only be retrieved to users who, before leaving the server, have been in the bot's cache. (they do an action in front of the bot or are connected to a voice channel)
 {% endhint %}
 
 {% hint style="warning" %}
@@ -32,8 +32,7 @@ The bot did not retrive certain roles? Make sure the highest role the bot has, i
 
 To remove a user, that way, their previous roles are not retrieved, use the `g%mlremove` command.
 
-```text
+```
 g%mlremove <userID>
 g%mlremove 577000793094488085
 ```
-

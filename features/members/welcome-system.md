@@ -18,7 +18,7 @@ You will need the `ADMINISTRATOR` permission to activate this
 In order for the bot to detect invitations, it needs the `MANAGE_GUILD` permission.
 {% endhint %}
 
-```text
+```
 %MEMBER% -> New member mention. The client may or may not cache the user, so don't report things like @invalid-user
 %MEMBERTAG% -> New member tag (AndreMor#0008). May not work on goodbyes.
 %MEMBERID% -> New member ID.
@@ -36,21 +36,21 @@ In order for the bot to detect invitations, it needs the `MANAGE_GUILD` permissi
 ### Enabling
 
 {% hint style="success" %}
-The same options are available on the dashboard in the Welcome section: [https://gidget.xyz/dashboard](https://gidget.xyz/dashboard).
+The same options are available on the dashboard in the Welcome section: [https://gidget.andremor.dev/dashboard](https://gidget.andremor.dev/dashboard).
 {% endhint %}
 
 To enable it, you will first need to configure certain things, such as the welcome channel, and the welcome message.
 
 To set a welcome channel, we will use the following command:
 
-```text
+```
 g%configwelcome channel <channel>
 g%configwelcome channel 747329582352433246
 ```
 
 Now we will set the message:
 
-```text
+```
 g%configwelcome message <text>
 g%configwelcome message hola!
 ```
@@ -59,7 +59,7 @@ Set it up with the variables written above.
 
 Finally, to enable it, use:
 
-```text
+```
 g%configwelcome enable
 ```
 
@@ -67,9 +67,7 @@ And voila, Gidget will notify each new member that enters your server.
 
 Do the same for the other sections when you put only the command:
 
-```text
+```
 g%configwelcome
 ```
-
-
 

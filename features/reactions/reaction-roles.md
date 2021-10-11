@@ -16,7 +16,7 @@ The bot needs the `MANAGE_ROLES` permission.
 
 To add new reaction-roles the `g%addrr` command is used.
 
-```text
+```
 g%addrr <messageID>
 g%addrr 766718591713673266
 ```
@@ -25,7 +25,7 @@ The command will use a collector to ask you the emojis + roles that you will con
 
 When asked, you should put your settings like this:
 
-```text
+```
 <emoji>, <role>
 WubbzyWalk, Birdy Bird
 ```
@@ -33,4 +33,3 @@ WubbzyWalk, Birdy Bird
 When you do, the bot will react with the emoji you specified. To save the changes put `?done`
 
 Once that is done, the bot will now be listening to the message, and giving the corresponding roles.
-

@@ -12,5 +12,3 @@ Give a user roles if they react with an emoji to a specific message.
 
 When a user wants a ticket, they can request it via a reaction in the specified message.
 
-
-

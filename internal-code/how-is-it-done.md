@@ -23,7 +23,7 @@ The current syntax uses:
 * Global variables to hold 1 single instance of something, like the Command class or the command list.
 * ESLint for better way of writing code
 * Cache system to avoid unnecessary re-queries to the database
-* .env file \(yes also supports environment variables but I use .env\)
+* .env file (yes also supports environment variables but I use .env)
 * Best attempt to avoid bot abuse and catch bugs easily.
 * Command and event handler
 * Extended classes for commands
@@ -36,11 +36,10 @@ The bot also uses some packages that need additional installation on the operati
 
 ## Dashboard
 
-The dashboard is made in JavaScript with Node.js, using Express, EJS and passport \(with passport-discord\)
+The dashboard is made in JavaScript with Node.js, using Express, EJS and passport (with passport-discord)
 
 Unlike the bot, it still uses CommonJS as syntax to import and export modules.
 
-For the front-end, Bulma is used as the CSS framework, and Vanilla JavaScript for scripting \(native JavaScript DOM in few words\).
+For the front-end, Bulma is used as the CSS framework, and Vanilla JavaScript for scripting (native JavaScript DOM in few words).
 
 Also uses MongoDB.
-
