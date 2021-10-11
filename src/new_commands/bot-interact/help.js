@@ -1,9 +1,9 @@
 import def from "../../assets/definitions.json";
 import Discord from "discord.js-light";
-const buttons = [new Discord.MessageButton().setLabel("Gidget's dashboard").setStyle("LINK").setURL("https://gidget.xyz"),
-new Discord.MessageButton().setLabel("Bot's documentation").setStyle("LINK").setURL("https://docs.gidget.xyz"),
+const buttons = [new Discord.MessageButton().setLabel("Gidget's dashboard").setStyle("LINK").setURL("https://gidget.andremor.dev"),
+new Discord.MessageButton().setLabel("Bot's documentation").setStyle("LINK").setURL("https://docs.gidget.andremor.dev"),
 new Discord.MessageButton().setLabel("Source code").setStyle("LINK").setURL("https://github.com/AndreMor8/gidget"),
-new Discord.MessageButton().setLabel("AndreMor's page").setStyle("LINK").setURL("https://andremor.ml"),
+new Discord.MessageButton().setLabel("AndreMor's page").setStyle("LINK").setURL("https://andremor.dev"),
 new Discord.MessageButton().setLabel("Discord.js documentation").setStyle("LINK").setURL("https://discord.js.org/#/docs/")];
 const action = Discord.MessageActionRow.prototype.addComponents.apply(new Discord.MessageActionRow(), buttons)
 const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | [top.gg](https://top.gg/bot/694306281736896573) | [DiscordBotList](https://discordbotlist.com/bots/gidget) | [Discord Boats](https://discord.boats/bot/694306281736896573)`;

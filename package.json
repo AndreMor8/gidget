@@ -16,7 +16,7 @@
     "url": "https://github.com/AndreMor8/gidget/"
   },
   "author": "AndreMor",
-  "homepage": "https://gidget.andremor.ml/",
+  "homepage": "https://gidget.andremor.dev/",
   "license": "Apache-2.0",
   "dependencies": {
     "@discordjs/opus": "^0.6.0",

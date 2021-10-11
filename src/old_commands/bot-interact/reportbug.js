@@ -5,6 +5,6 @@ export default class extends Command {
     this.aliases = ["rpb", "bugs"];
   }
   async run(bot, message) {
-    await message.channel.send("Did you find a bug in this bot? Go to the feedback section on the bot's official page: https://gidget.andremor.ml/feedback *(needs login)*")
+    await message.channel.send("Did you find a bug in this bot? Go to the feedback section on the bot's official page: https://gidget.andremor.dev/feedback *(needs login)*")
   }
 }

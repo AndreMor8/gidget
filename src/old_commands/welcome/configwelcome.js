@@ -16,7 +16,7 @@ export default class extends Command {
     if (!args[1]) {
       const embed = new Discord.MessageEmbed()
         .setTitle("Welcome info")
-        .setDescription("Variables documented here: https://docs.gidget.xyz/features/members/welcome-system")
+        .setDescription("Variables documented here: https://docs.gidget.andremor.dev/features/members/welcome-system")
         .addField("Welcome enabled? (enable)", doc.enabled ? "Yes" : "No")
         .addField("Channel for welcomes (channel)", doc.channelID ? ("<#" + doc.channelID + ">") : "Not established")
         .addField("Welcome message (message)", Discord.Util.splitMessage(doc.text, { maxLength: 1000 })[0])

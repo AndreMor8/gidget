@@ -38,7 +38,7 @@ export default class extends SlashCommand {
       .addField("• Platform", `\`\`${os.platform()}\`\``, true)
       .setFooter("Gidget stats");
 
-    await interaction.editReply({ ephemeral: true, embeds: [embedStats], components: [new Discord.MessageActionRow().addComponents([new Discord.MessageButton().setStyle("LINK").setLabel("Gidget Dashboard status").setURL("https://gidget.andremor.ml/stats")])] });
+    await interaction.editReply({ ephemeral: true, embeds: [embedStats], components: [new Discord.MessageActionRow().addComponents([new Discord.MessageButton().setStyle("LINK").setLabel("Gidget Dashboard status").setURL("https://gidget.andremor.dev/stats")])] });
   }
 }
 

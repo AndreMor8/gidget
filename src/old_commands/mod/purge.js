@@ -12,7 +12,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     if (!args[1] || (isNaN(args[1]) && !args[2]))
-      return message.reply('Usage: `purge [mode] <limit> [<args>]`\nDocumentation here: https://docs.gidget.xyz/features/messages/bulk-delete');
+      return message.reply('Usage: `purge [mode] <limit> [<args>]`\nDocumentation here: https://docs.gidget.andremor.dev/features/messages/bulk-delete');
     const number = args[2] ? parseInt(args[2]) : parseInt(args[1]);
 
     if (!isNaN(number) && (number <= 100) && (number >= 1)) {
