@@ -94,7 +94,7 @@ bot.distube = new DisTube.default(bot, {
   youtubeCookie: process.env.COOKIETEXT,
   youtubeIdentityToken: process.env.YT_IDENTITY,
   youtubeDL: true,
-  plugins: [new SoundCloudPlugin(), new SpotifyPlugin({ api: { clientId: process.env.SPOTIFY_ID, clientSecret: process.env.SPOTIFY_SECRET } })]
+  plugins: [new SoundCloudPlugin(), new SpotifyPlugin(process.env.SPOTIFY_SECRET ? { api: { clientId: process.env.SPOTIFY_ID, clientSecret: process.env.SPOTIFY_SECRET } } : {})]
 });
 bot.memberVotes = new Discord.Collection();
 
