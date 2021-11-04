@@ -1,6 +1,6 @@
 import tickets from "../../database/models/ticket.js";
 import tmembers from "../../database/models/tmembers.js";
-import Discord from 'discord.js-light';
+import Discord from 'discord.js';
 import fetch from 'node-fetch';
 
 const internalCooldown = new Set();

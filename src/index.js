@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import webserver from './webserver.js';
 //import discordboats from './utils/discordboats.js';
-import Discord from 'discord.js-light';
+import Discord from 'discord.js';
 const execArgv = ["--experimental-json-modules", "--expose-gc", "--optimize_for_size"];
 if (process.env.OLDMEMORY) execArgv.push("--max_old_space_size=" + process.env.OLDMEMORY);
 const manager = new Discord.ShardingManager('./src/bot.js', {

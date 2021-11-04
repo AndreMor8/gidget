@@ -3,6 +3,18 @@ import db from '../../database/models/voicerole.js';
 export default async (bot, oldState, newState) => {
   const member = newState.member || oldState.member;
   const guild = newState.guild || oldState.guild;
+
+  //RECORD COMMAND - STOP RECORDING
+  if (bot.records.has(guild.id)) {
+    const rec = bot.records.get(guild.id);
+    if (!newState.channelId && (member.id === rec.user_id || member.id === bot.user.id)) {
+      rec.stream.destroy();
+    }
+    if (((!!newState.channelId && !!oldState.channelId) && (newState.channelId !== oldState.channelId)) && (member.id === rec.user_id || member.id === bot.user.id)) {
+      rec.stream.destroy();
+    }
+  }
+
   //VOICEROLE
   if (member && guild.me.permissions.has("MANAGE_ROLES")) {
     const list = await db.findOne({ guildID: { $eq: guild.id } }).lean();

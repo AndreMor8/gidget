@@ -10,20 +10,12 @@ import { registerCommands, registerEvents, registerApplicationCommands } from '.
 import b from "./utils/badwords.js";
 
 //Discord import
-import Discord from 'discord.js-light';
+import Discord from 'discord.js';
 
 import DisTube from 'distube';
+import { SoundCloudPlugin } from '@distube/soundcloud';
+import { SpotifyPlugin } from '@distube/spotify';
 import { inspect } from 'util';
-
-const channelFilter = (ch) => {
-  if (ch.game) return false;
-  if (ch.tttgame) return false;
-  if (bot.distube.voices.collection.some(e => e.channel?.id === ch.id)) return false;
-  if (ch.isVoice() && ch.members.has(bot.user.id)) return false;
-  if (ch.guild?.welcome?.channelID === ch.id) return false;
-  if (ch.guild?.welcome?.leavechannelID === ch.id) return false;
-  return true;
-};
 
 const sweepInterval = 1800;
 
@@ -37,16 +29,8 @@ const bot = new Discord.Client({
   makeCache: Discord.Options.cacheWithLimits({
     ApplicationCommandManager: 0,
     BaseGuildEmojiManager: 0,
-    ChannelManager: {
-      maxSize: Infinity,
-      sweepFilter: () => channelFilter,
-      sweepInterval
-    },
-    GuildChannelManager: {
-      maxSize: Infinity,
-      sweepFilter: () => channelFilter,
-      sweepInterval
-    },
+    ChannelManager: Infinity,
+    GuildChannelManager: Infinity,
     GuildBanManager: 0,
     GuildInviteManager: 0,
     GuildManager: Infinity,
@@ -67,11 +51,7 @@ const bot = new Discord.Client({
     ReactionUserManager: 0,
     RoleManager: Infinity,
     StageInstanceManager: Infinity,
-    ThreadManager: {
-      maxSize: Infinity,
-      sweepInterval,
-      sweepFilter: () => channelFilter
-    },
+    ThreadManager: Infinity,
     ThreadMemberManager: 0,
     UserManager: {
       maxSize: Infinity,
@@ -101,6 +81,7 @@ const bot = new Discord.Client({
 bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
 bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
 bot.botVersion = "2.30";
+bot.records = new Map();
 
 //Cache system
 bot.cachedMessageReactions = new Discord.Collection();
@@ -112,7 +93,8 @@ bot.distube = new DisTube.default(bot, {
   savePreviousSongs: true,
   youtubeCookie: process.env.COOKIETEXT,
   youtubeIdentityToken: process.env.YT_IDENTITY,
-  youtubeDL: true
+  youtubeDL: true,
+  plugins: [new SoundCloudPlugin(), new SpotifyPlugin({ api: { clientId: process.env.SPOTIFY_ID, clientSecret: process.env.SPOTIFY_SECRET } })]
 });
 bot.memberVotes = new Discord.Collection();
 

@@ -18,6 +18,7 @@ export default class extends SlashCommand {
     if (interaction.isCommand()) {
       const channelId = interaction.member.voice.channelId;
       if (!channelId) return interaction.reply("You need to be in a voice channel to play music!");
+      if (bot.records.has(interaction.guild.id)) return interaction.reply("A recording is in progress. Wait for it to finish.");
       const channel = await interaction.guild.channels.fetch(channelId);
       const queue = bot.distube.getQueue(interaction.guild.me.voice);
       if (queue && queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
@@ -30,13 +31,19 @@ export default class extends SlashCommand {
         let final = null;
         const wanted = interaction.options.getString("song", true);
         try {
-          if ((isURL(wanted) && !ytpl.validateID(wanted)) || ytdl.validateID(wanted)) {
+          if ((isURL(wanted) && (!bot.distube.customPlugins[0].validate(wanted) && (!ytpl.validateID(wanted)) || ytdl.validateID(wanted)))) {
             const str = ytdl.validateID(wanted) ? `https://www.youtube.com/watch?v=${wanted}` : wanted;
             final = await bot.distube.handler.resolveSong(interaction.member, str);
-          } else {
-            final = (await bot.distube.search(wanted, { limit: 1, type: ytpl.validateID(wanted) ? 'playlist' : 'video' }))[0];
+          } else if (!bot.distube.customPlugins[0].validate(wanted)) {
+            final = (await bot.distube.search(wanted, { limit: 1, type: ytpl.validateID(wanted) ? 'playlist' : 'video' })).catch(() => [])[0];
           }
-          if (!final) return interaction.editReply("I didn't find any video. Please try again with another term.");
+          if (!final) {
+            if (bot.distube.customPlugins[0].validate(wanted)) {
+              bot.distube.customPlugins[0].play(channel, wanted, interaction.member, interaction.channel);
+              return interaction.editReply('A Spotify link has been introduced...');
+            }
+            return interaction.editReply("I didn't find any video. Please try again with another term.");
+          }
         } catch (err) {
           err.message = err.message.replace("your", "my");
           return interaction.editReply(`${err}`);

@@ -21,6 +21,7 @@ export default class extends SlashCommand {
   async run(bot, interaction) {
     const channel = interaction.member.voice.channelId;
     if (!channel) return interaction.reply("You need to be in a voice channel to play music!");
+    if (bot.records.has(interaction.guild.id)) return interaction.reply("A recording is in progress. Wait for it to finish.");
     const queue = bot.distube.getQueue(interaction.guild.me.voice);
     if (queue && queue.voiceChannel.id !== channel) return interaction.reply("You are not on the same voice channel as me.");
     const tosearch = interaction.options.getString("term", true);
