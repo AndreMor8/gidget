@@ -15,7 +15,7 @@ class OpusDecodingStream extends Transform {
         this.push(this.encoder.decode(data))
         callback()
     }
-};
+}
 export default class extends SlashCommand {
     constructor(options) {
         super(options);
