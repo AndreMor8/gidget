@@ -30,15 +30,18 @@ export default class extends SlashCommand {
       (async () => {
         let final = null;
         const wanted = interaction.options.getString("song", true);
+        const spotify = await bot.distube.customPlugins[0].validate(wanted);
         try {
-          if ((isURL(wanted) && (!bot.distube.customPlugins[0].validate(wanted) && (!ytpl.validateID(wanted)) || ytdl.validateID(wanted)))) {
+          if ((isURL(wanted) && (!spotify && (!ytpl.validateID(wanted)) || ytdl.validateID(wanted)))) {
             const str = ytdl.validateID(wanted) ? `https://www.youtube.com/watch?v=${wanted}` : wanted;
             final = await bot.distube.handler.resolveSong(interaction.member, str);
-          } else if (!bot.distube.customPlugins[0].validate(wanted)) {
-            final = (await bot.distube.search(wanted, { limit: 1, type: ytpl.validateID(wanted) ? 'playlist' : 'video' })).catch(() => [])[0];
+          } else if (ytpl.validateID(wanted)) {
+            final = await bot.distube.handler.resolvePlaylist(interaction.member, wanted);
+          } else if (!spotify) {
+            final = await bot.distube.search(wanted, { limit: 1, type: 'video' }).catch(() => [])[0];
           }
           if (!final) {
-            if (bot.distube.customPlugins[0].validate(wanted)) {
+            if (spotify) {
               bot.distube.customPlugins[0].play(channel, wanted, interaction.member, interaction.channel);
               return interaction.editReply('A Spotify link has been introduced...');
             }
