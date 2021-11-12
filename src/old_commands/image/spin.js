@@ -33,7 +33,7 @@ export default class extends Command {
     }
     let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await bot.users.fetch(args[1]).catch(() => { }) || args[1]) : message.author)
     if (!source) return message.channel.send("Invalid user, emoji or image!");
-    if (source.avatar) {
+    if (source.id) {
       source = source.displayAvatarURL({ format: "png", size: SIZE });
     }
     if (source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
@@ -67,7 +67,7 @@ export default class extends Command {
           const pre_buf = Buffer.concat(chunks);
           const buf = await gifResize({ width: 512, height: 512, stretch: true, interlaced: true })(pre_buf);
           const att = new MessageAttachment(buf, "spin.gif");
-          
+
           await message.channel.send({ files: [att] }).catch(() => { });
           s();
         })

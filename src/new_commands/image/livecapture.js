@@ -95,7 +95,7 @@ export default class extends SlashCommand {
       });
     } catch (err) {
       //Errors
-      if (interaction.replied) interaction.editReply(err.toString());
+      if (interaction.replied || interaction.deferred) interaction.editReply(err.toString());
       else interaction.reply(err.toString());
     }
   }
