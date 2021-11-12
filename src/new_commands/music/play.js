@@ -38,7 +38,8 @@ export default class extends SlashCommand {
           } else if (ytpl.validateID(wanted)) {
             final = await bot.distube.handler.resolvePlaylist(interaction.member, wanted);
           } else if (!spotify) {
-            final = await bot.distube.search(wanted, { limit: 1, type: 'video' }).catch(() => [])[0];
+            const result = await bot.distube.search(wanted, { limit: 1, type: 'video' }).catch(() => []);
+            final = result[0];
           }
           if (!final) {
             if (spotify) {
