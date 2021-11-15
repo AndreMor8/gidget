@@ -19,7 +19,7 @@
   "homepage": "https://gidget.andremor.dev/",
   "license": "Apache-2.0",
   "dependencies": {
-    "@discordjs/opus": "^0.6.0",
+    "@discordjs/opus": "^0.7.0",
     "@discordjs/voice": "^0.7.2",
     "@distube/soundcloud": "^1.0.0",
     "@distube/spotify": "^1.0.0",
