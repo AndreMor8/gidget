@@ -36,9 +36,7 @@ export default class extends Command {
       try {
         if (m.content.toLowerCase() === "exit") return collector.stop("Exited");
         if (m.content.toLowerCase() === "preview")
-          return message.channel.send("Here's a preview of your embed", embed).then(msg => setTimeout(() => {
-            if (!msg.deleted) msg.delete();
-          }, 15000));
+          return message.channel.send({ content: "Here's a preview of your embed", embeds: [embed] }).catch(() => message.channel.send("You will need to fill out your embed a bit to be able to send it."))
         switch (i) {
           case 0:
             if (m.content.toLowerCase() === "none") msgContent = undefined
@@ -202,7 +200,7 @@ export default class extends Command {
     collector.on("end", (collected, reason) => {
       if (reason === "field") {
         return fields(message, embed).then(embed => {
-          channel.send({ content: msgContent, embeds: [embed] });
+          channel.send({ content: msgContent, embeds: [embed] }).catch((err) => message.channel.send(`${err}`));
         }).catch(reason => {
           if (reason === "idle") message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
           else if (reason === "no") message.channel.send("It seems you don't want an embed.");
@@ -213,7 +211,7 @@ export default class extends Command {
       }
       actual.delete(message.author.id);
       if (reason === "Exited") message.channel.send("It seems you don't want an embed.");
-      else if (reason === "Finished") channel.send({ content: msgContent, embeds: [embed] });
+      else if (reason === "Finished") channel.send({ content: msgContent, embeds: [embed] }).catch((err) => message.channel.send(`${err}`));
       else if (reason === "idle") message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
       else message.channel.send("Collector ended with reason: " + reason).catch(() => { });
     });
