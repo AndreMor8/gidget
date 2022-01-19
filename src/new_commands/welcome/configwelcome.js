@@ -145,7 +145,6 @@ export default class extends SlashCommand {
       }
         break;
       case "channel": {
-        if (!args[2]) return interaction.reply("You have not put a channel");
         const channel = interaction.options.getChannel("channel");
         if (!channel) {
           if (doc.enabled && !doc.roleID) return interaction.reply("The channel is not optional if the system is **enabled** and **no role** is assigned.");
@@ -198,11 +197,11 @@ export default class extends SlashCommand {
       case "dmmessage": {
         const text = interaction.options.getString("message", true);
         if (text.length < 2000) interaction.reply("Your message must be less than 2000 characters long.");
-        if (/%INVITER%/gmi.test(args.slice(2).join(" "))) {
+        if (/%INVITER%/gmi.test(text)) {
           if (!interaction.guild.me.permissions.has("MANAGE_GUILD"))
             return interaction.reply("You must give me the permission to manage guild if you want the who invited the user to appear.");
         }
-        await setWelcome(interaction.guild, 4, args.slice(2).join(" "));
+        await setWelcome(interaction.guild, 4, text);
         await interaction.reply("DM message set correctly");
       }
         break;

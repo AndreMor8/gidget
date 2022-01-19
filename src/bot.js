@@ -83,6 +83,7 @@ bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop",
 bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
 bot.botVersion = "2.40";
 bot.records = new Map();
+bot.savedInvites = new Map();
 
 //Cache system
 bot.cachedMessageReactions = new Discord.Collection();

@@ -1,5 +1,4 @@
 import ytpl from "@distube/ytpl";
-import { isURL } from 'distube';
 import ytdl from '@distube/ytdl-core';
 
 export default class extends SlashCommand {

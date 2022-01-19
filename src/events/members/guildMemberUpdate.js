@@ -4,6 +4,7 @@ export default async (bot, oldMember, newMember) => {
         if (oldMember.pending && !newMember.pending) {
             const welcome = await getWelcome(newMember.guild);
             if (welcome.respectms) {
+                const { inviterMention, inviterTag, inviterId } = bot.savedInvites.get(newMember.id) || { inviterMention: "Unknown", inviterTag: "Unknown", inviterId: "Unknown" };
                 if (welcome.enabled && (welcome.channelID && welcome.text)) {
                     const channel = await newMember.guild.channels.fetch(welcome.channelID).catch(() => { });
                     if (channel && channel.isText() && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
