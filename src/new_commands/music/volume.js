@@ -7,7 +7,9 @@ export default class extends SlashCommand {
       name: "volume",
       type: "INTEGER",
       description: "New value for volume",
-      required: false
+      required: false,
+      minValue: 0,
+      maxValue: 100
     }]
     this.guildonly = true;
   }
@@ -21,10 +23,6 @@ export default class extends SlashCommand {
     if (!interaction.options.getInteger("volume", false)) return await interaction.reply(`The current volume is: ${queue.volume}`);
 
     const number = interaction.options.getInteger("volume", false);
-
-    if (!number) return await interaction.reply("Invalid volume!");
-    if (number < 0) return await interaction.reply("Invalid volume!");
-    if (number > 100) return await interaction.reply("Invalid volume!");
 
     queue.setVolume(number);
     await interaction.reply(`Volume set to ${number}`);

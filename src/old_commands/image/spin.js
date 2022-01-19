@@ -121,7 +121,7 @@ function optimizeFrameColors(data) {
 async function resize(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error("Status code: " + res.status);
-  const buf = await res.buffer();
+  const buf = Buffer.from(await res.arrayBuffer());
   if (isSvg(buf)) {
     return await svg2img(buf, { format: "png", width: SIZE, height: SIZE });
   } else if (process.platform === "win32") {

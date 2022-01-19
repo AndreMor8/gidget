@@ -46,7 +46,7 @@ export default class extends Command {
       message.channel.sendTyping();
       const res = await fetch(source);
       if (!res.ok) return message.channel.send("Status code: " + res.status);
-      source = await res.buffer();
+      source = Buffer.from(await res.arrayBuffer());
       if (isSvg(source)) source = await svg2img(source, { format: "png", width: 112, height: 112 })
       const torender = await Canvas.loadImage(source);
       const buf = await petpet(torender, delay);

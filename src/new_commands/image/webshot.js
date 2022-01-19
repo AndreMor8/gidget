@@ -63,7 +63,7 @@ async function pup(interaction, url, options) {
     });
     if (!res.ok) throw new Error(await res.text() || (res.status));
     else {
-      const att = new Discord.MessageAttachment(await res.buffer(), "capture.png");
+      const att = new Discord.MessageAttachment(Buffer.from(await res.arrayBuffer()), "capture.png");
       const time = "Time: " + (Date.now() - (msg.editedTimestamp || msg.createdTimestamp)) / 1000 + "s";
       await interaction.editReply({ content: time, files: [att] });
     }

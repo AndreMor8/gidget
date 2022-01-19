@@ -4,7 +4,7 @@ import fs from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
 import commons from '../../utils/commons.js';
-import execa from 'execa';
+import { execa } from 'execa';
 import ffmpeg from 'ffmpeg-static';
 const timer = new Set();
 const { __dirname } = commons(import.meta.url);

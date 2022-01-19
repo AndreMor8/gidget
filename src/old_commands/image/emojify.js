@@ -1,6 +1,6 @@
 import { MessageAttachment, MessageButton, MessageActionRow } from 'discord.js';
 import fetch from 'node-fetch';
-import FileType from 'file-type';
+import { fileTypeFromBuffer } from 'file-type';
 import gifResize from '../../utils/gifresize.js';
 import mediaExtractor from 'media-extractor';
 import isSvg from 'is-svg';
@@ -83,8 +83,8 @@ export default class extends Command {
 async function render(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Status code returned ${res.status}`);
-    const pre_buf = await res.buffer();
-    const type = await FileType.fromBuffer(pre_buf);
+    const pre_buf = Buffer.from(await res.arrayBuffer());
+    const type = await fileTypeFromBuffer(pre_buf);
     if (type?.mime === "image/gif") {
         const buffer = await gifResize({ width: 48, interlaced: true })(pre_buf);
         return { pre_type: "gif", buffer };

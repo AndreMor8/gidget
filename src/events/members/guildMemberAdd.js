@@ -72,20 +72,27 @@ export default async (bot, member) => {
     } catch (err) {
       console.log(err);
       if (member.guild.me.permissions.has("MANAGE_GUILD")) {
-        member.guild.inviteCount = await getInviteCount(member.guild);
+        member.guild.inviteCount = await getInviteCount(member.guild).catch(console.log);
       }
     } finally {
-      if (welcome.enabled && welcome.text) {
-        const channel = await member.guild.channels.fetch(welcome.channelID).catch(() => { });
-        if (channel && channel.isText() && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
-          const finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
-          await channel.send(finalText || "?", { allowedMentions: { users: [member.id] } }).catch(() => { });
+      if (!welcome.respectms) {
+        if (welcome.enabled && (welcome.channelID && welcome.text)) {
+          const channel = await member.guild.channels.fetch(welcome.channelID).catch(() => { });
+          if (channel && channel.isText() && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
+            const finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
+            await channel.send(finalText || "?", { allowedMentions: { users: [member.id] } }).catch(() => { });
+          } else await setWelcome(member.guild, 1, null);
         }
-        if (!channel) await setWelcome(member.guild, 0, false);
-      }
-      if (welcome.dmenabled && welcome.dmtext) {
-        const finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
-        await member.send(finalText || "?").catch(() => { });
+        if (welcome.dmenabled && welcome.dmtext) {
+          const finalText = welcome.dmtext.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
+          await member.send(finalText || "?").catch(() => { });
+        }
+        if (welcome.roleID) {
+          const role = await member.guild.roles.fetch(welcome.roleID).catch(() => { });
+          if (role && role.editable) {
+            await member.roles.add(role, "Welcome system").catch(() => { });
+          } else await setWelcome(member.guild, 8, null);
+        }
       }
     }
   }

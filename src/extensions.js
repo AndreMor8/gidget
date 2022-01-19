@@ -346,6 +346,16 @@ export async function setWelcome(guild, tochange, newData) {
       guild.welcome.leavetext = newData;
     }
       break;
+    case 8: {
+      await doc.updateOne({ roleID: newData });
+      guild.welcome.roleID = newData;
+    }
+      break;
+    case 9: {
+      await doc.updateOne({ respectms: newData });
+      guild.welcome.respectms = newData;
+    }
+      break;
     default:
       throw new Error("Nope");
   }
@@ -472,7 +482,7 @@ export async function deleteWarn(member, id, reason = "") {
   if (deleted.memberId !== member.id) throw new StructureError("That ID doesn't exist!");
   if (deleted.guildId !== member.guild.id) throw new StructureError("That ID doesn't exist!");
   await deleted.deleteOne();
-  if(member.cache?.warns) member.cache.warns = false;
+  if (member.cache?.warns) member.cache.warns = false;
   await getWarns(member);
   await member.send(`You've been pardoned on ${member.guild.name}${reason ? (" with reason: " + reason) : ""}. Now you have ${member.warns.length} warnings.`).catch(() => { });
   return member.warns.length;

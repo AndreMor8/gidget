@@ -32,11 +32,12 @@ export default class extends SlashCommand {
         const wanted = interaction.options.getString("song", true);
         const spotify = await bot.distube.customPlugins[0].validate(wanted);
         try {
-          if ((isURL(wanted) && (!spotify && (!ytpl.validateID(wanted)) || ytdl.validateID(wanted)))) {
-            const str = ytdl.validateID(wanted) ? `https://www.youtube.com/watch?v=${wanted}` : wanted;
-            final = await bot.distube.handler.resolveSong(interaction.member, str);
+          if (ytdl.validateURL(wanted)) {
+            final = await bot.distube.handler.resolveSong(wanted);
+          } else if(ytdl.validateID(wanted)) {
+            final = await bot.distube.handler.resolveSong(`https://www.youtube.com/watch?v=${wanted}`);
           } else if (ytpl.validateID(wanted)) {
-            final = await bot.distube.handler.resolvePlaylist(interaction.member, wanted);
+            final = await bot.distube.handler.resolvePlaylist(wanted);
           } else if (!spotify) {
             const result = await bot.distube.search(wanted, { limit: 1, type: 'video' }).catch(() => []);
             final = result[0];
@@ -53,7 +54,7 @@ export default class extends SlashCommand {
           return interaction.editReply(`${err}`);
         }
 
-        await bot.distube.playVoiceChannel(channel, final, { member: interaction.member, textChannel: interaction.channel });
+        await bot.distube.play(channel, final, { member: interaction.member, textChannel: interaction.channel });
 
         return interaction.editReply(`${final.type === "playlist" ? "Playlist:" : ""} **${final.name}** has been added to the queue! ${final.type === "playlist" ? "(check g%queue for results)" : ""}`);
       })();
@@ -64,8 +65,8 @@ export default class extends SlashCommand {
       const queue = bot.distube.getQueue(interaction.guild.me.voice);
       if (queue && queue.voiceChannel.id !== channel.id) return interaction.editReply("You are not on the same voice channel as me.");
 
-      await bot.distube.handler.resolveSong(interaction.member, song).then(async songObj => {
-        await bot.distube.playVoiceChannel(channel, songObj, { member: interaction.member, textChannel: interaction.channel });
+      await bot.distube.handler.resolveSong(song).then(async songObj => {
+        await bot.distube.play(channel, songObj, { member: interaction.member, textChannel: interaction.channel });
         return interaction.editReply(`**${songObj.name}** has been added to the queue!`);
       }).catch(err => interaction.editReply(`Error: ${err}`));
     }

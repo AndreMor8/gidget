@@ -5,6 +5,8 @@ const chema = new mongoose.Schema({
   enabled: { type: Boolean, default: false },
   text: { type: String, default: "Welcome to the server, %MEMBER%" },
   channelID: { type: String, default: null },
+  roleID: { type: String, default: null },
+  respectms: { type: Boolean, default: false },
   dmenabled: { type: Boolean, default: false },
   dmtext: { type: String, default: "Welcome to the server, %MEMBER%" },
   leaveenabled: { type: Boolean, default: false },

@@ -75,12 +75,13 @@ const bot = new Discord.Client({
     }]
   },
   restGlobalRateLimit: 50,
-  intents: 32511
+  intents: 32511,
+  partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"]
 });
 
 bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
 bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
-bot.botVersion = "2.30";
+bot.botVersion = "2.40";
 bot.records = new Map();
 
 //Cache system

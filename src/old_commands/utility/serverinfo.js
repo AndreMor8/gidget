@@ -62,12 +62,12 @@ export default class extends Command {
       }
 
       if ((message.guild ? message.guild.id === "402555684849451028" : false) && server.id === "402555684849451028") {
-        const bans = await server.fetchBans();
+        const bans = await server.bans.fetch();
 
         if (bans.first()) bannumber = bans.size.toString() + " bans";
         else bannumber = "Without bans";
 
-        const invites = await server.fetchInvites();
+        const invites = await server.invites.fetch();
 
         if (invites.first()) invitenum = invites.size.toString() + " invites";
         else invitenum = "Without invites";

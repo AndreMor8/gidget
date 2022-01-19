@@ -44,7 +44,7 @@ export default async (bot, member) => {
 
   //GOODBYE SYSTEM
   const welcome = await getWelcome(member.guild);
-  if (welcome && welcome.leaveenabled && welcome.leavetext) {
+  if (welcome && (welcome.leaveenabled && (welcome.leavechannelID && welcome.leavetext))) {
     const channel = await member.guild.channels.fetch(welcome.leavechannelID).catch(() => { });
     if (channel && channel.isText() && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
       const memberTag = member.user.tag || await bot.users.fetch(member.id).then(e => e.tag).catch(() => { }) || "Unknown";
