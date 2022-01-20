@@ -22,6 +22,7 @@ export default async (bot, oldMember, newMember) => {
                         await newMember.roles.add(role, "Welcome system").catch(() => { });
                     } else await setWelcome(newMember.guild, 8, null);
                 }
+                bot.savedInvites.delete(newMember.id);
             }
         }
     }

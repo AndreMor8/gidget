@@ -1,4 +1,4 @@
-import def from "../../assets/definitions.json";
+import def from "../../assets/definitions.json" assert {type: "json"};
 import Discord from "discord.js";
 const buttons = [new Discord.MessageButton().setLabel("Gidget's dashboard").setStyle("LINK").setURL("https://gidget.andremor.dev"),
 new Discord.MessageButton().setLabel("Bot's documentation").setStyle("LINK").setURL("https://docs.gidget.andremor.dev"),

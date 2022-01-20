@@ -65,7 +65,7 @@ export default async (bot, member) => {
             } else {
               inviterTag = "System";
             }
-            bot.savedInvites.set(member.id, { inviterMention, inviterTag, inviterId });
+            if (welcome.respectms) bot.savedInvites.set(member.id, { inviterMention, inviterTag, inviterId });
           }
         }
         member.guild.inviteCount = invitesAfter;

@@ -5,3 +5,4 @@ watch.json
 Procfile
 .vscode
 src/tmp
+package-lock.json

@@ -17,7 +17,7 @@ export default class extends SlashCommand {
     },
     {
       name: "toggle",
-      description: "Enable normal welcome message",
+      description: "Enable welcome (channel or role) system",
       type: "SUB_COMMAND"
     },
     {
