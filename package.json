@@ -20,7 +20,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
-    "@discordjs/voice": "^0.7.5",
+    "@discordjs/voice": "^0.8.0",
     "@distube/soundcloud": "^1.1.0",
     "@distube/spotify": "^1.1.0",
     "@sindresorhus/to-milliseconds": "^2.0.0",
