@@ -160,7 +160,7 @@ export default class extends SlashCommand {
         break;
       case "message": {
         const text = interaction.options.getString("message", true);
-        if (text.length < 2000) interaction.reply("Your message must be less than 2000 characters long.");
+        if (text.length > 2000) return interaction.reply("Your message must be less than 2000 characters long.");
         if (/%INVITER%/gmi.test(text)) {
           if (!interaction.guild.me.permissions.has("MANAGE_GUILD"))
             return interaction.reply("You must give me the permission to manage guild if you want the who invited the user to appear.");
@@ -196,7 +196,7 @@ export default class extends SlashCommand {
         break;
       case "dmmessage": {
         const text = interaction.options.getString("message", true);
-        if (text.length < 2000) interaction.reply("Your message must be less than 2000 characters long.");
+        if (text.length > 2000) return interaction.reply("Your message must be less than 2000 characters long.");
         if (/%INVITER%/gmi.test(text)) {
           if (!interaction.guild.me.permissions.has("MANAGE_GUILD"))
             return interaction.reply("You must give me the permission to manage guild if you want the who invited the user to appear.");
@@ -235,7 +235,7 @@ export default class extends SlashCommand {
         break;
       case "leavemessage": {
         const text = interaction.options.getString("message", true);
-        if (text.length < 2000) interaction.reply("Your message must be less than 2000 characters long.");
+        if (text.length > 2000) return interaction.reply("Your message must be less than 2000 characters long.");
         await setWelcome(interaction.guild, 7, text);
         await interaction.reply("Goodbye message set correctly");
       }

@@ -104,7 +104,7 @@ bot.memberVotes = new Discord.Collection();
 bot.distube
   .on("playSong", (queue, song) => queue.textChannel.send(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`))
   .on("empty", queue => queue.textChannel.send("Queue deleted"))
-  .on("finishSong", (queue) => bot.memberVotes.delete(queue.voiceChannel.guild.id))
+  .on("finishSong", (queue) => bot.memberVotes.delete(queue.voiceChannel?.guild?.id))
   .on("initQueue", (queue) => queue.setVolume(100))
   .on("error", (channel, e) => {
     channel.send(`Some error ocurred. Here's a debug: ${e}`);
