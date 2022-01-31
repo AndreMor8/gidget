@@ -34,7 +34,7 @@
     "crypto-js": "^4.1.1",
     "discord.js": "^13.6.0",
     "distube": "^3.2.0",
-    "dotenv": "^14.2.0",
+    "dotenv": "^15.0.0",
     "execa": "^6.0.0",
     "express": "^4.17.2",
     "ffmpeg-static": "^4.4.1",
