@@ -22,7 +22,7 @@
     "@discordjs/opus": "^0.7.0",
     "@discordjs/voice": "^0.7.5",
     "@distube/soundcloud": "^1.1.0",
-    "@distube/spotify": "^1.1.0",
+    "@distube/spotify": "^1.2.0",
     "@sindresorhus/to-milliseconds": "^2.0.0",
     "@vitalets/google-translate-api": "^7.0.0",
     "badwords.js": "^0.1.6",
