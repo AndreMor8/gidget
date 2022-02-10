@@ -57,7 +57,7 @@
     "ping": "^0.4.1",
     "qr": "^0.2.4",
     "safe-regex": "^2.1.1",
-    "sharp": "^0.29.3",
+    "sharp": "^0.30.1",
     "sodium": "^3.0.2",
     "tictactoe-complex-ai": "^1.0.1",
     "twemoji-parser": "^13.1.0"
