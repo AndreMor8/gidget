@@ -1,6 +1,3 @@
-import ytpl from "@distube/ytpl";
-import ytdl from '@distube/ytdl-core';
-
 export default class extends SlashCommand {
   constructor(options) {
     super(options);
