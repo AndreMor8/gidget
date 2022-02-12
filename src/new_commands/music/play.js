@@ -22,52 +22,22 @@ export default class extends SlashCommand {
       const queue = bot.distube.getQueue(interaction.guild.me.voice);
       if (queue && queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
       if (!channel.joinable || (channel.type !== "GUILD_STAGE_VOICE" && !channel.speakable)) return interaction.reply("I don't have permissions to connect and speak in your channel!");
-
+      const wanted = interaction.options.getString("song", true);
       await interaction.deferReply();
-
-      //End command execution here.
-      (async () => {
-        let final = null;
-        const wanted = interaction.options.getString("song", true);
-        const spotify = await bot.distube.customPlugins[0].validate(wanted);
-        try {
-          if (ytdl.validateURL(wanted)) {
-            final = await bot.distube.handler.resolveSong(wanted);
-          } else if(ytdl.validateID(wanted)) {
-            final = await bot.distube.handler.resolveSong(`https://www.youtube.com/watch?v=${wanted}`);
-          } else if (ytpl.validateID(wanted)) {
-            final = await bot.distube.handler.resolvePlaylist(wanted);
-          } else if (!spotify) {
-            const result = await bot.distube.search(wanted, { limit: 1, type: 'video' }).catch(() => []);
-            final = result[0];
-          }
-          if (!final) {
-            if (spotify) {
-              bot.distube.customPlugins[0].play(channel, wanted, interaction.member, interaction.channel);
-              return interaction.editReply('A Spotify link has been introduced...');
-            }
-            return interaction.editReply("I didn't find any video. Please try again with another term.");
-          }
-        } catch (err) {
-          err.message = err.message.replace("your", "my");
-          return interaction.editReply(`${err}`);
-        }
-
-        await bot.distube.play(channel, final, { member: interaction.member, textChannel: interaction.channel });
-
-        return interaction.editReply(`${final.type === "playlist" ? "Playlist:" : ""} **${final.name}** has been added to the queue! ${final.type === "playlist" ? "(check g%queue for results)" : ""}`);
-      })();
+      await bot.distube.play(channel, wanted, { member: interaction.member, textChannel: interaction.channel, metadata: { interaction } }, true).catch(err => {
+        err.message = err.message.replace("your", "my");
+        return interaction.editReply(`${err}`);
+      });
     } else if (interaction.isButton()) {
       const channelId = interaction.member.voice.channelId;
       if (!channelId) return interaction.editReply("You need to be in a voice channel to play music!");
       const channel = await interaction.guild.channels.fetch(channelId);
       const queue = bot.distube.getQueue(interaction.guild.me.voice);
       if (queue && queue.voiceChannel.id !== channel.id) return interaction.editReply("You are not on the same voice channel as me.");
-
-      await bot.distube.handler.resolveSong(song).then(async songObj => {
-        await bot.distube.play(channel, songObj, { member: interaction.member, textChannel: interaction.channel });
-        return interaction.editReply(`**${songObj.name}** has been added to the queue!`);
-      }).catch(err => interaction.editReply(`Error: ${err}`));
+      await bot.distube.play(channel, song, { member: interaction.member, textChannel: interaction.channel, metadata: { interaction } }, true).catch(err => {
+        err.message = err.message.replace("your", "my");
+        return interaction.editReply(`${err}`);
+      });
     }
   }
 }

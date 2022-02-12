@@ -21,7 +21,7 @@ export default class extends SlashCommand {
     const torender = await Canvas.loadImage(source);
     const buf = await petpet(torender, delay);
     await interaction.editReply({
-      files: [{ attachment: buf, name: "petpet.gif", }]
+      files: [{ attachment: buf, name: "petpet.gif" }]
     });
   }
 }

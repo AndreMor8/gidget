@@ -1,17 +1,17 @@
 import { MessageAttachment } from 'discord.js';
-import ytdl from '@distube/ytdl-core';
+import { isURL } from 'distube';
 import fs from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
 import commons from '../../utils/commons.js';
-import { execa } from 'execa';
+import { execa, execaCommand } from 'execa';
 import ffmpeg from 'ffmpeg-static';
 const timer = new Set();
 const { __dirname } = commons(import.meta.url);
 export default class extends SlashCommand {
   constructor(options) {
     super(options);
-    this.deployOptions.description = "Take a screenshot from a live YouTube stream.";
+    this.deployOptions.description = "Take a screenshot from a live stream.";
     this.deployOptions.options = [
       {
         name: "video",
@@ -26,8 +26,8 @@ export default class extends SlashCommand {
     }
   }
   async run(bot, interaction) {
-    //Check valid YouTube URL
-    const check = ytdl.validateURL(interaction.options.getString("video", true)) || ytdl.validateID(interaction.options.getString("video", true));
+    //Check valid URL
+    const check = isURL(interaction.options.getString("video", true));
     if (!check) return interaction.reply("Invalid URL!");
     //Cooldown
     if (interaction.user.id !== "577000793094488085") {
@@ -40,59 +40,35 @@ export default class extends SlashCommand {
         return interaction.reply({ content: "Don't overload this command! (1 min cooldown)", ephemeral: true });
       }
     }
-    //Obtain video information
-    const info = await ytdl.getBasicInfo(interaction.options.getString("video"));
-    //Check if is live video
-    if (info.videoDetails.lengthSeconds != 0) return interaction.reply("This isn't a live stream video!");
     try {
-      //Download the video
-      const stream = ytdl(interaction.options.getString("video"), { filter: "videoandaudio" });
-      //Return a Promise
-      return await new Promise((s, r) => {
-        //Some random name for the temp file
-        const name = crypto.randomBytes(20).toString('hex');
-        //Paths
-        const pathMP4 = join(__dirname, '../../tmp', `/${name}.mp4`);
-        const pathPNG = join(__dirname, '../../tmp', `/${name}.png`);
-        //Create a MP4 file
-        const file = fs.createWriteStream(pathMP4);
-        //Put data on it.
-        stream.pipe(file);
-        //Loading...
-        interaction.deferReply();
-        //Any download error
-        stream.on("error", () => {
-          interaction.editReply("Looks like this video isn't compatible with FFMPEG :(");
-          s();
-        });
-        stream.on('progress', (a, b) => {
-          //I only need some seconds of the live video
-          if (b == 3) {
-            //Stop downloading
-            stream.destroy();
-            //End file
-            file.close();
-            //Execute FFMPEG to capture this.
-            execa(ffmpeg, ['-i', pathMP4, '-vframes', '1', pathPNG])
-              //All correct.
-              .then(async () => {
-                //Read file
-                const buf = await fs.promises.readFile(pathPNG);
-                //Send to Discord
-                const att = new MessageAttachment(buf, "image.png");
-                await interaction.editReply({ files: [att] });
-                s();
-              })
-              //Any errors here
-              .catch(r)
-              //When this ends
-              .finally(() => {
-                fs.promises.unlink(pathMP4).catch(() => { });
-                fs.promises.unlink(pathPNG).catch(() => { });
-              });
-          }
-        });
+      //Some random name for the temp file
+      const name = crypto.randomBytes(20).toString('hex');
+      //Paths
+      const pathTS = join(__dirname, '../../tmp', `/${name}.ts`);
+      const pathPNG = join(__dirname, '../../tmp', `/${name}.png`);
+      await interaction.deferReply();
+      //Create a TS file
+      const stl = execaCommand(`streamlink -o ${pathTS} ${interaction.options.getString("video", true)} best`, { reject: false })
+      stl.then(async (a) => {
+        if(a.stdout.includes("error")) return await interaction.editReply("Link isn't a live stream, stream not available, or incompatible stream.");
+        await execa(ffmpeg, ['-i', pathTS, '-vframes', '1', pathPNG])
+          //All correct.
+          .then(async () => {
+            //Read file
+            const buf = await fs.promises.readFile(pathPNG);
+            //Send to Discord
+            const att = new MessageAttachment(buf, "image.png");
+            await interaction.editReply({ files: [att] });
+          })
+          //Any errors here
+          .catch(err => interaction.editReply(`Some error ocurred. Here's a debug: ${err}`))
+      }).then(() => {
+        fs.promises.unlink(pathTS).catch(()=>{});
+        fs.promises.unlink(pathPNG).catch(()=>{});
       });
+      setTimeout(() => {
+        if(!stl.killed) stl.kill();
+      }, 3500);
     } catch (err) {
       //Errors
       if (interaction.replied || interaction.deferred) interaction.editReply(err.toString());
