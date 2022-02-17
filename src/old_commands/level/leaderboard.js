@@ -31,7 +31,7 @@ export default class extends Command {
       .setColor("RANDOM")
       .setThumbnail(message.guild.iconURL({ dynamic: true }))
       .setTimestamp()
-      .setFooter(`Page ${page}/${pages}`);
+      .setFooter({ text: `Page ${page}/${pages}` });
     await message.channel.send({embeds: [embed]});
   }
 }

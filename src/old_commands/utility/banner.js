@@ -56,7 +56,7 @@ export default class extends Command {
       const embed = new MessageEmbed()
         .setTitle("Banners for " + message.guild.name)
         .setDescription(Util.splitMessage(doc.banners.map((e, i) => `${++i}. Banner: ${e.url}\nHour: ${e.hour}:00 ET`).join("\n"), { maxLength: 1950, char: "" })[0]);
-      if (!message.guild.features.includes("BANNER")) embed.setFooter("For this to work your server must have Server Boost at level 2 or higher.");
+      if (!message.guild.features.includes("BANNER")) embed.setFooter({ text: "For this to work your server must have Server Boost at level 2 or higher." });
       return message.channel.send({ embeds: [embed] });
     } else return message.channel.send("Invalid mode!");
   }

@@ -24,7 +24,7 @@ export default class extends Command {
 
     const embed = new Discord.MessageEmbed()
       .setColor(member.roles.color.hexColor)
-      .setAuthor(member.user.tag, member.user.displayAvatarURL({ size: 2048, dynamic: true }))
+      .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL({ size: 2048, dynamic: true }) })
     if (easy) embed.addField('Easy', `Wins: ${easy.wins} Loses: ${easy.loses}`)
     if (medium) embed.addField('Medium', `Wins: ${medium.wins} Loses: ${medium.loses}`)
     if (hard) embed.addField('Hard', `Wins: ${hard.wins} Loses: ${hard.loses}`)

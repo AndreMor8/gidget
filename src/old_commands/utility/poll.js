@@ -56,7 +56,7 @@ export default class extends Command {
       const embed = new Discord.MessageEmbed()
         .setTitle("Poll")
         .setDescription(text)
-        .setFooter("Made by: " + msg.author.tag + ", finish date:", msg.author.displayAvatarURL({ dynamic: true }))
+        .setFooter({ text: "Made by: " + msg.author.tag + ", finish date:", iconURL: msg.author.displayAvatarURL({ dynamic: true }) })
         .setColor("RANDOM")
         .setTimestamp(new Date(Date.now() + time));
       if (imgs[0] && ['.png', '.gif', '.jpg', '.jpeg'].some(e => imgs[0].name.endsWith(e))) {

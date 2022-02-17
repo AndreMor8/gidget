@@ -31,7 +31,7 @@ export default class extends Command {
         if (!toshow.length) return message.channel.send("No data yet!");
         const embed = new MessageEmbed().setTitle(`Connect4 Top Winners (${difficulty})`);
         for (const info of toshow) embed.addField(info.cacheName || '?', `**Wins:** ${info.wins}\t**Loses:** ${info.loses}`);
-        if (!args[1]) embed.setAuthor("g%c4top [server/global] [difficulty]");
+        if (!args[1]) embed.setAuthor({ name: "g%c4top [server/global] [difficulty]" });
         message.channel.send({ embeds: [embed] });
       }
     }

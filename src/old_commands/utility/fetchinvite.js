@@ -15,7 +15,7 @@ export default class extends Command {
         .setFooter({ text: `Requested by: ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
         .setColor("RANDOM");
       if (invite.guild) {
-        embed.setAuthor({ text: "Invite information", url: invite.guild.iconURL({ dynamic: true }) })
+        embed.setAuthor({ name: "Invite information", url: invite.guild.iconURL({ dynamic: true }) })
           .addField("Guild", invite.guild.name + "\n`" + invite.guild.id + "`", true)
           .addField("Guild Verification", invite.guild.verificationLevel, true)
           .addField("Presence Count", invite.presenceCount.toString(), true)

@@ -66,7 +66,7 @@ export default class extends Command {
           .addField("Environment", (command.guildonly || command.onlyguild) ? "Server" : "Server and DMs")
           .addField("Alias", alias)
           .setColor('#FFFFFF')
-          .setFooter('Requested by: ' + message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+          .setFooter({ text: `Requested by: ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
           .setTimestamp();
         message.channel.send({ embeds: [embed] });
       } else {

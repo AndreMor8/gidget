@@ -27,22 +27,16 @@ const bot = new Discord.Client({
     }
   },
   makeCache: Discord.Options.cacheWithLimits({
+    GuildScheduledEventManager: 0,
     ApplicationCommandManager: 0,
     BaseGuildEmojiManager: 0,
+    GuildEmojiManager: 0,
     ChannelManager: Infinity,
     GuildChannelManager: Infinity,
     GuildBanManager: 0,
     GuildInviteManager: 0,
     GuildManager: Infinity,
-    GuildMemberManager: {
-      maxSize: Infinity,
-      sweepInterval,
-      sweepFilter: () => (member) => {
-        if (member.id === bot.user.id) return false;
-        if (member.voice.channelId && bot.distube.voices.collection.some(e => e.channel.id === member.voice.channelId)) return false;
-        return true;
-      },
-    },
+    GuildMemberManager: Infinity,
     GuildStickerManager: 0,
     MessageManager: 20,
     PermissionOverwriteManager: Infinity,
@@ -53,15 +47,7 @@ const bot = new Discord.Client({
     StageInstanceManager: Infinity,
     ThreadManager: Infinity,
     ThreadMemberManager: 0,
-    UserManager: {
-      maxSize: Infinity,
-      sweepInterval,
-      sweepFilter: () => (user) => {
-        if (user.id === bot.user.id) return false;
-        if (user.mine) return false;
-        return true;
-      },
-    },
+    UserManager: Infinity,
     VoiceStateManager: Infinity
   }),
   allowedMentions: {
@@ -73,6 +59,25 @@ const bot = new Discord.Client({
       name: "Ready event (Loading...)",
       type: "LISTENING"
     }]
+  },
+  sweepers: {
+    guildMembers: {
+      interval: sweepInterval,
+      filter: () => (member) => {
+        if (member.id === bot.user.id) return false;
+        if (member.voice.channelId && bot.distube.voices.collection.some(e => e.channel.id === member.voice.channelId)) return false;
+        if (member.pending) return false;
+        return true;
+      }
+    },
+    users: {
+      interval: sweepInterval,
+      filter: () => (user) => {
+        if (user.id === bot.user.id) return false;
+        if (user.mine) return false;
+        return true;
+      }
+    }
   },
   restGlobalRateLimit: 50,
   intents: 32511,
@@ -95,6 +100,7 @@ bot.distube = new DisTube.default(bot, {
   savePreviousSongs: true,
   youtubeCookie: process.env.COOKIETEXT,
   youtubeIdentityToken: process.env.YT_IDENTITY,
+  youtubeDL: false,
   plugins: [new SoundCloudPlugin(), new YtDlpPlugin(), new SpotifyPlugin(process.env.SPOTIFY_SECRET ? { api: { clientId: process.env.SPOTIFY_ID, clientSecret: process.env.SPOTIFY_SECRET } } : {})]
 });
 bot.memberVotes = new Discord.Collection();

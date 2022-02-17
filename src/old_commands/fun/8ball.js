@@ -26,7 +26,7 @@ export default class extends Command {
     ];
 
     const ballembed = new Discord.MessageEmbed()
-      .setAuthor(message.author.username)
+      .setAuthor({ name: message.author.username })
       .setColor("RANDOM")
       .addField("Question", args.slice(1).join(" "))
       .addField("Answer", arr[Math.floor(Math.random() * arr.length)]);

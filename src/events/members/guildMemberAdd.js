@@ -121,7 +121,7 @@ export default async (bot, member) => {
       "Remember to use common sense!",
       `Not everything is covered by the rules. Following [Discord ToS](https://discord.com/terms) is an example of this, because everyone should know that.\n\nWe hope you have a friendly experience here! <:WubbzyHi:494666575773696001>`
     )
-    .setFooter("Thanks for joining!")
+    .setFooter({ text: "Thanks for joining!" })
     .setTimestamp();
   await member.send({ embeds: [embed] }).catch(() => { });
 };

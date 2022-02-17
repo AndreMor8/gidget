@@ -136,7 +136,7 @@ export default class extends Command {
     }
 
     const embed = new Discord.MessageEmbed()
-      .setAuthor(user.username, user.displayAvatarURL({ dynamic: true }))
+      .setAuthor({ name: user.username, iconURL: user.displayAvatarURL({ dynamic: true }) })
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
       .setTitle(`Information about ${user.username}`)
       .setColor("#00ff00")

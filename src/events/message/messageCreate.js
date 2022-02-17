@@ -136,13 +136,13 @@ export default async (bot, message, nolevel = false) => {
               const msg = channel.messages.cache.filter(e => !e.partial).get(messageid) || (messageid ? (await channel.messages.fetch(messageid).catch(() => { })) : undefined)
               if (msg) {
                 const embed = new Discord.MessageEmbed()
-                  .setAuthor(msg.author.tag, msg.author.displayAvatarURL({ format: "png", dynamic: true }))
+                  .setAuthor({ name: msg.author.tag, iconURL: msg.author.displayAvatarURL({ format: "png", dynamic: true }) })
                   .setDescription(msg.content || "*Without content*")
                   .addField("URL", "[Message Link](" + msg.url + ")", true)
                   .addField("Embeds", msg.embeds.length.toString(), true)
                   .addField("Message flags", msg.flags.toArray().join(", ") || "*Without flags*", true)
                   .addField("Channel", msg.channel.toString())
-                  .setFooter("Mentioned by: " + message.author.tag, message.author.displayAvatarURL({ format: "png", dynamic: true }));
+                  .setFooter({ text: `Mentioned by: ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ format: "png", dynamic: true }) });
                 if (msg.attachments.first()) embed.setImage(msg.attachments.first().url);
                 await message.channel.send({ embeds: [embed] });
               }

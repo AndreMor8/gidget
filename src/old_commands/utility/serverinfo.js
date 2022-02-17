@@ -123,7 +123,7 @@ export default class extends Command {
 
     const embed = new Discord.MessageEmbed()
       .setTitle("Server info")
-      .setAuthor(server.name, servericon)
+      .setAuthor({ name: server.name, iconURL: servericon })
       .addField("Name", `${server.name} ${(server.nameAcronym) ? (" (" + server.nameAcronym + ")") : ""}`, true)
       .addField("ID", server.id, true)
     if (server.description) embed.addField("Description", server.description, true);

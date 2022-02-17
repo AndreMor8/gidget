@@ -7,7 +7,6 @@ export default class extends Command {
     this.description = "Create a embed";
     this.aliases = ["createembed"];
   }
-  // eslint-disable-next-line require-await
   async run(bot, message, args) {
     if (actual.has(message.author.id)) return;
     let i = 0;
@@ -23,7 +22,7 @@ export default class extends Command {
     }
     const linkregex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&/\\/=]*)/g;
     const questions = ["To get out of here put **`exit`**\nTo omit something say `none` **(except in the fields)**\n\nGet a preview of your embed with `preview`\n\nTell me the content of the message that will not be in the embed.", "Tell me the embed author", "Tell me a link o upload a attachment for the author image", "Tell me the author link", "Tell me the title", "Tell me the embed link", "Tell me a description", "Tell me a thumbnail link or upload a attachment", "Tell me a image link or upload a attachment", "Tell me a footer text", "Tell me a footer image link or upload a attachment", "Tell me the color to put it on the embed", "Do you want fields?\n\n**Respond with `yes` or `no`**"];
-    message.channel.send(questions[0]);
+    await message.channel.send(questions[0]);
     actual.add(message.author.id);
     let msgContent = "";
     let author = "";
@@ -77,7 +76,7 @@ export default class extends Command {
             if (m.content === "none") {
               authorlink = undefined;
               i++;
-              embed.setAuthor(author, authorimg, authorlink);
+              embed.setAuthor({ name: author, iconURL: authorimg, url: authorlink });
               await message.channel.send(questions[i]);
             } else {
               if (!linkregex.test(m.content))
@@ -86,7 +85,7 @@ export default class extends Command {
                 authorlink = m.content;
                 i++;
               }
-              embed.setAuthor(author, authorimg, authorlink);
+              embed.setAuthor({ name: author, iconURL: authorimg, url: authorlink });
               await message.channel.send(questions[i]);
             }
             break;
@@ -161,16 +160,16 @@ export default class extends Command {
           case 10:
             if (m.content === "none") {
               i++;
-              embed.setFooter(footer);
+              embed.setFooter({ text: footer });
               await message.channel.send(questions[i]);
             } else {
               if (!m.attachments.first() && !linkregex.test(m.content))
                 return message.channel.send("Invalid URL");
               else if (m.attachments.first()) {
-                embed.setFooter(footer, m.attachments.first().url);
+                embed.setFooter({ text: footer, iconURL: m.attachments.first().url });
                 i++;
               } else if (linkregex.test(m.content)) {
-                embed.setFooter(footer, m.content);
+                embed.setFooter({ text: footer, iconURL: m.content });
                 i++;
               }
               await message.channel.send(questions[i]);

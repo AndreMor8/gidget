@@ -31,7 +31,7 @@ export default class extends SlashCommand {
 
     const embed = new MessageEmbed()
       .setTitle("New confession")
-      .setAuthor(user_anon ? "Anonymous" : interaction.user.tag, user_anon ? undefined : interaction.user.displayAvatarURL({ dynamic: true }))
+      .setAuthor({ name: user_anon ? "Anonymous" : interaction.user.tag, iconURL: user_anon ? undefined : interaction.user.displayAvatarURL({ dynamic: true }) })
       .setDescription(interaction.options.getString("message", true))
       .setTimestamp()
       .setColor("RANDOM");
