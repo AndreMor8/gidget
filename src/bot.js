@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import 'dotenv/config.js';
 //Database
 import database from "./database/database.js";
 
@@ -15,6 +14,7 @@ import Discord from 'discord.js';
 import DisTube from 'distube';
 import { SoundCloudPlugin } from '@distube/soundcloud';
 import { SpotifyPlugin } from '@distube/spotify';
+import { YtDlpPlugin } from '@distube/yt-dlp';
 import { inspect } from 'util';
 
 const sweepInterval = 1800;
@@ -95,8 +95,7 @@ bot.distube = new DisTube.default(bot, {
   savePreviousSongs: true,
   youtubeCookie: process.env.COOKIETEXT,
   youtubeIdentityToken: process.env.YT_IDENTITY,
-  youtubeDL: true,
-  plugins: [new SoundCloudPlugin(), new SpotifyPlugin(process.env.SPOTIFY_SECRET ? { api: { clientId: process.env.SPOTIFY_ID, clientSecret: process.env.SPOTIFY_SECRET } } : {})]
+  plugins: [new SoundCloudPlugin(), new YtDlpPlugin(), new SpotifyPlugin(process.env.SPOTIFY_SECRET ? { api: { clientId: process.env.SPOTIFY_ID, clientSecret: process.env.SPOTIFY_SECRET } } : {})]
 });
 bot.memberVotes = new Discord.Collection();
 

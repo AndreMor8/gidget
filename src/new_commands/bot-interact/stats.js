@@ -45,7 +45,7 @@ export default class extends SlashCommand {
     const serverembed = new MessageEmbed()
       .setTitle('Server count')
       .setDescription(`At the moment I'm in **${servers}** servers and with **${users}** cached online users.`, true)
-      .setFooter(`I have an average of ${average} members in the number of members of all servers I'm in`)
+      .setFooter({ text: `I have an average of ${average} members in the number of members of all servers I'm in` })
       .setColor(0xfffff9)
 
     //GENERAL STATS EMBED
@@ -69,7 +69,7 @@ export default class extends SlashCommand {
     statsembed.addField("• CPU usage", `\`${percent.toFixed(2)}%\``, true)
       .addField("• Arch", `\`${os.arch()}\``, true)
       .addField("• Platform", `\`\`${os.platform()}\`\``, true)
-      .setFooter("Gidget stats");
+      .setFooter({ text: "Gidget stats" });
 
     await interaction.editReply({ ephemeral: true, embeds: [pingembed, serverembed, statsembed], components: [new MessageActionRow().addComponents([new MessageButton().setStyle("LINK").setLabel("Gidget Dashboard status").setURL("https://gidget.andremor.dev/stats")])] });
   }

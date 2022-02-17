@@ -9,7 +9,7 @@
         "gc": "readonly",
         "SlashCommand": "readonly"
     },
-    "extends": ["eslint:recommended"], 
+    "extends": ["eslint:recommended", "plugin:import/recommended"], 
     "parserOptions": {
         "ecmaVersion": 12,
         "sourceType": "module"
@@ -24,6 +24,7 @@
         "require-await": ["warn"],
         "no-const-assign": ["error"],
         "no-var": ["error"],
-        "prefer-const": ["error"]
+        "prefer-const": ["error"],
+        "import/no-deprecated": ["warn"]
     }
 }

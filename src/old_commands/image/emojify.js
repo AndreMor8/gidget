@@ -93,6 +93,7 @@ async function render(url) {
     } else if (process.platform === "win32") {
         //npm i jimp
         //https://sharp.pixelplumbing.com/install#canvas-and-windows
+        // eslint-disable-next-line import/no-unresolved
         const Jimp = (await import("jimp")).default;
         const img = await Jimp.read(pre_buf);
         img.resize(48);

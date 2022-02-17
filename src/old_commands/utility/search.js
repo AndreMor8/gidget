@@ -1,5 +1,6 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import googleIt from 'google-it';
+// eslint-disable-next-line
 import { checkCleanUrl } from '../../utils/clean-url.js';
 
 export default class extends Command {

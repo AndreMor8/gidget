@@ -109,17 +109,19 @@ export default class extends SlashCommand {
       case 'add': {
         if (doc?.roles.length > 25) return interaction.reply("You can only have 25 roles(options) per list.")
         const option = {
-          id: interaction.options.getRole("role", true),
+          id: interaction.options.getRole("role", true).id,
           name: interaction.options.getString("role-name", false) || interaction.options.getRole("role", true).name,
           description: interaction.options.getString("description", false),
           emoji: interaction.options.getString("emoji", false) || 1
         }
         if (option.name.length > 25) return interaction.reply("[add.role-name] You can only put up to 25 characters max.");
         if (option.description?.length > 50) return interaction.reply("[add.description] You can only put up to 50 characters max.");
-        if (interaction.guild.emojis.cache.size < 1) await interaction.guild.emojis.fetch();
-        const resolvedEmoji = (option.emoji !== 1 ? (interaction.guild.emojis.cache.get(option.emoji)?.identifier || interaction.guild.emojis.cache.find(e => e.name === option.emoji || e.toString() === option.emoji)?.identifier || (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(option.emoji) ? option.emoji : undefined)) : undefined);
+
+        const elist = await interaction.guild.emojis.fetch();
+        const resolvedEmoji = (option.emoji !== 1 ? (elist.get(option.emoji)?.identifier || elist.find(e => e.name === option.emoji || e.toString() === option.emoji)?.identifier || (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(option.emoji) ? option.emoji : undefined)) : undefined);
         if ((!resolvedEmoji) && (option.emoji !== 1)) return interaction.reply("[add.emoji] Invalid default or server emoji.");
         option.emoji = resolvedEmoji;
+
         if (doc) await doc.updateOne({ $push: { roles: option } });
         else await db.create({ guildId: interaction.guild.id, roles: [option] });
         interaction.reply("Role added to the list");
@@ -151,7 +153,7 @@ export default class extends SlashCommand {
         const fields = doc.roles.map(e => {
           return {
             name: e.name,
-            value: `<@&${e.id}> -> ${e.description} -> ${e.emoji ? (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(e.emoji) ? e.emoji : `<${(e.emoji.startsWith("a") ? "" : ":") + e.emoji}>`) : "*no emoji*"}`
+            value: `<@&${e.id}> -> ${e.description || "*no description*"} -> ${e.emoji ? (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(e.emoji) ? e.emoji : `<${(e.emoji.startsWith("a") ? "" : ":") + e.emoji}>`) : "*no emoji*"}`
           }
         });
         const embed = new MessageEmbed()

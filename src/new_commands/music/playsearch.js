@@ -49,9 +49,9 @@ export default class extends SlashCommand {
       const embed = new MessageEmbed()
         .setTitle(`Search results for ${tosearch}`)
         .setDescription(text)
-        .setFooter(i + " results, press the corresponding button to play that song, you can press \"Stop\" to stop selecting")
+        .setFooter({ text:  `${i} results, press the corresponding button to play that song, you can press "Stop" to stop selecting` })
         .setColor("RANDOM")
-        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true }))
+        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
 
       const msg = await interaction.editReply({ content: null, embeds: [embed], components: [new MessageActionRow().addComponents([buttons[0], buttons[1], buttons[2], buttons[3], buttons[4]]), new MessageActionRow().addComponents([buttons[5], buttons[6], buttons[7], buttons[8], buttons[9]]), new MessageActionRow().addComponents([stopButton])] });
       const collector = msg.createMessageComponentCollector({ filter: b => b.user.id === interaction.user.id, time: 35000, idle: 15000 })
@@ -71,7 +71,7 @@ export default class extends SlashCommand {
       collector.on("end", (collected, reason) => {
         if (reason === "Ok!") return;
         else if (reason === "idle" || reason === "time") {
-          if (!msg.deleted) interaction.editReply("Time's up! Run this command again...");
+          if (!msg.deleted) interaction.editReply({ content: "Time's up! Run this command again...", embeds: [], components: [] });
         }
       })
 

@@ -123,7 +123,7 @@ export default class extends SlashCommand {
     }
 
     const embed = new Discord.MessageEmbed()
-      .setAuthor(user.username, user.displayAvatarURL({ dynamic: true }))
+      .setAuthor({ text: user.username, iconURL: user.displayAvatarURL({ dynamic: true }) })
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
       .setTitle(`Information about ${user.username}`)
       .setColor("#00ff00")
