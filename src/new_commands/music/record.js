@@ -1,6 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { entersState, VoiceConnectionStatus } from '@discordjs/voice';
-
+//eslint-disable-next-line
 import { Transform } from 'node:stream';
 import opus from '@discordjs/opus';
 import lame from 'node-lame';
@@ -31,6 +31,8 @@ export default class extends SlashCommand {
         if (interaction.guild.me.voice.channelId) return interaction.reply("It seems like I'm busy playing music...");
         const channelId = interaction.member.voice.channelId;
         if (!channelId) return interaction.reply("You need to be in a voice channel to record your voice!");
+        const channel = await interaction.guild.channels.fetch(channelId).catch(() => {});
+        if (!channel.joinable || (channel.type !== "GUILD_STAGE_VOICE" && !channel.speakable)) return interaction.reply("I don't have permissions to connect and speak in your channel!");
         await interaction.deferReply();
         const nopublic = interaction.options.getBoolean("private");
         //Using DisTube integration

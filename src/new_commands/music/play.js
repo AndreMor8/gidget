@@ -17,7 +17,7 @@ export default class extends SlashCommand {
       if (bot.records.has(interaction.guild.id)) return interaction.reply("A recording is in progress. Wait for it to finish.");
       const channel = await interaction.guild.channels.fetch(channelId);
       const queue = bot.distube.getQueue(interaction.guild.me.voice);
-      if (queue && queue.voiceChannel.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
+      if (queue && queue.voiceChannel?.id !== channel.id) return interaction.reply("You are not on the same voice channel as me.");
       if (!channel.joinable || (channel.type !== "GUILD_STAGE_VOICE" && !channel.speakable)) return interaction.reply("I don't have permissions to connect and speak in your channel!");
       const wanted = interaction.options.getString("song", true);
       await interaction.deferReply();
