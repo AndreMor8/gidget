@@ -179,7 +179,7 @@ export default class extends SlashCommand {
           }
         });
         const menu = new MessageSelectMenu()
-          .setCustomId("selectroles_f")
+          .setCustomId("selectroles_f_0")
           .setMinValues(0)
           .setMaxValues(doc.roles.length)
           .addOptions(options);
@@ -205,7 +205,6 @@ export default class extends SlashCommand {
           }
         });
         const menu = new MessageSelectMenu()
-          .setCustomId("selectroles_f")
           .setMinValues(0)
           .setMaxValues(doc.roles.length)
           .addOptions(options);
@@ -220,8 +219,9 @@ export default class extends SlashCommand {
         if (msg.components.length >= 5) return interaction.reply(`[add-to-instance.message] This message already has all 5 action rows filled.
 Only up to 5 action rows are allowed in a message.
 A select menu occupies the entire action row.`);
-        await msg.edit({ components: msg.components.concat([new MessageActionRow().addComponents([menu])]) }).catch(() => { });
-        interaction.reply("Message edited. Test it ;)");
+        menu.setCustomId(`selectroles_f_${msg.components.length || 0}`)
+        await msg.edit({ components: msg.components.concat([new MessageActionRow().addComponents([menu])]) });
+        await interaction.reply("Message edited. Test it ;)");
       }
         break;
     }

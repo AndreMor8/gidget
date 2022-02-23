@@ -50,7 +50,7 @@ export default async (bot, interaction) => {
       internalCooldown.delete(interaction.user.id);
     }
   }
-  if (interaction.isSelectMenu() && interaction.customId === "selectroles_f") {
+  if (interaction.isSelectMenu() && interaction.customId.startsWith("selectroles_f")) {
     await interaction.member.fetch({ cache: true }).catch(() => { });
     if (!bot.guilds.cache.has(interaction.guild.id)) return interaction.deferUpdate();
     if (!interaction.guild.me.permissions.has("MANAGE_ROLES")) return interaction.reply({ content: "I don't have permissions to add roles. Contact an administrator to fix the problem.", ephemeral: true })
