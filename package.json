@@ -38,7 +38,7 @@
     "dotenv": "^16.0.0",
     "execa": "^6.1.0",
     "express": "^4.17.3",
-    "ffmpeg-static": "^4.4.1",
+    "ffmpeg-static": "^5.0.0",
     "file-type": "^17.1.1",
     "gif-encoder": "^0.7.2",
     "google-img-scrap": "^1.0.6",
