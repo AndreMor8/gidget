@@ -60,7 +60,7 @@
     "sharp": "^0.30.1",
     "sodium": "^3.0.2",
     "tictactoe-complex-ai": "^1.0.1",
-    "twemoji-parser": "^13.1.0"
+    "twemoji-parser": "^14.0.0"
   },
   "devDependencies": {
     "eslint": "^8.9.0",
