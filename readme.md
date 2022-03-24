@@ -5,7 +5,6 @@
 [![Gidget Support](https://img.shields.io/badge/dynamic/json?color=%235865F2&label=Gidget%20Support&query=presence_count&suffix=%20users%20online&url=https%3A%2F%2Fdiscord.com%2Fapi%2Fguilds%2F747318743708860486%2Fwidget.json&style=flat-square&logo=discord&logoColor=white "Support Server")](https://discord.gg/KDy4gJ7)
 [![Library](https://img.shields.io/badge/Discord.js-v13.x-5b64f4?logo=discord&logoColor=white "Library")](https://github.com/discordjs/discord.js/tree/master)
 [![License](https://img.shields.io/badge/license-Apache-blue?logo=apache&logoColor=orange "License")](https://github.com/AndreMor8/gidget/blob/master/LICENSE)
-[![Dependencies](https://img.shields.io/david/andremor8/gidget.svg?logo=npm "Dependencies")](https://david-dm.org/AndreMor8/gidget)
 
 Gidget is a customized Discord bot. The name comes from the [_Wow! Wow! Wubbzy!_](https://wubbzy.fandom.com/wiki/Wubbzy "Wubbzy Fandom") show with the robot of the same name.
 

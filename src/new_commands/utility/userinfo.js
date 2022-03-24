@@ -4,7 +4,6 @@ import getPremiumType from '../../utils/detectnitro.js';
 export default class extends SlashCommand {
   constructor(options) {
     super(options);
-    this.deployOptions.name = "userinfo";
     this.deployOptions.type = 'USER';
     this.permissions = {
       user: [0n, 0n],

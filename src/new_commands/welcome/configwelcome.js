@@ -3,7 +3,6 @@ import Discord from 'discord.js';
 export default class extends SlashCommand {
   constructor(options) {
     super(options);
-    this.aliases = ["welcome"];
     this.permissions = {
       user: [32n, 0n],
       bot: [0n, 0n]
