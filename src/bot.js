@@ -81,7 +81,7 @@ const bot = new Discord.Client({
   },
   restGlobalRateLimit: 50,
   intents: 32511,
-  partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER"]
+  partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER", "GUILD_SCHEDULED_EVENT"]
 });
 
 bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });

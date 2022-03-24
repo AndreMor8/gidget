@@ -2,6 +2,7 @@ import tickets from "../../database/models/ticket.js";
 import tmembers from "../../database/models/tmembers.js";
 import Discord from 'discord.js';
 import fetch from 'node-fetch';
+import { languages } from '@vitalets/google-translate-api';
 
 const internalCooldown = new Set();
 
@@ -86,9 +87,9 @@ export default async (bot, interaction) => {
           from: { $eq: interaction.message.id },
           memberId: { $eq: interaction.user.id }
         });
-        if (doc2) return interaction.reply({ content: "You already have a ticket!", ephemeral: true }).catch(() => { });
+        if (doc2) return await interaction.reply({ content: "You already have a ticket!", ephemeral: true }).catch(() => { });
         const cat = interaction.guild.channels.cache.get(categoryId) || await interaction.guild.channels.fetch(categoryId).catch(() => { });
-        if (!cat) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+        if (!cat) return await interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
         if (!cat.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
         const todesc = doc.desc?.replace(/%AUTHOR%/g, interaction.user.toString());
         const ch = await interaction.guild.channels
@@ -98,14 +99,14 @@ export default async (bot, interaction) => {
             parent: cat,
             reason: "User created a ticket!"
           }).catch(() => { });
-        if (!ch) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+        if (!ch) return await interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
         const tmp = await ch.permissionOverwrites.create(interaction.user.id, {
           VIEW_CHANNEL: true,
           SEND_MESSAGES: true,
           EMBED_LINKS: true,
           ATTACH_FILES: true
         }, { type: 1 }).catch(() => { });
-        if (!tmp) return interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+        if (!tmp) return await interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
 
         await tmembers.create({
           guildId: interaction.guild.id,
@@ -123,18 +124,28 @@ export default async (bot, interaction) => {
         await interaction.deferUpdate();
         await interaction.message.delete();
       }
-    } else if (interaction.customId.startsWith("ww_hb")) {
+    }
+    if (interaction.customId.startsWith("ww_hb")) {
       const [, , mode, id] = interaction.customId.split("_");
       if (mode === "publish") {
         const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/publish`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
-        if (!res.ok) return interaction.reply({ content: `Error: ${await res.text()}` });
+        if (!res.ok) await interaction.reply({ content: `Error: ${await res.text()}` });
         else await interaction.update({ embeds: [new Discord.MessageEmbed(interaction.message.embeds[0]).setColor("GREEN").setFooter({ text: "Approved on" }).setTimestamp(new Date())], components: [] });
-
       } else if (mode === "reject") {
         const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/reject`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
-        if (!res.ok) return interaction.reply({ content: `Error: ${await res.text()}` });
-        else interaction.update({ embeds: [new Discord.MessageEmbed(interaction.message.embeds[0]).setColor("RED").setFooter({ text: "Rejected on" }).setTimestamp(new Date())], components: [] });
+        if (!res.ok) await interaction.reply({ content: `Error: ${await res.text()}` });
+        else await interaction.update({ embeds: [new Discord.MessageEmbed(interaction.message.embeds[0]).setColor("RED").setFooter({ text: "Rejected on" }).setTimestamp(new Date())], components: [] });
       }
+    }
+  }
+  if (interaction.isAutocomplete()) {
+    if (interaction.commandName === "google") {
+      const option = interaction.options.getFocused();
+      let tosend = Object.entries(languages).filter(e => !(typeof e[1] === "function" || e[0] === "auto")).map(e => {
+        return { name: e[1], value: e[0] };
+      });
+      if (option) tosend = tosend.filter(e => e.name.toLowerCase().startsWith(option.toLowerCase()));
+      await interaction.respond(tosend.slice(0, 25));
     }
   }
 }

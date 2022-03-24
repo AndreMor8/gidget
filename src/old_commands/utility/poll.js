@@ -83,7 +83,7 @@ export default class extends Command {
           await poll.react("Perfecto:460279003673001985");
           await poll.react("WaldenNo:873584832603652117");
         }
-        await Discord.Util.delayFor(1000);
+        await new Promise((s) => setTimeout(s, 1000));
         await pollDb.create({
           messageId: poll.id,
           channelId: poll.channel.id,
