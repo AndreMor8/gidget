@@ -15,11 +15,11 @@ export default class extends Command {
     switch (args[1]) {
       case "notif":
         await changeLevelConfig(message.guild, "levelnotif", !reference.levelnotif)
-        await message.channel.send(`Now the level-up notifications are: ${!reference.levelnotif ? "Enabled" : "Disabled"}`)
+        await message.channel.send(`Now the level-up notifications are: ${reference.levelnotif ? "Enabled" : "Disabled"}`)
         break;
       case "system":
         await changeLevelConfig(message.guild, "levelsystem", !reference.levelsystem)
-        await message.channel.send(`Now the level system is: ${!reference.levelsystem ? "Enabled" : "Disabled"}`)
+        await message.channel.send(`Now the level system is: ${reference.levelsystem ? "Enabled" : "Disabled"}`)
         break;
       default:
         await message.channel.send("Invalid mode!");
