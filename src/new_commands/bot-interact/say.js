@@ -27,7 +27,9 @@ export default class extends SlashCommand {
     }
     if (interaction.options.getString("repeat-message", false)) {
       await interaction.deferReply({ ephemeral: true });
-      const msg = await interaction.channel.messages.fetch(interaction.options.getString("repeat-message")).catch(() => { });
+      const msg = await interaction.channel.messages.fetch(interaction.options.getString("repeat-message")).catch(() => { 
+       interaction.reply({ content: "An error occurred while running this command, if the error persist contact a developer.", ephemeral: true });
+      });
       if (!msg) return interaction.reply({ content: "Message not found...", ephemeral: true });
       const embeds = msg.embeds.map((e) => new MessageEmbed(e));
       const files = msg.attachments.map(e => new MessageAttachment(e.url, e.name));
