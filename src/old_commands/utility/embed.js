@@ -1,4 +1,5 @@
-import { MessageEmbed } from "discord.js";
+import { MessageEmbed, MessageActionRow, MessageButton } from "discord.js";
+import saybutton from '../../database/models/saybutton.js';
 const actual = new Set();
 
 export default class extends Command {
@@ -22,6 +23,12 @@ export default class extends Command {
     }
     const linkregex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&/\\/=]*)/g;
     const questions = ["To get out of here put **`exit`**\nTo omit something say `none` **(except in the fields)**\n\nGet a preview of your embed with `preview`\n\nTell me the content of the message that will not be in the embed.", "Tell me the embed author", "Tell me a link o upload a attachment for the author image", "Tell me the author link", "Tell me the title", "Tell me the embed link", "Tell me a description", "Tell me a thumbnail link or upload a attachment", "Tell me a image link or upload a attachment", "Tell me a footer text", "Tell me a footer image link or upload a attachment", "Tell me the color to put it on the embed", "Do you want fields?\n\n**Respond with `yes` or `no`**"];
+    const authorButton = new MessageActionRow().addComponents([new MessageButton()
+      .setCustomId("author-button")
+      .setDisabled(true)
+      .setStyle("SECONDARY")
+      .setLabel(`Sent by ${message.author.tag} @ ${message.author.id}`)]);
+    const doc = (await saybutton.findOne({ guildId: { $eq: message.guild.id } }).lean()) || (await saybutton.create({ guildId: message.guild.id }));
     await message.channel.send(questions[0]);
     actual.add(message.author.id);
     let msgContent = "";
@@ -35,7 +42,7 @@ export default class extends Command {
       try {
         if (m.content.toLowerCase() === "exit") return collector.stop("Exited");
         if (m.content.toLowerCase() === "preview")
-          return message.channel.send({ content: "Here's a preview of your embed", embeds: [embed] }).catch(() => message.channel.send("You will need to fill out your embed a bit to be able to send it."))
+          return message.channel.send({ content: "Here's a preview of your embed", embeds: [embed], components: doc.enabled ? [authorButton] : undefined }).catch(() => message.channel.send("You will need to fill out your embed a bit to be able to send it."))
         switch (i) {
           case 0:
             if (m.content.toLowerCase() === "none") msgContent = undefined
@@ -199,7 +206,7 @@ export default class extends Command {
     collector.on("end", (collected, reason) => {
       if (reason === "field") {
         return fields(message, embed).then(embed => {
-          channel.send({ content: msgContent, embeds: [embed] }).catch((err) => message.channel.send(`${err}`));
+          channel.send({ content: msgContent, embeds: [embed], components: doc.enabled ? [authorButton] : undefined }).catch((err) => message.channel.send(`${err}`));
         }).catch(reason => {
           if (reason === "idle") message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
           else if (reason === "no") message.channel.send("It seems you don't want an embed.");
@@ -210,7 +217,7 @@ export default class extends Command {
       }
       actual.delete(message.author.id);
       if (reason === "Exited") message.channel.send("It seems you don't want an embed.");
-      else if (reason === "Finished") channel.send({ content: msgContent, embeds: [embed] }).catch((err) => message.channel.send(`${err}`));
+      else if (reason === "Finished") channel.send({ content: msgContent, embeds: [embed], components: doc.enabled ? [authorButton] : undefined }).catch((err) => message.channel.send(`${err}`));
       else if (reason === "idle") message.channel.send("Your time is over (2 minutes). Run this command again if you want a embed");
       else message.channel.send("Collector ended with reason: " + reason).catch(() => { });
     });
