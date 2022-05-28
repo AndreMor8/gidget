@@ -7,7 +7,6 @@ import autopost from './database/models/autopost.js';
 import guildwarnconfig from './database/models/warn.js';
 import memberwarns from './database/models/warn2.js';
 import confessions from './database/models/confessionconfig.js';
-import fetch from "node-fetch";
 
 //To differentiate user errors
 class StructureError extends Error {
@@ -496,5 +495,6 @@ export function memberNoCache(member) {
 }
 
 export async function getBuffer(url) {
-  return (await fetch(url)).buffer();
+  // eslint-disable-next-line no-undef
+  return Buffer.from((await fetch(url)).arrayBuffer());
 }

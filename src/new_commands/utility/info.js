@@ -1,5 +1,4 @@
 import { Collection, Formatters, MessageActionRow, MessageButton, MessageEmbed, Util } from 'discord.js';
-import fetch from 'node-fetch';
 import getPremiumType from '../../utils/detectnitro.js';
 const svc_timer = new Set();
 
@@ -674,6 +673,7 @@ export default class extends SlashCommand {
 				break;
 			case 'widget': {
 				if((!interaction.guild) && (!interaction.options.getString("server-id"))) interaction.reply("Server ID is required when using the command in DMs");
+				// eslint-disable-next-line no-undef
 				const res = await fetch(`https://discord.com/api/v9/guilds/${interaction.options.getString("server-id", false) || interaction.guildId}/widget.json`);
 				const json = await res.json();
 				if (!res.ok) return interaction.reply({ content: "Error: " + json.message, ephemeral: true });

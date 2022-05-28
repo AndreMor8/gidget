@@ -1,6 +1,6 @@
 const url = "https://discordbotlist.com/api/v1";
-import fetch from 'node-fetch';
 export default async function (bot) {
+  // eslint-disable-next-line no-undef
   const res = await fetch(`${url}/bots/${bot.user.id}/stats`, {
     method: "POST",
     headers: {

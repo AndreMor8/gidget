@@ -1,7 +1,6 @@
 import tickets from "../../database/models/ticket.js";
 import tmembers from "../../database/models/tmembers.js";
 import Discord from 'discord.js';
-import fetch from 'node-fetch';
 import { languages } from '@vitalets/google-translate-api';
 
 const internalCooldown = new Set();
@@ -128,10 +127,12 @@ export default async (bot, interaction) => {
     if (interaction.customId.startsWith("ww_hb")) {
       const [, , mode, id] = interaction.customId.split("_");
       if (mode === "publish") {
+        // eslint-disable-next-line no-undef
         const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/publish`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
         if (!res.ok) await interaction.reply({ content: `Error: ${await res.text()}` });
         else await interaction.update({ embeds: [new Discord.MessageEmbed(interaction.message.embeds[0]).setColor("GREEN").setFooter({ text: "Approved on" }).setTimestamp(new Date())], components: [] });
       } else if (mode === "reject") {
+        // eslint-disable-next-line no-undef
         const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/reject`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
         if (!res.ok) await interaction.reply({ content: `Error: ${await res.text()}` });
         else await interaction.update({ embeds: [new Discord.MessageEmbed(interaction.message.embeds[0]).setColor("RED").setFooter({ text: "Rejected on" }).setTimestamp(new Date())], components: [] });

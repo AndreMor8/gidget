@@ -2,7 +2,6 @@ const timer = new Set();
 const DEGREES = 20;
 const SIZE = 256;
 const FPS = 16;
-import fetch from 'node-fetch';
 import gifResize from '../../utils/gifresize.js';
 import parser from 'twemoji-parser';
 import Canvas from 'canvas';
@@ -119,6 +118,7 @@ function optimizeFrameColors(data) {
  * @param url
  */
 async function resize(url) {
+  // eslint-disable-next-line no-undef
   const res = await fetch(url);
   if (!res.ok) throw new Error("Status code: " + res.status);
   const buf = Buffer.from(await res.arrayBuffer());

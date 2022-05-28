@@ -1,7 +1,5 @@
 import { MessageEmbed } from 'discord.js';
 
-import fetch from "node-fetch";
-
 export default class extends Command {
   constructor(options) {
     super(options)
@@ -12,16 +10,17 @@ export default class extends Command {
     }
   }
   async run(bot, message) {
-    const person = message.mentions.users.first() || message.author
-    const msg = await message.channel.send("Generating... (this may take a while)")
-    const res = await fetch(`https://nekobot.xyz/api/imagegen?type=baguette&url=${person.displayAvatarURL({ format: "png", size: 1024 })}`)
+    const person = message.mentions.users.first() || message.author;
+    const msg = await message.channel.send("Generating... (this may take a while)");
+    // eslint-disable-next-line no-undef
+    const res = await fetch(`https://nekobot.xyz/api/imagegen?type=baguette&url=${person.displayAvatarURL({ format: "png", size: 1024 })}`);
 
-    if (!res.ok) return await message.channel.send("Something happened with the third-party API")
+    if (!res.ok) return await message.channel.send("Something happened with the third-party API");
     const body = await res.json();
     const embed = new MessageEmbed()
       .setTitle("Here ya go")
       .setImage(body.message)
-      .setColor("RANDOM")
-    await msg.edit({ embeds: [embed] })
+      .setColor("RANDOM");
+    await msg.edit({ embeds: [embed] });
   }
 }

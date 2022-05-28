@@ -4,7 +4,6 @@ import { promisify } from 'util';
 import petpet from '../../utils/petpet.js';
 import parser from 'twemoji-parser';
 import isSvg from 'is-svg';
-import fetch from 'node-fetch';
 const svg2img = promisify(svg2img_callback);
 
 export default class extends Command {
@@ -44,6 +43,7 @@ export default class extends Command {
 
       if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/gm.test(source)) return message.channel.send("Invalid user, emoji or image!");
       message.channel.sendTyping();
+      // eslint-disable-next-line no-undef
       const res = await fetch(source);
       if (!res.ok) return message.channel.send("Status code: " + res.status);
       source = Buffer.from(await res.arrayBuffer());

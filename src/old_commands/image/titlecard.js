@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import { MessageEmbed } from 'discord.js';
 let pages;
 export default class extends Command {
@@ -13,6 +12,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     if (!pages) {
+      // eslint-disable-next-line no-undef
       const res = await fetch("https://wubbzy.fandom.com/api.php?action=query&format=json&prop=&list=categorymembers&meta=&formatversion=2&cmtitle=Category%3AEpisodes&cmprop=title&cmtype=page&cmlimit=250");
       pages = (await res.json()).query.categorymembers.filter(e => !e.title.includes("/")).map(e => e.title);
     }
@@ -26,6 +26,7 @@ export default class extends Command {
         .setTitle("List of episodes");
       return await message.channel.send({ embeds: [embed] });
     }
+    // eslint-disable-next-line no-undef
     const r2 = await fetch(`https://wubbzy.fandom.com/api.php?action=imageserving&format=json&wisTitle=${encodeURIComponent(page)}&formatversion=2`)
     const res2 = await r2.json();
     const embed = new MessageEmbed()

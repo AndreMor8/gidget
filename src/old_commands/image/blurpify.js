@@ -1,7 +1,5 @@
 import { MessageEmbed } from 'discord.js';
 
-import fetch from "node-fetch";
-
 export default class extends Command {
   constructor(options) {
     super(options)
@@ -14,6 +12,7 @@ export default class extends Command {
   async run(bot, message) {
     const person = message.mentions.users.first() || message.author;
     const msg = await message.channel.send("Blurpifying... (this may take a while)")
+    // eslint-disable-next-line no-undef
     const res = await fetch(`https://nekobot.xyz/api/imagegen?type=blurpify&image=${person.displayAvatarURL({ size: 1024, format: "png" })}`);
     if (!res.ok) return await message.channel.send("Something happened with the third-party API")
 

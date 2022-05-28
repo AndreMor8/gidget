@@ -1,5 +1,4 @@
 import { MessageAttachment, MessageButton, MessageActionRow } from 'discord.js';
-import fetch from 'node-fetch';
 import { fileTypeFromBuffer } from 'file-type';
 import gifResize from '../../utils/gifresize.js';
 import mediaExtractor from 'media-extractor';
@@ -81,6 +80,7 @@ export default class extends Command {
 }
 
 async function render(url) {
+    // eslint-disable-next-line no-undef
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Status code returned ${res.status}`);
     const pre_buf = Buffer.from(await res.arrayBuffer());

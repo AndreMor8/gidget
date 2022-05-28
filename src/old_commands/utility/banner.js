@@ -1,5 +1,4 @@
 import banner from '../../database/models/banner.js';
-import fetch from 'node-fetch';
 import { MessageEmbed, Util } from 'discord.js';
 export default class extends Command {
   constructor(options) {
@@ -29,6 +28,7 @@ export default class extends Command {
       if (hour > 23 || hour < 0) return message.channel.send("Put a valid time between 0 and 23 (time zone in ET)");
       const url = args[3] || message.attachments.first()?.url;
       if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&//=]*)/.test(url)) return message.channel.send("Put a valid image URL, or upload a file next to the command.");
+      // eslint-disable-next-line no-undef
       const res = await fetch(url);
       if (!res.ok) return message.channel.send(`Status code returned ${res.status}`);
       const doc = await banner.findOne({ guildID: message.guild.id });

@@ -1,5 +1,4 @@
 import Discord from "discord.js";
-import fetch from 'node-fetch';
 const timer = new Set();
 
 export default class extends SlashCommand {
@@ -53,6 +52,7 @@ export default class extends SlashCommand {
 async function pup(interaction, url, options) {
   const msg = await interaction.deferReply({ fetchReply: true });
   try {
+    // eslint-disable-next-line no-undef
     const res = await fetch(process.env.PUPPETEER_API, {
       method: "POST",
       headers: {

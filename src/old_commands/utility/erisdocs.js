@@ -1,5 +1,4 @@
 import { MessageEmbed } from "discord.js";
-import fetch from 'node-fetch';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -13,6 +12,7 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("What do you want to look for in the Eris documentation?");
     const page = `https://eris-docs-api.herokuapp.com/?query=${encodeURIComponent(args.slice(1).join(" "))}`;
+    // eslint-disable-next-line no-undef
     await fetch(page).then(async r => {
       const res = await r.json();
       await message.channel.send({ content: res.content, embeds: [new MessageEmbed(res.embed)] });

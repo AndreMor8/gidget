@@ -1,5 +1,4 @@
 import { MessageEmbed } from "discord.js";
-import fetch from 'node-fetch';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -22,6 +21,7 @@ export default class extends Command {
       cont = args.slice(1).join(" ");
     }
     const page = `https://djsdocs.sorta.moe/v2/embed?src=${encodeURIComponent(src)}&q=${encodeURIComponent(cont)}`;
+    // eslint-disable-next-line no-undef
     await fetch(page).then(async r => {
       const res = await r.json();
       if (res.error) return message.channel.send({ embeds: [new MessageEmbed().setTitle("Error " + res.status).setDescription(res.error + ": " + res.message)] });
