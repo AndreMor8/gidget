@@ -496,5 +496,5 @@ export function memberNoCache(member) {
 
 export async function getBuffer(url) {
   // eslint-disable-next-line no-undef
-  return Buffer.from((await fetch(url)).arrayBuffer());
+  return Buffer.from(await (await fetch(url)).arrayBuffer());
 }
