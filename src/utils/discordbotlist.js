@@ -1,5 +1,5 @@
 const url = "https://discordbotlist.com/api/v1";
-export default async function (bot) {
+export default async function (_self, bot) {
   const res = await fetch(`${url}/bots/${bot.user.id}/stats`, {
     method: "POST",
     headers: {
