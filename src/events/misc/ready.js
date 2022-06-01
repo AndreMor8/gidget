@@ -1,28 +1,25 @@
+import cron from 'croner';
 import presence from "../../utils/presences.js";
 import tempmute from "../../utils/tempmute.js";
 import poll from "../../utils/poll.js";
 import banners from '../../utils/banner.js';
 import MessageModel2 from '../../database/models/mutedmembers.js';
-import MessageModel3 from '../../database/models/poll.js';
 import discordbl from '../../utils/discordbotlist.js';
 import { getInviteCount } from "../../extensions.js";
 //Start ready event
 export default async bot => {
   //Intervals
-  setInterval(presence, 900000, bot);
+  cron("*/30 * * * *", presence, { context: bot });
   if (process.env.EXTERNAL === "yes") {
-    discordbl(bot);
-    setInterval(discordbl, 1800000, bot);
+    discordbl(null, bot);
+    cron("0 * * * *", discordbl, { context: bot });
   }
-  //"De-restriction" function once the penalty time has expired
+
   const doc = await MessageModel2.findOne();
   if (doc) tempmute(bot);
-  //Polls have a limit, with this we edit them so that they mark "Poll completed"
-  const doc2 = await MessageModel3.findOne();
-  if (doc2) poll(bot);
 
-  //WWD will have this always :jiggler:
-  banners(bot);
+  cron("* * * * *", poll, { context: bot });
+  cron("* * * * *", banners, { context: bot });
 
   //Show the inviter on the welcome message. Luckily, fetch invites do not have a rate-limit
   try {
@@ -38,6 +35,6 @@ export default async bot => {
   }
 
   //All internal operations ended
-  await presence(bot);
+  await presence(null, bot);
   console.log(`Gidget is alive! Version ${bot.botVersion} from shard ${bot.shard?.ids[0] || 0}`);
 };

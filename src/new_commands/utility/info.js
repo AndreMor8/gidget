@@ -98,9 +98,9 @@ export default class extends SlashCommand {
 	async run(bot, interaction) {
 		switch (interaction.options.getSubcommand()) {
 			case 'server': {
-				if((!interaction.guild) && (!interaction.options.getString("server-id"))) interaction.reply("Server ID is required when using the command in DMs");
+				if ((!interaction.guild) && (!interaction.options.getString("server-id"))) interaction.reply("Server ID is required when using the command in DMs");
 				const wanted = interaction.options.getString("server-id", false);
-				let server = wanted ? await bot.guilds.fetch(wanted).catch(() => {}) : interaction.guild;
+				let server = wanted ? await bot.guilds.fetch(wanted).catch(() => { }) : interaction.guild;
 				if (!server) server = await bot.fetchGuildPreview(wanted).catch(() => { });
 				if (!server) return interaction.reply({ content: "Invalid ID!\nSearch by ID only works whether the bot is on that server or if it is a discoverable server", ephemeral: true });
 				const servericon = server.iconURL({ dynamic: true, size: 4096 });
@@ -154,7 +154,7 @@ export default class extends SlashCommand {
 						else invitenum = "Without invites";
 					}
 					if (server.bannerURL()) links.push(`[Banner Image](${server.bannerURL({ format: "png", size: 4096 })})`);
-					if (embedenabled) links.push(`[Widget](https://discord.com/widget?id=${server.id}), [Widget Image](https://discord.com/api/v7/guilds/${server.id}/widget.png)`);
+					if (embedenabled) links.push(`[Widget](https://discord.com/widget?id=${server.id}), [Widget Image](https://discord.com/api/v${bot.options.http.version}/guilds/${server.id}/widget.png)`);
 					const vanity = await server.fetchVanityData().catch(() => { });
 					if (vanity && vanity.code) {
 						links.push("[Vanity invite URL" + (vanity.uses ? (" (" + vanity.uses + " uses)") : "") + "](https://discord.gg/" + (vanity.code) + ")");
@@ -376,7 +376,7 @@ export default class extends SlashCommand {
 			}
 				break;
 			case "channel-overrides": {
-				if(!interaction.guild) return interaction.reply("This sub-command only works on servers.");
+				if (!interaction.guild) return interaction.reply("This sub-command only works on servers.");
 				const channel = interaction.options.getChannel('channel', false) || await interaction.guild.channels.fetch(interaction.channelId);
 				if (channel.guild.id !== interaction.guildId) return interaction.reply({ content: "The channel you have put belongs to another server.", ephemeral: true });
 				const rr = channel.permissionOverwrites.cache.filter(m => m.type === "member" && !interaction.guild.members.cache.has(m.id)).map(m => m.id)
@@ -672,9 +672,8 @@ export default class extends SlashCommand {
 			}
 				break;
 			case 'widget': {
-				if((!interaction.guild) && (!interaction.options.getString("server-id"))) interaction.reply("Server ID is required when using the command in DMs");
-				// eslint-disable-next-line no-undef
-				const res = await fetch(`https://discord.com/api/v9/guilds/${interaction.options.getString("server-id", false) || interaction.guildId}/widget.json`);
+				if ((!interaction.guild) && (!interaction.options.getString("server-id"))) interaction.reply("Server ID is required when using the command in DMs");
+				const res = await fetch(`https://discord.com/api/v${bot.options.http.version}/guilds/${interaction.options.getString("server-id", false) || interaction.guildId}/widget.json`);
 				const json = await res.json();
 				if (!res.ok) return interaction.reply({ content: "Error: " + json.message, ephemeral: true });
 				const embed = new MessageEmbed()
@@ -683,7 +682,7 @@ export default class extends SlashCommand {
 					.addField("Voice channels", json.channels.length > 0 ? Util.splitMessage(json.channels.sort((b, a) => b.position - a.position).map(e => `${e.name} (${e.id})`).join("\n"), { maxLength: 1024 })[0] : "No channels")
 					.addField("Member Count", (json.members.length > 99) ? "100 or more" : json.members.length.toString())
 					.addField("Presence Count", json.presence_count.toString())
-					.addField("Links", `[Widget JSON](https://discord.com/api/v9/guilds/${json.id}/widget.json) - [Widget](https://discord.com/widget?id=${json.id}&theme=dark) - [Widget Image](https://discord.com/api/v9/guilds/${json.id}/widget.png)`);
+					.addField("Links", `[Widget JSON](https://discord.com/api/v${bot.options.http.version}/guilds/${json.id}/widget.json) - [Widget](https://discord.com/widget?id=${json.id}&theme=dark) - [Widget Image](https://discord.com/api/v${bot.options.http.version}/guilds/${json.id}/widget.png)`);
 				await interaction.reply({ embeds: [embed] });
 			}
 				break;
@@ -696,29 +695,29 @@ function advancedmap(c) {
 	switch (c.type) {
 		case "GUILD_NEWS":
 			r += "[📢] " + c.name + (c.threads.cache.size ? c.threads.cache.map(d => {
-				return "\n\t\t[🧵] " + d.name;
+				return "\n\t" + (c.parentId ? "\t" : "") + "[🧵] " + d.name;
 			}).join("") : "");
 			break;
 		case "GUILD_TEXT":
 			r += "[📃] " + c.name + (c.threads.cache.size ? c.threads.cache.map(d => {
-				return "\n\t\t[🧵] " + d.name;
+				return "\n\t" + (c.parentId ? "\t" : "") + "[🧵] " + d.name;
 			}).join("") : "");
 			break;
 		case "GUILD_VOICE":
 			r += "[🎙] " + c.name + (c.members.size.toString() ? (c.members.map(d => {
 				if (d.user.bot) {
-					return "\n\t\t[🤖] " + d.user.tag;
+					return "\n\t" + (c.parentId ? "\t" : "") + "[🤖] " + d.user.tag;
 				} else {
-					return "\n\t\t[🙎] " + d.user.tag;
+					return "\n\t" + (c.parentId ? "\t" : "") + "[🙎] " + d.user.tag;
 				}
 			})).join("") : "")
 			break;
 		case "GUILD_STAGE_VOICE":
 			r += "[👪] " + c.name + (c.members.size.toString() ? (c.members.map(d => {
 				if (d.user.bot) {
-					return "\n\t\t[🤖] " + d.user.tag;
+					return "\n\t" + (c.parentId ? "\t" : "") + "[🤖] " + d.user.tag;
 				} else {
-					return "\n\t\t[🙎] " + d.user.tag;
+					return "\n\t" + (c.parentId ? "\t" : "") + "[🙎] " + d.user.tag;
 				}
 			})).join("") : "")
 			break;

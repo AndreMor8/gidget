@@ -20,7 +20,6 @@ export default async function (user) {
   } else {
     const token = CryptoJS.AES.decrypt(data.accessToken, process.env.VERYS);
     const dectoken = token.toString(CryptoJS.enc.Utf8);
-    // eslint-disable-next-line no-undef
     const res = await fetch(`https://discord.com/api/v${user.client.options.http.version}/users/@me`, {
       method: "GET",
       headers: { Authorization: `Bearer ${dectoken}` }

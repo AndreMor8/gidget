@@ -63,19 +63,20 @@ export default class extends SlashCommand {
               type: "ROLE",
               required: true
             }]
-        }]
+          }]
       }
     ]
     this.guildonly = true;
     this.permissions = {
-      user: [1073741824n, 0n],
-      bot: [1073741824n, 0n]
+      user: [0n, 0n],
+      bot: [0n, 0n]
     };
   }
   async run(bot, interaction) {
     const elist = await interaction.guild.emojis.fetch();
     switch (interaction.options.getSubcommand()) {
       case "info": {
+        if (!interaction.guild.me.permissions.has("EMBED_LINKS")) return interaction.reply("I don't have permissions to run this command **in this channel**. Required: `EMBED_LINKS`");
         const e = interaction.options.getString('emoji');
         const emoji = bot.emojis.cache.get(e) ||
           bot.emojis.cache.find(a => a.toString() === e || a.identifier === e) ||

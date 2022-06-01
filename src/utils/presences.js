@@ -1,4 +1,4 @@
-export default async (bot) => {
+export default async (_self, bot) => {
   const presences = [
     [{ name: "Wubbzy's songs", type: "LISTENING" }],
     [{ name: "Wubbzy's episodes", type: "WATCHING" }],

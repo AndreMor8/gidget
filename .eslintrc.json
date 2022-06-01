@@ -7,7 +7,8 @@
     "globals": {
         "Command": "writable",
         "gc": "readonly",
-        "SlashCommand": "readonly"
+        "SlashCommand": "readonly",
+        "fetch": "readonly"
     },
     "extends": ["eslint:recommended", "plugin:import/recommended"], 
     "parserOptions": {
