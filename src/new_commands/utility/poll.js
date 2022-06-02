@@ -41,6 +41,7 @@ export default class extends SlashCommand {
   }
   // eslint-disable-next-line require-await
   async run(bot, interaction) {
+    if(interaction.channel.isVoice()) return interaction.reply({ content: "Not yet supported in voice channel chat.", ephemeral: true });
     const pre_time = interaction.options.getString("time");
     const time = ["infinite", "infinity", "none"].includes(pre_time) ? Infinity : ms(pre_time);
     if (typeof time !== "number" || time < 60000) return interaction.reply({ content: "Invalid time! Must be 60 seconds or more.", ephemeral: true });

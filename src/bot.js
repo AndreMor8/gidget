@@ -107,13 +107,13 @@ bot.memberVotes = new Discord.Collection();
 
 //DisTube events
 bot.distube
-  .on("playSong", (queue, song) => queue.textChannel.send(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`))
+  .on("playSong", (queue, song) => queue.textChannel.send?.(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`))
   .on("addSong", (queue, song) => song.metadata.interaction.editReply(`**${song.name}** has been added to the queue!`))
   .on("addList", (queue, playlist) => playlist.metadata.interaction.editReply(`Playlist: **${playlist.name}** has been added to the queue! (check /queue for results)`))
-  .on("empty", queue => queue.textChannel.send("Queue deleted"))
+  .on("empty", queue => queue.textChannel?.send("Queue deleted"))
   .on("finishSong", (queue) => bot.memberVotes.delete(queue.voiceChannel?.guild?.id))
   .on("initQueue", (queue) => queue.setVolume(100))
-  .on("error", (channel, e) => channel.send(`Some error ocurred. Here's a debug: ${e}`));
+  .on("error", (channel, e) => channel?.send(`Some error ocurred. Here's a debug: ${e}`));
 
 (async () => {
   //Database

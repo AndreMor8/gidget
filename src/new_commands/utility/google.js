@@ -71,6 +71,7 @@ export default class extends SlashCommand {
   async run(bot, interaction) {
     switch (interaction.options.getSubcommand()) {
       case "search": {
+        if(interaction.channel.isVoice()) return interaction.reply({ content: "Not yet supported in voice channel chat.", ephemeral: true });
         const tosearch = interaction.options.getString("query");
         if (bot.badwords.isProfane(tosearch) && !interaction.channel.nsfw) return interaction.reply("To order this content go to an NSFW channel.");
 
@@ -105,6 +106,7 @@ export default class extends SlashCommand {
       }
         break;
       case "images": {
+        if(interaction.channel.isVoice()) return interaction.reply({ content: "Not yet supported in voice channel chat.", ephemeral: true });
         const query = {
           search: interaction.options.getString("query"),
           safeSearch: !interaction.channel.nsfw,

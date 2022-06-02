@@ -16,10 +16,11 @@ export default class extends SlashCommand {
     };
   }
   async run(bot, interaction) {
-    const msg = await interaction.deferReply({ ephemeral: true, fetchReply: true });
+    const msg = await interaction.deferReply({ ephemeral: true, fetchReply: !(interaction.channel.isVoice()) });
 
     //PING EMBED
-    const pings = [`📨 Message ping: ${Date.now() - msg.createdTimestamp}ms`, `📡 Ping from the API: ${(await bot.shard.broadcastEval(c => c.ws.ping)).reduce((a, c, i, arr) => i === (arr.length - 1) ? (a + c) / arr.length : a + c, 0)}ms`, `📦 Shard ${bot.shard?.ids[0] || 0} ping: ${bot.ws.ping || "?"}ms`];
+    const pings = [`📡 Ping from the API: ${(await bot.shard.broadcastEval(c => c.ws.ping)).reduce((a, c, i, arr) => i === (arr.length - 1) ? (a + c) / arr.length : a + c, 0)}ms`, `📦 Shard ${bot.shard?.ids[0] || 0} ping: ${bot.ws.ping || "?"}ms`];
+    if(!interaction.channel.isVoice()) pings.unshift(`📨 Message ping: ${Date.now() - msg.createdTimestamp}ms`);
     const dbping = await new Promise((s, r) => {
       try {
         const dates = Date.now();

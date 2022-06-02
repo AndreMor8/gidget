@@ -40,6 +40,7 @@ export default class extends SlashCommand {
     }
   }
   async run(bot, interaction) {
+    if (interaction.channel.isVoice()) return interaction.reply({ content: "Not yet supported in voice channel chat.", ephemeral: true });
     let user = interaction.options.getUser("user");
     const difficulty = interaction.options.getString("difficulty");
     if (!user && !difficulty) return await interaction.reply({ content: `How to play TicTacToe on Discord?\n\n1. Do \`/tictactoe user:<someone>\`. It can be me or someone else.\n2. If you selected someone else, the person will be asked if they want to play. If you selected me then the game starts immediately. You can also make it difficult to play with me (\`/tictactoe difficulty:<Easy to Expert>\`).\n3. Now you should start playing calmly as you should. The winner is the one who makes a row, column, or diagonal with their token\n4. If someone no longer wants to play, they can press the \`terminate\` button to log out.\n5. If no one answers in less than 2 minutes the game is over.\n\nHappy playing!`, ephemeral: true });

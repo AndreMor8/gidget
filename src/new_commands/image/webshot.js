@@ -50,7 +50,7 @@ export default class extends SlashCommand {
  * @param options {object}
  */
 async function pup(interaction, url, options) {
-  const msg = await interaction.deferReply({ fetchReply: true });
+  await interaction.deferReply();
   try {
     // eslint-disable-next-line no-undef
     const res = await fetch(process.env.PUPPETEER_API, {
@@ -64,7 +64,7 @@ async function pup(interaction, url, options) {
     if (!res.ok) throw new Error(await res.text() || (res.status));
     else {
       const att = new Discord.MessageAttachment(Buffer.from(await res.arrayBuffer()), "capture.png");
-      const time = "Time: " + (Date.now() - (msg.editedTimestamp || msg.createdTimestamp)) / 1000 + "s";
+      const time = "Time: " + (Date.now() - (interaction.createdTimestamp)) / 1000 + "s";
       await interaction.editReply({ content: time, files: [att] });
     }
   } catch (err) {

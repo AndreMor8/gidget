@@ -36,11 +36,13 @@ export default class extends SlashCommand {
     const doc = (await saybutton.findOne({ guildId: { $eq: interaction.guildId } })) || (await saybutton.create({ guildId: interaction.guildId }));
 
     if (interaction.options.getString("to-say", false)) {
+      if (interaction.channel.isVoice()) return await interaction.reply({ content: interaction.options.getString("to-say") });
       await interaction.channel.send({ content: interaction.options.getString("to-say"), components: doc.enabled ? [authorButton] : undefined });
       await interaction.reply({ content: "Done.", ephemeral: true });
       return;
     }
     if (interaction.options.getString("repeat-message", false)) {
+      if (interaction.channel.isVoice()) return interaction.reply({ content: "Not yet supported in voice channel chat.", ephemeral: true });
       await interaction.deferReply({ ephemeral: true });
       const msg = await interaction.channel.messages.fetch(interaction.options.getString("repeat-message")).catch(() => { });
       if (!msg) return interaction.editReply({ content: "Message not found...", ephemeral: true });
