@@ -84,7 +84,7 @@ const bot = new Discord.Client({
   partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER", "GUILD_SCHEDULED_EVENT"]
 });
 
-bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "poop", "balls"] });
+bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "balls", "lesbian"] });
 bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
 bot.botVersion = "2.40";
 bot.records = new Map();

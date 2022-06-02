@@ -1,4 +1,3 @@
-import { Util } from 'discord.js';
 import BombSweeper from '../../utils/bombsweeper.js';
 
 export default class extends Command {
@@ -42,7 +41,7 @@ export default class extends Command {
       }
     });
     col.on("end", async (c, r) => {
-      await Util.delayFor(1000);
+      await new Promise((s) => setTimeout(s, 500));
       if (r === "win") {
         if (!to_edit.deleted) await to_edit.edit(`__Minesweeper Game__ (${message.author}) (Won)\n\n${message.author.mine.showToUser()}`);
         await message.channel.send("You have won the minesweeper game :)");
