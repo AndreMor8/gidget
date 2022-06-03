@@ -86,6 +86,7 @@ export default class extends SlashCommand {
     });
     col.on("end", async (c, r) => {
       if (r === "win") {
+        await new Promise(s => setTimeout(s, 1000));
         if (!to_edit.deleted) await interaction.editReply({ content: `__Minesweeper Game__ (${interaction.user}) (Won)\n\n${interaction.user.mine.showToUser()}`, components: [new MessageActionRow().addComponents([ckc.setDisabled(true), stop.setDisabled(true)])] });
         await interaction.followUp({ content: "You have won the minesweeper game :)", ephemeral: true });
       } else if (r === "loss") {

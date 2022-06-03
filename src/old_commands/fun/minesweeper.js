@@ -41,8 +41,8 @@ export default class extends Command {
       }
     });
     col.on("end", async (c, r) => {
-      await new Promise((s) => setTimeout(s, 500));
       if (r === "win") {
+        await new Promise(s => setTimeout(s, 1000));
         if (!to_edit.deleted) await to_edit.edit(`__Minesweeper Game__ (${message.author}) (Won)\n\n${message.author.mine.showToUser()}`);
         await message.channel.send("You have won the minesweeper game :)");
       } else if (r === "loss") {
