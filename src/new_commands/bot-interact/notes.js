@@ -23,7 +23,8 @@ export default class extends SlashCommand {
       options: [{
         name: "note",
         description: "The note itself",
-        type: "STRING"
+        type: "STRING",
+        required: true
       }]
     },
     {
@@ -33,7 +34,8 @@ export default class extends SlashCommand {
       options: [{
         name: "id",
         description: "Note ID (use /notes view)",
-        type: "INTEGER"
+        type: "INTEGER",
+        required: false
       },
       {
         name: "all",
@@ -50,11 +52,13 @@ export default class extends SlashCommand {
         name: "id",
         description: "Note ID (use /notes view)",
         type: "INTEGER",
+        required: true
       },
       {
         name: "note",
         description: "The note itself",
-        type: "STRING"
+        type: "STRING",
+        required: true
       }]
     }]
   }
