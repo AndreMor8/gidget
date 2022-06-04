@@ -23,7 +23,8 @@ export default class extends SlashCommand {
       options: [{
         name: "note",
         description: "The note itself",
-        type: "STRING"
+        type: "STRING",
+        required: true
       }]
     },
     {
