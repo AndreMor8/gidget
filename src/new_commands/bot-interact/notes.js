@@ -51,6 +51,7 @@ export default class extends SlashCommand {
         name: "id",
         description: "Note ID (use /notes view)",
         type: "INTEGER",
+        required: true
       },
       {
         name: "note",
