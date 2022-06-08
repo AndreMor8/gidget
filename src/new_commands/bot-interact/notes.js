@@ -65,9 +65,9 @@ export default class extends SlashCommand {
   async run(bot, interaction) {
     switch (interaction.options.getSubcommand()) {
       case "add": {
-        if ((await notes.find({ userID: { $eq: interaction.user.id } })).length >= 25) return interaction.reply({ content: "You can only have 25 notes.", ephemeral: true });
+        if ((await notes.find({ userID: { $eq: interaction.user.id } })).length >= 25) return await interaction.reply({ content: "You can only have 25 notes.", ephemeral: true });
         const note = interaction.options.getString('note');
-        if (note.length > 230) return interaction.reply({ content: "Only 230 characters per note.", ephemeral: true });
+        if (note.length > 230) return await interaction.reply({ content: "Only 230 characters per note.", ephemeral: true });
         await notes.create({ userID: interaction.user.id, note });
         await interaction.reply({ content: "I've created your note successfully.", ephemeral: true });
       }
@@ -95,7 +95,7 @@ export default class extends SlashCommand {
         const i = id - 1;
         if (!arr[i]) return await interaction.reply({ content: "That note ID does not exist.", ephemeral: true });
         const note = interaction.options.getString("note");
-        if (note.length > 230) return interaction.reply({ content: "Only 230 characters per note.", ephemeral: true });
+        if (note.length > 230) return await interaction.reply({ content: "Only 230 characters per note.", ephemeral: true });
         await arr[i].updateOne({ $set: { note } });
         await interaction.reply({ content: "I've updated that note", ephemeral: true });
       }

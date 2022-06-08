@@ -22,7 +22,7 @@ export default class extends SlashCommand {
       messageId: { $eq: interaction.options.getString("message", true) }
     })
 
-    if (msgDocument) msgDocument.deleteOne().then(() => interaction.reply('Ok, I removed that from my database. Remember to delete the message!'));
+    if (msgDocument) await msgDocument.deleteOne().then(() => interaction.reply('Ok, I removed that from my database. Remember to delete the message!'));
     else await interaction.reply('I don\'t see a ticket system here.');
   }
 }

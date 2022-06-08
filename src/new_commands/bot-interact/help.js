@@ -45,19 +45,19 @@ export default class extends SlashCommand {
             return true;
           }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0])
           .setTimestamp()
-        interaction.reply({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([buttons[1]])], ephemeral: true });
+        await interaction.reply({ embeds: [embed], components: [new Discord.MessageActionRow().addComponents([buttons[1]])], ephemeral: true });
       } else {
         const str = `__**${g.cat + " (" + g.commands.length + " commands)"}**__\n\n${Discord.Util.splitMessage(g.commands.filter(s => {
           if (s.secret) return false;
           if (s.onlyguild && (interaction.guild ? (interaction.guild.id !== process.env.GUILD_ID) : true)) return false;
           return true;
         }, { maxLength: 1800 }).map(s => "**" + s.name + "**: " + s.description).join("\n"))[0]}`;
-        interaction.reply({ content: str, components: [new Discord.MessageActionRow().addComponents([buttons[1]])], ephemeral: true });
+        await interaction.reply({ content: str, components: [new Discord.MessageActionRow().addComponents([buttons[1]])], ephemeral: true });
       }
       return;
     } else if (to && (bot.commands.get(to.toLowerCase()) || bot.commands.find(c => c.aliases.includes(to.toLowerCase())))) {
       const command = bot.commands.get(to.toLowerCase()) || bot.commands.find(c => c.aliases.includes(to.toLowerCase()));
-      if (command.dev || command.owner) return interaction.reply({ ephemeral: true, content: "Exclusive command for the owner or developers" });
+      if (command.dev || command.owner) return await interaction.reply({ ephemeral: true, content: "Exclusive command for the owner or developers" });
       let alias = "Without alias";
       if (command.aliases.length !== 0) {
         alias = command.aliases.join(", ");
@@ -73,12 +73,12 @@ export default class extends SlashCommand {
           .addField("Alias", alias)
           .setColor('#FFFFFF')
           .setTimestamp();
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], ephemeral: true });
       } else {
         const perms = `User: \`${!(new Discord.Permissions(command.permissions.user[0]).has(8n)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[0]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``;
         const perms_channel = `User: \`${!(new Discord.Permissions(command.permissions.user[1]).has(8n)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\`\nBot: \`${!(new Discord.Permissions(command.permissions.bot[1]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR"}\``;
         const str = `__**Gidget help - ${command.name}**__\n\n__Description__: ${command.description ? command.description : "Without description"}\n__Required permissions__: ${perms}\n__Required permissions (channel)__: ${perms_channel}\n__Environment__: ${(command.guildonly || command.onlyguild) ? "Server" : "Server and DMs"}\n__Alias__: ${alias}`;
-        interaction.reply({ content: str, ephemeral: true });
+        await interaction.reply({ content: str, ephemeral: true });
       }
       return;
     } else {
@@ -94,10 +94,10 @@ export default class extends SlashCommand {
           .setTitle("Help command")
           .addField("Bot lists", botlists)
           .setDescription(text || "?");
-        interaction.reply({ embeds: [embed], components: [action], ephemeral: true });
+        await interaction.reply({ embeds: [embed], components: [action], ephemeral: true });
       } else {
         const str = `__**Help command**__\n\n${text}`;
-        interaction.reply({ content: str, components: [action], ephemeral: true });
+        await interaction.reply({ content: str, components: [action], ephemeral: true });
       }
       return;
     }

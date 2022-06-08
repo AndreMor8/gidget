@@ -23,11 +23,11 @@ export default class extends SlashCommand {
   }
   async run(bot, interaction) {
     const data = await getConfessionConfig(interaction.guild);
-    if (!data.channelID) return interaction.reply({ content: "The server hasn't set up a confession channel yet!\nDo it with `g%confessionconfig channel <channel>`", ephemeral: true });
+    if (!data.channelID) return await interaction.reply({ content: "The server hasn't set up a confession channel yet!\nDo it with `g%confessionconfig channel <channel>`", ephemeral: true });
     const user_anon = interaction.options.getBoolean("anon", false);
-    if (!data.anon && user_anon) return interaction.reply({ content: 'Sorry, the server does not accept anonymous confessions.', ephemeral: true });
+    if (!data.anon && user_anon) return await interaction.reply({ content: 'Sorry, the server does not accept anonymous confessions.', ephemeral: true });
     const channel = interaction.guild.channels.cache.get(data.channelID);
-    if (!channel) return interaction.reply({ content: "It seems that the channel set by the admin does not exist!\nSet the channel again with `g%confessionconfig channel <channel>`", ephemeral: true })
+    if (!channel) return await interaction.reply({ content: "It seems that the channel set by the admin does not exist!\nSet the channel again with `g%confessionconfig channel <channel>`", ephemeral: true })
 
     const embed = new MessageEmbed()
       .setTitle("New confession")

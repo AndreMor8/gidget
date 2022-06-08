@@ -46,9 +46,9 @@ export default class extends SlashCommand {
       try {
         const fetch = await bot.users.fetch(interaction.targetId);
         user = fetch;
-        if (!user) return interaction.reply({ content: "Invalid member!", ephemeral: true });
+        if (!user) return await interaction.reply({ content: "Invalid member!", ephemeral: true });
       } catch (err) {
-        return interaction.reply({ content: "Invalid member!", ephemeral: true });
+        return await interaction.reply({ content: "Invalid member!", ephemeral: true });
       }
 
     }

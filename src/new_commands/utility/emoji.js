@@ -76,13 +76,13 @@ export default class extends SlashCommand {
     const elist = await interaction.guild.emojis.fetch();
     switch (interaction.options.getSubcommand()) {
       case "info": {
-        if (!interaction.guild.me.permissions.has("EMBED_LINKS")) return interaction.reply("I don't have permissions to run this command **in this channel**. Required: `EMBED_LINKS`");
+        if (!interaction.guild.me.permissions.has("EMBED_LINKS")) return await interaction.reply("I don't have permissions to run this command **in this channel**. Required: `EMBED_LINKS`");
         const e = interaction.options.getString('emoji');
         const emoji = bot.emojis.cache.get(e) ||
           bot.emojis.cache.find(a => a.toString() === e || a.identifier === e) ||
           elist.find(a => a.name === e || a.toString() === e || a.identifier === e) ||
           elist.get(e);
-        if (!emoji) return interaction.reply({ content: "Invalid emoji!", ephemeral: true });
+        if (!emoji) return await interaction.reply({ content: "Invalid emoji!", ephemeral: true });
         let auth = emoji.author;
         if (!auth && interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS") && emoji.guild.id === interaction.guild.id) {
           auth = await emoji.fetchAuthor();
@@ -116,7 +116,7 @@ export default class extends SlashCommand {
         const fullN = allEmojis.size;
 
         if (fullN < 1)
-          return interaction.reply({ content: "I don't see any emoji here.", ephemeral: true });
+          return await interaction.reply({ content: "I don't see any emoji here.", ephemeral: true });
 
         const commonN = allEmojis.filter(e => e.available && !e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.me.roles.cache).size >= 1 : true)).size;
         const animatedN = allEmojis.filter(e => e.available && e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.me.roles.cache).size >= 1 : true)).size;
@@ -162,10 +162,10 @@ export default class extends SlashCommand {
       }
         break;
       case "update": {
-        if (!interaction.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return interaction.reply("You don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
-        if (!interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return interaction.reply("I don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
+        if (!interaction.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("You don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
+        if (!interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("I don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
         const col = elist.filter(e => e.roles.cache.first());
-        if (!col.first()) return interaction.reply("There are no emojis to update");
+        if (!col.first()) return await interaction.reply("There are no emojis to update");
         col.each(e => {
           const c = e.roles.cache;
           e.edit({ roles: c });
@@ -174,21 +174,21 @@ export default class extends SlashCommand {
       }
         break;
       case "add": {
-        if (!interaction.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return interaction.reply("You don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
-        if (!interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return interaction.reply("I don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
+        if (!interaction.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("You don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
+        if (!interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("I don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
         const e = interaction.options.getString('emoji');
         const resolvedEmoji = elist.get(e) || elist.find(a => a.name === e || a.toString() === e || a.identifier === e);
-        if (!resolvedEmoji) return interaction.reply("This isn't a correct custom guild emoji!");
+        if (!resolvedEmoji) return await interaction.reply("This isn't a correct custom guild emoji!");
         const role = interaction.options.getRole("role");
         resolvedEmoji.roles.add(role).then(() => interaction.reply("Ok. I've put the roles correctly")).catch(err => interaction.reply("Some error ocurred! Here's a debug: " + err));
       }
         break;
       case "remove": {
-        if (!interaction.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return interaction.reply("You don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
-        if (!interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return interaction.reply("I don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
+        if (!interaction.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("You don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
+        if (!interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("I don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
         const e = interaction.options.getString('emoji');
         const resolvedEmoji = elist.get(e) || elist.find(a => a.name === e || a.toString() === e || a.identifier === e);
-        if (!resolvedEmoji) return interaction.reply("This isn't a correct custom guild emoji!");
+        if (!resolvedEmoji) return await interaction.reply("This isn't a correct custom guild emoji!");
         const role = interaction.options.getRole("role");
         resolvedEmoji.roles.remove(role).then(() => interaction.reply("Ok. I've put the roles correctly")).catch(err => interaction.reply("Some error ocurred! Here's a debug: " + err));
       }

@@ -102,7 +102,7 @@ export default class extends SlashCommand {
 				const wanted = interaction.options.getString("server-id", false);
 				let server = wanted ? await bot.guilds.fetch(wanted).catch(() => { }) : interaction.guild;
 				if (!server) server = await bot.fetchGuildPreview(wanted).catch(() => { });
-				if (!server) return interaction.reply({ content: "Invalid ID!\nSearch by ID only works whether the bot is on that server or if it is a discoverable server", ephemeral: true });
+				if (!server) return await interaction.reply({ content: "Invalid ID!\nSearch by ID only works whether the bot is on that server or if it is a discoverable server", ephemeral: true });
 				const servericon = server.iconURL({ dynamic: true, size: 4096 });
 				//¯\_(ツ)_/¯
 				const links = [`[Guild](https://discord.com/channels/${server.id})`];
@@ -248,13 +248,13 @@ export default class extends SlashCommand {
 			}
 				break;
 			case 'server-channels': {
-				if (!interaction.guild) return interaction.reply("The only channel I can see here is this.");
+				if (!interaction.guild) return await interaction.reply("The only channel I can see here is this.");
 				if (interaction.user.id !== "577000793094488085") {
 					if (!svc_timer.has(interaction.user.id)) {
 						svc_timer.add(interaction.user.id);
 						setTimeout(() => svc_timer.delete(interaction.user.id), 60000);
 					} else {
-						return interaction.reply({ content: "Don't overload this command! (1 min cooldown)", ephemeral: true });
+						return await interaction.reply({ content: "Don't overload this command! (1 min cooldown)", ephemeral: true });
 					}
 				}
 				let text = "";
@@ -291,7 +291,7 @@ export default class extends SlashCommand {
 			}
 				break;
 			case 'channel': {
-				if (!interaction.guild) return interaction.reply("Yes, I know this is a channel, but there are no interesting things I can show you.");
+				if (!interaction.guild) return await interaction.reply("Yes, I know this is a channel, but there are no interesting things I can show you.");
 				const obj = {
 					GUILD_TEXT: "Text channel",
 					GUILD_VOICE: "Voice channel",
@@ -376,9 +376,9 @@ export default class extends SlashCommand {
 			}
 				break;
 			case "channel-overrides": {
-				if (!interaction.guild) return interaction.reply("This sub-command only works on servers.");
+				if (!interaction.guild) return await interaction.reply("This sub-command only works on servers.");
 				const channel = interaction.options.getChannel('channel', false) || await interaction.guild.channels.fetch(interaction.channelId);
-				if (channel.guild.id !== interaction.guildId) return interaction.reply({ content: "The channel you have put belongs to another server.", ephemeral: true });
+				if (channel.guild.id !== interaction.guildId) return await interaction.reply({ content: "The channel you have put belongs to another server.", ephemeral: true });
 				const rr = channel.permissionOverwrites.cache.filter(m => m.type === "member" && !interaction.guild.members.cache.has(m.id)).map(m => m.id)
 				if (rr.length) await interaction.guild.members.fetch({ user: rr });
 				const permissions = await Promise.all(channel.permissionOverwrites.cache.map(async m => {
@@ -406,7 +406,7 @@ export default class extends SlashCommand {
 					}
 					return text;
 				}));
-				if (!permissions[0]) return interaction.reply({ content: "There are no channel overrides here.", ephemeral: true })
+				if (!permissions[0]) return await interaction.reply({ content: "There are no channel overrides here.", ephemeral: true })
 				else {
 					const contents = Util.splitMessage(`\`\`\`${permissions.join("\n\n")}\n${channel.permissionsLocked ? "The channel is synchronized with its parent category." : "The channel is not synchronized with its parent category."}\nChannel overrides for #${channel.name}\`\`\``, { maxLength: 2000 });
 					for (const content of contents) {
@@ -417,7 +417,7 @@ export default class extends SlashCommand {
 			}
 				break;
 			case 'role': {
-				if (!interaction.guild) return interaction.reply('This sub-command only works on servers.');
+				if (!interaction.guild) return await interaction.reply('This sub-command only works on servers.');
 				const msg = async (role) => {
 					const mng = {
 						true: 'Yes',
@@ -675,7 +675,7 @@ export default class extends SlashCommand {
 				if ((!interaction.guild) && (!interaction.options.getString("server-id"))) interaction.reply("Server ID is required when using the command in DMs");
 				const res = await fetch(`https://discord.com/api/v${bot.options.http.version}/guilds/${interaction.options.getString("server-id", false) || interaction.guildId}/widget.json`);
 				const json = await res.json();
-				if (!res.ok) return interaction.reply({ content: "Error: " + json.message, ephemeral: true });
+				if (!res.ok) return await interaction.reply({ content: "Error: " + json.message, ephemeral: true });
 				const embed = new MessageEmbed()
 					.setTitle(`Widget information for ${json.name}`)
 					.addField("Enabled instant invite?", (json.instant_invite ? `[Yes](${json.instant_invite})` : "No") || "?")

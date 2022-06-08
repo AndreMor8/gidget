@@ -31,7 +31,7 @@ export default class extends SlashCommand {
         if (interaction.guild.me.voice.channelId) return interaction.reply("It seems like I'm busy playing music...");
         const channelId = interaction.member.voice.channelId;
         if (!channelId) return interaction.reply("You need to be in a voice channel to record your voice!");
-        const channel = await interaction.guild.channels.fetch(channelId).catch(() => {});
+        const channel = await interaction.guild.channels.fetch(channelId).catch(() => { });
         if (!channel.joinable || (channel.type !== "GUILD_STAGE_VOICE" && !channel.speakable)) return interaction.reply("I don't have permissions to connect and speak in your channel!");
         await interaction.deferReply();
         const nopublic = interaction.options.getBoolean("private");
@@ -78,13 +78,13 @@ export default class extends SlashCommand {
                     else await interaction.editReply({ content: "Here's your recording:", files: [att] });
                     bot.records.delete(interaction.guild.id);
                 })
-                .catch((error) => {
-                    interaction.editReply(error.toString());
-                });
+                .catch((error) => interaction.editReply(error.toString()));
         });
         await interaction.editReply("Start talking. Use the /stoprecord command to stop recording.\nRecording will auto-stop when you (or I) leave the voice channel or when there is no activity for 15 seconds.");
-        dc.connection.receiver.speaking.once("start", (user_id) => {
-            if (user_id === interaction.user.id) interaction.editReply("Recording...");
+        dc.connection.receiver.speaking.on("start", (user_id) => {
+            if (user_id === interaction.user.id) {
+                if (interaction.message.content !== "Recording...") interaction.editReply("Recording...");
+            }
         });
     }
 }

@@ -127,26 +127,28 @@ export default async (bot, message, nolevel = false) => {
           const regex = /((http|https):\/\/)((www|canary|ptb)\.)?(discordapp|discord)\.com\/channels\/[0-9]{17,20}\/[0-9]{17,20}\/[0-9]{17,20}/gmi;
           const matches = message.content.match(regex);
           if (matches && matches.length) {
-            const urlobj = new URL(matches[0]);
-            const [channelid, messageid] = urlobj.pathname.split("/").slice(3);
-            const channel = bot.channels.cache.get(channelid) || await bot.channels.fetch(channelid).catch(() => { });
-            //Always fetch member
-            await message.member.fetch({ cache: true }).catch(() => { });
-            if (channel && message.guild.id === channel.guild.id && channel.permissionsFor(message.author.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-              const msg = channel.messages.cache.filter(e => !e.partial).get(messageid) || (messageid ? (await channel.messages.fetch(messageid).catch(() => { })) : undefined)
-              if (msg) {
-                const embed = new Discord.MessageEmbed()
-                  .setAuthor({ name: msg.author.tag, iconURL: msg.author.displayAvatarURL({ format: "png", dynamic: true }) })
-                  .setDescription(msg.content || "*Without content*")
-                  .addField("URL", "[Message Link](" + msg.url + ")", true)
-                  .addField("Embeds", msg.embeds.length.toString(), true)
-                  .addField("Message flags", msg.flags.toArray().join(", ") || "*Without flags*", true)
-                  .addField("Channel", msg.channel.toString())
-                  .setFooter({ text: `Mentioned by: ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ format: "png", dynamic: true }) });
-                if (msg.attachments.first()) embed.setImage(msg.attachments.first().url);
-                await message.channel.send({ embeds: [embed] });
+            try {
+              const urlobj = new URL(matches[0]);
+              const [channelid, messageid] = urlobj.pathname.split("/").slice(3);
+              const channel = bot.channels.cache.get(channelid) || await bot.channels.fetch(channelid).catch(() => { });
+              //Always fetch member
+              await message.member.fetch({ cache: true }).catch(() => { });
+              if (channel && message.guild.id === channel.guild.id && channel.permissionsFor(message.author.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                const msg = channel.messages.cache.filter(e => !e.partial).get(messageid) || (messageid ? (await channel.messages.fetch(messageid).catch(() => { })) : undefined)
+                if (msg) {
+                  const embed = new Discord.MessageEmbed()
+                    .setAuthor({ name: msg.author.tag, iconURL: msg.author.displayAvatarURL({ format: "png", dynamic: true }) })
+                    .setDescription(msg.content || "*Without content*")
+                    .addField("URL", "[Message Link](" + msg.url + ")", true)
+                    .addField("Embeds", msg.embeds.length.toString(), true)
+                    .addField("Message flags", msg.flags.toArray().join(", ") || "*Without flags*", true)
+                    .addField("Channel", msg.channel.toString())
+                    .setFooter({ text: `Mentioned by: ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ format: "png", dynamic: true }) });
+                  if (msg.attachments.first()) embed.setImage(msg.attachments.first().url);
+                  await message.channel.send({ embeds: [embed] });
+                }
               }
-            }
+            } finally { undefined }
           }
         }
 

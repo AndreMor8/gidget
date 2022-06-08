@@ -107,49 +107,49 @@ export default class extends SlashCommand {
     const doc = await db.findOne({ guildId: interaction.guild.id })
     switch (interaction.options.getSubcommand()) {
       case 'add': {
-        if (doc?.roles.length > 25) return interaction.reply("You can only have 25 roles(options) per list.")
+        if (doc?.roles.length > 25) return await interaction.reply("You can only have 25 roles(options) per list.")
         const option = {
           id: interaction.options.getRole("role", true).id,
           name: interaction.options.getString("role-name", false) || interaction.options.getRole("role", true).name,
           description: interaction.options.getString("description", false),
           emoji: interaction.options.getString("emoji", false) || 1
         }
-        if (option.name.length > 25) return interaction.reply("[add.role-name] You can only put up to 25 characters max.");
-        if (option.description?.length > 50) return interaction.reply("[add.description] You can only put up to 50 characters max.");
+        if (option.name.length > 25) return await interaction.reply("[add.role-name] You can only put up to 25 characters max.");
+        if (option.description?.length > 50) return await interaction.reply("[add.description] You can only put up to 50 characters max.");
 
         const elist = await interaction.guild.emojis.fetch();
         const resolvedEmoji = (option.emoji !== 1 ? (elist.get(option.emoji)?.identifier || elist.find(e => e.name === option.emoji || e.toString() === option.emoji)?.identifier || (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(option.emoji) ? option.emoji : undefined)) : undefined);
-        if ((!resolvedEmoji) && (option.emoji !== 1)) return interaction.reply("[add.emoji] Invalid default or server emoji.");
+        if ((!resolvedEmoji) && (option.emoji !== 1)) return await interaction.reply("[add.emoji] Invalid default or server emoji.");
         option.emoji = resolvedEmoji;
 
         if (doc) await doc.updateOne({ $push: { roles: option } });
         else await db.create({ guildId: interaction.guild.id, roles: [option] });
-        interaction.reply("Role added to the list");
+        await interaction.reply("Role added to the list");
       }
         break;
       case 'remove': {
-        if (!doc) return interaction.reply("[remove] Invalid role");
+        if (!doc) return await interaction.reply("[remove] Invalid role");
         if (interaction.options.getRole("role", false)) {
           const verify = doc.roles.find(e => e.id === interaction.options.getRole("role").id)
-          if (!verify) return interaction.reply("[remove.role] Invalid role");
+          if (!verify) return await interaction.reply("[remove.role] Invalid role");
           else await doc.updateOne({ $pull: { roles: { id: { $eq: verify.id } } } });
-          interaction.reply("Role removed from the list");
+          await interaction.reply("Role removed from the list");
         } else if (interaction.options.getString("role-name", false)) {
           const verify = doc.roles.find(e => e.name === interaction.options.getString("role-name"))
-          if (!verify) return interaction.reply("[remove.role-name] Invalid role");
+          if (!verify) return await interaction.reply("[remove.role-name] Invalid role");
           else await doc.updateOne({ $pull: { roles: { id: { $eq: verify.id } } } });
-          interaction.reply("Role removed from the list");
+          await interaction.reply("Role removed from the list");
         } else interaction.reply("[remove] Specify at least one option.");
       }
         break;
       case 'clear': {
-        if (!doc) return interaction.reply("[clear] Nothing to clean here.");
+        if (!doc) return await interaction.reply("[clear] Nothing to clean here.");
         else doc.deleteOne();
-        interaction.reply("All the list has been cleared.");
+        await interaction.reply("All the list has been cleared.");
       }
         break;
       case 'view': {
-        if (!doc?.roles.length) return interaction.reply("You have nothing on the list. Add roles using `add`");
+        if (!doc?.roles.length) return await interaction.reply("You have nothing on the list. Add roles using `add`");
         const fields = doc.roles.map(e => {
           return {
             name: e.name,
@@ -161,15 +161,15 @@ export default class extends SlashCommand {
           .setColor("RANDOM")
           .setTimestamp()
           .addFields(fields);
-        interaction.reply({ embeds: [embed] });
+        await interaction.reply({ embeds: [embed] });
       }
         break;
       case 'create-instance': {
-        if (!doc?.roles.length) return interaction.reply("You have nothing on the list. Add roles using `add`");
-        if (interaction.options.getString("placeholder", false)?.length > 100) return interaction.reply("[create-instace.placeholder] You can only put up to 100 characters max.");
-        if (interaction.options.getString("content", true).length > 2000) return interaction.reply("[create-instace.content] You can only put up to 2000 characters max.");
+        if (!doc?.roles.length) return await interaction.reply("You have nothing on the list. Add roles using `add`");
+        if (interaction.options.getString("placeholder", false)?.length > 100) return await interaction.reply("[create-instace.placeholder] You can only put up to 100 characters max.");
+        if (interaction.options.getString("content", true).length > 2000) return await interaction.reply("[create-instace.content] You can only put up to 2000 characters max.");
         const verify = doc.roles.every(e => interaction.guild.roles.cache.has(e.id));
-        if (!verify) return interaction.reply("You seem to have an invalid role on the list. Fix it using `remove`.");
+        if (!verify) return await interaction.reply("You seem to have an invalid role on the list. Fix it using `remove`.");
         const options = doc.roles.map(e => {
           return {
             label: e.name,
@@ -186,16 +186,16 @@ export default class extends SlashCommand {
         const plc = interaction.options.getString("placeholder", false);
         if (plc) menu.setPlaceholder(plc);
         const channel = interaction.options.getChannel("channel", true);
-        if (!channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return interaction.reply("[create-instance.channel] I don't have permissions to send messages in that channel!");
+        if (!channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return await interaction.reply("[create-instance.channel] I don't have permissions to send messages in that channel!");
         await channel.send({ content: interaction.options.getString("content", true), components: [new MessageActionRow().addComponents([menu])] });
-        interaction.reply("Message sent. Test it ;)")
+        await interaction.reply("Message sent. Test it ;)")
       }
         break;
       case 'add-to-instance': {
-        if (!doc?.roles.length) return interaction.reply("You have nothing on the list. Add roles using `add`");
-        if (interaction.options.getString("placeholder", false)?.length > 100) return interaction.reply("[add-to-instance.placeholder] You can only put up to 100 characters max.");
+        if (!doc?.roles.length) return await interaction.reply("You have nothing on the list. Add roles using `add`");
+        if (interaction.options.getString("placeholder", false)?.length > 100) return await interaction.reply("[add-to-instance.placeholder] You can only put up to 100 characters max.");
         const verify = doc.roles.every(e => interaction.guild.roles.cache.has(e.id));
-        if (!verify) return interaction.reply("You seem to have an invalid role on the list. Fix it using `remove`.");
+        if (!verify) return await interaction.reply("You seem to have an invalid role on the list. Fix it using `remove`.");
         const options = doc.roles.map(e => {
           return {
             label: e.name,
@@ -211,12 +211,12 @@ export default class extends SlashCommand {
         const plc = interaction.options.getString("placeholder", false);
         if (plc) menu.setPlaceholder(plc);
         const channel = interaction.options.getChannel("channel", true);
-        if (!channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return interaction.reply("[add-to-instance.channel] I don't have permissions to send messages in that channel!");
+        if (!channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return await interaction.reply("[add-to-instance.channel] I don't have permissions to send messages in that channel!");
 
         const msg = await channel.messages.fetch(interaction.options.getString("message", true)).catch(() => { });
-        if (!msg) return interaction.reply("[add-to-instance.message] Invalid message ID!");
-        if (msg.author.id !== bot.user.id) return interaction.reply("[add-to-instance.message] That message is not mine...");
-        if (msg.components.length >= 5) return interaction.reply(`[add-to-instance.message] This message already has all 5 action rows filled.
+        if (!msg) return await interaction.reply("[add-to-instance.message] Invalid message ID!");
+        if (msg.author.id !== bot.user.id) return await interaction.reply("[add-to-instance.message] That message is not mine...");
+        if (msg.components.length >= 5) return await interaction.reply(`[add-to-instance.message] This message already has all 5 action rows filled.
 Only up to 5 action rows are allowed in a message.
 A select menu occupies the entire action row.`);
         menu.setCustomId(`selectroles_f_${msg.components.length || 0}`)

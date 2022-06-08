@@ -28,7 +28,7 @@ export default class extends SlashCommand {
   async run(bot, interaction) {
     //Check valid URL
     const check = isURL(interaction.options.getString("video", true));
-    if (!check) return interaction.reply("Invalid URL!");
+    if (!check) return await interaction.reply("Invalid URL!");
     //Cooldown
     if (interaction.user.id !== "577000793094488085") {
       if (!timer.has(interaction.user.id)) {
@@ -37,7 +37,7 @@ export default class extends SlashCommand {
           timer.delete(interaction.user.id);
         }, 60000);
       } else {
-        return interaction.reply({ content: "Don't overload this command! (1 min cooldown)", ephemeral: true });
+        return await interaction.reply({ content: "Don't overload this command! (1 min cooldown)", ephemeral: true });
       }
     }
     try {

@@ -120,23 +120,23 @@ export default class extends SlashCommand {
           .addField("Goodbye enabled? (leaveenable)", doc.leaveenabled ? "Yes" : "No")
           .addField("Channel for goodbyes (leavechannel)", doc.leavechannelID ? ("<#" + doc.leavechannelID + ">") : "Not assigned")
           .addField("Goodbye message (leavemessage)", Discord.Util.splitMessage(doc.leavetext, { maxLength: 1000 })[0]);
-        interaction.reply({ embeds: [embed] });
+        await interaction.reply({ embeds: [embed] });
       }
         break;
       case "toggle": {
         const reference = !!doc.enabled;
         if (!reference) {
-          if (!doc.channelID && !doc.roleID) return interaction.reply("There is no assigned channel or role. Set it before starting the welcome system.");
+          if (!doc.channelID && !doc.roleID) return await interaction.reply("There is no assigned channel or role. Set it before starting the welcome system.");
           if (doc.channelID) {
             const channel = await interaction.guild.channels.fetch(doc.channelID).catch(() => { });
-            if (!channel) return interaction.reply("The assigned channel doesn't exist.");
+            if (!channel) return await interaction.reply("The assigned channel doesn't exist.");
             if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
-              return interaction.reply("Give me permissions for send messages on the assigned channel before starting the welcome system.");
+              return await interaction.reply("Give me permissions for send messages on the assigned channel before starting the welcome system.");
           }
           if (doc.roleID) {
             const role = await interaction.guild.roles.fetch(doc.roleID).catch(() => { });
-            if (!role) return interaction.reply("The assigned role doesn't exist.");
-            if (!role.editable) return interaction.reply("I don't have permissions to give the assigned role.\nMake sure I have the `MANAGE_ROLES` permission, and that this assigned role is below my highest role.")
+            if (!role) return await interaction.reply("The assigned role doesn't exist.");
+            if (!role.editable) return await interaction.reply("I don't have permissions to give the assigned role.\nMake sure I have the `MANAGE_ROLES` permission, and that this assigned role is below my highest role.")
           }
         }
         await setWelcome(interaction.guild, 0, !reference);
@@ -146,23 +146,23 @@ export default class extends SlashCommand {
       case "channel": {
         const channel = interaction.options.getChannel("channel");
         if (!channel) {
-          if (doc.enabled && !doc.roleID) return interaction.reply("The channel is not optional if the system is **enabled** and **no role** is assigned.");
+          if (doc.enabled && !doc.roleID) return await interaction.reply("The channel is not optional if the system is **enabled** and **no role** is assigned.");
           await setWelcome(interaction.guild, 1, null);
           await interaction.reply("Channel unassigned successfully.");
           break;
         }
-        if (!channel.isText()) return interaction.reply("That isn't a text-based channel");
-        if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) return interaction.reply("I don't have permissions for send messages in that channel");
+        if (!channel.isText()) return await interaction.reply("That isn't a text-based channel");
+        if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) return await interaction.reply("I don't have permissions for send messages in that channel");
         await setWelcome(interaction.guild, 1, channel.id);
         await interaction.reply("Channel set correctly");
       }
         break;
       case "message": {
         const text = interaction.options.getString("message", true);
-        if (text.length > 2000) return interaction.reply("Your message must be less than 2000 characters long.");
+        if (text.length > 2000) return await interaction.reply("Your message must be less than 2000 characters long.");
         if (/%INVITER%/gmi.test(text)) {
           if (!interaction.guild.me.permissions.has("MANAGE_GUILD"))
-            return interaction.reply("You must give me the permission to manage guild if you want the who invited the user to appear.");
+            return await interaction.reply("You must give me the permission to manage guild if you want the who invited the user to appear.");
         }
         await setWelcome(interaction.guild, 2, text);
         await interaction.reply("Welcome message set correctly");
@@ -171,12 +171,12 @@ export default class extends SlashCommand {
       case "role": {
         const role = interaction.options.getRole("role");
         if (!role) {
-          if (doc.enabled && !doc.channelID) return interaction.reply("The role is not optional if the system is **enabled** and **no channel** is assigned.");
+          if (doc.enabled && !doc.channelID) return await interaction.reply("The role is not optional if the system is **enabled** and **no channel** is assigned.");
           await setWelcome(interaction.guild, 8, null);
           await interaction.reply("Channel unassigned successfully.");
           break;
         }
-        if (!role.editable) return interaction.reply("I don't have permissions to give this role.\nMake sure I have the `MANAGE_ROLES` permission, and that this role is below my highest role.")
+        if (!role.editable) return await interaction.reply("I don't have permissions to give this role.\nMake sure I have the `MANAGE_ROLES` permission, and that this role is below my highest role.")
         await setWelcome(interaction.guild, 8, role.id);
         await interaction.reply("Role set correctly");
       }
@@ -195,10 +195,10 @@ export default class extends SlashCommand {
         break;
       case "dmmessage": {
         const text = interaction.options.getString("message", true);
-        if (text.length > 2000) return interaction.reply("Your message must be less than 2000 characters long.");
+        if (text.length > 2000) return await interaction.reply("Your message must be less than 2000 characters long.");
         if (/%INVITER%/gmi.test(text)) {
           if (!interaction.guild.me.permissions.has("MANAGE_GUILD"))
-            return interaction.reply("You must give me the permission to manage guild if you want the who invited the user to appear.");
+            return await interaction.reply("You must give me the permission to manage guild if you want the who invited the user to appear.");
         }
         await setWelcome(interaction.guild, 4, text);
         await interaction.reply("DM message set correctly");
@@ -207,11 +207,11 @@ export default class extends SlashCommand {
       case "leavetoggle": {
         const reference = !!doc.leaveenabled;
         if (!reference) {
-          if (!doc.leavechannelID) return interaction.reply("There is no assigned channel. Set it before starting the goodbye system.");
+          if (!doc.leavechannelID) return await interaction.reply("There is no assigned channel. Set it before starting the goodbye system.");
           const channel = await interaction.guild.channels.fetch(doc.leavechannelID).catch(() => { });
-          if (!channel) return interaction.reply("The assigned channel doesn't exist.");
+          if (!channel) return await interaction.reply("The assigned channel doesn't exist.");
           if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
-            return interaction.reply("Give me permissions for send messages on the assigned channel before starting the goodbye system.");
+            return await interaction.reply("Give me permissions for send messages on the assigned channel before starting the goodbye system.");
         }
         await setWelcome(interaction.guild, 5, !reference);
         await interaction.reply("The goodbye system has been " + (!reference ? "enabled." : "disabled."));
@@ -220,21 +220,21 @@ export default class extends SlashCommand {
       case "leavechannel": {
         const channel = interaction.options.getChannel("channel");
         if (!channel) {
-          if (doc.leaveenabled) return interaction.reply("The channel is not optional if the system is enabled.");
+          if (doc.leaveenabled) return await interaction.reply("The channel is not optional if the system is enabled.");
           await setWelcome(interaction.guild, 6, null);
           await interaction.reply("Channel unassigned successfully.");
           break;
         }
-        if (!channel.isText()) return interaction.reply("That isn't a text-based channel");
+        if (!channel.isText()) return await interaction.reply("That isn't a text-based channel");
         if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
-          return interaction.reply("I don't have permissions for send messages in that channel");
+          return await interaction.reply("I don't have permissions for send messages in that channel");
         await setWelcome(interaction.guild, 6, channel.id);
         await interaction.reply("Channel set correctly");
       }
         break;
       case "leavemessage": {
         const text = interaction.options.getString("message", true);
-        if (text.length > 2000) return interaction.reply("Your message must be less than 2000 characters long.");
+        if (text.length > 2000) return await interaction.reply("Your message must be less than 2000 characters long.");
         await setWelcome(interaction.guild, 7, text);
         await interaction.reply("Goodbye message set correctly");
       }

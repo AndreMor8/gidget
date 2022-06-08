@@ -41,18 +41,17 @@ export default class extends SlashCommand {
   }
   // eslint-disable-next-line require-await
   async run(bot, interaction) {
-    if(interaction.channel.isVoice()) return interaction.reply({ content: "Not yet supported in voice channel chat.", ephemeral: true });
     const pre_time = interaction.options.getString("time");
     const time = ["infinite", "infinity", "none"].includes(pre_time) ? Infinity : ms(pre_time);
-    if (typeof time !== "number" || time < 60000) return interaction.reply({ content: "Invalid time! Must be 60 seconds or more.", ephemeral: true });
+    if (typeof time !== "number" || time < 60000) return await interaction.reply({ content: "Invalid time! Must be 60 seconds or more.", ephemeral: true });
     let url;
     if (interaction.options.getString("embed-url", false)) {
       try {
         const urlo = new URL(interaction.options.getString("embed-url"));
-        if (!(["http:", "https:"].includes(urlo.protocol))) return interaction.reply({ content: "Invalid image URL!", ephemeral: true });
+        if (!(["http:", "https:"].includes(urlo.protocol))) return await interaction.reply({ content: "Invalid image URL!", ephemeral: true });
         url = urlo.href;
       } catch (_) {
-        return interaction.reply({ content: "Invalid image URL!", ephemeral: true });
+        return await interaction.reply({ content: "Invalid image URL!", ephemeral: true });
       }
     }
     const emojis = [];
@@ -70,8 +69,8 @@ export default class extends SlashCommand {
           if (parsed) emojis.push([1, parsed.text]);
         }
       }
-      if (!emojis.length) return interaction.reply({ content: "Invalid emojis!", ephemeral: true });
-      if (emojis.length > 20) return interaction.reply({ content: "You can only put 20 reactions on a message", ephemeral: true });
+      if (!emojis.length) return await interaction.reply({ content: "Invalid emojis!", ephemeral: true });
+      if (emojis.length > 20) return await interaction.reply({ content: "You can only put 20 reactions on a message", ephemeral: true });
     } else emojis.push([0, "<:Perfecto:981256609198125056>"], [0, "<:WaldenNo:981256802257756241>"]);
 
     await interaction.deferReply({ ephemeral: true });

@@ -18,10 +18,10 @@ export default class extends SlashCommand {
 	}
 	async run(bot, interaction) {
 		const channel = interaction.member.voice.channelId;
-		if (!channel) return interaction.reply("You need to be in a voice channel to seek music!");
+		if (!channel) return await interaction.reply("You need to be in a voice channel to seek music!");
 		const queue = bot.distube.getQueue(interaction.guild.me.voice);
-		if (!queue) return interaction.reply(`There is nothing playing.`);
-		if (queue.voiceChannel.id !== channel) return interaction.reply("You are not on the same voice channel as me.");
+		if (!queue) return await interaction.reply(`There is nothing playing.`);
+		if (queue.voiceChannel.id !== channel) return await interaction.reply("You are not on the same voice channel as me.");
 
 		const exp = interaction.options.getString("to-seek", true).split(":");
 		//More support?
@@ -29,8 +29,8 @@ export default class extends SlashCommand {
 		const min = exp[exp.length - 2] || "0"
 		const hrs = exp[exp.length - 3] || "0"
 		const reconverted = (ms(hrs + "h") / 1000) + (ms(min + "m") / 1000) + (ms(sec + "s") / 1000);
-		if (isNaN(reconverted) || (typeof reconverted !== "number")) return interaction.reply("Invalid value!");
-		if (queue.songs[0].duration <= (reconverted + 2)) return interaction.reply("The song is too short for the specified time!");
+		if (isNaN(reconverted) || (typeof reconverted !== "number")) return await interaction.reply("Invalid value!");
+		if (queue.songs[0].duration <= (reconverted + 2)) return await interaction.reply("The song is too short for the specified time!");
 		queue.seek(reconverted);
 
 		await interaction.reply(`Position moved to ${hrs}:${min}:${sec}`);

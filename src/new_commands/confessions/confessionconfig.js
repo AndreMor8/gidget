@@ -38,10 +38,10 @@ export default class extends SlashCommand {
     switch (interaction.options.getSubcommand()) {
       case 'channel': {
         const channel = interaction.options.getChannel("channel", false);
-        if (channel && !channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return interaction.reply("I don't have the permissions to send embeds on that channel.\nGive me the permissions to send messages and embed links!");
+        if (channel && !channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return await interaction.reply("I don't have the permissions to send embeds on that channel.\nGive me the permissions to send messages and embed links!");
         if (!channel) await deleteConfessionConfig(interaction.guild);
         else await setConfessionChannel(interaction.guild, channel);
-        interaction.reply(channel ? "The channel has been set correctly." : "I've deleted the confession channel ID from my database. Re-enable the system with `confessionconfig channel <channel>`.");
+        await interaction.reply(channel ? "The channel has been set correctly." : "I've deleted the confession channel ID from my database. Re-enable the system with `confessionconfig channel <channel>`.");
       }
         break;
       case 'anon': {
@@ -53,8 +53,8 @@ export default class extends SlashCommand {
       case 'get':
       default: {
         const data = await getConfessionConfig(interaction.guild);
-        if (!data?.channelID) return interaction.reply("Set a channel!\n`confessionconfig channel`")
-        interaction.reply(`Confession config for ${interaction.guild.name}\n\n**Channel**: <#${data.channelID}>\n**Optional anonymity**: ${data.anon ? "Enabled" : "Disabled"}`);
+        if (!data?.channelID) return await interaction.reply("Set a channel!\n`confessionconfig channel`")
+        await interaction.reply(`Confession config for ${interaction.guild.name}\n\n**Channel**: <#${data.channelID}>\n**Optional anonymity**: ${data.anon ? "Enabled" : "Disabled"}`);
       }
     }
   }

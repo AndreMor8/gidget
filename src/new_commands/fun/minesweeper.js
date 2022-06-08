@@ -7,8 +7,7 @@ export default class extends SlashCommand {
     this.deployOptions.description = "Minesweeper game, and no, they are not spoilers.";
   }
   async run(bot, interaction) {
-    if (interaction.channel.isVoice()) return interaction.reply({ content: "Not yet supported in voice channel chat.", ephemeral: true });
-    if (interaction.user.mine) return interaction.reply({ content: "There is already a game with you in progress!", ephemeral: true });
+    if (interaction.user.mine) return await interaction.reply({ content: "There is already a game with you in progress!", ephemeral: true });
     interaction.user.mine = new BombSweeper();
     const to_edit = await interaction.deferReply({ fetchReply: true });
     const text_form = new TextInputComponent()
@@ -53,7 +52,7 @@ export default class extends SlashCommand {
             const submited = await i.awaitModalSubmit({ filter: (i) => i.customId === "mine_submit_ckc", time: 30000 }).catch(() => { });
             awatingModal = false;
             if (!submited) {
-              if (interaction.user.mine) return interaction.followUp({ content: "The maximum response waiting time is 30s. Run the modal again...", ephemeral: true });
+              if (interaction.user.mine) return await interaction.followUp({ content: "The maximum response waiting time is 30s. Run the modal again...", ephemeral: true });
               else return;
             }
             const [pre_r, pre_c, flag] = submited.fields.getTextInputValue("mine_text_ckc").split(",");

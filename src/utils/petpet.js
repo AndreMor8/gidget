@@ -1,5 +1,5 @@
 /*
-Copied from https://benisland.neocities.org/petpet/index.js (code for web browsers)
+Copied from https://benisland.neocities.org/petpet/v1/index.js (code for web browsers)
 Adapted for use with servers (Node.js)
 Sprite: https://benisland.neocities.org/petpet/img/sprite.png
 */

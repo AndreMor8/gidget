@@ -19,7 +19,7 @@ export default class extends SlashCommand {
     if (queue.voiceChannel.id !== channel) return await interaction.reply("You are not on the same voice channel as me.");
 
     const to_jump = interaction.options.getInteger("to", false);
-    if (!to_jump && interaction.options.getInteger("to", false)) return interaction.reply("Invalid song number.");
+    if (!to_jump && interaction.options.getInteger("to", false)) return await interaction.reply("Invalid song number.");
 
     if (!to_jump || to_jump === 1) {
       if (!interaction.member.permissions.has("MANAGE_CHANNELS")) {
@@ -44,7 +44,7 @@ export default class extends SlashCommand {
       }
     } else {
       if (!interaction.member.permissions.has("MANAGE_CHANNELS")) {
-        if (queue.voiceChannel.members.filter(e => !e.user.bot).size > 1) return interaction.reply("Only a member with permission to manage channels can jump to another music. Being alone also works.");
+        if (queue.voiceChannel.members.filter(e => !e.user.bot).size > 1) return await interaction.reply("Only a member with permission to manage channels can jump to another music. Being alone also works.");
       }
     }
 

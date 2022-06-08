@@ -1,9 +1,9 @@
 //See src/commands/fun/c4.js for copyright notices
 import path from 'path';
-import commons from './commons.js';
-const { __dirname } = commons(import.meta.url);
 import Canvas from 'canvas';
 import GIFEncoder from 'gif-encoder';
+import commons from './commons.js';
+const { __dirname } = commons(import.meta.url);
 let images = [Canvas.loadImage(path.join(__dirname, "../assets/morado_de_4.png")),
 Canvas.loadImage(path.join(__dirname, "../assets/4enraya.png")),
 Canvas.loadImage(path.join(__dirname, "../assets/rojo_de_cuatro.png")),
@@ -89,7 +89,7 @@ export function displayConnectFourBoard(mapa, game) {
     gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
 
     if (game.solution) {
-      for (const i of game.solution)ctx.drawImage(win, columna[i.column] + 10, filaR[i.spacesFromBottom] + 10, 50, 50)
+      for (const i of game.solution) ctx.drawImage(win, columna[i.column] + 10, filaR[i.spacesFromBottom] + 10, 50, 50)
       gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
       for (const i of game.solution) ctx.drawImage(game.winner == 1 ? imgs['🟢'] : imgs['🟡'], columna[i.column] + 10, filaR[i.spacesFromBottom] + 10, 50, 50)
       gif.addFrame(ctx.getImageData(0, 0, canvas.width, canvas.height).data);

@@ -71,15 +71,14 @@ export default class extends SlashCommand {
   async run(bot, interaction) {
     switch (interaction.options.getSubcommand()) {
       case "search": {
-        if(interaction.channel.isVoice()) return interaction.reply({ content: "Not yet supported in voice channel chat.", ephemeral: true });
         const tosearch = interaction.options.getString("query");
-        if (bot.badwords.isProfane(tosearch) && !interaction.channel.nsfw) return interaction.reply("To order this content go to an NSFW channel.");
+        if (bot.badwords.isProfane(tosearch) && !interaction.channel.nsfw) return await interaction.reply("To order this content go to an NSFW channel.");
 
         const results = await googleIt({ 'query': tosearch, 'limit': 7, disableConsole: true });
 
-        if (!results.length) return interaction.reply("I didn't find anything");
-        if (results.some(e => checkCleanUrl(e.link)) && !interaction.channel.nsfw) return interaction.reply("Your search includes NSFW content. To order this content go to an NSFW channel.");
-        if (results.some(e => (bot.badwords.isProfane(e.title.toLowerCase()) || bot.badwords.isProfane(e.snippet.toLowerCase()))) && !interaction.channel.nsfw) return interaction.reply("Your search includes NSFW content. To order this content go to an NSFW channel.");
+        if (!results.length) return await interaction.reply("I didn't find anything");
+        if (results.some(e => checkCleanUrl(e.link)) && !interaction.channel.nsfw) return await interaction.reply("Your search includes NSFW content. To order this content go to an NSFW channel.");
+        if (results.some(e => (bot.badwords.isProfane(e.title.toLowerCase()) || bot.badwords.isProfane(e.snippet.toLowerCase()))) && !interaction.channel.nsfw) return await interaction.reply("Your search includes NSFW content. To order this content go to an NSFW channel.");
 
         let text = '';
         let i = 0;
@@ -106,7 +105,6 @@ export default class extends SlashCommand {
       }
         break;
       case "images": {
-        if(interaction.channel.isVoice()) return interaction.reply({ content: "Not yet supported in voice channel chat.", ephemeral: true });
         const query = {
           search: interaction.options.getString("query"),
           safeSearch: !interaction.channel.nsfw,
@@ -119,7 +117,7 @@ export default class extends SlashCommand {
         };
 
         const { result: results } = await google.GOOGLE_IMG_SCRAP(query);
-        if (!results.length) return interaction.reply("I didn't find anything.");
+        if (!results.length) return await interaction.reply("I didn't find anything.");
 
         const urls = results.map(e => e.url);
         let i = 0;
@@ -183,10 +181,10 @@ export default class extends SlashCommand {
         const lang = interaction.options.getString('lang', false) || "en";
 
         const reallang = languages.getCode(lang);
-        if (!reallang) return interaction.reply({ content: "Invalid language!\nhttps://github.com/vitalets/google-translate-api/blob/master/languages.js", ephemeral: true });
+        if (!reallang) return await interaction.reply({ content: "Invalid language!\nhttps://github.com/vitalets/google-translate-api/blob/master/languages.js", ephemeral: true });
 
         const text = interaction.options.getString("text");
-        if (text.length > 5000) return interaction.reply({ content: "That text is too long!", ephemeral: true });
+        if (text.length > 5000) return await interaction.reply({ content: "That text is too long!", ephemeral: true });
         const result = await gtranslate(text, { to: reallang });
         if (result.from.text.didYouMean) await interaction.reply({ embeds: [new MessageEmbed().setColor("RANDOM").setTitle("Did you mean?").setDescription(Util.splitMessage(result.from.text, { maxLength: 4096, char: "", append: "..." })[0])] })
         await interaction.reply({
@@ -203,9 +201,9 @@ export default class extends SlashCommand {
       case 'tts': {
         const lang = interaction.options.getString('lang', false) || "en";
         const reallang = languages.getCode(lang);
-        if (!reallang) return interaction.reply({ content: "Invalid language!\nhttps://github.com/vitalets/google-translate-api/blob/master/languages.js", ephemeral: true });
+        if (!reallang) return await interaction.reply({ content: "Invalid language!\nhttps://github.com/vitalets/google-translate-api/blob/master/languages.js", ephemeral: true });
         const tosay = interaction.options.getString("text");
-        if (tosay.length > 200) return interaction.reply({ content: "Must be less than 200 characters", ephemeral: true });
+        if (tosay.length > 200) return await interaction.reply({ content: "Must be less than 200 characters", ephemeral: true });
         await interaction.deferReply({ ephemeral: true });
         await interaction.editReply({ files: [new MessageAttachment(`https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=64&client=tw-ob&q=${encodeURIComponent(tosay)}&tl=${encodeURIComponent(reallang)}`, "tts.mp3")], ephemeral: true });
       }

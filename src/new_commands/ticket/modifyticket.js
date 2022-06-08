@@ -99,11 +99,11 @@ export default class extends SlashCommand {
     const subcommand = interaction.options.getSubcommand();
     const msgID = subcommand.options.getString("message", true);
     const msgDocument = await MessageModel.findOne({ guildId: { $eq: interaction.guild.id }, messageId: { $eq: msgID } });
-    if (!msgDocument) return interaction.reply("I can't find a ticket system in that message.");
+    if (!msgDocument) return await interaction.reply("I can't find a ticket system in that message.");
     const { manual } = msgDocument;
     switch (subcommand) {
       case "get": {
-        interaction.reply({
+        await interaction.reply({
           embeds: [new MessageEmbed()
             .setTitle(interaction.guild.name + " ticket config")
             .setDescription(`For the message with ID ` + msgDocument.messageId + `. [Message Link](https://ptb.discordapp.com/channels/${msgDocument.guildId}/${msgDocument.channelId}/${msgDocument.messageId})\n\`modifyticket <id> <option> <...args>\``)
@@ -120,50 +120,50 @@ export default class extends SlashCommand {
         const roles = interaction.options.getString("roles", false);
         if (!roles) {
           await msgDocument.updateOne({ $set: { roles: [] } });
-          interaction.reply("No one will be able to close tickets unless they have `MANAGE_CHANNELS` permission on the ticket category.");
+          await interaction.reply("No one will be able to close tickets unless they have `MANAGE_CHANNELS` permission on the ticket category.");
         } else {
           const toput = [];
           for (const i in roles) {
             if (!interaction.guild.roles.cache.has(roles[i])) {
-              return interaction.reply("The role " + roles[i] + " isn't valid!");
+              return await interaction.reply("The role " + roles[i] + " isn't valid!");
             } else {
               toput.push(roles[i]);
             }
           }
           await msgDocument.updateOne({ $set: { roles: toput } });
-          interaction.reply("Roles updated correctly\nRemember to configure the role in the category so that its members can see and write on the ticket.");
+          await interaction.reply("Roles updated correctly\nRemember to configure the role in the category so that its members can see and write on the ticket.");
         }
       }
         break;
       case "manual":
         await msgDocument.updateOne({ manual: !manual });
-        interaction.reply(interaction.reply(!manual ? "Now the people who created the tickets can close them themselves." : "Now only those with the permissions or roles set will be able to close tickets."));
+        await interaction.reply(interaction.reply(!manual ? "Now the people who created the tickets can close them themselves." : "Now only those with the permissions or roles set will be able to close tickets."));
         break;
       case "category": {
         const channel = interaction.options.getChannel("channel", true);
-        if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return interaction.reply("I don't have the `MANAGE_CHANNELS`, the `MANAGE_ROLES` or the `VIEW_CHANNEL` permission in that channel.");
+        if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return await interaction.reply("I don't have the `MANAGE_CHANNELS`, the `MANAGE_ROLES` or the `VIEW_CHANNEL` permission in that channel.");
         await msgDocument.updateOne({ categoryId: channel.id });
-        interaction.reply("Category channel updated correctly.")
+        await interaction.reply("Category channel updated correctly.")
       }
         break;
       case "welcome-msg": {
         const set = interaction.options.getString("msg", false);
         if (set) {
-          if (set.replace("%AUTHOR%", interaction.user.toString()).length > 2000) return interaction.reply("You can only put up to 2000 characters max.");
+          if (set.replace("%AUTHOR%", interaction.user.toString()).length > 2000) return await interaction.reply("You can only put up to 2000 characters max.");
           await msgDocument.updateOne({ $set: { welcomemsg: set } });
         }
         else await msgDocument.updateOne({ $unset: { welcomemsg: "" } });
-        interaction.reply(set ? "Welcome message for the ticket changed correctly" : "Welcome message disabled")
+        await interaction.reply(set ? "Welcome message for the ticket changed correctly" : "Welcome message disabled")
       }
         break;
       case "desc": {
         const set = interaction.options.getString("description", false);
         if (set) {
-          if (set.replace("%AUTHOR%", interaction.user.toString()).length > 1024) return interaction.reply("You can only put up to 1024 characters max.");
+          if (set.replace("%AUTHOR%", interaction.user.toString()).length > 1024) return await interaction.reply("You can only put up to 1024 characters max.");
           await msgDocument.updateOne({ $set: { desc: set } });
         }
         else await msgDocument.updateOne({ $unset: { desc: "" } });
-        interaction.reply(set ? "Description for the ticket changed correctly" : "Text channel description disabled")
+        await interaction.reply(set ? "Description for the ticket changed correctly" : "Text channel description disabled")
       }
         break;
     }

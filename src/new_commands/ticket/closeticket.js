@@ -20,10 +20,10 @@ export default class extends SlashCommand {
   }
   async run(bot, interaction) {
     const doc2 = await tickets.findOne({ guildId: { $eq: interaction.guild.id }, channelId: { $eq: interaction.channel.id } })
-    if (!doc2) return interaction.reply("This isn't a ticket-type chat!");
+    if (!doc2) return await interaction.reply("This isn't a ticket-type chat!");
     const { memberId, manual, roles, from } = doc2;
     const doc = await tmembers.findOne({ guildId: { $eq: interaction.guild.id }, messageId: { $eq: from } });
-    if (!doc) return interaction.reply("There is no ticket system here.");
+    if (!doc) return await interaction.reply("There is no ticket system here.");
     const reason = interaction.options.getString("reason", false);
     const finish = async (staff = false) => {
       try {

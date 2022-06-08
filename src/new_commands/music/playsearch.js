@@ -20,18 +20,18 @@ export default class extends SlashCommand {
   }
   async run(bot, interaction) {
     const channel = interaction.member.voice.channelId;
-    if (!channel) return interaction.reply("You need to be in a voice channel to play music!");
-    if (bot.records.has(interaction.guild.id)) return interaction.reply("A recording is in progress. Wait for it to finish.");
+    if (!channel) return await interaction.reply("You need to be in a voice channel to play music!");
+    if (bot.records.has(interaction.guild.id)) return await interaction.reply("A recording is in progress. Wait for it to finish.");
     const queue = bot.distube.getQueue(interaction.guild.me.voice);
-    if (queue && queue.voiceChannel.id !== channel) return interaction.reply("You are not on the same voice channel as me.");
+    if (queue && queue.voiceChannel.id !== channel) return await interaction.reply("You are not on the same voice channel as me.");
     const tosearch = interaction.options.getString("term", true);
-    if (tosearch > 200) return interaction.reply("The maximum size of the search term is 200 characters.");
-    if (isURL(tosearch)) return interaction.reply("YouTube links should go in the `play` command");
-    if (ytdl.validateID(tosearch) || ytpl.validateID(tosearch)) return interaction.reply("YouTube IDs should go in the `play` command");
+    if (tosearch > 200) return await interaction.reply("The maximum size of the search term is 200 characters.");
+    if (isURL(tosearch)) return await interaction.reply("YouTube links should go in the `play` command");
+    if (ytdl.validateID(tosearch) || ytpl.validateID(tosearch)) return await interaction.reply("YouTube IDs should go in the `play` command");
     try {
       await interaction.deferReply();
       const videos = await bot.distube.search(tosearch, { safeSearch: !interaction.channel.nsfw });
-      if (!videos.length) return interaction.editReply("I didn't find any video. Please try again with another term.");
+      if (!videos.length) return await interaction.editReply("I didn't find any video. Please try again with another term.");
       let text = '';
       const buttons = [];
       let i = 0;
@@ -77,7 +77,7 @@ export default class extends SlashCommand {
 
     } catch (err) {
       console.error(err);
-      interaction.editReply("Some error ocurred. Here's a debug: " + err);
+      await interaction.editReply("Some error ocurred. Here's a debug: " + err);
     }
   }
 }

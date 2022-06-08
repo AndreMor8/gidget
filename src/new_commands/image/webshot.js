@@ -32,7 +32,7 @@ export default class extends SlashCommand {
         timer.add(interaction.user.id);
         setTimeout(() => timer.delete(interaction.user.id), 30000);
       } else {
-        return interaction.reply({ content: "Don't overload this command! (30 sec cooldown)", ephemeral: true });
+        return await interaction.reply({ content: "Don't overload this command! (30 sec cooldown)", ephemeral: true });
       }
     }
     const site = interaction.options.getString("site", true);
@@ -68,6 +68,6 @@ async function pup(interaction, url, options) {
       await interaction.editReply({ content: time, files: [att] });
     }
   } catch (err) {
-    interaction.editReply(err.toString());
+    await interaction.editReply(err.toString());
   }
 }

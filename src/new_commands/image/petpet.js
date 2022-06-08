@@ -15,7 +15,7 @@ export default class extends SlashCommand {
   }
   async run(bot, interaction) {
     let source = await bot.users.fetch(interaction.targetId).catch(() => { });
-    if (!source) return interaction.reply("Invalid user!");
+    if (!source) return await interaction.reply("Invalid user!");
     source = await getBuffer(source.displayAvatarURL({ format: "png", size: 128 }));
     await interaction.deferReply();
     const torender = await Canvas.loadImage(source);

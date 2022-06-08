@@ -11,8 +11,8 @@ export default class extends SlashCommand {
   async run(bot, interaction) {
 
     const queue = bot.distube.getQueue(interaction.guild.me.voice);
-    if (!queue) return interaction.reply("There is nothing playing.");
-    if (!queue.songs[0].duration) return interaction.reply({ content: `Sorry, I can't detect duration from unknown links.\nCurrent time: **${queue.formattedCurrentTime}**`, ephemeral: true })
+    if (!queue) return await interaction.reply("There is nothing playing.");
+    if (!queue.songs[0].duration) return await interaction.reply({ content: `Sorry, I can't detect duration from unknown links.\nCurrent time: **${queue.formattedCurrentTime}**`, ephemeral: true })
     const suma = moment.duration(queue.currentTime, "seconds")._milliseconds;
 
     const embed_success = new MessageEmbed()
