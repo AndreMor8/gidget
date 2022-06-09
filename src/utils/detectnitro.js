@@ -6,7 +6,7 @@ const cache = new Map();
 export default async function (user) {
   const saved = cache.get(user.id);
   if (saved) return saved;
-  const data = await OAuth2.findOne({ discordId: user.id });
+  const data = await OAuth2.findOne({ discordId: { $eq: user.id } }).lean().exec();
   if (!data) {
     const thing = { type: null, value: -1 };
     cache.set(user.id, thing);
@@ -31,7 +31,7 @@ export default async function (user) {
       setTimeout((id) => cache.delete(id), 60000, user.id);
       return thing;
     } else {
-      data.updateOne({ invalid: true });
+      OAuth2.updateOne({ discordId: { $eq: user.id } }, { invalid: true }).exec();
       const thing = { type: null, value: -1 };
       cache.set(user.id, thing)
       setTimeout((id) => cache.delete(id), 60000, user.id);

@@ -19,7 +19,7 @@ export default class extends Command {
       if (!fetchedMessage) channel.send("Message not found.");
       else {
         // Check if the message exists in the DB.
-        const msgModel = await MessageModel.findOne({ messageId: fetchedMessage.id, guildId: message.guild.id });
+        const msgModel = await MessageModel.findOne({ messageId: { $eq: fetchedMessage.id }, guildId: { $eq: message.guild.id } });
         if (msgModel) {
           // Prompt the user for configurations.
           const filter = m => m.author.id === author.id && (m.content.toLowerCase() === 'add' || m.content.toLowerCase() === 'remove');

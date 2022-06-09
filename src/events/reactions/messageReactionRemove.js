@@ -21,7 +21,7 @@ export default async (bot, reaction, user) => {
   if (typeof cach === "boolean") return
   else if (!cach) {
     try {
-      const msgDocument = await MessageModel.findOne({ messageId: reaction.message.id });
+      const msgDocument = await MessageModel.findOne({ messageId: reaction.message.id }).lean();
       if (msgDocument) {
         bot.cachedMessageReactions.set(reaction.message.id, msgDocument);
         const { emojiRoleMappings } = msgDocument;

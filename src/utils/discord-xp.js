@@ -1,5 +1,4 @@
-//Copied from discord-xp, to adapt it to my database configuration and updating two things.
-//https://github.com/MrAugu/discord-xp // https://www.npmjs.com/package/discord-xp
+//Copied from discord-xp: https://github.com/MrAugu/discord-xp // https://www.npmjs.com/package/discord-xp
 
 import levels from "../database/models/levels.js";
 
@@ -16,15 +15,13 @@ export default class DiscordXp {
     if (!userId) throw new TypeError("An user id was not provided.");
     if (!guildId) throw new TypeError("A guild id was not provided.");
 
-    const isUser = await levels.findOne({ userID: userId, guildID: guildId });
+    const isUser = await levels.findOne({ userID: { $eq: userId }, guildID: { $eq: guildId } }).lean().exec();
     if (isUser) return false;
 
-    const newUser = new levels({
+    const newUser = await levels.create({
       userID: userId,
       guildID: guildId
-    });
-
-    await newUser.save().catch(e => console.log(`Failed to create user: ${e}`));
+    }).catch(e => console.log(`Failed to create user: ${e}`));
 
     return newUser;
   }
@@ -38,12 +35,8 @@ export default class DiscordXp {
     if (!userId) throw new TypeError("An user id was not provided.");
     if (!guildId) throw new TypeError("A guild id was not provided.");
 
-    const user = await levels.findOne({ userID: userId, guildID: guildId });
-    if (!user) return false;
-
-    await levels.findOneAndDelete({ userID: userId, guildID: guildId }).catch(e => console.log(`Failed to delete user: ${e}`));
-
-    return user;
+    const user = await levels.findOneAndDelete({ userID: { $eq: userId }, guildID: { $eq: guildId } }).lean().exec().catch(e => console.log(`Failed to delete user: ${e}`));
+    return user || false;
   }
 
   /**
@@ -57,17 +50,15 @@ export default class DiscordXp {
     if (!guildId) throw new TypeError("A guild id was not provided.");
     if (xp !== 0 && !xp) throw new TypeError("An amount of xp was not provided.");
 
-    const user = await levels.findOne({ userID: userId, guildID: guildId });
+    const user = await levels.findOne({ userID: { $eq: userId }, guildID: { $eq: guildId } });
 
     if (!user) {
-      const newUser = new levels({
+      await levels.create({
         userID: userId,
         guildID: guildId,
         xp: xp,
         level: Math.floor(0.1 * Math.sqrt(xp))
-      });
-
-      await newUser.save().catch(e => console.log(`Failed to save new user. ${e}`));
+      }).catch(e => console.log(`Failed to save new user. ${e}`));
 
       return (Math.floor(0.1 * Math.sqrt(xp)) > 0);
     }
@@ -91,7 +82,7 @@ export default class DiscordXp {
     if (!guildId) throw new TypeError("A guild id was not provided.");
     if (!levelss) throw new TypeError("An amount of levels was not provided.");
 
-    const user = await levels.findOne({ userID: userId, guildID: guildId });
+    const user = await levels.findOne({ userID: { $eq: userId }, guildID: { $eq: guildId } });
     if (!user) return false;
 
     user.level += parseInt(levelss, 10);
@@ -113,7 +104,7 @@ export default class DiscordXp {
     if (!guildId) throw new TypeError("A guild id was not provided.");
     if (xp !== 0 && !xp) throw new TypeError("An amount of xp was not provided.");
 
-    const user = await levels.findOne({ userID: userId, guildID: guildId });
+    const user = await levels.findOne({ userID: { $eq: userId }, guildID: { $eq: guildId } });
     if (!user) return false;
 
     user.xp = xp;
@@ -135,7 +126,7 @@ export default class DiscordXp {
     if (!guildId) throw new TypeError("A guild id was not provided.");
     if (level !== 0 && !level) throw new TypeError("A level was not provided.");
 
-    const user = await levels.findOne({ userID: userId, guildID: guildId });
+    const user = await levels.findOne({ userID: { $eq: userId }, guildID: { $eq: guildId } });
     if (!user) return false;
 
     user.level = level;
@@ -155,7 +146,7 @@ export default class DiscordXp {
     if (!userId) throw new TypeError("An user id was not provided.");
     if (!guildId) throw new TypeError("A guild id was not provided.");
 
-    const user = await levels.findOne({ userID: userId, guildID: guildId });
+    const user = await levels.findOne({ userID: { $eq: userId }, guildID: { $eq: guildId } }).lean().exec();
     if (!user) return false;
 
     if (fetchPosition === true) {
@@ -177,7 +168,7 @@ export default class DiscordXp {
     if (!guildId) throw new TypeError("A guild id was not provided.");
     if (xp !== 0 && !xp) throw new TypeError("An amount of xp was not provided.");
 
-    const user = await levels.findOne({ userID: userId, guildID: guildId });
+    const user = await levels.findOne({ userID: { $eq: userId }, guildID: { $eq: guildId } });
     if (!user) return false;
 
     user.xp -= xp;
@@ -199,7 +190,7 @@ export default class DiscordXp {
     if (!guildId) throw new TypeError("A guild id was not provided.");
     if (!levelss) throw new TypeError("An amount of levels was not provided.");
 
-    const user = await levels.findOne({ userID: userId, guildID: guildId });
+    const user = await levels.findOne({ userID: { $eq: userId }, guildID: { $eq: guildId } });
     if (!user) return false;
 
     user.level -= levelss;
@@ -217,7 +208,7 @@ export default class DiscordXp {
 
   static async fetchLeaderboard(guildId, limit) {
     if (!guildId) throw new TypeError("A guild id was not provided.");
-    const users = await levels.find({ guildID: guildId }).sort([['xp', 'descending']]).exec();
+    const users = await levels.find({ guildID: { $eq: guildId } }).sort([['xp', 'descending']]).lean().exec();
 
     return (limit && (typeof limit === "number")) ? users.slice(0, limit) : users;
   }
@@ -264,10 +255,10 @@ export default class DiscordXp {
    * @param {string} [guildId] 
    * @param {number} [level]
    */
-  static async removeFromLevel(guildID, level) {
-    if (!guildID) throw new TypeError("A guild id was not provided.");
+  static async removeFromLevel(guildId, level) {
+    if (!guildId) throw new TypeError("A guild id was not provided.");
     if (typeof level !== "number") throw new TypeError("A level was not provided.");
     if (level < 0) throw new TypeError("A level was not provided.");
-    return await levels.deleteMany({ guildID, level: { $lte: parseInt(level) } });
+    return await levels.deleteMany({ guildID: { $eq: guildId }, level: { $lte: parseInt(level) } });
   }
 }

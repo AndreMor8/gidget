@@ -50,7 +50,7 @@ export default class extends SlashCommand {
         const urlo = new URL(interaction.options.getString("embed-url"));
         if (!(["http:", "https:"].includes(urlo.protocol))) return await interaction.reply({ content: "Invalid image URL!", ephemeral: true });
         url = urlo.href;
-      } catch (_) {
+      } catch {
         return await interaction.reply({ content: "Invalid image URL!", ephemeral: true });
       }
     }
@@ -92,13 +92,14 @@ export default class extends SlashCommand {
         content: mentions || undefined,
         embeds: [embed],
         allowedMentions: { parse: (interaction.channel.permissionsFor(interaction.user.id).has("MENTION_EVERYONE") ? ["users", "everyone", "roles"] : []) },
-      })
+      });
       const reactions = [];
       for (const reaction of emojis) reactions.push([reaction[0] ? reaction[1] : null, await poll.react(reaction[1])]);
       try {
         if (time !== Infinity) await pollDb.create({
-          messageId: poll.id,
+          guildId: poll.guild.id,
           channelId: poll.channel.id,
+          messageId: poll.id,
           date: new Date(Date.now() + time),
           reactions: reactions.map(e => e[0] || e[1].emoji.identifier)
         });

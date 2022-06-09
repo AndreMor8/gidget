@@ -1,4 +1,4 @@
-//NEEDS REWRITE!
+//NEEDS REWRITE! NOT THIS ONE!
 import ms from "ms";
 import tempmute from '../../utils/tempmute.js';
 import MessageModel from '../../database/models/muterole.js'
@@ -23,14 +23,13 @@ export default class extends Command {
     const member = message.mentions.members.first() || message.guild.members.cache.get(args[2]) || message.guild.members.cache.find(m => m.displayName === args[2]) || message.guild.members.cache.find(m => m.user.username === args[2]) || (args[2] ? await message.guild.members.fetch(args[2]).catch(() => { }) : undefined)
     if (!member) return message.channel.send('Invalid member!');
     const addMemberRole = async (muteroleid, member, time, args) => {
-      const MsgDocument = await MessageModel2.findOne({ guildid: message.guild.id, memberId: member.id }).catch(err => console.log(err));
+      const MsgDocument = await MessageModel2.findOne({ guildid: { $eq: message.guild.id }, memberId: { $eq: member.id } }).lean().exec();
       if (MsgDocument) return message.channel.send("That member is already restricted.");
-      const newData = new MessageModel2({
+      await MessageModel2.create({
         guildId: message.guild.id,
         memberId: member.id,
         date: new Date(new Date().getTime() + time),
-      });
-      await newData.save().then(async () => {
+      }).then(async () => {
         const role = message.guild.roles.cache.get(muteroleid)
         if (role && member) {
           if (args[3]) {
@@ -49,9 +48,9 @@ export default class extends Command {
         } else {
           await message.channel.send('Something happened.')
         }
-      }).catch(err => message.channel.send('I have not been able to correctly save the information in my database. Here\'s a debug: ' + err))
+      }).catch(err => message.channel.send('I have not been able to correctly save the information in my database. Here\'s a debug: ' + err));
     }
-    const msgDocument = await MessageModel.findOne({ guildid: message.guild.id }).catch(err => console.log(err));
+    const msgDocument = await MessageModel.findOne({ guildid: { $eq: message.guild.id } }).lean().exec();
     if (msgDocument) {
       const { muteroleid } = msgDocument;
       addMemberRole(muteroleid, member, time, args);

@@ -26,7 +26,7 @@ export default (bot, reupdate = false) => {
         for (const i in msgDocument) {
           const date = msgDocument[i].date.getTime();
           if (new Date().getTime() >= date) {
-            const another = await MessageModel.findOne({ guildid: msgDocument[i].guildId });
+            const another = await MessageModel.findOne({ guildid: msgDocument[i].guildId }).lean().exec();
             if (another) {
               const guild = bot.guilds.cache.get(msgDocument[i].guildId);
               if (guild) {

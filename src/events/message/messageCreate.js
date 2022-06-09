@@ -83,9 +83,7 @@ export default async (bot, message, nolevel = false) => {
                 if (regex.test(message.content) && message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
                   await message.channel.send(arr[i][1]).catch(() => { });
                 }
-              } catch (_) {
-                null;
-              }
+              } finally { null; }
             }
           }
         }

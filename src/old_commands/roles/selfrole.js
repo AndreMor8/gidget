@@ -15,7 +15,7 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send('You haven\'t said anything. The options are `join`, `leave`, `list`. For interact with the database: `add`, `remove`')
     if (args[1] === 'list') {
-      const msgDocument = await MessageModel.find({ guildid: message.guild.id }, "word");
+      const msgDocument = await MessageModel.find({ guildid: { $eq: message.guild.id } }, "word").lean().exec();
       if (typeof msgDocument[0] !== "undefined" && msgDocument[0] !== null) {
         let text = "";
         let i = 1;
@@ -48,18 +48,14 @@ export default class extends Command {
         const roleobj = message.mentions.roles.first() || message.guild.roles.cache.get(role)
         if (!roleobj) return message.channel.send('That role isn\'t valid. Mention the role or put the role ID.')
         else {
-          const findMsgDocument = await MessageModel
-            .findOne({ guildid: message.guild.id, word: args.slice(2).join(" ") })
-            .catch(err => console.log(err));
+          const findMsgDocument = await MessageModel.findOne({ guildid: { $eq: message.guild.id }, word: { $eq: args.slice(2).join(" ") } }).lean().exec();
           if (findMsgDocument) return message.channel.send("That name already exists...");
           else {
-            const dbMsgModel = new MessageModel({
+            await MessageModel.create({
               guildid: message.guild.id,
               word: args.slice(2).join(" "),
               roleid: roleobj.id,
-            });
-            await dbMsgModel.save()
-              .then(() => message.channel.send('Self role added correctly.'))
+            }).then(() => message.channel.send('Self role added correctly.'))
               .catch(err => message.channel.send('Something bad happened. Here\'s a debug: ' + err));
           }
         }
@@ -69,11 +65,11 @@ export default class extends Command {
     if (args[1] === 'join') {
       if (!args[2]) return message.channel.send('Put a selfrole name.')
       const name = args.slice(2).join(" ");
-      const msgDocument = await MessageModel.findOne({ guildid: message.guild.id, word: name });
+      const msgDocument = await MessageModel.findOne({ guildid: { $eq: message.guild.id }, word: { $eq: name } }).lean().exec();
       const addMemberRole = async (roleid) => {
         const role = message.guild.roles.cache.get(roleid)
         const member = message.member;
-        if (role && member)await member.roles.add(role).then(() => message.channel.send('I gave you the role correctly.')).catch(err => message.channel.send(`I can't give you the role. Here's a debug: ` + err));
+        if (role && member) await member.roles.add(role).then(() => message.channel.send('I gave you the role correctly.')).catch(err => message.channel.send(`I can't give you the role. Here's a debug: ` + err));
         else await message.channel.send('Something happened. That role still exists?')
       }
       if (!msgDocument) return message.channel.send('That selfrole doesn\'t exist.');
@@ -85,7 +81,7 @@ export default class extends Command {
     if (args[1] === 'leave') {
       if (!args[2]) return message.channel.send('Put a selfrole name.')
       const name = args.slice(2).join(" ");
-      const msgDocument = await MessageModel.findOne({ guildid: message.guild.id, word: name });
+      const msgDocument = await MessageModel.findOne({ guildid: { $eq: message.guild.id }, word: { $eq: name } }).lean().exec();
       const removeMemberRole = async (roleid) => {
         const role = message.guild.roles.cache.get(roleid)
         const member = message.member;
@@ -100,11 +96,11 @@ export default class extends Command {
     }
     if (args[1] === 'remove') {
       if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
-      if (!args[2]) return message.channel.send('Tell me that selfrole should be removed from my database.')
+      if (!args[2]) return await message.channel.send('Tell me that selfrole should be removed from my database.')
       const name = args.slice(2).join(" ");
-      const msgDocument = await MessageModel.findOne({ guildid: message.guild.id, word: name });
-      if (msgDocument) await msgDocument.remove().then(() => message.channel.send('I\'ve removed that selfrole from my database.')).catch(err => message.channel.send('I was unable to remove that selfrole from my database. Here\'s a debug: ' + err));
-      else return message.channel.send('That selfrole doesn\'t exist.');
+      const msgDocument = await MessageModel.findOneAndDelete({ guildid: { $eq: message.guild.id }, word: { $eq: name } }).lean().exec();
+      if (msgDocument) await message.channel.send('I\'ve removed that selfrole from my database.');
+      else await message.channel.send('That selfrole doesn\'t exist.');
     }
   }
 }

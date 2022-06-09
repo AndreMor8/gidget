@@ -23,23 +23,23 @@ export default class extends Command {
       const level = parseInt(leve);
       if (!level) return;
       if (level < 1) return message.channel.send("Invalid number");
-      const msgDocument = await MessageModel.findOne({ guildId: message.guild.id });
+      const msgDocument = await MessageModel.findOne({ guildId: { $eq: message.guild.id } }).lean().exec();
       if (msgDocument) {
         const { roles } = msgDocument;
         roles[level - 1] = toadd;
-        await msgDocument.updateOne({ roles: roles }).then(async () => {
+        await MessageModel.updateOne({ guildId: { $eq: message.guild.id } }, { $set: { roles } }).then(async () => {
           message.guild.cache.levelconfig = false;
           await message.channel.send("Updated");
         }).catch(err => message.channel.send("Some error ocurred! " + err));
       } else {
         const arr = [];
         arr[level - 1] = toadd;
-        await new MessageModel({
+        await MessageModel.create({
           guildId: message.guild.id,
           levelnotif: false,
           levelsystem: false,
           roles: arr
-        }).save().then(async () => {
+        }).then(async () => {
           message.guild.cache.levelconfig = false;
           await message.channel.send("Updated");
         }).catch(err => message.channel.send("Some error ocurred! " + err));
@@ -49,15 +49,15 @@ export default class extends Command {
       const level = parseInt(leve);
       if (!level) return;
       if (level < 1) return message.channel.send("Invalid number");
-      const msgDocument = await MessageModel.findOne({ guildId: message.guild.id });
+      const msgDocument = await MessageModel.findOne({ guildId: { $eq: message.guild.id } }).lean().exec();
       if (!msgDocument) {
         await message.channel.send("There are no records of that level");
-        await new MessageModel({
+        await MessageModel.create({
           guildId: message.guild.id,
           levelnotif: false,
           levelsystem: false,
           roles: []
-        }).save().then(async () => {
+        }).then(async () => {
           message.guild.cache.levelconfig = false;
           await message.channel.send("Updated");
         }).catch(err => message.channel.send("Some error ocurred! " + err));
@@ -65,7 +65,7 @@ export default class extends Command {
         const { roles } = msgDocument;
         if (!roles[level - 1]) return message.channel.send("There are no records of that level");
         roles[level - 1] = undefined;
-        await msgDocument.updateOne({ roles: roles }).then(async () => {
+        await MessageModel.updateOne({ guildId: { $eq: message.guild.id } }, { $set: { roles } }).then(async () => {
           message.guild.cache.levelconfig = false;
           await message.channel.send("Updated");
         }).catch(err => message.channel.send("Some error ocurred! " + err));

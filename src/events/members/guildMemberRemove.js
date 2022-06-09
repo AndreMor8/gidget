@@ -10,36 +10,19 @@ export default async (bot, member) => {
     //A cache system
     let verify = bot.rrcache.get(member.guild.id);
     if (!verify) {
-      verify = await MessageModel2.findOne({ guildId: member.guild.id }).lean();
+      verify = await MessageModel2.findOne({ guildId: { $eq: member.guild.id } }).lean().exec();
     }
     if (verify && verify.enabled) {
-      const msgDocument = await MessageModel.findOne({
-        guildid: member.guild.id,
-        memberid: member.user.id
-      });
+      const msgDocument = await MessageModel.findOne({ guildid: { $eq: member.guild.id }, memberid: { $eq: member.user.id } }).lean().exec();
 
       //List roles
       const roles = member.roles.cache.filter(r => !r.deleted && !r.managed && r.id !== member.guild.id).map(r => r.id);
 
       //Save to the DB
-      if (roles.length) {
-        if (msgDocument) msgDocument.updateOne({ roles: roles }).catch(console.error);
-        else {
-          const dbMsgModel = new MessageModel({
-            guildid: member.guild.id,
-            memberid: member.user.id,
-            roles: roles
-          });
-          dbMsgModel.save().catch(console.error);
-        }
-      } else {
-        //They have no roles, and are still in the DB in previous sessions.
-        if (msgDocument) {
-          msgDocument.deleteOne();
-        }
-      }
-      bot.rrcache.set(member.guild.id, verify);
+      if (roles.length) MessageModel.updateOne({ guildid: { $eq: member.guild.id }, memberid: { $eq: member.user.id } }, { $set: { roles, guildid: member.guild.id, memberid: member.user.id } }, { upsert: true }).exec();
+      else if (msgDocument) MessageModel.findByIdAndDelete(msgDocument._id.toString()).lean().exec();
     }
+    bot.rrcache.set(member.guild.id, verify);
   }
 
   //GOODBYE SYSTEM

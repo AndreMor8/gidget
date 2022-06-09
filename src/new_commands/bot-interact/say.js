@@ -33,7 +33,7 @@ export default class extends SlashCommand {
       .setDisabled(true)
       .setStyle("SECONDARY")
       .setLabel(`Sent by ${interaction.user.tag} @ ${interaction.user.id}`)]);
-    const doc = (await saybutton.findOne({ guildId: { $eq: interaction.guildId } })) || (await saybutton.create({ guildId: interaction.guildId }));
+    const doc = (await saybutton.findOne({ guildId: { $eq: interaction.guildId } }).lean()) || (await saybutton.create({ guildId: interaction.guildId }));
 
     if (interaction.options.getString("to-say", false)) {
       await interaction.channel.send({ content: interaction.options.getString("to-say"), components: doc.enabled ? [authorButton] : undefined });
@@ -52,7 +52,7 @@ export default class extends SlashCommand {
     }
     if (typeof interaction.options.getBoolean("button", false) === "boolean") {
       if (!interaction.member.permissions.has(8n)) return await interaction.reply({ content: "You aren't admin.", ephemeral: true });
-      await doc.updateOne({ $set: { enabled: interaction.options.getBoolean("button") } });
+      await saybutton.updateOne({ guildId: { $eq: interaction.guildId } }, { $set: { enabled: interaction.options.getBoolean("button") } });
       await interaction.reply({ content: `Author button ${interaction.options.getBoolean("button") ? "enabled" : "disabled.\nThe bot is not responsible for the messages made with this command. There is no way of knowing who made them.."}.`, ephemeral: true });
       return;
     }

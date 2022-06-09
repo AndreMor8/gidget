@@ -38,7 +38,7 @@ export async function setConfessionAnon(guild) {
 }
 
 export async function setConfessionChannel(guild, channel) {
-  let doc = await confessions.findOneAndUpdate({ guildID: { $eq: guild.id } }, { $set: { channelID: channel.id } }, { new: true });
+  let doc = await confessions.findOneAndUpdate({ guildID: { $eq: guild.id } }, { $set: { channelID: channel.id } }, { new: true }).lean();
   if (!doc) {
     doc = await confessions.create({
       guildID: guild.id,
@@ -78,7 +78,7 @@ export async function deleteAutoPostChannel(guild, channel) {
   const id = channel?.id || (typeof channel === "string" ? channel : null);
   if (!id) throw new StructureError("Can't get channel ID!");
   if (isNaN(id)) throw new StructureError("Can't get channel ID!");
-  const doc = await autopost.findOneAndUpdate({ guildID: { $eq: guild.id } }, { $pull: { channels: id } });
+  const doc = await autopost.findOneAndUpdate({ guildID: { $eq: guild.id } }, { $pull: { channels: id } }).lean();
   if (!doc) {
     await autopost.create({
       guildID: guild.id,
@@ -476,11 +476,11 @@ export async function setWarn(member, reason = "") {
   return warns.length;
 }
 export async function deleteWarn(member, id, reason = "") {
-  const deleted = await memberwarns.findById(id).catch(() => { });
+  const deleted = await memberwarns.findById(id).lean().exec().catch(() => { });
   if (!deleted) throw new StructureError("That ID doesn't exist!");
   if (deleted.memberId !== member.id) throw new StructureError("That ID doesn't exist!");
   if (deleted.guildId !== member.guild.id) throw new StructureError("That ID doesn't exist!");
-  await deleted.deleteOne();
+  await memberwarns.findByIdAndDelete(id).lean().exec();
   if (member.cache?.warns) member.cache.warns = false;
   await getWarns(member);
   await member.send(`You've been pardoned on ${member.guild.name}${reason ? (" with reason: " + reason) : ""}. Now you have ${member.warns.length} warnings.`).catch(() => { });

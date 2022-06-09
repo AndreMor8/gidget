@@ -17,14 +17,14 @@ export default async (bot, member) => {
     const msgDocument = await MessageModel.findOne({
       guildid: member.guild.id,
       memberid: member.user.id
-    });
+    }).lean();
     if (msgDocument) {
       if (member.guild.me.permissions.has("MANAGE_ROLES")) {
         const { roles } = msgDocument;
         const col = member.guild.roles.cache.filter(role => roles.includes(role.id) && (!role.deleted && role.editable && !role.managed));
         if (col.size >= 1) await member.roles.add(col, "Retrieving roles").catch(() => { });
       }
-      msgDocument.deleteOne();
+      MessageModel.findByIdAndDelete(msgDocument._id.toString()).lean().exec();
     }
     bot.rrcache.set(member.guild.id, verify);
   }
@@ -107,15 +107,15 @@ export default async (bot, member) => {
     .setDescription(`This server is dedicated to fans of the [Wow! Wow! Wubbzy!](https://wubbzy.fandom.com/wiki/Wow!_Wow!_Wubbzy!) show.\n\nIf you are one of them, we are happy to have you here! <:WubbzyLove:608130212076453928>`)
     .addField(
       "Yo soy alguien que habla español!",
-      `Bienvenido a Wow Wow Discord, la comunidad de la serie infantil [Wow! Wow! Wubbzy!](https://wubbzy.fandom.com/es/wiki/Wow!_Wow!_Wubbzy!).\nPara obtener el rol español, espera los 10 minutos, ve a <#622977956863672362> y reacciona a [este mensaje](https://ptb.discordapp.com/channels/402555684849451028/622977956863672362/698991384140447765).\nEsperamos que disfrutes tu estancia en <#636781007189835779>`
+      `Bienvenido a Wow Wow Discord, la comunidad de la serie infantil [Wow! Wow! Wubbzy!](https://wubbzy.fandom.com/es/wiki/Wow!_Wow!_Wubbzy!).\nPara obtener el rol español, espera los 10 minutos, ve a <#861108000873512970> y selecciona el respectivo rol en [este mensaje](https://discord.com/channels/402555684849451028/861108000873512970/861116424935964712).\nEsperamos que disfrutes tu estancia en <#636781007189835779>`
     )
     .addField(
       "Why is the verification level high?",
-      `This is to avoid raids with self-bots, and for people to read [the rules](https://ptb.discord.com/channels/402555684849451028/402556086093348874/402568434522521600) before chatting. We recommend reading the server rules to find out what is allowed and restricted. <#402556086093348874>`
+      `This is to avoid raids with self-bots, and for people to read [the rules](https://discord.com/channels/402555684849451028/402556086093348874/402568434522521600) before chatting. We recommend reading the server rules to find out what is allowed and restricted. <#402556086093348874>`
     )
     .addField(
       "How do I get permissions to upload images and others?",
-      `You must be chatting with us for a while before giving yourself those permissions. The level that will give you those permissions is level 2. (with me)\nYou can check your level by going to <#608560264425635850> and typing <:Gidget:610310249580331033>\`level\``
+      `You must be chatting with us for a while before giving yourself those permissions. The level that will give you those permissions is level 2 (with me).\nYou can check your level by going to <#608560264425635850> and typing <:Gidget:610310249580331033>\`level\``
     )
     .addField(
       "Remember to use common sense!",

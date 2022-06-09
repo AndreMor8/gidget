@@ -76,7 +76,7 @@ export default async (bot, interaction) => {
         guildId: { $eq: interaction.guildId },
         messageId: { $eq: interaction.message.id },
         channelId: { $eq: interaction.channelId }
-      });
+      }).lean();
 
       if (doc) {
         const { categoryId } = doc;
@@ -85,7 +85,7 @@ export default async (bot, interaction) => {
           guildId: { $eq: interaction.guildId },
           from: { $eq: interaction.message.id },
           memberId: { $eq: interaction.user.id }
-        });
+        }).lean();
         if (doc2) return await interaction.reply({ content: "You already have a ticket!", ephemeral: true }).catch(() => { });
         const cat = interaction.guild.channels.cache.get(categoryId) || await interaction.guild.channels.fetch(categoryId).catch(() => { });
         if (!cat) return await interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });

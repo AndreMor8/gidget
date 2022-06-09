@@ -11,11 +11,11 @@ export default class extends Command {
     this.description = "Re-enable XP on channels.";
   }
   async run(bot, message, args) {
-    if (!args[1]) return message.channel.send("Usage: `enablexp <channel>`");
+    if (!args[1]) return await message.channel.send("Usage: `enablexp <channel>`");
     const channel = message.mentions.channels.filter(e => e.guild.id === message.guild.id).first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(e => e.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => { });
-    if (!channel) return message.channel.send("Invalid channel!");
-    await levelconfig.findOneAndUpdate({ guildId: { $eq: message.guild.id } }, { $pull: { nolevel: channel.id } });
+    if (!channel) return await message.channel.send("Invalid channel!");
+    await levelconfig.updateOne({ guildId: { $eq: message.guild.id } }, { $pull: { nolevel: channel.id } });
     message.guild.cache.levelconfig = false;
-    message.channel.send("The channel has been removed from the blacklist.");
+    await message.channel.send("The channel has been removed from the blacklist.");
   }
 }

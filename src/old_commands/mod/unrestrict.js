@@ -24,9 +24,9 @@ export default class extends Command {
         if (args[2]) {
           member.roles.remove(role, 'Unrestrict command' + args.slice(2).join(" "))
             .then(async () => {
-              const msg = await MessageModel2.findOne({ guildId: message.guild.id, memberId: member.id });
+              const msg = await MessageModel2.findOne({ guildId: { $eq: message.guild.id }, memberId: { $eq: member.id } }).lean().exec();
               if (msg) {
-                msg.deleteOne();
+                MessageModel2.findByIdAndDelete(msg._id.toString()).lean().exec();
                 tempmutesystem(bot, true);
               }
               await message.channel.send(`I've unrestricted ${member.user.tag} with reason: ${args.slice(2).join(" ")}`)
@@ -35,9 +35,9 @@ export default class extends Command {
         } else {
           member.roles.remove(role, 'Unrestrict command')
             .then(async () => {
-              const msg = await MessageModel2.findOne({ guildId: message.guild.id, memberId: member.id });
+              const msg = await MessageModel2.findOne({ guildId: { $eq: message.guild.id }, memberId: { $eq: member.id } }).lean().exec();
               if (msg) {
-                msg.deleteOne();
+                MessageModel2.findByIdAndDelete(msg._id.toString()).lean().exec();
                 tempmutesystem(bot, true);
               }
               await message.channel.send(`I've unrestricted ${member.user.tag}`)
@@ -48,9 +48,7 @@ export default class extends Command {
         await message.channel.send('Something happened.')
       }
     }
-    const MsgDocument = await MessageModel
-      .findOne({ guildid: message.guild.id })
-      .catch(err => console.log(err));
+    const MsgDocument = await MessageModel.findOne({ guildid: message.guild.id }).lean().exec()
     if (MsgDocument) {
       const { muteroleid } = MsgDocument;
       removeMemberRole(muteroleid, member, args)

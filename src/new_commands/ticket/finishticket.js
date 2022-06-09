@@ -17,12 +17,12 @@ export default class extends SlashCommand {
 
   }
   async run(bot, interaction) {
-    const msgDocument = await MessageModel.findOne({
+    const msgDocument = await MessageModel.findOneAndDelete({
       guildId: { $eq: interaction.guild.id },
       messageId: { $eq: interaction.options.getString("message", true) }
-    })
+    }).lean().exec();
 
-    if (msgDocument) await msgDocument.deleteOne().then(() => interaction.reply('Ok, I removed that from my database. Remember to delete the message!'));
+    if (msgDocument) await interaction.reply('Ok, I removed that from my database. Remember to delete the message!');
     else await interaction.reply('I don\'t see a ticket system here.');
   }
 }

@@ -53,21 +53,17 @@ export default class extends Command {
 						emojiRoleMappings.set((emoji.id || emoji), role.id);
 					});
 					collector.on('end', async () => {
-						const findMsgDocument = await MessageModel
-							.findOne({ messageId: fetchedMessage.id, guildId: message.guild.id })
-							.catch(err => console.log(err));
+						const findMsgDocument = await MessageModel.findOne({ messageId: fetchedMessage.id, guildId: message.guild.id }).lean().exec();
 						if (findMsgDocument) await message.channel.send("A role reaction set up exists for this message already...");
 						else {
-							const dbMsgModel = new MessageModel({
+							await MessageModel.create({
 								guildId: message.guild.id,
 								messageId: fetchedMessage.id,
 								emojiRoleMappings: emojiRoleMappings
-							});
-							dbMsgModel.save()
-								.then(async () => {
-									bot.cachedMessageReactions.delete(fetchedMessage.id);
-									await message.channel.send('I\'ve added that to my database.');
-								}).catch(err => message.channel.send('Something happened when I tried to save the data to my database. Here\'s a debug: ' + err));
+							}).then(async () => {
+								bot.cachedMessageReactions.delete(fetchedMessage.id);
+								await message.channel.send('I\'ve added that to my database.');
+							}).catch(err => message.channel.send('Something happened when I tried to save the data to my database. Here\'s a debug: ' + err));
 						}
 					});
 				}

@@ -5,8 +5,8 @@ export default async (bot, channel) => {
   await MessageModel3.deleteMany({ channelId: channel.id });
 
   if (channel.guild && channel.guild.available) {
-    await MessageModel2.deleteMany({ channelId: channel.id })
-    const msgDocument = await MessageModel.findOne({ guildId: channel.guild.id, channelId: channel.id });
+    MessageModel2.deleteMany({ channelId: channel.id }).exec();
+    const msgDocument = await MessageModel.findOne({ guildId: channel.guild.id, channelId: channel.id }).lean().exec();
     if (msgDocument) {
       const { memberId } = msgDocument;
       const member = await channel.guild.members.fetch(memberId).catch(() => { });
@@ -21,10 +21,9 @@ export default async (bot, channel) => {
           else member.send("Your ticket was deleted by " + entry.executor.tag).catch(() => { });
         }
       }
-      msgDocument.deleteOne();
+      MessageModel.findByIdAndDelete(msgDocument._id.toString()).lean().exec();
     }
   } else if (channel.isText()) {
-    const msgDocument = await MessageModel.findOne({ guildId: channel.guild.id, channelId: channel.id });
-    if (msgDocument) msgDocument.deleteOne();
+    await MessageModel.deleteOne({ guildId: { $eq: channel.guild.id }, channelId: { $eq: channel.id } });
   }
 }
