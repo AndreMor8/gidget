@@ -12,7 +12,7 @@ export default async (_self, bot) => {
         if (new Date().getTime() >= date) {
           const guild = await bot.guilds.cache.get(doc.guildId);
           if (guild) {
-            if (guild.shardId && guild.shardId === bot.shard.ids[0]) {
+            if (typeof guild.shardId === "number" && guild.shardId === bot.shard.ids[0]) {
               const channel = await guild.channels.fetch(doc.channelId).catch(() => { });
               if (channel) {
                 const message = await channel.messages.fetch(doc.messageId).then(e => e.fetch()).catch(() => { });
