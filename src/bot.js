@@ -107,7 +107,16 @@ bot.memberVotes = new Discord.Collection();
 
 //DisTube events
 bot.distube
-  .on("playSong", (queue, song) => queue.textChannel.send?.(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`))
+  .on("playSong", async (queue, song) => {
+    if (queue.voiceChannel.type === "GUILD_STAGE_VOICE") {
+      if (queue.voiceChannel.guild.me.voice.suppress) {
+        if (queue.voiceChannel.permissionsFor(bot.user.id).has("MUTE_MEMBERS")) await queue.voiceChannel.guild.me.voice.setSuppressed(false).catch(() => { });
+        else if (queue.voiceChannel.permissionsFor(bot.user.id).has("REQUEST_TO_SPEAK")) await queue.voiceChannel.guild.me.voice.setRequestToSpeak(true).catch(() => { });
+        if (queue.voiceChannel.guild.me.voice.suppress) await queue.textChannel.send(`I need to be a speaker on the channel to play music!\nYou can do it now by going to the stage, right click on me, "Invite to Speak"`);
+      }
+    }
+    await queue.textChannel.send(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`);
+  })
   .on("addSong", (queue, song) => song.metadata.interaction.editReply(`**${song.name}** has been added to the queue!`))
   .on("addList", (queue, playlist) => playlist.metadata.interaction.editReply(`Playlist: **${playlist.name}** has been added to the queue! (check /queue for results)`))
   .on("empty", queue => queue.textChannel?.send("Queue deleted"))

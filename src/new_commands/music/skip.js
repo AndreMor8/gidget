@@ -48,7 +48,7 @@ export default class extends SlashCommand {
       }
     }
 
-    if ((queue.songs.length > 1) || (to_jump < 0)) await queue.jump(to_jump || 1).catch(() => interaction.reply("Invalid song position. Check `g%queue` to see which position to jump into."));
+    if ((queue.songs.length > 1) || (to_jump < 0)) await queue.jump(to_jump || 1).catch(() => interaction.reply("Invalid song position. Check `/queue` to see which position to jump into."));
     else queue.stop();
     if(!interaction.replied) interaction.reply("Operation completed.");
   }

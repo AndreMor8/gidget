@@ -15,7 +15,7 @@ export default class extends SlashCommand {
     const queue = bot.distube.getQueue(interaction.guild.me.voice);
     if (!queue) return await interaction.reply({ content: "There is nothing playing.", ephemeral: true });
     if (interaction.options.getBoolean("previous") && !queue.previousSongs.length) return await interaction.reply({ content: "There are no previous songs yet.", ephemeral: true })
-    const contents = Util.splitMessage(interaction.options.getBoolean("previous", false) ? `${queue.previousSongs.reverse().map((song, i) => `**${parseInt(i) + 1}** ${song.name} (${song.formattedDuration})`).join(`\n`)}` : `${queue.songs.map((song, i) => `**${i}** ${song.name} (${song.formattedDuration})`).join(`\n`)}`, { maxLength: 600 });
+    const contents = Util.splitMessage(interaction.options.getBoolean("previous", false) ? `${queue.previousSongs.reverse().map((song, i, a) => `**-${parseInt(a.length) - parseInt(i)}** ${song.name} (${song.formattedDuration})`).join(`\n`)}` : `${queue.songs.map((song, i) => `**${i}** ${song.name} (${song.formattedDuration})`).join(`\n`)}`, { maxLength: 600 });
     const embeds = [];
     for (const i in contents) {
       embeds.push(new MessageEmbed().setTitle(i == 0 ? (interaction.options.getBoolean("previous") ? "Previous songs" : "Song queue") : "").setDescription(contents[i]).setColor("RANDOM"));
