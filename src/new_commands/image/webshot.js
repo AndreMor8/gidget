@@ -16,16 +16,16 @@ export default class extends SlashCommand {
       type: "STRING",
       choices: [
         {
-          name: "On 'load' event",
+          name: "[load] On 'load' event (default)",
           value: "load"
         }, {
-          name: "When all HTML is rendered [domcontentloaded] (default)",
+          name: "[domcontentloaded] When all HTML is rendered",
           value: "domcontentloaded"
         }, {
-          name: "When there is no network interaction [networkidle]",
+          name: "[networkidle] When there is no network interaction",
           value: "networkidle"
         }, {
-          name: "Better just obey my delay choice [commit]",
+          name: "[commit] Better just obey my delay choice",
           value: "commit"
         }
       ],
@@ -64,7 +64,7 @@ export default class extends SlashCommand {
     }
     const site = interaction.options.getString("site", true);
     const options = {
-      waitUntil: interaction.options.getString("waituntil", false) || "domcontentloaded",
+      waitUntil: interaction.options.getString("waituntil", false) || "load",
       delay: interaction.options.getInteger("delay", false) || 0,
       y: interaction.options.getNumber("y", false) || 0,
       x: interaction.options.getNumber("x", false) || 0
