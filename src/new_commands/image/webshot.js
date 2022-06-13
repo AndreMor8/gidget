@@ -11,6 +11,13 @@ export default class extends SlashCommand {
       description: "The web page you want to screenshot",
       required: true
     }, {
+      name: "delay",
+      description: "Wait a little longer for the page to load (in seconds)",
+      type: "INTEGER",
+      minValue: 0,
+      maxValue: 60,
+      required: false
+    }, {
       name: "y",
       description: "Where on the page to go vertically",
       type: "NUMBER",
@@ -37,8 +44,9 @@ export default class extends SlashCommand {
     }
     const site = interaction.options.getString("site", true);
     const options = {
-      y: parseInt(interaction.options.getNumber("y", false)) || 0,
-      x: parseInt(interaction.options.getNumber("x", false)) || 0
+      delay: interaction.options.getInteger("delay", false) || 0,
+      y: interaction.options.getNumber("y", false) || 0,
+      x: interaction.options.getNumber("x", false) || 0
     };
     await pup(interaction, site.startsWith("http://") || site.startsWith("https://") ? site : `http://${site}`, options);
   }
@@ -59,7 +67,7 @@ async function pup(interaction, url, options) {
         "auth-token": process.env.PUPPETEER_TOKEN,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ url, x: options?.x, y: options?.y, nsfw: interaction.channel?.nsfw || false })
+      body: JSON.stringify({ url, delay: options.delay, x: options.x, y: options.y, nsfw: interaction.channel?.nsfw || false })
     });
     if (!res.ok) throw new Error(await res.text() || (res.status));
     else {
