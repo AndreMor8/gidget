@@ -11,6 +11,26 @@ export default class extends SlashCommand {
       description: "The web page you want to screenshot",
       required: true
     }, {
+      name: "waituntil",
+      description: "When will I consider the page to be 100% loaded?",
+      type: "STRING",
+      choices: [
+        {
+          name: "On 'load' event",
+          value: "load"
+        }, {
+          name: "When all HTML is rendered [domcontentloaded] (default)",
+          value: "domcontentloaded"
+        }, {
+          name: "When there is no network interaction [networkidle]",
+          value: "networkidle"
+        }, {
+          name: "Better just obey my delay choice [commit]",
+          value: "commit"
+        }
+      ],
+      required: false
+    }, {
       name: "delay",
       description: "Wait a little longer for the page to load (in seconds)",
       type: "INTEGER",
@@ -44,6 +64,7 @@ export default class extends SlashCommand {
     }
     const site = interaction.options.getString("site", true);
     const options = {
+      waitUntil: interaction.options.getString("waituntil", false) || "domcontentloaded",
       delay: interaction.options.getInteger("delay", false) || 0,
       y: interaction.options.getNumber("y", false) || 0,
       x: interaction.options.getNumber("x", false) || 0
@@ -67,7 +88,7 @@ async function pup(interaction, url, options) {
         "auth-token": process.env.PUPPETEER_TOKEN,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ url, delay: options.delay, x: options.x, y: options.y, nsfw: interaction.channel?.nsfw || false })
+      body: JSON.stringify({ url, waitUntil: options.waitUntil, delay: options.delay, x: options.x, y: options.y, nsfw: interaction.channel?.nsfw || false })
     });
     if (!res.ok) throw new Error(await res.text() || (res.status));
     else {
