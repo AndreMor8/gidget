@@ -29,7 +29,7 @@ export default class extends SlashCommand {
       }, {
         name: "roles",
         type: "STRING",
-        description: "Roles that can close tickets.",
+        description: "Roles that can close tickets (separated with spaces)",
         required: false
       }]
     }, {
@@ -97,7 +97,7 @@ export default class extends SlashCommand {
   }
   async run(bot, interaction) {
     const subcommand = interaction.options.getSubcommand();
-    const msgID = subcommand.options.getString("message", true);
+    const msgID = interaction.options.getString("message", true);
     const msgDocument = await MessageModel.findOne({ guildId: { $eq: interaction.guild.id }, messageId: { $eq: msgID } });
     if (!msgDocument) return await interaction.reply("I can't find a ticket system in that message.");
     const { manual } = msgDocument;
@@ -117,11 +117,8 @@ export default class extends SlashCommand {
       }
         break;
       case "set-roles": {
-        const roles = interaction.options.getString("roles", false);
-        if (!roles) {
-          await msgDocument.updateOne({ $set: { roles: [] } });
-          await interaction.reply("No one will be able to close tickets unless they have `MANAGE_CHANNELS` permission on the ticket category.");
-        } else {
+        const roles = interaction.options.getString("roles", false)?.split(" ");
+        if (roles) {
           const toput = [];
           for (const i in roles) {
             if (!interaction.guild.roles.cache.has(roles[i])) {
@@ -132,6 +129,9 @@ export default class extends SlashCommand {
           }
           await msgDocument.updateOne({ $set: { roles: toput } });
           await interaction.reply("Roles updated correctly\nRemember to configure the role in the category so that its members can see and write on the ticket.");
+        } else {
+          await msgDocument.updateOne({ $set: { roles: [] } });
+          await interaction.reply("No one will be able to close tickets unless they have `MANAGE_CHANNELS` permission on the ticket category.");
         }
       }
         break;

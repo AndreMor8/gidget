@@ -39,15 +39,15 @@ export default class extends SlashCommand {
     if (interaction.channel.permissionsFor(interaction.user.id).has("MANAGE_CHANNELS")) {
       finish(true);
     } else {
-      if (!roles.some(e => interaction.member.roles.cache.has(e))) {
+      if (roles?.some(e => interaction.member.roles.cache.has(e))) {
+        finish(true);
+      } else {
         if (manual) {
           if (memberId === interaction.member.id) {
             finish();
           } else interaction.reply("You do not have sufficient permissions to close this ticket.");
         }
         else interaction.reply("You do not have sufficient permissions to close this ticket.");
-      } else {
-        finish(true);
       }
     }
   }
