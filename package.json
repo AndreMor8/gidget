@@ -42,7 +42,7 @@
     "ffmpeg-static": "^5.0.0",
     "file-type": "^17.1.2",
     "gif-encoder": "^0.7.2",
-    "google-img-scrap": "^1.0.6",
+    "google-img-scrap": "^1.0.7",
     "google-it": "^1.6.2",
     "is-svg": "^4.3.2",
     "jsqr": "^1.4.0",
