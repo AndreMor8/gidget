@@ -13,7 +13,6 @@ export default async function (_self, bot) {
       shard_id: bot.shard?.ids[0] || 0
     })
   });
-  if (!res.ok) console.error("discordbotlist.com: Error!");
-  else console.log("discordbotlist.com: Posted!");
-  return;
+  if (!res.ok) console.error("discordbotlist.com: Error!", await res.text());
+  return res.ok;
 }

@@ -19,14 +19,12 @@ export default async (_self, bot) => {
                 if (message) {
                   const users = [];
                   let text = "";
-                  for (const r of doc.reactions) users.push([r, await fetchAllReactions(message, r)]);
-                  for (const l of users) text += (parser.parse(l[0])[0] ? l[0] : (l[0].startsWith("a:") ? "<" : "<:") + l[0] + ">") + " -> " + (parseInt(l.length) - 1) + " votes\n";
+                  for (const r of doc.reactions) users.push([r, await fetchAllReactions(message, parser.parse(r)[0] ? r : r.split(":")[1])]);
+                  for (const l of users) text += (parser.parse(l[0])[0] ? l[0] : (l[0].startsWith("a:") ? "<" : "<:") + l[0] + ">") + " -> " + (l[1].filter(u => !u.bot).length) + " votes\n";
                   const embed = message.embeds[0];
                   embed.setDescription(text).setTitle("Poll completed");
                   await message.edit({ embeds: [embed] });
-                  if (message.channel.permissionsFor(bot.user.id).has("MANAGE_MESSAGES")) {
-                    message.reactions.removeAll().catch(() => { });
-                  }
+                  if (message.channel.permissionsFor(bot.user.id).has("MANAGE_MESSAGES")) message.reactions.removeAll().catch(() => { });
                 }
               }
             }
