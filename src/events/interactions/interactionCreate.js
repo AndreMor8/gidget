@@ -1,7 +1,7 @@
 import tickets from "../../database/models/ticket.js";
 import tmembers from "../../database/models/tmembers.js";
 import Discord from 'discord.js';
-import { languages } from '@vitalets/google-translate-api';
+import { languages } from 'google-translate-api-x';
 
 const internalCooldown = new Set();
 

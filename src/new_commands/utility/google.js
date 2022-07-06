@@ -1,7 +1,7 @@
 import { MessageActionRow, MessageButton, MessageEmbed, MessageAttachment, Util } from 'discord.js';
 import googleIt from 'google-it';
 import google from 'google-img-scrap';
-import { default as gtranslate, languages } from '@vitalets/google-translate-api';
+import { default as gtranslate, languages } from 'google-translate-api-x';
 // eslint-disable-next-line
 import { checkCleanUrl } from '../../utils/clean-url.js';
 
@@ -181,7 +181,7 @@ export default class extends SlashCommand {
         const lang = interaction.options.getString('lang', false) || "en";
 
         const reallang = languages.getCode(lang);
-        if (!reallang) return await interaction.reply({ content: "Invalid language!\nhttps://github.com/vitalets/google-translate-api/blob/master/languages.js", ephemeral: true });
+        if (!reallang) return await interaction.reply({ content: "Invalid language!\nhttps://github.com/AidanWelch/google-translate-api/blob/master/languages.js", ephemeral: true });
 
         const text = interaction.options.getString("text");
         if (text.length > 5000) return await interaction.reply({ content: "That text is too long!", ephemeral: true });
@@ -201,7 +201,7 @@ export default class extends SlashCommand {
       case 'tts': {
         const lang = interaction.options.getString('lang', false) || "en";
         const reallang = languages.getCode(lang);
-        if (!reallang) return await interaction.reply({ content: "Invalid language!\nhttps://github.com/vitalets/google-translate-api/blob/master/languages.js", ephemeral: true });
+        if (!reallang) return await interaction.reply({ content: "Invalid language!\nhttps://github.com/AidanWelch/google-translate-api/blob/master/languages.js", ephemeral: true });
         const tosay = interaction.options.getString("text");
         if (tosay.length > 200) return await interaction.reply({ content: "Must be less than 200 characters", ephemeral: true });
         await interaction.deferReply({ ephemeral: true });
