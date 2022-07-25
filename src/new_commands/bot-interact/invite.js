@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 export default class extends SlashCommand {
   constructor(options) {
@@ -7,12 +7,14 @@ export default class extends SlashCommand {
   }
   async run(bot, interaction) {
     await interaction.reply({
-      embeds: [new MessageEmbed()
+      embeds: [new EmbedBuilder()
         .setTitle("Invite links!")
         .setColor("#848484")
-        .addField("Invite the bot to your server", (await bot.generateInvite({ scopes: ["bot", "applications.commands"] })) + "\nThanks for adding me!")
-        .addField("Support server", "https://discord.gg/KDy4gJ7")
-        .addField("Wow Wow Discord", "https://discord.gg/5qx9ZcV\nIf you are a fan of the Wubbzy series, join this server! It's managed by 4 big fans of the series :)")],
+        .addFields([
+          { name: "Invite the bot to your server", value: (await bot.generateInvite({ scopes: ["bot", "applications.commands"] })) + "\nThanks for adding me!" },
+          { name: "Support server", value: "https://discord.gg/KDy4gJ7" },
+          { name: "Wow Wow Discord", value: "https://discord.gg/5qx9ZcV\nIf you are a fan of the Wubbzy series, join this server! It's managed by 4 big fans of the series :)" }
+        ])],
       ephemeral: true
     });
   }

@@ -1,5 +1,6 @@
 import db from '../../database/models/voicerole.js';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
+
 
 export default class extends Command {
 	constructor(options) {
@@ -20,20 +21,20 @@ export default class extends Command {
 			});
 		}
 		if (!args[1]) {
-			const embed = new MessageEmbed()
-				.setColor("RANDOM")
+			const embed = new EmbedBuilder()
+				.setColor("Random")
 				.setTitle("Voice role configuration")
 				.setDescription("`voicerole add <role> <channel(s)>`: Add a role to the system in which if a member joins one of those, the role will be added.\n`voicerole remove <role>`: Removes a role from the system.\n`voicerole edit <role> <channel(s)>`: Edit an existing role in the system. This is a `set` subcommand.\n`voicerole enable`: Enables this system")
-				.addField("Enabled?", (list.enabled ? "Yes" : "No"))
+				.addFields([{ name: "Enabled?", value: (list.enabled ? "Yes" : "No") }])
 			for (const option of list.list) {
 				const role = message.guild.roles.cache.get(option.roleID);
 				if (!role) continue;
-				embed.addField(`${role.name} (${role.id})`, option.channels.map(e => `<#${e}>`).join(", ") || "No channels");
+				embed.addFields([{ name: `${role.name} (${role.id})`, value: option.channels.map(e => `<#${e}>`).join(", ") || "No channels" }]);
 			}
 			await message.channel.send({ embeds: [embed] });
 		} else {
 			const acl = await message.guild.channels.fetch();
-			const allChannels = acl.filter(e => e.isVoice());
+			const allChannels = acl.filter(e => e.isVoiceBased());
 			switch (args[1].toLowerCase()) {
 				case "enable": {
 					await list.updateOne({ enabled: (list.enabled ? false : true) });

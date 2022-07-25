@@ -15,7 +15,7 @@ export default class extends Command {
     this.aliases = ["fakequote"];
   }
   async run(bot, message, args) {
-    const miembro = message.mentions.members.first();
+    const miembro = message.mentions.members.filter(u => u.user.id !== bot.user.id).first();
     if (!miembro) return message.channel.send("Mention someone");
     const mensaje = args.slice(2).join(" ");
     if (!mensaje) return message.channel.send("Put some message");
@@ -33,7 +33,7 @@ export default class extends Command {
     ctx.closePath()
     ctx.clip()
 
-    const buf = await getBuffer(miembro.user.displayAvatarURL({ format: 'png', dynamic: false, size: 1024 }));
+    const buf = await getBuffer(miembro.user.displayAvatarURL({ extension: 'png', dynamic: false, size: 1024 }));
     const image = await Canvas.loadImage(buf);
     ctx.drawImage(image, x, y, radius * 2, radius * 2)
 
@@ -67,7 +67,7 @@ export default class extends Command {
     ctx.fillStyle = "#dcddde"
     await fillWithEmoji(ctx, mensaje, 66, 50)
 
-    const attach = new Discord.MessageAttachment(canvas.toBuffer(), 'isay.png')
+    const attach = new Discord.AttachmentBuilder(canvas.toBuffer(), { name: 'isay.png' })
     await message.channel.send({ files: [attach] })
   }
 }

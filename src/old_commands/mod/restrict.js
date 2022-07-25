@@ -15,7 +15,7 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send('Usage: `restrict <member> [reason]` or `restrict role <role>`')
     if (args[1] === 'role') {
-      if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply(`You do not have permission to execute this command.`)
+      if (!message.member.permissions.has("Administrator")) return message.reply(`You do not have permission to execute this command.`)
       if (!args[2]) return message.channel.send('Please mention the role or enter the role ID.')
       const roleobj = message.mentions.roles.first() || message.guild.roles.cache.get(args[2]);
       if (!roleobj) return message.channel.send('That role isn\'t valid.')
@@ -27,7 +27,7 @@ export default class extends Command {
       }).then(() => message.channel.send('I\'ve successfully registered the role'));
     } else {
       if (!args[1]) return message.channel.send('Please mention the user or enter their ID.')
-      const member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
+      const member = message.mentions.members.filter(u => u.user.id !== bot.user.id).first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
       if (!member) return message.channel.send('Invalid member!')
       const addMemberRole = async (muteroleid, member, args) => {
         const role = message.guild.roles.cache.get(muteroleid)

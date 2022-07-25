@@ -23,7 +23,7 @@ export default async bot => {
 
   //Show the inviter on the welcome message. Luckily, fetch invites do not have a rate-limit
   try {
-    const guildsToFetch = [...bot.guilds.cache.filter(e => e.me.permissions.has("MANAGE_GUILD")).values()];
+    const guildsToFetch = [...bot.guilds.cache.filter(e => e.members.me.permissions.has("ManageGuild")).values()];
     for (const guild of guildsToFetch) {
       guild.inviteCount = await getInviteCount(guild).catch(err => {
         console.log(err);

@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageActionRow, MessageButton } from "discord.js";
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "discord.js";
 import saybutton from '../../database/models/saybutton.js';
 const actual = new Set();
 
@@ -15,18 +15,18 @@ export default class extends Command {
     if (message.guild) {
       channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[1]) || message.guild.channels.cache.find(c => c.name === args[1]) || await message.guild.channels.fetch(args[1] || "123").catch(() => { }) || message.channel;
       if (channel.guild.id !== message.guild.id) return message.channel.send("That channel is from another guild");
-      if (!channel.isText()) return message.channel.send("That isn't a text channel!");
-      if (!channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("I don't have permissions!");
-      if (!channel.permissionsFor(message.author.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return message.channel.send("You don't have permissions!");
+      if (!channel.isTextBased()) return message.channel.send("That isn't a text channel!");
+      if (!channel.permissionsFor(bot.user.id).has(["SendMessages", "EmbedLinks"])) return message.channel.send("I don't have permissions!");
+      if (!channel.permissionsFor(message.author.id).has(["SendMessages", "EmbedLinks"])) return message.channel.send("You don't have permissions!");
     } else {
       channel = message.channel;
     }
     const linkregex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&/\\/=]*)/g;
     const questions = ["To get out of here put **`exit`**\nTo omit something say `none` **(except in the fields)**\n\nGet a preview of your embed with `preview`\n\nTell me the content of the message that will not be in the embed.", "Tell me the embed author", "Tell me a link o upload a attachment for the author image", "Tell me the author link", "Tell me the title", "Tell me the embed link", "Tell me a description", "Tell me a thumbnail link or upload a attachment", "Tell me a image link or upload a attachment", "Tell me a footer text", "Tell me a footer image link or upload a attachment", "Tell me the color to put it on the embed", "Do you want fields?\n\n**Respond with `yes` or `no`**"];
-    const authorButton = new MessageActionRow().addComponents([new MessageButton()
+    const authorButton = new ActionRowBuilder().addComponents([new ButtonBuilder()
       .setCustomId("author-button")
       .setDisabled(true)
-      .setStyle("SECONDARY")
+      .setStyle("Secondary")
       .setLabel(`Sent by ${message.author.tag} @ ${message.author.id}`)]);
     const doc = (await saybutton.findOne({ guildId: { $eq: message.guild.id } }).lean()) || (await saybutton.create({ guildId: message.guild.id }));
     await message.channel.send(questions[0]);
@@ -36,7 +36,7 @@ export default class extends Command {
     let authorimg = "";
     let authorlink = "";
     let footer = "";
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     const collector = message.channel.createMessageCollector({ filter: (m) => m.author.id === message.author.id, idle: 120000 });
     collector.on("collect", async (m) => {
       try {
@@ -254,10 +254,10 @@ function fields(message, embed) {
             break;
           case 2:
             if (m.content.toLowerCase() === "yes") {
-              embed.addField(title, des, true)
+              embed.addFields([{ name: title, value: des, inline: true }]);
               i++;
             } else if (m.content.toLowerCase() === "no") {
-              embed.addField(title, des)
+              embed.addFields([{ name: title, value: des }]);
               i++;
             } else return message.channel.send("Invalid option!");
             if (o <= 25) message.channel.send(arr[i]);

@@ -1,4 +1,4 @@
-import { Util } from 'discord.js';
+import { splitMessage } from '../../extensions.js';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -7,6 +7,6 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Put some text");
     const out = Buffer.from(args.slice(1).join(" "), "base64").toString();
-    await message.channel.send(`\`Output:\` ${Util.splitMessage(out, { maxLength: 2000, char: "" })[0]}`);
+    await message.channel.send(`\`Output:\` ${splitMessage(out, { maxLength: 2000, char: "" })[0]}`);
   }
 }

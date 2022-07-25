@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import c4top from '../../database/models/c4.js';
 
 export default class extends Command {
@@ -12,7 +12,7 @@ export default class extends Command {
     this.aliases = [];
   }
   async run(bot, message, args) {
-    const member = message.guild.members.cache.find(a => a.user.username === args.slice(1).join(' ')) || message.guild.members.cache.find(a => a.user.tag === args.slice(1).join(' ')) || message.guild.members.cache.find(a => a.displayName === args.slice(1).join(' ')) || message.guild.members.cache.get(args[1]) || message.mentions.members.first() || await message.guild.members.fetch(args[1] || "123").catch(() => { }) || message.member
+    const member = message.guild.members.cache.find(a => a.user.username === args.slice(1).join(' ')) || message.guild.members.cache.find(a => a.user.tag === args.slice(1).join(' ')) || message.guild.members.cache.find(a => a.displayName === args.slice(1).join(' ')) || message.guild.members.cache.get(args[1]) || message.mentions.members.filter(u => u.user.id !== bot.user.id).first() || await message.guild.members.fetch(args[1] || "123").catch(() => { }) || message.member
     const data = await c4top.find({ userId: member.id });
 
     if (!data || !data.length)
@@ -22,12 +22,12 @@ export default class extends Command {
       medium = data.find(item => item.difficulty == 'medium'),
       hard = data.find(item => item.difficulty == 'hard')
 
-    const embed = new Discord.MessageEmbed()
+    const embed = new EmbedBuilder()
       .setColor(member.roles.color.hexColor)
-      .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL({ size: 2048, dynamic: true }) })
-    if (easy) embed.addField('Easy', `Wins: ${easy.wins} Loses: ${easy.loses}`)
-    if (medium) embed.addField('Medium', `Wins: ${medium.wins} Loses: ${medium.loses}`)
-    if (hard) embed.addField('Hard', `Wins: ${hard.wins} Loses: ${hard.loses}`)
+      .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL({ size: 4096 }) })
+    if (easy) embed.addFields([{ name: 'Easy', value: `Wins: ${easy.wins} Loses: ${easy.loses}` }])
+    if (medium) embed.addFields([{ name: 'Medium', value: `Wins: ${medium.wins} Loses: ${medium.loses}` }])
+    if (hard) embed.addFields([{ name: 'Hard', value: `Wins: ${hard.wins} Loses: ${hard.loses}` }])
 
     return message.channel.send({ embeds: [embed] });
   }

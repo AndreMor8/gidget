@@ -21,15 +21,13 @@ export default class extends Command {
         case 'users': {
           if (!args[3])
             return message.channel.send("Mention or put the ID of the people whom you want their messages to be deleted.\n`purge users <number> <mentions>`");
-          const authors = message.mentions.users.size ? [...message.mentions.users.keys()] : args.slice(3);
-          const messages = await message.channel.messages.fetch({
-            limit: number
-          }, false);
+          const authors = message.mentions.users.filter(u => u.id !== bot.user.id).size ? [...message.mentions.users.filter(u => u.id !== bot.user.id).keys()] : args.slice(3);
+          const messages = await message.channel.messages.fetch({ limit: number }, false);
           messages.sweep(m => !authors.includes(m.author.id));
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
           setTimeout(() => {
-            if (!thing.deleted) thing.delete()
+            thing.delete().catch(() => { });
           }, 5000);
         }
           break;
@@ -38,7 +36,7 @@ export default class extends Command {
           messages.sweep(m => !m.author.bot);
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
+          setTimeout(() => { thing.delete().catch(() => { }); }, 5000);
         }
           break;
         case 'attachments': {
@@ -46,7 +44,7 @@ export default class extends Command {
           messages.sweep(m => !m.attachments.first());
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
+          setTimeout(() => { thing.delete().catch(() => { }); }, 5000);
         }
           break;
         case 'embeds': {
@@ -54,7 +52,7 @@ export default class extends Command {
           messages.sweep(m => !m.embeds[0]);
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
+          setTimeout(() => { thing.delete().catch(() => { }); }, 5000);
         }
           break;
         case 'with': {
@@ -63,7 +61,7 @@ export default class extends Command {
           messages.sweep(m => !(new RegExp(args.slice(3).join(" "), "gmi").test(m.content)));
           await message.channel.bulkDelete(messages, true);
           const thing = await message.channel.send(messages.size.toString() + " messages were successfully deleted");
-          setTimeout(() => { if (!thing.deleted) thing.delete() }, 5000);
+          setTimeout(() => { thing.delete().catch(() => { }); }, 5000);
         }
           break;
         default: {

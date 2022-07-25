@@ -1,5 +1,5 @@
 import MessageModel from "../../database/models/ticket.js";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 export default class extends SlashCommand {
   constructor(options) {
@@ -7,12 +7,12 @@ export default class extends SlashCommand {
     this.deployOptions.description = "Modify the ticket system";
     this.deployOptions.options = [{
       name: "get",
-      type: "SUB_COMMAND",
+      type: 1,
       description: "Get the current ticket configuration",
       options: [
         {
           name: "message",
-          type: "STRING",
+          type: 3,
           description: "Message ID that relates a ticket system",
           required: true
         }
@@ -20,71 +20,71 @@ export default class extends SlashCommand {
     }, {
       name: "set-roles",
       description: "These roles can close tickets.",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "message",
-        type: "STRING",
+        type: 3,
         description: "Message ID that relates a ticket system",
         required: true
       }, {
         name: "roles",
-        type: "STRING",
+        type: 3,
         description: "Roles that can close tickets (separated with spaces)",
         required: false
       }]
     }, {
       name: "manual",
-      type: "SUB_COMMAND",
+      type: 1,
       description: "Configure whether the users who created the ticket can close it by themselves.",
       options: [{
         name: "message",
-        type: "STRING",
+        type: 3,
         description: "Message ID that relates a ticket system",
         required: true
       }]
     }, {
       name: "category",
-      type: "SUB_COMMAND",
+      type: 1,
       description: "Configure where the new tickets will go.",
       options: [{
         name: "message",
-        type: "STRING",
+        type: 3,
         description: "Message ID that relates a ticket system",
         required: true
       }, {
         name: "channel",
-        type: "CHANNEL",
+        type: 7,
         description: "Category channel where the tickets will be.",
         channelTypes: [4],
         required: true
       }]
     }, {
       name: "welcome-msg",
-      type: "SUB_COMMAND",
+      type: 1,
       description: "Welcome the user to the ticket with this",
       options: [{
         name: "message",
-        type: "STRING",
+        type: 3,
         description: "Message ID that relates a ticket system",
         required: true
       }, {
         name: "msg",
-        type: "STRING",
+        type: 3,
         description: "Welcome message (MAX 2000 CHARACTERS)",
         required: false
       }]
     }, {
       name: "desc",
-      type: "SUB_COMMAND",
+      type: 1,
       description: "The message that will appear in the ticket topic",
       options: [{
         name: "message",
-        type: "STRING",
+        type: 3,
         description: "Message ID that relates a ticket system",
         required: true
       }, {
         name: "description",
-        type: "STRING",
+        type: 3,
         description: "The content of the description/topic (MAX 1024 CHARACTERS)",
         required: false
       }]
@@ -104,15 +104,17 @@ export default class extends SlashCommand {
     switch (subcommand) {
       case "get": {
         await interaction.reply({
-          embeds: [new MessageEmbed()
+          embeds: [new EmbedBuilder()
             .setTitle(interaction.guild.name + " ticket config")
             .setDescription(`For the message with ID ` + msgDocument.messageId + `. [Message Link](https://ptb.discordapp.com/channels/${msgDocument.guildId}/${msgDocument.channelId}/${msgDocument.messageId})\n\`modifyticket <id> <option> <...args>\``)
-            .addField("Channel", `<#${msgDocument.channelId}>`)
-            .addField("Category (category)", `<#${msgDocument.categoryId}>`)
-            .addField("Roles (they can close the ticket) (setroles)", msgDocument.roles[0] ? msgDocument.roles.map(r => "<@&" + r + ">").join(", ") : "No Roles")
-            .addField("Manual closing? (manual)", manual ? "Yes" : "No")
-            .addField("Welcome (welcomemsg)", msgDocument.welcomemsg || "None")
-            .addField("Text channel description (desc)", msgDocument.desc || "None")]
+            .addFields([
+              { name: "Channel", value: `<#${msgDocument.channelId}>` },
+              { name: "Category (category)", value: `<#${msgDocument.categoryId}>` },
+              { name: "Roles (they can close the ticket) (setroles)", value: msgDocument.roles[0] ? msgDocument.roles.map(r => "<@&" + r + ">").join(", ") : "No Roles" },
+              { name: "Manual closing? (manual)", value: manual ? "Yes" : "No" },
+              { name: "Welcome (welcomemsg)", value: msgDocument.welcomemsg || "None" },
+              { name: "Text channel description (desc)", value: msgDocument.desc || "None" }
+            ])]
         });
       }
         break;
@@ -131,7 +133,7 @@ export default class extends SlashCommand {
           await interaction.reply("Roles updated correctly\nRemember to configure the role in the category so that its members can see and write on the ticket.");
         } else {
           await msgDocument.updateOne({ $set: { roles: [] } });
-          await interaction.reply("No one will be able to close tickets unless they have `MANAGE_CHANNELS` permission on the ticket category.");
+          await interaction.reply("No one will be able to close tickets unless they have `ManageChannels` permission on the ticket category.");
         }
       }
         break;
@@ -141,7 +143,7 @@ export default class extends SlashCommand {
         break;
       case "category": {
         const channel = interaction.options.getChannel("channel", true);
-        if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return await interaction.reply("I don't have the `MANAGE_CHANNELS`, the `MANAGE_ROLES` or the `VIEW_CHANNEL` permission in that channel.");
+        if (!channel.permissionsFor(bot.user.id).has(["ViewChannel", "ManageChannels", "ManageRoles"])) return await interaction.reply("I don't have the `ManageChannels`, the `ManageRoles` or the `ViewChannel` permission in that channel.");
         await msgDocument.updateOne({ categoryId: channel.id });
         await interaction.reply("Category channel updated correctly.")
       }

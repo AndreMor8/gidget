@@ -1,5 +1,6 @@
 import banner from '../../database/models/banner.js';
-import { MessageEmbed, Util } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
+import { splitMessage } from '../../extensions.js';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -53,9 +54,9 @@ export default class extends Command {
       const doc = await banner.findOne({ guildID: { $eq: message.guild.id } });
       if (!doc) return message.channel.send("There are no banners set!");
       if (!doc.banners.length) return message.channel.send("There are no banners set!");
-      const embed = new MessageEmbed()
+      const embed = new EmbedBuilder()
         .setTitle("Banners for " + message.guild.name)
-        .setDescription(Util.splitMessage(doc.banners.map((e, i) => `${++i}. Banner: ${e.url}\nHour: ${e.hour}:00 ET`).join("\n"), { maxLength: 1950, char: "" })[0]);
+        .setDescription(splitMessage(doc.banners.map((e, i) => `${++i}. Banner: ${e.url}\nHour: ${e.hour}:00 ET`).join("\n"), { maxLength: 1950, char: "" })[0]);
       if (!message.guild.features.includes("BANNER")) embed.setFooter({ text: "For this to work your server must have Server Boost at level 2 or higher." });
       return message.channel.send({ embeds: [embed] });
     } else return message.channel.send("Invalid mode!");

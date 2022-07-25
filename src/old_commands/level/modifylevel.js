@@ -15,7 +15,7 @@ export default class extends Command {
   async run(bot, message, args) {
     const msgDocument = await getLevelConfig(message.guild);
     if ((!msgDocument) || (msgDocument && !msgDocument.levelsystem)) return message.channel.send("The levels on this server are disabled! Use `togglelevel system` to enable the system!")
-    const target = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || await (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined);
+    const target = message.mentions.members.filter(u => u.user.id !== bot.user.id).first() || message.guild.members.cache.get(args[1]) || await (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined);
     if (target) {
       if (target.user.bot) return message.reply('why do you want to configure the level of a bot?');
       const waiting = await Levels.fetch(target.id, message.guild.id);

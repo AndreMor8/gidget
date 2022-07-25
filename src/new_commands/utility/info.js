@@ -1,5 +1,7 @@
-import { Collection, Formatters, MessageActionRow, MessageButton, MessageEmbed, Util } from 'discord.js';
+import { Collection, Formatters, ActionRowBuilder, ButtonBuilder, EmbedBuilder, discordSort } from 'discord.js';
 import getPremiumType from '../../utils/detectnitro.js';
+
+import { splitMessage } from '../../extensions.js';
 const svc_timer = new Set();
 
 export default class extends SlashCommand {
@@ -10,84 +12,95 @@ export default class extends SlashCommand {
 			{
 				name: "server",
 				description: "Get server information",
-				type: "SUB_COMMAND",
+				type: 1,
 				options: [{
 					name: "server-id",
 					description: "ID of the server to check",
-					type: "STRING",
+					type: 3,
 					required: false
 				}]
 			},
 			{
 				name: "server-channels",
 				description: "Get all channels from the current server",
-				type: "SUB_COMMAND",
+				type: 1,
 				options: [{
 					name: "member",
 					description: "Limit structure to the channels a member can see...",
-					type: "USER",
+					type: 6,
 					required: false,
 				},
 				{
 					name: "role",
 					description: "Limit structure to the channels a role can see...",
-					type: "ROLE",
+					type: 8,
 					required: false
 				}]
 			},
 			{
 				name: "channel",
 				description: "Get channel information",
-				type: "SUB_COMMAND",
+				type: 1,
 				options: [{
 					name: "channel",
 					description: "The channel to check",
-					type: "CHANNEL",
+					type: 7,
 					required: false
 				}]
 			},
 			{
 				name: "channel-overrides",
 				description: "Get permission overrides for a channel",
-				type: "SUB_COMMAND",
+				type: 1,
 				options: [{
 					name: "channel",
 					description: "The channel to check",
-					type: "CHANNEL",
+					type: 7,
 					required: false
 				}]
 			},
 			{
 				name: "role",
 				description: "Get role information",
-				type: "SUB_COMMAND",
+				type: 1,
 				options: [{
 					name: "role",
 					description: "Role to check",
-					type: "ROLE",
+					type: 8,
 					required: false
 				}]
 			},
 			{
 				name: "user",
 				description: "Get user information",
-				type: "SUB_COMMAND",
+				type: 1,
 				options: [{
 					name: "user",
 					description: "The user to check",
-					type: "USER",
+					type: 6,
 					required: false
 				}]
 			},
 			{
 				name: "widget",
 				description: "Get server widget information",
-				type: "SUB_COMMAND",
+				type: 1,
 				options: [{
 					name: "server-id",
 					description: "ID of the server to check",
-					type: "STRING",
+					type: 3,
 					required: false
+				}]
+			},
+			{
+				name: "invite",
+				description: "Get information about a server invite",
+				type: 1,
+				options: [{
+					name: "code",
+					description: "Invite URL or code",
+					type: 3,
+					required: true
 				}]
 			}];
 		this.permissions = {
@@ -103,7 +116,7 @@ export default class extends SlashCommand {
 				let server = wanted ? await bot.guilds.fetch(wanted).catch(() => { }) : interaction.guild;
 				if (!server) server = await bot.fetchGuildPreview(wanted).catch(() => { });
 				if (!server) return await interaction.reply({ content: "Invalid ID!\nSearch by ID only works whether the bot is on that server or if it is a discoverable server", ephemeral: true });
-				const servericon = server.iconURL({ dynamic: true, size: 4096 });
+				const servericon = server.iconURL({ size: 4096 });
 				//¯\_(ツ)_/¯
 				const links = [`[Guild](https://discord.com/channels/${server.id})`];
 				if (servericon) links.push(`[Server icon](${servericon})`);
@@ -128,8 +141,8 @@ export default class extends SlashCommand {
 				let active;
 				*/
 				const channels = await server.channels?.fetch(undefined, { cache: false });
-				if (server.me) {
-					const cat = channels.filter(c => c.type === "GUILD_CATEGORY").size;
+				if (server.members?.me) {
+					const cat = channels.filter(c => c.type === 4).size;
 					if (cat == 1) catname += "1 category";
 					else catname += cat + " categories";
 
@@ -153,8 +166,8 @@ export default class extends SlashCommand {
 						if (invites.first()) invitenum = invites.size.toString() + " invites";
 						else invitenum = "Without invites";
 					}
-					if (server.bannerURL()) links.push(`[Banner Image](${server.bannerURL({ format: "png", size: 4096 })})`);
-					if (embedenabled) links.push(`[Widget](https://discord.com/widget?id=${server.id}), [Widget Image](https://discord.com/api/v${bot.options.http.version}/guilds/${server.id}/widget.png)`);
+					if (server.bannerURL()) links.push(`[Banner Image](${server.bannerURL({ extension: "png", size: 4096 })})`);
+					if (embedenabled) links.push(`[Widget](https://discord.com/widget?id=${server.id}), [Widget Image](https://discord.com/api/v${bot.options.ws.version}/guilds/${server.id}/widget.png)`);
 					const vanity = await server.fetchVanityData().catch(() => { });
 					if (vanity && vanity.code) {
 						links.push("[Vanity invite URL" + (vanity.uses ? (" (" + vanity.uses + " uses)") : "") + "](https://discord.gg/" + (vanity.code) + ")");
@@ -198,51 +211,57 @@ export default class extends SlashCommand {
 					*/
 				}
 
-				if (server.splashURL()) links.push(`[Invite Splash Image](${server.splashURL({ format: "png", size: 4096 })})`);
+				if (server.splashURL()) links.push(`[Invite Splash Image](${server.splashURL({ extension: "png", size: 4096 })})`);
 
-				if (server.discoverySplashURL()) links.push("[Discovery Splash image](" + server.discoverySplashURL({ format: "png", size: 4096 }) + ")");
+				if (server.discoverySplashURL()) links.push("[Discovery Splash image](" + server.discoverySplashURL({ extension: "png", size: 4096 }) + ")");
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setTitle("Server info")
 					.setAuthor({ name: server.name, iconURL: servericon })
-					.addField("Name", `${server.name} ${(server.nameAcronym) ? (" (" + server.nameAcronym + ")") : ""}`, true)
-					.addField("ID", server.id, true)
-				if (server.description) embed.addField("Description", server.description, true);
-				if (server.me) {
+					.addFields([
+						{ name: "Name", value: `${server.name} ${(server.nameAcronym) ? (" (" + server.nameAcronym + ")") : ""}`, inline: true },
+						{ name: "ID", value: server.id, inline: true }
+					])
+				if (server.description) embed.addFields([{ name: "Description", value: server.description, inline: true }]);
+				if (server.members?.me) {
 					const owner = await server.fetchOwner();
-					embed.addField("Server Owner", owner.user.tag + "\n" + owner.toString(), true)
-						.addField("Server Create Date", bot.botIntl.format(server.createdAt), true)
-						.addField("Verification Level", server.verificationLevel, true)
-						.addField("Default Message Notifications", server.defaultMessageNotifications, true)
-						.addField("Partnered?", server.partnered ? "**Yes**" : "No", true)
-						.addField("Verified?", server.verified ? "**Yes**" : "No", true)
-					if (server.rulesChannel) embed.addField("Rules channel", server.rulesChannel.toString(), true);
-					if (server.publicUpdatesChannel) embed.addField("Discord private updates", server.publicUpdatesChannel.toString(), true);
-					embed.addField("Member Count", server.memberCount?.toString() || "?", true)
-						.addField("Channel Count", `${channels.filter(c => c.isText() || c.isVoice()).size} (${catname})\nText-based = ${channels.filter(c => c.isText()).size}\nVoice-based = ${channels.filter(c => c.isVoice()).size}`, true)
-						.addField("Emojis", `${allEmojis.size.toString()}\nNormal = ${emojis}\nAnimated = ${ae}`, true)
-						.addField("Roles", `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, true)
-						.addField("Server Boost Level", server.premiumTier.toString(), true)
-						.addField("Boosts", server.premiumSubscriptionCount.toString(), true)
-					if (server.systemChannel) embed.addField("System Channel", server.systemChannel.toString(), true);
-					embed.addField("Widget Enabled?", embedenabled ? "Yes" + (embedchannel ? ", in " + embedchannel.toString() : "") : "No", true)
-        /*.addField("Presence Count (" + active + " active on this server)", `**Online:** ${online}\n**Idle**: ${idle}\n**Do Not Disturb:** ${dnd}\n**Offline:** ${offline}`, true)*/;
+					embed.addFields([
+						{ name: "Server Owner", value: owner.user.tag + "\n" + owner.toString(), inline: true },
+						{ name: "Server Create Date", value: bot.botIntl.format(server.createdAt), inline: true },
+						{ name: "Verification Level", value: server.verificationLevel.toString(), inline: true },
+						{ name: "Default Message Notifications", value: server.defaultMessageNotifications.toString(), inline: true },
+						{ name: "Partnered?", value: server.partnered ? "**Yes**" : "No", inline: true },
+						{ name: "Verified?", value: server.verified ? "**Yes**" : "No", inline: true },
+					])
+					if (server.rulesChannel) embed.addFields([{ name: "Rules channel", value: server.rulesChannel.toString(), inline: true }]);
+					if (server.publicUpdatesChannel) embed.addFields([{ name: "Discord private updates", value: server.publicUpdatesChannel.toString(), inline: true }]);
+					embed
+						.addFields([
+							{ name: "Member Count", value: server.memberCount?.toString() || "?", inline: true },
+							{ name: "Channel Count", value: `${channels.filter(c => c.isTextBased() || c.isVoiceBased()).size} (${catname})\nText-based = ${channels.filter(c => c.isTextBased()).size}\nVoice-based = ${channels.filter(c => c.isVoiceBased()).size}`, inline: true },
+							{ name: "Emojis", value: `${allEmojis.size.toString()}\nNormal = ${emojis}\nAnimated = ${ae}`, inline: true },
+							{ name: "Roles", value: `${roles}\nNormal = ${rroles}\nManaged = ${mroles}`, inline: true },
+							{ name: "Server Boost Level", value: server.premiumTier.toString(), inline: true },
+							{ name: "Boosts", value: server.premiumSubscriptionCount.toString(), inline: true },
+						])
+
+					if (server.systemChannel) embed.addFields([{ name: "System Channel", value: server.systemChannel.toString(), inline: true }]);
+					embed.addFields([{ name: "Widget Enabled?", value: embedenabled ? "Yes" + (embedchannel ? ", in " + embedchannel.toString() : "") : "No", inline: true }/*, { name: "Presence Count (" + active + " active on this server)", value: `**Online:** ${online}\n**Idle**: ${idle}\n**Do Not Disturb:** ${dnd}\n**Offline:** ${offline}`, inline: true }*/]);
 					if ((interaction.guildId === "402555684849451028") && (server.id === "402555684849451028")) {
-						embed.addField("Ban count", bannumber, true)
-							.addField("Invite count", invitenum, true);
+						embed.addFields([{ name: "Ban count", value: bannumber, inline: true }, { name: "Invite count", value: invitenum, inline: true }]);
 					}
 				}
-				embed.addField("Features", server.features.join("\n") || "None", true)
-					.setThumbnail((server.banner) ? server.bannerURL({ format: "png", size: 128 }) : server.discoverySplashURL({ format: "png", size: 128 }))
-					.setImage(server.splashURL({ format: "png", size: 128 }))
+				embed.addFields([{ name: "Features", value: server.features.join("\n") || "None", inline: true }])
+					.setThumbnail((server.banner) ? server.bannerURL({ extension: "png", size: 128 }) : server.discoverySplashURL({ extension: "png", size: 128 }))
+					.setImage(server.splashURL({ extension: "png", size: 128 }))
 					.setColor("#FF00FF")
 					.setTimestamp();
-				if (server.maximumMembers) embed.addField("Maximum members", server.maximumMembers.toString(), true);
-				embed.addField("Links", links.join(", "));
+				if (server.maximumMembers) embed.addFields([{ name: "Maximum members", value: server.maximumMembers.toString(), inline: true }]);
+				embed.addFields([{ name: "Links", value: links.join(", ") }]);
 				if ((interaction.guildId === "402555684849451028") && (server.id === "402555684849451028")) {
 					const fetch = (await server.roles.fetch("402559343540568084", { force: true })).members.map(m => m.user);
 					const admins = fetch.join("\n");
-					embed.addField("Admin List", admins);
+					embed.addFields([{ name: "Admin List", value: admins }]);
 				}
 				await interaction.reply({ embeds: [embed] });
 			}
@@ -258,32 +277,32 @@ export default class extends SlashCommand {
 					}
 				}
 				let text = "";
-				const eeee = interaction.options.getMember('member', false) || interaction.options.getRole('role', false);
+				const eeee = interaction.options.getMember('member') || interaction.options.getRole('role');
 				const member = (eeee?.members) ? eeee : await eeee?.fetch?.({ cache: true });
 				let col = await interaction.guild.channels.fetch();
 				await interaction.guild.channels.fetchActiveThreads();
-				if (member) col = col.filter(c => c.type === "GUILD_CATEGORY" ? (c.children.some(r => r.permissionsFor(member.id).has("VIEW_CHANNEL")) || (c.permissionsFor(member.id).has("MANAGE_CHANNELS"))) : (c.permissionsFor(member.id).has("VIEW_CHANNEL")));
-				const wocat = Util.discordSort(col.filter(c => !c.parent && c.type !== "GUILD_CATEGORY"));
-				const textnp = wocat.filter(c => c.isText() || c.type === "GUILD_STORE");
-				const voicenp = wocat.filter(c => c.isVoice());
+				if (member) col = col.filter(c => c.type === 4 ? (c.children.cache.some(r => r.permissionsFor(member.id).has("ViewChannel")) || (c.permissionsFor(member.id).has("ManageChannels"))) : (c.permissionsFor(member.id).has("ViewChannel")));
+				const wocat = discordSort(col.filter(c => !c.parent && c.type !== 4));
+				const textnp = wocat.filter(c => c.isTextBased());
+				const voicenp = wocat.filter(c => c.isVoiceBased());
 				if (wocat.size >= 1) {
 					text += textnp.map(advancedmap).join("\n");
 					text += voicenp.map(advancedmap).join("\n");
 				}
-				const voiceChannels = col.filter(c => c.isVoice());
+				const voiceChannels = col.filter(c => c.isVoiceBased());
 				const user = Collection.prototype.concat.apply(new Collection(), voiceChannels.map(e => e.members)).filter(e => !interaction.guild.members.cache.has(e.id)).map(e => e.id);
 				if (user.length) await interaction.guild.members.fetch({ user });
 
-				const cats = Util.discordSort(col.filter(c => c.type === "GUILD_CATEGORY"));
+				const cats = discordSort(col.filter(c => c.type === 4));
 				cats.each(c => {
-					const children = c.children.intersect(col);
-					const textp = children.filter(c => ['GUILD_TEXT', 'GUILD_STORE', 'GUILD_NEWS'].includes(c.type));
-					const voicep = children.filter(c => c.isVoice());
+					const children = c.children.cache.intersect(col);
+					const textp = children.filter(c => [0, 5].includes(c.type));
+					const voicep = children.filter(c => c.isVoiceBased());
 					text += "\n[📂] " + c.name;
-					text += textp.size ? ("\n\t" + Util.discordSort(textp).map(advancedmap).join("\n\t")) : "";
-					text += voicep.size ? ("\n\t" + Util.discordSort(voicep).map(advancedmap).join("\n\t")) : "";
+					text += textp.size ? ("\n\t" + discordSort(textp).map(advancedmap).join("\n\t")) : "";
+					text += voicep.size ? ("\n\t" + discordSort(voicep).map(advancedmap).join("\n\t")) : "";
 				});
-				const split = Util.splitMessage(text);
+				const split = splitMessage(text);
 				for (const i in split) {
 					if (interaction.replied) await interaction.followUp(Formatters.codeBlock("Channel structure of " + interaction.guild.name + (member ? (" for " + (member.user ? member.user.tag : member.name)) : "") + "\n" + split[i]));
 					else await interaction.reply(Formatters.codeBlock("Channel structure of " + interaction.guild.name + (member ? (" for " + (member.user ? member.user.tag : member.name)) : "") + "\n" + split[i]));
@@ -293,16 +312,14 @@ export default class extends SlashCommand {
 			case 'channel': {
 				if (!interaction.guild) return await interaction.reply("Yes, I know this is a channel, but there are no interesting things I can show you.");
 				const obj = {
-					GUILD_TEXT: "Text channel",
-					GUILD_VOICE: "Voice channel",
-					GUILD_CATEGORY: "Category channel",
-					GUILD_NEWS: "News channel",
-					GUILD_STORE: "Store channel",
-					GUILD_STAGE_VOICE: "Stage channel",
-					GUILD_NEWS_THREAD: "Thread channel from news channel",
-					GUILD_PUBLIC_THREAD: "Public thread channel",
-					GUILD_PRIVATE_THREAD: "Private thread channel",
-					UNKNOWN: "Guild channel"
+					'0': "Text channel",
+					'2': "Voice channel",
+					'4': "Category channel",
+					'5': "News channel",
+					'10': "Thread channel from news channel",
+					'11': "Public thread channel",
+					'12': "Private thread channel",
+					'13': "Stage channel"
 				};
 				const obj2 = {
 					60: "1 hour",
@@ -311,68 +328,77 @@ export default class extends SlashCommand {
 					10080: "1 week"
 				}
 				const channel = interaction.options.getChannel('channel', false) || interaction.channel;
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setTitle("Channel information for " + channel.name)
-					.setColor("RANDOM")
+					.setColor("Random")
 					.setTimestamp()
-					.addField("ID", channel.id, true)
-					.addField("Type", obj[channel.type], true)
-					.addField("Client things", (!channel.isThread() ? "Can I see it?: " + (channel.viewable ? "Yes" : "No") : "") + ("\nCan I manage it?: " + (channel.manageable ? "Yes" : "No")) + (channel.type === "GUILD_VOICE" ? (("\nCan I join it?: " + (channel.joinable ? "Yes" : "No")) + ("\nCan I speak in it?: " + ((channel.speakable) ? "Yes" : "No"))) : "") + (channel.isThread() ? ("\nCan I join it?: " + (channel.joinable ? "Yes" : "No")) + ("\nCan I edit it?: " + (channel.editable ? "Yes" : "No")) + ("\nCan I send messages on it?: " + (channel.sendable ? "Yes" : "No")) + ("\nCan I unarchive it?: " + (channel.unarchivable ? "Yes" : "No")) : ""), true)
-					.addField("Created At", bot.botIntl.format(channel.createdAt), true);
+					.addFields([
+						{ name: "ID", value: channel.id, inline: true },
+						{ name: "Type", value: (obj[channel.type] || "Guild channel"), inline: true },
+						{ name: "Client things", value: (!channel.isThread() ? "Can I see it?: " + (channel.viewable ? "Yes" : "No") : "") + ("\nCan I manage it?: " + (channel.manageable ? "Yes" : "No")) + (channel.type === 2 ? (("\nCan I join it?: " + (channel.joinable ? "Yes" : "No")) + ("\nCan I speak in it?: " + ((channel.speakable) ? "Yes" : "No"))) : "") + (channel.isThread() ? ("\nCan I join it?: " + (channel.joinable ? "Yes" : "No")) + ("\nCan I manage it?: " + (channel.manageable ? "Yes" : "No")) + ("\nCan I send messages on it?: " + (channel.sendable ? "Yes" : "No")) + ("\nCan I unarchive it?: " + (channel.unarchivable ? "Yes" : "No")) : ""), inline: true },
+						{ name: "Created At", value: bot.botIntl.format(channel.createdAt), inline: true },
+					]);
 				if (channel.parentId) {
-					embed.addField("Parent", `<#${channel.parentId}>\n\`${channel.parentId}\``, true);
-					if (!channel.isThread()) embed.addField("Synchronized with the channel's parent?", channel.permissionsLocked ? "Yes" : "No", true);
+					embed.addFields([{ name: "Parent", value: `<#${channel.parentId}>\n\`${channel.parentId}\``, inline: true }]);
+					if (!channel.isThread()) embed.addFields([{ name: "Synchronized with the channel's parent?", value: channel.permissionsLocked ? "Yes" : "No", inline: true }]);
 				}
-				if (!channel.isThread()) embed.addField("Position", channel.parent ? ("General: " + channel.position.toString() + "\nRaw: " + channel.rawPosition.toString()) : channel.position.toString(), true);
+				if (!channel.isThread()) embed.addFields([{ name: "Position", value: channel.parent ? ("General: " + channel.position.toString() + "\nRaw: " + channel.rawPosition.toString()) : channel.position.toString(), inline: true }]);
 				switch (channel.type) {
-					case 'GUILD_NEWS':
-					case 'GUILD_TEXT':
-						embed.addField("Pinned messages", channel.permissionsFor(bot.user.id).has("VIEW_CHANNEL") ? (await channel.messages.fetchPinned(false).catch(() => { return { size: "*Without permissions for see that*" } })).size.toString() : "*Without permissions for see that*", true)
-							.addField("Last pin at", channel.lastPinAt ? bot.botIntl.format(channel.lastPinAt) : "*None*", true)
-							.addField("NSFW?", channel.nsfw ? "Yes" : "No", true);
-						if (channel.type !== "GUILD_NEWS") {
-							embed.addField("Slowmode", channel.rateLimitPerUser + " seconds", true);
+					case 5:
+					case 0:
+						embed.addFields([
+							{ name: "Pinned messages", value: channel.permissionsFor(bot.user.id).has("ViewChannel") ? (await channel.messages.fetchPinned(false).catch(() => { return { size: "*Without permissions for see that*" } })).size.toString() : "*Without permissions for see that*", inline: true },
+							{ name: "Last pin at", value: channel.lastPinAt ? bot.botIntl.format(channel.lastPinAt) : "*None*", inline: true },
+							{ name: "NSFW?", value: channel.nsfw ? "Yes" : "No", inline: true }
+						])
+						if (channel.type !== 5) {
+							embed.addFields([{ name: "Slowmode", value: channel.rateLimitPerUser + " seconds", inline: true }]);
 						}
-						embed.addField("Threads on this channel", channel.threads.cache.size.toString(), true)
-						embed.addField("Topic", channel.topic || "*None*");
+						embed.addFields([{ name: "Threads on this channel", value: channel.threads.cache.size.toString(), inline: true }, { name: "Topic", value: channel.topic || "*None*" }])
 						break;
-					case 'GUILD_STAGE_VOICE':
-					case 'GUILD_VOICE':
-						embed.addField("Bitrate", channel.bitrate + " bps", true)
-							.addField("Joined members", channel.members.size.toString(), true)
-							.addField("User limit", channel.userLimit ? channel.userLimit.toString() : "*None*", true)
-							.addField("Full?", channel.full ? "Yes" : "No", true);
-						if (channel.type === "GUILD_STAGE_VOICE" && channel.instance) {
-							embed.addField("Instance ID", channel.instance.id, true)
-								.addField("Instance created at", bot.botIntl.format(channel.instance.createdAt), true)
-								.addField("Discovery disabled?", channel.instance.discoverableDisabled ? "Yes" : "No", true)
-								.addField("Privacy level", channel.instance.privacyLevel, true)
-								.addField("Topic", channel.instance.topic || "*None*");
+					case 13:
+					case 2:
+						embed.addFields([
+							{ name: "Bitrate", value: channel.bitrate + " bps", inline: true },
+							{ name: "Joined members", value: channel.members.size.toString(), inline: true },
+							{ name: "User limit", value: channel.userLimit ? channel.userLimit.toString() : "*None*", inline: true },
+							{ name: "Full?", value: channel.full ? "Yes" : "No", inline: true },
+						]);
+
+						if (channel.type === 13 && channel.instance) {
+							embed.addFields([
+								{ name: "Instance ID", value: channel.instance.id, inline: true },
+								{ name: "Instance created at", value: bot.botIntl.format(channel.instance.createdAt), inline: true },
+								{ name: "Discovery disabled?", value: channel.instance.discoverableDisabled ? "Yes" : "No", inline: true },
+								{ name: "Privacy level", value: channel.instance.privacyLevel, inline: true },
+								{ name: "Topic", value: channel.instance.topic || "*None*" },
+							]);
 						}
 						break;
-					case 'GUILD_CATEGORY':
-						embed.addField("Channels in this category", channel.children.size.toString(), true);
+					case 4:
+						embed.addFields([{ name: "Channels in this category", value: channel.children.cache.size.toString(), inline: true }]);
 						break;
-					case 'GUILD_NEWS_THREAD':
-					case 'GUILD_PUBLIC_THREAD':
-					case 'GUILD_PRIVATE_THREAD':
-						embed
-							.addField("Thread creator", `<@!${channel.ownerId}> (${channel.ownerId})`, true)
-							.addField("Archived?", channel.archived ? `Yes, since ${bot.botIntl.format(channel.archivedAt)}` : "No", true)
-							.addField("It will autoarchive in", `${obj2[channel.autoArchiveDuration]}`, true)
-							.addField("Thread members", channel.memberCount >= 50 ? `+50 (${channel.members.cache.size}) cached` : channel.memberCount.toString(), true)
-							.addField("Locked?", channel.locked ? "Yes" : "No", true)
-							.addField("Slowmode", channel.rateLimitPerUser + " seconds", true)
-							.addField("\u200b", "\u200b", true)
-							.addField("Pinned messages", channel.permissionsFor(bot.user.id).has("VIEW_CHANNEL") ? (await channel.messages.fetchPinned(false)).size.toString() : "*Without permissions for see that*", true)
-							.addField("Last pin at", channel.lastPinAt ? bot.botIntl.format(channel.lastPinAt) : "*None*", true)
+					case 10:
+					case 11:
+					case 12:
+						embed.addFields([
+							{ name: "Thread creator", value: `<@!${channel.ownerId}> (${channel.ownerId})`, inline: true },
+							{ name: "Archived?", value: channel.archived ? `Yes, since ${bot.botIntl.format(channel.archivedAt)}` : "No", inline: true },
+							{ name: "It will autoarchive in", value: `${obj2[channel.autoArchiveDuration]}`, inline: true },
+							{ name: "Thread members", value: channel.memberCount >= 50 ? `+50 (${channel.members.cache.size}) cached` : channel.memberCount.toString(), inline: true },
+							{ name: "Locked?", value: channel.locked ? "Yes" : "No", inline: true },
+							{ name: "Slowmode", value: channel.rateLimitPerUser + " seconds", inline: true },
+							{ name: "\u200b", value: "\u200b", inline: true },
+							{ name: "Pinned messages", value: channel.permissionsFor(bot.user.id).has("ViewChannel") ? (await channel.messages.fetchPinned(false)).size.toString() : "*Without permissions for see that*", inline: true },
+							{ name: "Last pin at", value: channel.lastPinAt ? bot.botIntl.format(channel.lastPinAt) : "*None*", inline: true },
+						])
 				}
-				const but_link_msg = new MessageButton()
-					.setStyle("LINK")
+				const but_link_msg = new ButtonBuilder()
+					.setStyle("Link")
 					.setURL(`https://discordapp.com/channels/${interaction.guild.id}/${channel.id}/${channel.lastMessageId}`)
 					.setLabel("Last channel message")
 					.setDisabled(channel.lastMessageId ? false : true);
-				await interaction.reply({ embeds: [embed], components: channel.isText() ? [new MessageActionRow().addComponents([but_link_msg])] : undefined });
+				await interaction.reply({ embeds: [embed], components: channel.isTextBased() ? [new ActionRowBuilder().addComponents([but_link_msg])] : undefined });
 			}
 				break;
 			case "channel-overrides": {
@@ -383,7 +409,7 @@ export default class extends SlashCommand {
 				if (rr.length) await interaction.guild.members.fetch({ user: rr });
 				const permissions = await Promise.all(channel.permissionOverwrites.cache.map(async m => {
 					let text = ``;
-					if (m.type === "member") {
+					if (m.type === 1) {
 						if (bot.users.cache.get(m.id)) {
 							if (bot.users.cache.get(m.id).bot) text += `[🤖] ${bot.users.cache.get(m.id).tag}:\n`;
 							else text += `[🙎] ${bot.users.cache.get(m.id).tag}:\n`;
@@ -408,7 +434,7 @@ export default class extends SlashCommand {
 				}));
 				if (!permissions[0]) return await interaction.reply({ content: "There are no channel overrides here.", ephemeral: true })
 				else {
-					const contents = Util.splitMessage(`\`\`\`${permissions.join("\n\n")}\n${channel.permissionsLocked ? "The channel is synchronized with its parent category." : "The channel is not synchronized with its parent category."}\nChannel overrides for #${channel.name}\`\`\``, { maxLength: 2000 });
+					const contents = splitMessage(`\`\`\`${permissions.join("\n\n")}\n${channel.permissionsLocked ? "The channel is synchronized with its parent category." : "The channel is not synchronized with its parent category."}\nChannel overrides for #${channel.name}\`\`\``, { maxLength: 2000 });
 					for (const content of contents) {
 						if (interaction.replied) interaction.followUp(content);
 						else interaction.reply(content);
@@ -456,31 +482,33 @@ export default class extends SlashCommand {
 					*/
 					const perms = role.permissions.toArray();
 					let permstext = "";
-					if (perms.indexOf('ADMINISTRATOR') === -1) permstext = perms.join(', ') || "Without permissions.";
-					else permstext = 'ADMINISTRATOR (This role has all the permissions)';
+					if (perms.indexOf('Administrator') === -1) permstext = perms.join(', ') || "Without permissions.";
+					else permstext = 'Administrator (This role has all the permissions)';
 
 					const perms2 = role.permissionsIn(interaction.channel).toArray();
 					let permstext2 = "";
-					if (perms2.indexOf("ADMINISTRATOR") === -1) permstext2 = perms2.join(", ") || "Without permissions.";
-					else permstext2 = "ADMINISTRATOR (This role has all the permissions)";
+					if (perms2.indexOf("Administrator") === -1) permstext2 = perms2.join(", ") || "Without permissions.";
+					else permstext2 = "Administrator (This role has all the permissions)";
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(role.hexColor)
 						.setTitle('Information about ' + role.name)
-						.addField('ID', role.id, true)
-						.addField('Created At', bot.botIntl.format(role.createdAt), true)
-						.addField('Mention', role.toString() + ' `' + role.toString() + '`', true)
-						.addField('Managed?', mng[role.managed], true)
-						.addField('Hoisted?', mng[role.hoist], true)
-						/*.addField('Members ', mtext, true)*/
-						.addField('Mentionable by', mb[role.mentionable], true)
-						.addField('Color', 'Base 10: ' + role.color + '\nHex: ' + role.hexColor, true)
-						.addField('Position', `Role Manager: ${role.position}\nAPI: ${role.rawPosition}`, true)
-						.addField('Permissions', '`' + permstext + '`')
-						.addField('Permissions (Overwrites)', '`' + permstext2 + '`')
-						.addField('Does it belong to a bot?', role.tags?.botId ? `**Yes** (${role.tags?.botId}, <@!${role.tags?.botId}>)` : "No", true)
-						.addField('Does it belong to a integration?', role.tags?.integrationId ? `**Yes** (${role.tags?.integrationId})` : "No", true)
-						.addField('Is this the role for boosters?', role.tags?.premiumSubscriberRole ? "**Yes**" : "No", true)
+						.addFields([
+							{ name: 'ID', value: role.id, inline: true },
+							{ name: 'Created At', value: bot.botIntl.format(role.createdAt), inline: true },
+							{ name: 'Mention', value: role.toString() + ' `' + role.toString() + '`', inline: true },
+							{ name: 'Managed?', value: mng[role.managed], inline: true },
+							{ name: 'Hoisted?', value: mng[role.hoist], inline: true },
+							/*{ name: 'Members ', value: mtext, inline: true },*/
+							{ name: 'Mentionable by', value: mb[role.mentionable], inline: true },
+							{ name: 'Color', value: 'Base 10: ' + role.color + '\nHex: ' + role.hexColor, inline: true },
+							{ name: 'Position', value: `Role Manager: ${role.position}\nAPI: ${role.rawPosition}`, inline: true },
+							{ name: 'Permissions', value: '`' + permstext + '`' },
+							{ name: 'Permissions (Overwrites)', value: '`' + permstext2 + '`' },
+							{ name: 'Does it belong to a bot?', value: role.tags?.botId ? `**Yes** (${role.tags?.botId}, <@!${role.tags?.botId}>)` : "No", inline: true },
+							{ name: 'Does it belong to a integration?', value: role.tags?.integrationId ? `**Yes** (${role.tags?.integrationId})` : "No", inline: true },
+							{ name: 'Is this the role for boosters?', value: role.tags?.premiumSubscriberRole ? "**Yes**" : "No", inline: true },
+						])
 						.setTimestamp()
 					await interaction.reply({ embeds: [embed] });
 				}
@@ -593,9 +621,9 @@ export default class extends SlashCommand {
 					}
 				}
 
-				const embed = new MessageEmbed()
-					.setAuthor({ name: user.username, iconURL: user.displayAvatarURL({ dynamic: true }) })
-					.setThumbnail(user.displayAvatarURL({ dynamic: true }))
+				const embed = new EmbedBuilder()
+					.setAuthor({ name: user.username, iconURL: user.displayAvatarURL({}) })
+					.setThumbnail(user.displayAvatarURL({}))
 					.setTitle(`Information about ${user.username}`)
 					.setColor("#00ff00")
 					.setTimestamp();
@@ -606,86 +634,126 @@ export default class extends SlashCommand {
 
 						const perms = member.permissions.toArray();
 						let permstext = "";
-						if (perms.indexOf("ADMINISTRATOR") === -1) {
+						if (perms.indexOf("Administrator") === -1) {
 							permstext = perms.join(", ") || "Without permissions.";
 						} else {
-							permstext = "ADMINISTRATOR (All permissions)";
+							permstext = "Administrator (All permissions)";
 						}
 						const perms2 = member.permissionsIn(interaction.channelId).toArray();
 						let permstext2 = "";
-						if (perms2.indexOf("ADMINISTRATOR") === -1) {
+						if (perms2.indexOf("Administrator") === -1) {
 							permstext2 = perms2.join(", ") || "Without permissions.";
 						} else {
-							permstext2 = "ADMINISTRATOR (All permissions)";
+							permstext2 = "Administrator (All permissions)";
 						}
 
-						embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
-							.addField("ID", user.id, true)
-							.addField("Nickname", member.nickname ? `${member.nickname}` : "None", true)
-							.addField("Bot?", user.bot ? "Yes" : "No", true);
-						if (!user.bot) embed.addField("Nitro type", finaltext, true);
+						embed.addFields([
+							{ name: "Full Username", value: user.tag + "\n" + user.toString(), inline: true },
+							{ name: "ID", value: user.id, inline: true },
+							{ name: "Nickname", value: member.nickname ? `${member.nickname}` : "None", inline: true },
+							{ name: "Bot?", value: user.bot ? "Yes" : "No", inline: true },
+						]);
+						if (!user.bot) embed.addFields([{ name: "Nitro type", value: finaltext, inline: true }]);
 						embed
 							/*.addField("Status", status2, true)
 								.addField("Presence", ptext, true)*/
-							.addField("Flags", `\`${flagtext}\``, true)
-							.addField("Permissions (General)", `\`${permstext}\``, true)
-							.addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
-							.addField("Still being verified?", member.pending ? "**Yes**" : "No")
-						/*.addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");*/
-						if (!user.bot) embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No");
-						embed.addField(`Joined ${interaction.guild.name} at`, bot.botIntl.format(member.joinedAt))
-							.addField("Joined Discord At", bot.botIntl.format(user.createdAt))
-							.addField("Roles", `${member.roles.cache.filter(r => r.id !== interaction.guild.id).map(roles => `${roles}`).join(" **|** ") || "No Roles"}`);
+							.addFields([
+								{ name: "Flags", value: `\`${flagtext}\``, inline: true },
+								{ name: "Permissions (General)", value: `\`${permstext}\``, inline: true },
+								{ name: "Permissions (Overwrites)", value: `\`${permstext2}\``, inline: true },
+								{ name: "Still being verified?", value: member.pending ? "**Yes**" : "No" },
+							]);
+						if (!user.bot) embed.addFields([{ name: "Boosting?", value: member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No" }]);
+						embed.addFields([
+							{ name: `Joined ${interaction.guild.name} at`, value: bot.botIntl.format(member.joinedAt) },
+							{ name: "Joined Discord At", value: bot.botIntl.format(user.createdAt) },
+							{ name: "Roles", value: `${member.roles.cache.filter(r => r.id !== interaction.guild.id).map(roles => `${roles}`).join(" **|** ") || "No Roles"}` },
+						]);
 						await interaction.reply({ embeds: [embed], ephemeral: true });
 					} catch (err) {
-						embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
-							.addField("ID", user.id, true)
-							.addField("Bot?", user.bot ? "Yes" : "No", true);
-						if (!user.bot) embed.addField("Nitro type", finaltext, true);
+						embed.addFields([
+							{ name: "Full Username", value: user.tag + "\n" + user.toString(), inline: true },
+							{ name: "ID", value: user.id, inline: true },
+							{ name: "Bot?", value: user.bot ? "Yes" : "No", inline: true },
+						]);
+						if (!user.bot) embed.addFields([{ name: "Nitro type", value: finaltext, inline: true }]);
 						embed
 							/*.addField("Status", status2, true)
-								.addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)*/
-							.addField("Flags", `\`${flagtext}\``, true)
-							/*.addField(
-								"Last Message",
-								user.lastMessage ? user.lastMessage.url : "Without fetch about that"
-							)*/
-							.addField("Joined Discord At", bot.botIntl.format(user.createdAt));
+								.addField("Presence", splitMessage(ptext, { maxLength: 1000 })[0], true)*/
+							.addFields([{ name: "Flags", value: `\`${flagtext}\``, inline: true }, { name: "Joined Discord At", value: bot.botIntl.format(user.createdAt) }])
 						await interaction.reply({ embeds: [embed], ephemeral: true });
 					}
 				} else {
-					embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
-						.addField("ID", user.id, true)
-						.addField("Bot?", user.bot ? "Yes" : "No", true);
-					if (!user.bot) embed.addField("Nitro type", finaltext, true);
+					embed.addFields([
+						{ name: "Full Username", value: user.tag + "\n" + user.toString(), inline: true },
+						{ name: "ID", value: user.id, inline: true },
+						{ name: "Bot?", value: user.bot ? "Yes" : "No", inline: true },
+					]);
+					if (!user.bot) embed.addFields([{ name: "Nitro type", value: finaltext, inline: true }]);
 					embed
 						/*.addField("Status", status2, true)
-							.addField("Presence", ptext, true)*/
-						.addField("Flags", `\`${flagtext}\``, true)
-						/*.addField(
-							"Last Message",
-							user.lastMessage ? user.lastMessage.url : "Without fetch about that"
-						)*/
-						.addField("Joined Discord At", bot.botIntl.format(user.createdAt));
+							.addField("Presence", splitMessage(ptext, { maxLength: 1000 })[0], true)*/
+						.addFields([{ name: "Flags", value: `\`${flagtext}\``, inline: true }, { name: "Joined Discord At", value: bot.botIntl.format(user.createdAt) }])
 					await interaction.reply({ embeds: [embed], ephemeral: true });
 				}
 			}
 				break;
 			case 'widget': {
 				if ((!interaction.guild) && (!interaction.options.getString("server-id"))) interaction.reply("Server ID is required when using the command in DMs");
-				const res = await fetch(`https://discord.com/api/v${bot.options.http.version}/guilds/${interaction.options.getString("server-id", false) || interaction.guildId}/widget.json`);
+				const res = await fetch(`https://discord.com/api/v${bot.options.ws.version}/guilds/${interaction.options.getString("server-id", false) || interaction.guildId}/widget.json`);
 				const json = await res.json();
 				if (!res.ok) return await interaction.reply({ content: "Error: " + json.message, ephemeral: true });
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setTitle(`Widget information for ${json.name}`)
-					.addField("Enabled instant invite?", (json.instant_invite ? `[Yes](${json.instant_invite})` : "No") || "?")
-					.addField("Voice channels", json.channels.length > 0 ? Util.splitMessage(json.channels.sort((b, a) => b.position - a.position).map(e => `${e.name} (${e.id})`).join("\n"), { maxLength: 1024 })[0] : "No channels")
-					.addField("Member Count", (json.members.length > 99) ? "100 or more" : json.members.length.toString())
-					.addField("Presence Count", json.presence_count.toString())
-					.addField("Links", `[Widget JSON](https://discord.com/api/v${bot.options.http.version}/guilds/${json.id}/widget.json) - [Widget](https://discord.com/widget?id=${json.id}&theme=dark) - [Widget Image](https://discord.com/api/v${bot.options.http.version}/guilds/${json.id}/widget.png)`);
+					.addFields([
+						{ name: "Enabled instant invite?", value: (json.instant_invite ? `[Yes](${json.instant_invite})` : "No") || "?" },
+						{ name: "Voice channels", value: json.channels.length > 0 ? splitMessage(json.channels.sort((b, a) => b.position - a.position).map(e => `${e.name} (${e.id})`).join("\n"), { maxLength: 1024 })[0] : "No channels" },
+						{ name: "Member Count", value: (json.members.length > 99) ? "100 or more" : json.members.length.toString() },
+						{ name: "Presence Count", value: json.presence_count.toString() },
+						{ name: "Links", value: `[Widget JSON](https://discord.com/api/v${bot.options.ws.version}/guilds/${json.id}/widget.json) - [Widget](https://discord.com/widget?id=${json.id}&theme=dark) - [Widget Image](https://discord.com/api/v${bot.options.ws.version}/guilds/${json.id}/widget.png)` },
+					])
 				await interaction.reply({ embeds: [embed] });
 			}
 				break;
+			case 'invite': {
+				try {
+					const invite = await bot.fetchInvite(interaction.options.getString("code"));
+					const embed = new EmbedBuilder()
+						.setDescription("The API doesn't give me as much information about a Discord invite")
+						.setFooter({ text: `Requested by: ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL({}) })
+						.setColor("Random");
+					if (invite.guild) {
+						embed.setAuthor({ name: "Invite information", url: invite.guild.iconURL({}) })
+							.addFields([
+								{ name: "Guild", value: invite.guild.name + "\n`" + invite.guild.id + "`", inline: true },
+								{ name: "Guild Verification", value: invite.guild.verificationLevel.toString(), inline: true },
+								{ name: "Presence Count", value: invite.presenceCount.toString(), inline: true },
+							])
+					} else if (invite.channel?.type === 3) {
+						embed.setThumbnail(invite.channel?.iconURL())
+							.addFields([
+								{ name: "Type", value: "Group DM invite", inline: true },
+								{ name: "Group name", value: invite.channel?.name ? invite.channel.name : "None", inline: true },
+							])
+					}
+					embed.addFields([{ name: "Member Count", value: invite.memberCount.toString(), inline: true }])
+					if (invite.guild) {
+						embed.addFields([
+							{ name: "Redirects to", value: invite.channel?.name + "\n" + invite.channel?.toString(), inline: true },
+							{ name: "\u200b", value: "\u200b", inline: true },
+							{ name: "Features", value: invite.guild.features.join("\n") ? invite.guild.features.join("\n") : "Without features", inline: true },
+						])
+						if (invite.guild.splash) embed.setThumbnail(invite.guild.splashURL({ extension: "png" }))
+						if (invite.guild.banner) embed.setImage(invite.guild.bannerURL({ extension: "png" }))
+					}
+					embed.addFields([{ name: "Inviter", value: invite.inviter ? invite.inviter.tag + "\n" + invite.inviter.toString() : "None", inline: true }])
+					await interaction.reply({ embeds: [embed] });
+				} catch (err) {
+					console.error(err);
+					if (err.message === "Unknown Invite") return interaction.reply("The API says that invitation is unknown.");
+					else return interaction.reply("Something happened when I was trying to collect the information. Here's a debug: " + err);
+				}
+			}
 		}
 	}
 }
@@ -693,17 +761,17 @@ export default class extends SlashCommand {
 function advancedmap(c) {
 	let r = "";
 	switch (c.type) {
-		case "GUILD_NEWS":
+		case 5:
 			r += "[📢] " + c.name + (c.threads.cache.size ? c.threads.cache.map(d => {
 				return "\n\t" + (c.parentId ? "\t" : "") + "[🧵] " + d.name;
 			}).join("") : "");
 			break;
-		case "GUILD_TEXT":
+		case 0:
 			r += "[📃] " + c.name + (c.threads.cache.size ? c.threads.cache.map(d => {
 				return "\n\t" + (c.parentId ? "\t" : "") + "[🧵] " + d.name;
 			}).join("") : "");
 			break;
-		case "GUILD_VOICE":
+		case 2:
 			r += "[🎙] " + c.name + (c.members.size.toString() ? (c.members.map(d => {
 				if (d.user.bot) {
 					return "\n\t" + (c.parentId ? "\t" : "") + "[🤖] " + d.user.tag;
@@ -712,7 +780,7 @@ function advancedmap(c) {
 				}
 			})).join("") : "")
 			break;
-		case "GUILD_STAGE_VOICE":
+		case 13:
 			r += "[👪] " + c.name + (c.members.size.toString() ? (c.members.map(d => {
 				if (d.user.bot) {
 					return "\n\t" + (c.parentId ? "\t" : "") + "[🤖] " + d.user.tag;
@@ -720,9 +788,6 @@ function advancedmap(c) {
 					return "\n\t" + (c.parentId ? "\t" : "") + "[🙎] " + d.user.tag;
 				}
 			})).join("") : "")
-			break;
-		case "GUILD_STORE":
-			r += "[🏪] " + c.name;
 			break;
 		default:
 			r += "[?] " + c.name;

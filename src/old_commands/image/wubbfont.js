@@ -1,6 +1,6 @@
 import { join } from 'path';
 import commons from '../../utils/commons.js';
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import Canvas from 'canvas';
 import canvasTxt from '../../utils/canvas-txt.js';
 const { __dirname } = commons(import.meta.url);
@@ -31,7 +31,7 @@ export default class extends Command {
     if (height > 665) return message.channel.send("There is a limit of 7 lines. Your text exceeded that limit");
     ctx.strokeStyle = "white";
     ctxt.drawText(ctx, text, 0, 0, WIDTH, HEIGHT, true);
-    const att = new MessageAttachment(canvas.toBuffer(), "wubbtext.png");
+    const att = new AttachmentBuilder(canvas.toBuffer(), { name: "wubbtext.png" });
     await message.channel.send({ files: [att] });
   }
 }

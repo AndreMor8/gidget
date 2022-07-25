@@ -8,16 +8,16 @@ export default class extends SlashCommand {
       {
         name: "get",
         description: "Get current settings.",
-        type: "SUB_COMMAND"
+        type: 1
       },
       {
         name: "channel",
         description: "Set a confessions channel!",
-        type: "SUB_COMMAND",
+        type: 1,
         options: [{
           name: "channel",
           description: "Choose a channel to send user confessions. Default to remove the previously set channel.",
-          type: "CHANNEL",
+          type: 7,
           channelTypes: [0, 5, 10, 11, 12],
           required: false
         }]
@@ -25,7 +25,7 @@ export default class extends SlashCommand {
       {
         name: "anon",
         description: "Do you want to receive anonymous confessions? There is no way of knowing who did it.",
-        type: "SUB_COMMAND"
+        type: 1
       },
     ]
     this.guildonly = true;
@@ -38,7 +38,7 @@ export default class extends SlashCommand {
     switch (interaction.options.getSubcommand()) {
       case 'channel': {
         const channel = interaction.options.getChannel("channel", false);
-        if (channel && !channel.permissionsFor(bot.user.id).has(["SEND_MESSAGES", "EMBED_LINKS"])) return await interaction.reply("I don't have the permissions to send embeds on that channel.\nGive me the permissions to send messages and embed links!");
+        if (channel && !channel.permissionsFor(bot.user.id).has(["SendMessages", "EmbedLinks"])) return await interaction.reply("I don't have the permissions to send embeds on that channel.\nGive me the permissions to send messages and embed links!");
         if (!channel) await deleteConfessionConfig(interaction.guild);
         else await setConfessionChannel(interaction.guild, channel);
         await interaction.reply(channel ? "The channel has been set correctly." : "I've deleted the confession channel ID from my database. Re-enable the system with `confessionconfig channel <channel>`.");

@@ -1,5 +1,5 @@
 import notes from '../../database/models/notes.js';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 export default class extends SlashCommand {
   constructor(options) {
@@ -8,56 +8,56 @@ export default class extends SlashCommand {
     this.deployOptions.options = [{
       name: "view",
       description: "See the notes you have created",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "ephemeral",
         description: "Show notes privately (default)",
-        type: "BOOLEAN",
+        type: 5,
         required: false
       }]
     },
     {
       name: "add",
       description: "Create a note",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "note",
         description: "The note itself",
-        type: "STRING",
+        type: 3,
         required: true
       }]
     },
     {
       name: "remove",
       description: "Delete a note",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "id",
         description: "Note ID (use /notes view)",
-        type: "INTEGER",
+        type: 4,
         required: false
       },
       {
         name: "all",
         description: "Delete all notes?",
-        type: "BOOLEAN",
+        type: 5,
         required: false
       }]
     },
     {
       name: "update",
       description: "Update a note",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "id",
         description: "Note ID (use /notes view)",
-        type: "INTEGER",
+        type: 4,
         required: true
       },
       {
         name: "note",
         description: "The note itself",
-        type: "STRING",
+        type: 3,
         required: true
       }]
     }]
@@ -104,12 +104,12 @@ export default class extends SlashCommand {
         const arr = await notes.find({ userID: { $eq: interaction.user.id } });
         if (!arr[0]) return await interaction.reply({ content: "You don't have notes", ephemeral: true });
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
           .setTitle("Notes from " + interaction.user.username)
-          .setColor("BLUE")
+          .setColor("Blue")
           .setTimestamp();
 
-        for (const i in arr) embed.addField(`${parseInt(i) + 1}.`, arr[i].note);
+        for (const i in arr) embed.addFields([{ name: `${parseInt(i) + 1}.`, value: arr[i].note }]);
 
         let ephemeral;
         const ep = interaction.options.getBoolean('ephemeral', false);

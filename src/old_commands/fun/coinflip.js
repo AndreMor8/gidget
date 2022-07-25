@@ -1,4 +1,4 @@
-import { MessageButton, MessageActionRow } from 'discord.js';
+import { ButtonBuilder, ActionRowBuilder } from 'discord.js';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -6,11 +6,11 @@ export default class extends Command {
   }
   async run(bot, message) {
     const arr = ["Heads", "Tails"];
-    const but_redo = new MessageButton()
+    const but_redo = new ButtonBuilder()
       .setCustomId("coinflip_c_redo")
-      .setStyle("PRIMARY")
+      .setStyle("Primary")
       .setLabel("Retry");
-    const msg = await message.channel.send({ content: `You got: **${arr[Math.floor(Math.random() * 2)]}**!`, components: [new MessageActionRow().addComponents([but_redo])] });
+    const msg = await message.channel.send({ content: `You got: **${arr[Math.floor(Math.random() * 2)]}**!`, components: [new ActionRowBuilder().addComponents([but_redo])] });
     const filter = (button) => {
       if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%coinflip`", ephemeral: true });
       return button.user.id === message.author.id;
@@ -21,6 +21,6 @@ export default class extends Command {
         await button.update(`You got: **${arr[Math.floor(Math.random() * 2)]}**!`);
       }
     });
-    col.on("end", () => msg.edit({ content: msg.content, components: [new MessageActionRow().addComponents([but_redo.setDisabled(true)])] }));
+    col.on("end", () => msg.edit({ content: msg.content, components: [new ActionRowBuilder().addComponents([but_redo.setDisabled(true)])] }));
   }
 }

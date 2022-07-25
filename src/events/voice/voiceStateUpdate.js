@@ -16,7 +16,7 @@ export default async (bot, oldState, newState) => {
   }
 
   //VOICEROLE
-  if (member && guild.me.permissions.has("MANAGE_ROLES")) {
+  if (member && guild.members.me.permissions.has("ManageRoles")) {
     const list = await db.findOne({ guildID: { $eq: guild.id } }).lean();
     if (list && list.enabled) {
       const thing1 = list.list.find(e => e.channels.includes(newState.channelId));

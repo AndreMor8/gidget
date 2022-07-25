@@ -6,7 +6,7 @@ import gifResize from '../../utils/gifresize.js';
 import parser from 'twemoji-parser';
 import Canvas from 'canvas';
 import GIF from "gif-encoder";
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import isSvg from 'is-svg';
 import svg2img_callback from 'node-svg2img';
 import { promisify } from 'util';
@@ -30,13 +30,13 @@ export default class extends Command {
         setTimeout(() => timer.delete(message.author.id), 20000);
       }
     }
-    let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await bot.users.fetch(args[1]).catch(() => { }) || args[1]) : message.author)
+    let source = message.attachments.first() ? (message.attachments.first().url) : (args[1] ? (message.mentions.users.filter(u => u.id !== bot.user.id).first() || bot.users.cache.get(args[1]) || bot.users.cache.find(e => e.username === args.slice(1).join(" ") || e.tag === args.slice(1).join(" ")) || await bot.users.fetch(args[1]).catch(() => { }) || args[1]) : message.author)
     if (!source) return message.channel.send("Invalid user, emoji or image!");
     if (source.id) {
-      source = source.displayAvatarURL({ format: "png", size: SIZE });
+      source = source.displayAvatarURL({ extension: "png", size: SIZE });
     }
-    if (source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/)) {
-      const matched = source.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
+    if (source.match(/<?(a:|:)\w*:(\d{17,20})>/)) {
+      const matched = source.match(/<?(a:|:)\w*:(\d{17,20})>/);
       source = `https://cdn.discordapp.com/emojis/${matched[2]}.png`;
     }
     const parsed = parser.parse(source);
@@ -65,7 +65,7 @@ export default class extends Command {
         gif.on("end", async () => {
           const pre_buf = Buffer.concat(chunks);
           const buf = await gifResize({ width: 512, height: 512, stretch: true, interlaced: true })(pre_buf);
-          const att = new MessageAttachment(buf, "spin.gif");
+          const att = new AttachmentBuilder(buf, { name: "spin.gif" });
 
           await message.channel.send({ files: [att] }).catch(() => { });
           s();
@@ -123,7 +123,7 @@ async function resize(url) {
   if (!res.ok) throw new Error("Status code: " + res.status);
   const buf = Buffer.from(await res.arrayBuffer());
   if (isSvg(buf)) {
-    return await svg2img(buf, { format: "png", width: SIZE, height: SIZE });
+    return await svg2img(buf, { extension: "png", width: SIZE, height: SIZE });
   } else if (process.platform === "win32") {
     //npm i jimp
     //https://sharp.pixelplumbing.com/install#canvas-and-windows

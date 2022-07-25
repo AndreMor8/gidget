@@ -8,7 +8,7 @@ export default async (_self, bot) => {
       const banner = doc.banners.find(e => e.hour == hour);
       if (banner && (bot.doneBanners.get(doc.guildID) != hour)) {
         const g = bot.guilds.cache.get(doc.guildID);
-        if (g?.me.permissions.has("MANAGE_GUILD") && (g?.features.includes("BANNER"))) await g.setBanner(banner.url).catch(() => { });
+        if (g?.members.me.permissions.has("ManageGuild") && (g?.features.includes("BANNER"))) await g.setBanner(banner.url).catch(() => { });
         bot.doneBanners.set(doc.guildID, hour);
       }
     }

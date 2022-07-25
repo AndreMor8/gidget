@@ -3,7 +3,7 @@ export default class extends SlashCommand {
   constructor(options) {
     super(options)
     this.deployOptions.name = "warn";
-    this.deployOptions.type = 'USER';
+    this.deployOptions.type = 2;
     this.guildonly = true;
     this.permissions = {
       user: [4n, 0n],

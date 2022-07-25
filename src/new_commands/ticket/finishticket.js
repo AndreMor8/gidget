@@ -5,7 +5,7 @@ export default class extends SlashCommand {
     this.deployOptions.description = "Finish listening tickets";
     this.deployOptions.options = [{
       name: "message",
-      type: "STRING",
+      type: 3,
       description: "Message ID that relates a ticket system",
       required: true
     }];

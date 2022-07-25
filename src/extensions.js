@@ -1,12 +1,11 @@
-import prefix from "./database/models/prefix.js";
 import cr from "./database/models/customresponses.js";
 import level from "./database/models/levelconfig.js";
 import welcome from "./database/models/welcome.js";
-import MessageLinksModel from "./database/models/messagelinks.js";
 import autopost from './database/models/autopost.js';
 import guildwarnconfig from './database/models/warn.js';
 import memberwarns from './database/models/warn2.js';
 import confessions from './database/models/confessionconfig.js';
+import { verifyString } from 'discord.js';
 
 //To differentiate user errors
 class StructureError extends Error {
@@ -60,7 +59,7 @@ export async function deleteConfessionConfig(guild) {
 }
 
 export async function setAutoPostChannel(guild, channel) {
-  if (channel.type !== "GUILD_NEWS") throw new StructureError("Only news channels are allowed!");
+  if (channel.type !== 5) throw new StructureError("Only news channels are allowed!");
   let doc = await autopost.findOneAndUpdate({ guildID: { $eq: guild.id } }, { $push: { channels: channel.id } }, { new: true }).lean();
   if (!doc) {
     doc = await autopost.create({
@@ -118,41 +117,6 @@ export async function getInviteCount(guild) {
   }
 
   return inviteCounter;
-}
-
-export async function getPrefix(guild) {
-  if (guild.prefix && guild.cache?.prefix) return guild.prefix;
-  const doc = await prefix.findOne({ guildId: { $eq: guild.id } }).lean();
-  if (doc) {
-    guild.prefix = doc.prefix;
-    if (!guild.cache) guild.cache = {};
-    guild.cache.prefix = true;
-    return doc.prefix;
-  } else {
-    guild.prefix = "g%";
-    if (!guild.cache) guild.cache = {};
-    guild.cache.prefix = true;
-    return "g%";
-  }
-}
-
-export async function setPrefix(guild, newPrefix) {
-  const doc = await prefix.findOneAndUpdate({ guildId: { $eq: guild.id } }, { prefix: newPrefix }).lean();
-  if (doc) {
-    guild.prefix = newPrefix;
-    if (!guild.cache) guild.cache = {};
-    guild.cache.prefix = true;
-    return newPrefix;
-  } else {
-    await prefix.create({
-      guildId: guild.id,
-      prefix: newPrefix,
-    });
-    guild.prefix = newPrefix;
-    if (!guild.cache) guild.cache = {};
-    guild.cache.prefix = true;
-    return newPrefix;
-  }
 }
 
 export async function addCustomResponse(guild, match, message) {
@@ -262,30 +226,6 @@ export async function changeLevelConfig(guild, config, value) {
     guild.cache.levelconfig = true;
     return true;
   } else return false;
-}
-export async function getMessageLinksConfig(guild) {
-  if (guild.messagelinksconfig && guild.cache?.messagelinksconfig) return guild.messagelinksconfig;
-  let doc = await MessageLinksModel.findOne({ guildID: { $eq: guild.id } });
-  if (!doc) {
-    doc = await MessageLinksModel.create({
-      guildID: guild.id,
-      enabled: false
-    });
-  }
-  guild.messagelinksconfig = doc;
-  if (!guild.cache) guild.cache = {};
-  guild.cache.messagelinksconfig = true;
-  return doc;
-}
-
-
-export async function setMessageLinksConfig(guild, value) {
-  if (typeof value !== "boolean") throw new Error("'value' isn't a boolean");
-  const doc = await getMessageLinksConfig(guild);
-  await doc.updateOne({ enabled: value });
-  guild.messagelinksconfig = doc;
-  guild.messagelinksconfig.enabled = value;
-  return true;
 }
 
 export async function getWelcome(guild) {
@@ -497,4 +437,46 @@ export function memberNoCache(member) {
 export async function getBuffer(url) {
   // eslint-disable-next-line no-undef
   return Buffer.from(await (await fetch(url)).arrayBuffer());
+}
+
+export function isURL(input) {
+  if (typeof input !== "string" || input.includes(" ")) return false;
+  try {
+    const url = new URL(input);
+    if (!["https:", "http:"].includes(url.protocol) || !url.host) return false;
+  } catch {
+    return false;
+  }
+  return true;
+}
+
+//Copied from https://github.com/discordjs/discord.js/blob/622c77ba7af56ec3dc17a47aae5379e2358e8c95/src/util/Util.js#L77
+//This is very useful
+export function splitMessage(text, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
+  text = verifyString(text);
+  if (text.length <= maxLength) return [text];
+  let splitText = [text];
+  if (Array.isArray(char)) {
+    while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
+      const currentChar = char.shift();
+      if (currentChar instanceof RegExp) {
+        splitText = splitText.flatMap(chunk => chunk.match(currentChar));
+      } else {
+        splitText = splitText.flatMap(chunk => chunk.split(currentChar));
+      }
+    }
+  } else {
+    splitText = text.split(char);
+  }
+  if (splitText.some(elem => elem.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
+  const messages = [];
+  let msg = '';
+  for (const chunk of splitText) {
+    if (msg && (msg + char + chunk + append).length > maxLength) {
+      messages.push(msg + append);
+      msg = prepend;
+    }
+    msg += (msg && msg !== prepend ? char : '') + chunk;
+  }
+  return messages.concat(msg).filter(m => m);
 }

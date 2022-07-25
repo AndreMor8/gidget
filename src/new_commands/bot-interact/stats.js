@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageActionRow, MessageButton, version } from "discord.js";
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, version } from "discord.js";
 import os from 'os';
 import mongoose from 'mongoose';
 import cpuStat from "cpu-stat";
@@ -32,8 +32,8 @@ export default class extends SlashCommand {
       }
     });
     pings.push(`🗃️ DB ping: ${dbping}ms`);
-    const pingembed = new MessageEmbed()
-      .setColor("AQUA")
+    const pingembed = new EmbedBuilder()
+      .setColor("Aqua")
       .setTitle("Bot ping")
       .setDescription(pings.join("\n\n"));
 
@@ -42,7 +42,7 @@ export default class extends SlashCommand {
     const users = (await bot.shard.broadcastEval(c => c.users.cache)).map(e => e.length).reduce((acc, userCount) => acc + userCount, 0);
     const members = Array.prototype.concat.apply([], await bot.shard.broadcastEval(c => c.guilds.cache.map(e => e.memberCount)));
     const average = Math.round(members.reduce((p, c) => c += p) / members.length);
-    const serverembed = new MessageEmbed()
+    const serverembed = new EmbedBuilder()
       .setTitle('Server count')
       .setDescription(`At the moment I'm in **${servers}** servers and with **${users}** cached online users.`, true)
       .setFooter({ text: `I have an average of ${average} members in the number of members of all servers I'm in` })
@@ -52,26 +52,29 @@ export default class extends SlashCommand {
     const percent = await usagePercent();
     const memoryU = `Resident Set: ${memory(process.memoryUsage.rss())}\nHeap Used: ${memory(process.memoryUsage().heapUsed)}`;
     const vcs = (await bot.shard.broadcastEval(c => c.voice.adapters.size)).reduce((a, c) => a + c, 0);
-    const statsembed = new MessageEmbed()
+    const statsembed = new EmbedBuilder()
       .setTitle("***Stats***")
-      .setColor("RANDOM")
+      .setColor("Random")
       .setDescription(`Gidget is alive! - Version ${bot.botVersion} from shard ${bot.shard?.ids[0] || 0}`)
-      .addField("• RAM", `${memory(os.totalmem() - os.freemem(), false)} / ${memory(os.totalmem())}`, true)
-      .addField(`• Bot RAM usage (shard ${bot.shard?.ids[0] || 0})`, memoryU, true)
-      .addField("• Uptime ", `${moment.duration(Date.now() - bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, true)
-      .addField("• Discord.js", `v${version}`, true)
-      .addField("• Node.js", `${process.version}`, true)
-      .addField("• Hosting service", process.env.HOSTER, true)
-      .addField("• Operating system", `\`\`\`md\n${os.version()}\n${os.release()}\`\`\``)
-      .addField("• CPU", `\`\`\`md\n${os.cpus()[0].model}\`\`\``)
-      .addField("• Shards", bot.shard.count.toString(), true)
-    if (vcs) statsembed.addField("• Voice connections", vcs.toString(), true)
-    statsembed.addField("• CPU usage", `\`${percent.toFixed(2)}%\``, true)
-      .addField("• Arch", `\`${os.arch()}\``, true)
-      .addField("• Platform", `\`\`${os.platform()}\`\``, true)
-      .setFooter({ text: "Gidget stats" });
+      .addFields([
+        { name: "• RAM", value: `${memory(os.totalmem() - os.freemem(), false)} / ${memory(os.totalmem())}`, inline: true },
+        { name: `• Bot RAM usage (shard ${bot.shard?.ids[0] || 0})`, value: memoryU, inline: true },
+        { name: "• Uptime ", value: `${moment.duration(Date.now() - bot.readyTimestamp, "ms").format("d [days], h [hours], m [minutes]")}`, inline: true },
+        { name: "• Discord.js", value: `v${version}`, inline: true },
+        { name: "• Node.js", value: `${process.version}`, inline: true },
+        { name: "• Hosting service", value: process.env.HOSTER, inline: true },
+        { name: "• Operating system", value: `\`\`\`md\n${os.version()}\n${os.release()}\`\`\`` },
+        { name: "• CPU", value: `\`\`\`md\n${os.cpus()[0].model}\`\`\`` },
+        { name: "• Shards", value: bot.shard.count.toString(), inline: true }
+      ])
+    if (vcs) statsembed.addFields([{ name: "• Voice connections", value: vcs.toString(), inline: true}])
+    statsembed.addFields([
+      { name: "• CPU usage", value: `\`${percent.toFixed(2)}%\``, inline: true },
+      { name: "• Arch", value: `\`${os.arch()}\``, inline: true },
+      { name: "• Platform", value: `\`\`${os.platform()}\`\``, inline: true }
+    ]).setFooter({ text: "Gidget stats" });
 
-    await interaction.editReply({ ephemeral: true, embeds: [pingembed, serverembed, statsembed], components: [new MessageActionRow().addComponents([new MessageButton().setStyle("LINK").setLabel("Gidget Dashboard status").setURL("https://gidget.andremor.dev/stats")])] });
+    await interaction.editReply({ ephemeral: true, embeds: [pingembed, serverembed, statsembed], components: [new ActionRowBuilder().addComponents([new ButtonBuilder().setStyle("Link").setLabel("Gidget Dashboard status").setURL("https://gidget.andremor.dev/stats")])] });
   }
 }
 

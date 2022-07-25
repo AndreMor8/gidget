@@ -1,4 +1,5 @@
-import { Util, MessageEmbed, MessageButton, MessageActionRow } from "discord.js";
+import { EmbedBuilder, ButtonBuilder, ActionRowBuilder } from "discord.js";
+import { splitMessage } from '../../extensions.js';
 export default class extends SlashCommand {
   constructor(options) {
     super(options)
@@ -7,60 +8,60 @@ export default class extends SlashCommand {
       {
         name: "info",
         description: "Get information from an emoji.",
-        type: "SUB_COMMAND",
+        type: 1,
         options: [{
           name: "emoji",
           description: "Emoji to see",
-          type: "STRING",
+          type: 3,
           required: true
         }]
       },
       {
         name: "all",
         description: "Show all guild emojis",
-        type: "SUB_COMMAND"
+        type: 1
       },
       {
         name: "limit",
         description: "Limit the use of an emoji to certain roles.",
-        type: "SUB_COMMAND_GROUP",
+        type: 2,
         options: [
           {
             name: "update",
             description: "Did the members get new roles? Use this if newcomers still don't see the respective emojis.",
-            type: "SUB_COMMAND"
+            type: 1
           },
           {
             name: "add",
             description: "Add roles to emoji",
-            type: "SUB_COMMAND",
+            type: 1,
             options: [{
               name: "emoji",
               description: "The emoji to limit use",
-              type: "STRING",
+              type: 3,
               required: true
             },
             {
               name: "role",
               description: "Role to add",
-              type: "ROLE",
+              type: 8,
               required: true
             }]
           },
           {
             name: "remove",
             description: "Remove roles to emoji",
-            type: "SUB_COMMAND",
+            type: 1,
             options: [{
               name: "emoji",
               description: "The emoji to limit use",
-              type: "STRING",
+              type: 3,
               required: true
             },
             {
               name: "role",
               description: "Role to remove",
-              type: "ROLE",
+              type: 8,
               required: true
             }]
           }]
@@ -76,7 +77,7 @@ export default class extends SlashCommand {
     const elist = await interaction.guild.emojis.fetch();
     switch (interaction.options.getSubcommand()) {
       case "info": {
-        if (!interaction.guild.me.permissions.has("EMBED_LINKS")) return await interaction.reply("I don't have permissions to run this command **in this channel**. Required: `EMBED_LINKS`");
+        if (!interaction.guild.members.me.permissions.has("EmbedLinks")) return await interaction.reply("I don't have permissions to run this command **in this channel**. Required: `EmbedLinks`");
         const e = interaction.options.getString('emoji');
         const emoji = bot.emojis.cache.get(e) ||
           bot.emojis.cache.find(a => a.toString() === e || a.identifier === e) ||
@@ -84,30 +85,34 @@ export default class extends SlashCommand {
           elist.get(e);
         if (!emoji) return await interaction.reply({ content: "Invalid emoji!", ephemeral: true });
         let auth = emoji.author;
-        if (!auth && interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS") && emoji.guild.id === interaction.guild.id) {
+        if (!auth && interaction.guild.members.me.permissions.has("ManageEmojisAndStickers") && emoji.guild.id === interaction.guild.id) {
           auth = await emoji.fetchAuthor();
         } else if (!auth) auth = "*Without perms to see that*";
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
           .setTitle("Emoji info for " + emoji.name)
           .setThumbnail(emoji.url)
-          .setColor("RANDOM")
-          .addField("ID", emoji.id, true)
-          .addField("Use", "`" + emoji.toString() + "`", true)
-          .addField("Animated?", emoji.animated ? "Yes" : "No", true)
-          .addField("Managed?", emoji.managed ? "Yes" : "No", true)
-          .addField("Requires colons?", emoji.requiresColons ? "Yes" : "No", true)
-          .addField("Available", emoji.available ? "Yes" : "No", true)
+          .setColor("Random")
+          .addFields([
+            { name: "ID", value: emoji.id, inline: true },
+            { name: "Use", value: "`" + emoji.toString() + "`", inline: true },
+            { name: "Animated?", value: emoji.animated ? "Yes" : "No", inline: true },
+            { name: "Managed?", value: emoji.managed ? "Yes" : "No", inline: true },
+            { name: "Requires colons?", value: emoji.requiresColons ? "Yes" : "No", inline: true },
+            { name: "Available", value: emoji.available ? "Yes" : "No", inline: true }
+          ])
           .setFooter({ text: "Created at" })
           .setTimestamp(emoji.createdAt);
         if (emoji.guild.id === interaction.guild.id) {
-          embed.addField("Author", auth.toString(), true)
-            .addField("Roles that can use the emoji", emoji.roles.cache.first() ? emoji.roles.cache.map(e => `${e}`).join(", ") : "@everyone");
+          embed.addFields([
+            { name: "Author", value: auth.toString(), inline: true },
+            { name: "Roles that can use the emoji", value: emoji.roles.cache.first() ? emoji.roles.cache.map(e => `${e}`).join(", ") : "@everyone" }
+          ])
         }
-        const but_emoji_link = new MessageButton()
-          .setStyle("LINK")
+        const but_emoji_link = new ButtonBuilder()
+          .setStyle("Link")
           .setURL(emoji.url)
           .setLabel("Emoji link/URL");
-        await interaction.reply({ embeds: [embed], components: [new MessageActionRow().addComponents([but_emoji_link])], ephemeral: true });
+        await interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents([but_emoji_link])], ephemeral: true });
       }
         break;
       case "all": {
@@ -118,13 +123,13 @@ export default class extends SlashCommand {
         if (fullN < 1)
           return await interaction.reply({ content: "I don't see any emoji here.", ephemeral: true });
 
-        const commonN = allEmojis.filter(e => e.available && !e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.me.roles.cache).size >= 1 : true)).size;
-        const animatedN = allEmojis.filter(e => e.available && e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.me.roles.cache).size >= 1 : true)).size;
-        const cantuse = allEmojis.filter(e => e.available && e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.me.roles.cache).size < 1 : false).size;
+        const commonN = allEmojis.filter(e => e.available && !e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.members.me.roles.cache).size >= 1 : true)).size;
+        const animatedN = allEmojis.filter(e => e.available && e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.members.me.roles.cache).size >= 1 : true)).size;
+        const cantuse = allEmojis.filter(e => e.available && e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.members.me.roles.cache).size < 1 : false).size;
 
-        const atext = allEmojis.filter(e => e.available && e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.me.roles.cache).size >= 1 : true)).map(e => e.toString()).join(" ");
-        const ntext = allEmojis.filter(e => e.available && !e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.me.roles.cache).size >= 1 : true)).map(e => e.toString()).join(" ");
-        const ctext = allEmojis.filter(e => e.available && e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.me.roles.cache).size < 1 : false).map(e => e.name).join(", ");
+        const atext = allEmojis.filter(e => e.available && e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.members.me.roles.cache).size >= 1 : true)).map(e => e.toString()).join(" ");
+        const ntext = allEmojis.filter(e => e.available && !e.animated && (e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.members.me.roles.cache).size >= 1 : true)).map(e => e.toString()).join(" ");
+        const ctext = allEmojis.filter(e => e.available && e.roles.cache.size >= 1 ? e.roles.cache.intersect(interaction.guild.members.me.roles.cache).size < 1 : false).map(e => e.name).join(", ");
         const utext = allEmojis.filter(e => !e.available).map(e => e.name).join(", ");
         const unavailable = allEmojis.filter(e => !e.available).size;
         let realtext = "";
@@ -154,7 +159,7 @@ export default class extends SlashCommand {
           if (c) realtext += `\n\n**Unavailable (${unavailable}): ** ${utext}\n`;
           else realtext += `**Unavailable (${unavailable}): ** ${utext}\n`;
         }
-        const contents = Util.splitMessage(realtext, { char: " ", maxLength: 2000 });
+        const contents = splitMessage(realtext, { char: " ", maxLength: 2000 });
         for (const content of contents) {
           if (interaction.replied) await interaction.followUp({ content, ephemeral: true });
           else await interaction.reply({ content, ephemeral: true });
@@ -162,8 +167,8 @@ export default class extends SlashCommand {
       }
         break;
       case "update": {
-        if (!interaction.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("You don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
-        if (!interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("I don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
+        if (!interaction.member.permissions.has("ManageEmojisAndStickers")) return await interaction.reply("You don't have permissions to run this command. Required: `ManageEmojisAndStickers`");
+        if (!interaction.guild.members.me.permissions.has("ManageEmojisAndStickers")) return await interaction.reply("I don't have permissions to run this command. Required: `ManageEmojisAndStickers`");
         const col = elist.filter(e => e.roles.cache.first());
         if (!col.first()) return await interaction.reply("There are no emojis to update");
         col.each(e => {
@@ -174,8 +179,8 @@ export default class extends SlashCommand {
       }
         break;
       case "add": {
-        if (!interaction.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("You don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
-        if (!interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("I don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
+        if (!interaction.member.permissions.has("ManageEmojisAndStickers")) return await interaction.reply("You don't have permissions to run this command. Required: `ManageEmojisAndStickers`");
+        if (!interaction.guild.members.me.permissions.has("ManageEmojisAndStickers")) return await interaction.reply("I don't have permissions to run this command. Required: `ManageEmojisAndStickers`");
         const e = interaction.options.getString('emoji');
         const resolvedEmoji = elist.get(e) || elist.find(a => a.name === e || a.toString() === e || a.identifier === e);
         if (!resolvedEmoji) return await interaction.reply("This isn't a correct custom guild emoji!");
@@ -184,8 +189,8 @@ export default class extends SlashCommand {
       }
         break;
       case "remove": {
-        if (!interaction.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("You don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
-        if (!interaction.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return await interaction.reply("I don't have permissions to run this command. Required: `MANAGE_EMOJIS_AND_STICKERS`");
+        if (!interaction.member.permissions.has("ManageEmojisAndStickers")) return await interaction.reply("You don't have permissions to run this command. Required: `ManageEmojisAndStickers`");
+        if (!interaction.guild.members.me.permissions.has("ManageEmojisAndStickers")) return await interaction.reply("I don't have permissions to run this command. Required: `ManageEmojisAndStickers`");
         const e = interaction.options.getString('emoji');
         const resolvedEmoji = elist.get(e) || elist.find(a => a.name === e || a.toString() === e || a.identifier === e);
         if (!resolvedEmoji) return await interaction.reply("This isn't a correct custom guild emoji!");

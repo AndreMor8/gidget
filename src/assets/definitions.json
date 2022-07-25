@@ -34,8 +34,8 @@
     "onlyguild": false,
     "secret": false
   },
-  "music": {
-    "name": "Music commands",
+  "rec": {
+    "name": "Recording commands",
     "onlyguild": false,
     "secret": false
   },

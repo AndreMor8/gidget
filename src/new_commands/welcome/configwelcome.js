@@ -1,5 +1,6 @@
-import { getWelcome, setWelcome, getInviteCount } from '../../extensions.js';
+import { getWelcome, setWelcome, getInviteCount, splitMessage } from '../../extensions.js';
 import Discord from 'discord.js';
+
 export default class extends SlashCommand {
   constructor(options) {
     super(options);
@@ -12,91 +13,91 @@ export default class extends SlashCommand {
     this.deployOptions.options = [{
       name: "get",
       description: "Get welcome configuration",
-      type: "SUB_COMMAND"
+      type: 1
     },
     {
       name: "toggle",
       description: "Enable welcome (channel or role) system",
-      type: "SUB_COMMAND"
+      type: 1
     },
     {
       name: "channel",
       description: "Assign a welcome channel where a message will be sent",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "channel",
         description: "The channel where the welcome message will be sent",
-        type: "CHANNEL",
+        type: 7,
         required: false
       }]
     },
     {
       name: "message",
       description: "Assign the welcome message",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "message",
         description: "The welcome message",
-        type: "STRING",
+        type: 3,
         required: true
       }]
     },
     {
       name: "role",
       description: "Assign the role that will be given to new members",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "role",
         description: "The welcoming role",
-        type: "ROLE",
+        type: 8,
         required: false
       }]
     },
     {
       name: "respectms",
       description: "Determine if you want member screening to be respected before giving the role",
-      type: "SUB_COMMAND"
+      type: 1
     },
     {
       name: "dmtoggle",
       description: "Enable DM welcome message",
-      type: "SUB_COMMAND"
+      type: 1
     },
     {
       name: "dmmessage",
       description: "Assign the DM welcome message",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "message",
         description: "The DM welcome message",
-        type: "STRING",
+        type: 3,
         required: true
       }]
     },
     {
       name: "leavetoggle",
       description: "Enable goodbye/farewell message",
-      type: "SUB_COMMAND"
+      type: 1
     },
     {
       name: "leavechannel",
       description: "Assign a goodbye channel where a message will be sent",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "channel",
         description: "The channel where the goodbye message will be sent",
-        type: "CHANNEL",
+        type: 7,
         required: false
       }]
     },
     {
       name: "leavemessage",
       description: "Assign the goodbye message",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "message",
         description: "The goodbye message",
-        type: "STRING",
+        type: 3,
         required: true
       }]
     }
@@ -107,19 +108,21 @@ export default class extends SlashCommand {
     const option = interaction.options.getSubcommand();
     switch (option) {
       case "get": {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
           .setTitle("Welcome info")
           .setDescription("Variables documented here: https://docs.gidget.andremor.dev/features/members/welcome-system")
-          .addField("Welcome enabled? (enable)", doc.enabled ? "Yes" : "No")
-          .addField("Channel for welcomes (channel)", doc.channelID ? ("<#" + doc.channelID + ">") : "Not assigned")
-          .addField("Welcome message (message)", Discord.Util.splitMessage(doc.text, { maxLength: 1000 })[0])
-          .addField("Welcome role (role)", doc.roleID ? ("<@&" + doc.roleID + ">") : "Not assigned")
-          .addField("Respect member screening? (respectms)", doc.respectms ? "Yes" : "No")
-          .addField("DM welcome enabled? (dmenable)", doc.dmenabled ? "Yes" : "No")
-          .addField("DM message (dmmessage)", Discord.Util.splitMessage(doc.dmtext, { maxLength: 1000 })[0])
-          .addField("Goodbye enabled? (leaveenable)", doc.leaveenabled ? "Yes" : "No")
-          .addField("Channel for goodbyes (leavechannel)", doc.leavechannelID ? ("<#" + doc.leavechannelID + ">") : "Not assigned")
-          .addField("Goodbye message (leavemessage)", Discord.Util.splitMessage(doc.leavetext, { maxLength: 1000 })[0]);
+          .addFields([
+            { name: "Welcome enabled? (enable)", value: doc.enabled ? "Yes" : "No" },
+            { name: "Channel for welcomes (channel)", value: doc.channelID ? ("<#" + doc.channelID + ">") : "Not assigned" },
+            { name: "Welcome message (message)", value: splitMessage(doc.text, { maxLength: 1000 })[0]},
+            { name: "Welcome role (role)", value: doc.roleID ? ("<@&" + doc.roleID + ">") : "Not assigned" },
+            { name: "Respect member screening? (respectms)", value: doc.respectms ? "Yes" : "No" },
+            { name: "DM welcome enabled? (dmenable)", value: doc.dmenabled ? "Yes" : "No" },
+            { name: "DM message (dmmessage)", value: splitMessage(doc.dmtext, { maxLength: 1000 })[0] },
+            { name: "Goodbye enabled? (leaveenable)", value: doc.leaveenabled ? "Yes" : "No" },
+            { name: "Channel for goodbyes (leavechannel)", value: doc.leavechannelID ? ("<#" + doc.leavechannelID + ">") : "Not assigned" },
+            { name: "Goodbye message (leavemessage)", value: splitMessage(doc.leavetext, { maxLength: 1000 })[0] }
+          ])
         await interaction.reply({ embeds: [embed] });
       }
         break;
@@ -130,13 +133,13 @@ export default class extends SlashCommand {
           if (doc.channelID) {
             const channel = await interaction.guild.channels.fetch(doc.channelID).catch(() => { });
             if (!channel) return await interaction.reply("The assigned channel doesn't exist.");
-            if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
+            if (!channel.permissionsFor(bot.user.id).has(["ViewChannel", "SendMessages"]))
               return await interaction.reply("Give me permissions for send messages on the assigned channel before starting the welcome system.");
           }
           if (doc.roleID) {
             const role = await interaction.guild.roles.fetch(doc.roleID).catch(() => { });
             if (!role) return await interaction.reply("The assigned role doesn't exist.");
-            if (!role.editable) return await interaction.reply("I don't have permissions to give the assigned role.\nMake sure I have the `MANAGE_ROLES` permission, and that this assigned role is below my highest role.")
+            if (!role.editable) return await interaction.reply("I don't have permissions to give the assigned role.\nMake sure I have the `ManageRoles` permission, and that this assigned role is below my highest role.")
           }
         }
         await setWelcome(interaction.guild, 0, !reference);
@@ -151,8 +154,8 @@ export default class extends SlashCommand {
           await interaction.reply("Channel unassigned successfully.");
           break;
         }
-        if (!channel.isText()) return await interaction.reply("That isn't a text-based channel");
-        if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) return await interaction.reply("I don't have permissions for send messages in that channel");
+        if (!channel.isTextBased()) return await interaction.reply("That isn't a text-based channel");
+        if (!channel.permissionsFor(bot.user.id).has(["ViewChannel", "SendMessages"])) return await interaction.reply("I don't have permissions for send messages in that channel");
         await setWelcome(interaction.guild, 1, channel.id);
         await interaction.reply("Channel set correctly");
       }
@@ -161,7 +164,7 @@ export default class extends SlashCommand {
         const text = interaction.options.getString("message", true);
         if (text.length > 2000) return await interaction.reply("Your message must be less than 2000 characters long.");
         if (/%INVITER%/gmi.test(text)) {
-          if (!interaction.guild.me.permissions.has("MANAGE_GUILD"))
+          if (!interaction.guild.members.me.permissions.has("ManageGuild"))
             return await interaction.reply("You must give me the permission to manage guild if you want the who invited the user to appear.");
         }
         await setWelcome(interaction.guild, 2, text);
@@ -176,7 +179,7 @@ export default class extends SlashCommand {
           await interaction.reply("Channel unassigned successfully.");
           break;
         }
-        if (!role.editable) return await interaction.reply("I don't have permissions to give this role.\nMake sure I have the `MANAGE_ROLES` permission, and that this role is below my highest role.")
+        if (!role.editable) return await interaction.reply("I don't have permissions to give this role.\nMake sure I have the `ManageRoles` permission, and that this role is below my highest role.")
         await setWelcome(interaction.guild, 8, role.id);
         await interaction.reply("Role set correctly");
       }
@@ -197,7 +200,7 @@ export default class extends SlashCommand {
         const text = interaction.options.getString("message", true);
         if (text.length > 2000) return await interaction.reply("Your message must be less than 2000 characters long.");
         if (/%INVITER%/gmi.test(text)) {
-          if (!interaction.guild.me.permissions.has("MANAGE_GUILD"))
+          if (!interaction.guild.members.me.permissions.has("ManageGuild"))
             return await interaction.reply("You must give me the permission to manage guild if you want the who invited the user to appear.");
         }
         await setWelcome(interaction.guild, 4, text);
@@ -210,7 +213,7 @@ export default class extends SlashCommand {
           if (!doc.leavechannelID) return await interaction.reply("There is no assigned channel. Set it before starting the goodbye system.");
           const channel = await interaction.guild.channels.fetch(doc.leavechannelID).catch(() => { });
           if (!channel) return await interaction.reply("The assigned channel doesn't exist.");
-          if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
+          if (!channel.permissionsFor(bot.user.id).has(["ViewChannel", "SendMessages"]))
             return await interaction.reply("Give me permissions for send messages on the assigned channel before starting the goodbye system.");
         }
         await setWelcome(interaction.guild, 5, !reference);
@@ -225,8 +228,8 @@ export default class extends SlashCommand {
           await interaction.reply("Channel unassigned successfully.");
           break;
         }
-        if (!channel.isText()) return await interaction.reply("That isn't a text-based channel");
-        if (!channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"]))
+        if (!channel.isTextBased()) return await interaction.reply("That isn't a text-based channel");
+        if (!channel.permissionsFor(bot.user.id).has(["ViewChannel", "SendMessages"]))
           return await interaction.reply("I don't have permissions for send messages in that channel");
         await setWelcome(interaction.guild, 6, channel.id);
         await interaction.reply("Channel set correctly");
@@ -240,7 +243,7 @@ export default class extends SlashCommand {
       }
         break;
     }
-    if (interaction.guild.me.permissions.has("MANAGE_GUILD"))
+    if (interaction.guild.members.me.permissions.has("ManageGuild"))
       interaction.guild.inviteCount = await getInviteCount(interaction.guild).catch(() => { return {}; });
   }
 }

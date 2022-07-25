@@ -12,7 +12,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Usage: `pardon <member> <warn_id> [reason]`");
-    const member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || await message.guild.members.fetch(args[1] || "123").catch(() => { });
+    const member = message.mentions.members.filter(u => u.user.id !== bot.user.id).first() || message.guild.members.cache.get(args[1]) || await message.guild.members.fetch(args[1] || "123").catch(() => { });
     if (!member) return message.channel.send("Invalid member!");
     if (message.member.id !== message.guild.ownerId) {
       if (member.roles.highest.comparePositionTo(message.member.roles.highest) > 0) return message.channel.send("You cannot pardon someone with a role with a higher or equal rank than yours.");

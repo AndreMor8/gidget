@@ -10,7 +10,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send("Usage: `kick (<user> [reason] || <users>)`")
-    const users = [...message.mentions.members.clone().filter(e => (e.kickable) && (e.id !== message.guild.ownerId) && (e.roles.highest.comparePositionTo(message.member.roles.highest) < 0)).values()];
+    const users = [...message.mentions.members.filter(u => u.user.id !== bot.user.id).clone().filter(e => (e.kickable) && (e.id !== message.guild.ownerId) && (e.roles.highest.comparePositionTo(message.member.roles.highest) < 0)).values()];
     for (const thing of args.slice(1)) {
       if (thing.length > 19) continue;
       if (/^<@!?(\d+)>$/.test(thing)) continue;

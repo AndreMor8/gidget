@@ -14,17 +14,16 @@ export default class extends Command {
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send('Put something to calculate!')
 
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.EmbedBuilder()
       .setTitle("📊 Calculator")
-      .setColor(`RANDOM`);
+      .setColor(`Random`);
     let result;
     try {
       result = math.eval(args.slice(1).join(" "));
     } catch (e) {
       result = `${e.message}`;
     }
-    embed.addField("Input:", `\`\`\`js\n${args.slice(1).join(" ")}\`\`\``)
-      .addField("Output", `\`\`\`js\n${result}\`\`\``);
-    await message.channel.send({embeds: [embed]});
+    embed.addFields([{ name: "Input:", value: `\`\`\`js\n${args.slice(1).join(" ")}\`\`\`` }, { name: "Output", value: `\`\`\`js\n${result}\`\`\`` }]);
+    await message.channel.send({ embeds: [embed] });
   }
 }

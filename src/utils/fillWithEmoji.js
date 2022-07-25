@@ -21,7 +21,7 @@ export default async (ctx, text, x, y) => {
     const ent = entity[i]; //getting current word or emoji
     const parsed = parse(ent); //parsing to check later if emote is an twemoji
     //checking if custom emote or not
-    const matched = ent.match(/<?(a:|:)\w*:(\d{17}|\d{18})>/);
+    const matched = ent.match(/<?(a:|:)\w*:(\d{17,20})>/);
     if (matched) {
       const img = await Canvas.loadImage(await getBuffer(`https://cdn.discordapp.com/emojis/${matched[2]}.png`));
       ctx.drawImage(img, x + currWidth + emojiSideMargin, y + emojiUpMargin - fontSize - baseLine, fontSize, fontSize);

@@ -3,7 +3,7 @@ import Canvas from 'canvas';
 import canvasTxt from '../../utils/canvas-txt.js';
 import path from 'path';
 import commons from '../../utils/commons.js';
-import { isURL } from 'distube';
+import { isURL } from '../../extensions.js';
 const { __dirname } = commons(import.meta.url);
 let img;
 export default class extends Command {
@@ -35,7 +35,7 @@ export default class extends Command {
         if (height1 > 1030) return message.channel.send("[text 1] There is a limit of 10 lines. Your text exceeded that limit.")
         const { height: height2 } = ctxt.drawText(ctx, arg[1], 1190, 1180, 960, 940);
         if (height2 > 1030) return message.channel.send("[text 2] There is a limit of 10 lines. Your text exceeded that limit.")
-        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "wubmeme.png");
+        const attachment = new Discord.AttachmentBuilder(canvas.toBuffer(), { name: "wubmeme.png" });
         await message.channel.send({ files: [attachment] });
         
       } else if (mode === "image") {
@@ -54,7 +54,7 @@ export default class extends Command {
         ctx.drawImage(image1, 1130, 0, 1080, 1080);
         ctx.drawImage(image2, 1130, 1131, 1080, 1079);
 
-        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "wubmeme.png");
+        const attachment = new Discord.AttachmentBuilder(canvas.toBuffer(), { name: "wubmeme.png" });
         await message.channel.send({ files: [attachment] });
         
       } else message.channel.send("Use: `wubmeme <mode> <...args>`\nAvailable modes: `text`, `image`")

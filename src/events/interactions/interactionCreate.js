@@ -6,7 +6,7 @@ import { languages } from 'google-translate-api-x';
 const internalCooldown = new Set();
 
 export default async (bot, interaction) => {
-  if (interaction.isCommand() || interaction.isContextMenu()) {
+  if ((interaction.type === 2) || interaction.isContextMenuCommand()) {
     //Always fetch necessary resources
     if (interaction.guild) {
       await interaction.member.fetch({ cache: true }).catch(() => { });
@@ -24,15 +24,15 @@ export default async (bot, interaction) => {
       const userperms = interaction.member.permissions;
       const userchannelperms = interaction.channel.permissionsFor(interaction.member.id);
       if (!userchannelperms) return;
-      const botperms = interaction.guild.me.permissions;
+      const botperms = interaction.guild.members.me.permissions;
       const botchannelperms = interaction.channel.permissionsFor(bot.user.id);
       if (!botchannelperms) return;
       if (interaction.user.id !== "577000793094488085") {
-        if (!userperms.has(command.permissions.user[0])) return await interaction.reply({ content: "You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[0]).has(8n)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`", ephemeral: true });
-        if (!userchannelperms.has(command.permissions.user[1])) return await interaction.reply({ content: "You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[1]).has(8n)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`", ephemeral: true });
+        if (!userperms.has(command.permissions.user[0])) return await interaction.reply({ content: "You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + (!(new Discord.PermissionsBitField(command.permissions.user[0]).has(8n)) ? (new Discord.PermissionsBitField(command.permissions.user[0]).toArray().join(", ") || "None") : "Administrator") + "`", ephemeral: true });
+        if (!userchannelperms.has(command.permissions.user[1])) return await interaction.reply({ content: "You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.PermissionsBitField(command.permissions.user[1]).has(8n)) ? (new Discord.PermissionsBitField(command.permissions.user[1]).toArray().join(", ") || "None") : "Administrator") + "`", ephemeral: true });
       }
-      if (!botperms.has(command.permissions.bot[0])) return await interaction.reply({ content: "Sorry, I don't have sufficient permissions to run that command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.bot[0]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`", ephemeral: true });
-      if (!botchannelperms.has(command.permissions.bot[1])) return await interaction.reply({ content: "Sorry, I don't have sufficient permissions to run that command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.bot[1]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`", ephemeral: true });
+      if (!botperms.has(command.permissions.bot[0])) return await interaction.reply({ content: "Sorry, I don't have sufficient permissions to run that command.\nRequired permissions:\n`" + (!(new Discord.PermissionsBitField(command.permissions.bot[0]).has(8n)) ? (new Discord.PermissionsBitField(command.permissions.bot[0]).toArray().join(", ") || "None") : "Administrator") + "`", ephemeral: true });
+      if (!botchannelperms.has(command.permissions.bot[1])) return await interaction.reply({ content: "Sorry, I don't have sufficient permissions to run that command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.PermissionsBitField(command.permissions.bot[1]).has(8n)) ? (new Discord.PermissionsBitField(command.permissions.bot[1]).toArray().join(", ") || "None") : "Administrator") + "`", ephemeral: true });
     }
     try {
       internalCooldown.add(interaction.user.id);
@@ -53,7 +53,7 @@ export default async (bot, interaction) => {
   if (interaction.isSelectMenu() && interaction.customId.startsWith("selectroles_f")) {
     await interaction.member.fetch({ cache: true }).catch(() => { });
     if (!bot.guilds.cache.has(interaction.guild.id)) return await interaction.deferUpdate();
-    if (!interaction.guild.me.permissions.has("MANAGE_ROLES")) return await interaction.reply({ content: "I don't have permissions to add roles. Contact an administrator to fix the problem.", ephemeral: true })
+    if (!interaction.guild.members.me.permissions.has("ManageRoles")) return await interaction.reply({ content: "I don't have permissions to add roles. Contact an administrator to fix the problem.", ephemeral: true })
     const roles = interaction.values?.map(e => e.split("_")[3]) || [];
     if (!roles.length) return await interaction.deferUpdate();
     const rolesToManage = roles.filter(e => interaction.guild.roles.cache.get(e)?.editable && !(interaction.guild.roles.cache.get(e)?.managed));
@@ -89,21 +89,22 @@ export default async (bot, interaction) => {
         if (doc2) return await interaction.reply({ content: "You already have a ticket!", ephemeral: true }).catch(() => { });
         const cat = interaction.guild.channels.cache.get(categoryId) || await interaction.guild.channels.fetch(categoryId).catch(() => { });
         if (!cat) return await interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
-        if (!cat.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "MANAGE_CHANNELS", "MANAGE_ROLES"])) return await interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
+        if (!cat.permissionsFor(bot.user.id).has(["ViewChannel", "ManageChannels", "ManageRoles"])) return await interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
         const todesc = doc.desc?.replace(/%AUTHOR%/g, interaction.user.toString());
         const ch = await interaction.guild.channels
-          .create(`${interaction.user.username}s-ticket`, {
-            type: "GUILD_TEXT",
+          .create({
+            name: `${interaction.user.username}s-ticket`,
+            type: 0,
             topic: todesc,
             parent: cat,
             reason: "User created a ticket!"
           }).catch(() => { });
         if (!ch) return await interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
         const tmp = await ch.permissionOverwrites.create(interaction.user.id, {
-          VIEW_CHANNEL: true,
-          SEND_MESSAGES: true,
-          EMBED_LINKS: true,
-          ATTACH_FILES: true
+          ViewChannel: true,
+          SendMessages: true,
+          EmbedLinks: true,
+          AttachFiles: true
         }, { type: 1 }).catch(() => { });
         if (!tmp) return await interaction.reply({ content: "I don't have permissions, sorry :(\nContact your server administrator.", ephemeral: true });
 
@@ -114,7 +115,7 @@ export default async (bot, interaction) => {
           from: interaction.message.id
         });
 
-        if (doc.welcomemsg && ch.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
+        if (doc.welcomemsg && ch.permissionsFor(bot.user.id).has("SendMessages")) {
           const tosend = doc.welcomemsg.replace(/%AUTHOR%/g, interaction.user.toString());
           ch.send({ content: tosend, allowedMentions: { parse: ['users', 'roles', 'everyone'] } }).catch(() => { });
         }
@@ -129,15 +130,15 @@ export default async (bot, interaction) => {
       if (mode === "publish") {
         const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/publish`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
         if (!res.ok) await interaction.reply({ content: `Error: ${await res.text()}` });
-        else await interaction.update({ embeds: [new Discord.MessageEmbed(interaction.message.embeds[0]).setColor("GREEN").setFooter({ text: "Approved on" }).setTimestamp(new Date())], components: [] });
+        else await interaction.update({ embeds: [Discord.EmbedBuilder.from(interaction.message.embeds[0]).setColor("Green").setFooter({ text: "Approved on" }).setTimestamp(new Date())], components: [] });
       } else if (mode === "reject") {
         const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/reject`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
         if (!res.ok) await interaction.reply({ content: `Error: ${await res.text()}` });
-        else await interaction.update({ embeds: [new Discord.MessageEmbed(interaction.message.embeds[0]).setColor("RED").setFooter({ text: "Rejected on" }).setTimestamp(new Date())], components: [] });
+        else await interaction.update({ embeds: [Discord.EmbedBuilder.from(interaction.message.embeds[0]).setColor("Red").setFooter({ text: "Rejected on" }).setTimestamp(new Date())], components: [] });
       }
     }
   }
-  if (interaction.isAutocomplete()) {
+  if (interaction.type === 4) {
     if (interaction.commandName === "google") {
       const option = interaction.options.getFocused();
       let tosend = Object.entries(languages).filter(e => !(typeof e[1] === "function" || e[0] === "auto")).map(e => {

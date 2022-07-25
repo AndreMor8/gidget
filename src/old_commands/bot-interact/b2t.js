@@ -1,4 +1,4 @@
-import { Util } from 'discord.js';
+import { splitMessage } from '../../extensions.js';
 export default class extends Command {
   constructor(options) {
     super(options);
@@ -13,6 +13,6 @@ export default class extends Command {
       if (!num) return message.channel.send("Are you sure that's binary?")
       binCode.push(String.fromCharCode(num));
     }
-    await message.channel.send(`\`Output:\` ${Util.splitMessage(binCode.join(""), { char: " ", maxLength: 2000 })[0]}`);
+    await message.channel.send(`\`Output:\` ${splitMessage(binCode.join(""), { char: " ", maxLength: 2000 })[0]}`);
   }
 }

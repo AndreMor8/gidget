@@ -1,7 +1,9 @@
 import util from 'util';
 import ch from "child_process";
 const exec = util.promisify(ch.exec);
-import { Util, Formatters } from "discord.js";
+import { Formatters } from "discord.js";
+import { splitMessage } from '../../extensions.js';
+
 export default class extends Command {
   constructor(options) {
     super(options)
@@ -25,6 +27,6 @@ export default class extends Command {
 }
 
 const send = async (message, txt, inspect = false) => {
-  const text = Util.splitMessage(inspect ? util.inspect(txt, { depth: 0 }) : txt, { maxLength: 1950, char: "" });
+  const text = splitMessage(inspect ? util.inspect(txt, { depth: 0 }) : txt, { maxLength: 1950, char: "" });
   await message.channel.send(Formatters.codeBlock("sh", text[0]));
 }

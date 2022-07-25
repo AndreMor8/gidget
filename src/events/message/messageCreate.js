@@ -1,4 +1,4 @@
-import { getPrefix, getCustomResponses, getLevelConfig, getMessageLinksConfig, getAutoPostChannels } from "../../extensions.js";
+import { getCustomResponses, getLevelConfig, getAutoPostChannels } from "../../extensions.js";
 import Discord from "discord.js";
 import Levels from "../../utils/discord-xp.js";
 const timer = new Discord.Collection();
@@ -7,23 +7,16 @@ const internalCooldown = new Set();
 
 export default async (bot, message, nolevel = false) => {
   if (message.author.bot) return;
-  if (message.guild && !message.channel.permissionsFor(bot.user.id)?.has("SEND_MESSAGES")) return;
+  if (message.guild && !message.channel.permissionsFor(bot.user.id)?.has("SendMessages")) return;
   try {
     //All-time message code
-    if (message.guild) {
-      if (message.guild.id === process.env.GUILD_ID && !message.channel.nsfw) {
-        if (bot.badwords.isProfane(message.content.toLowerCase()) && (message.channel.parentId !== "621560838041501696")) {
-          await message.delete();
-          return await message.channel.send(`${message.author}, swearing is not allowed in this server!`);
-        }
-      }
-    } else {
+    if (!message.guild) {
       //Always fetch user
       await message.author.fetch({ cache: true }).catch(() => { });
       //Always fetch author's DM.
       await message.author.createDM().catch(() => { });
     }
-    const PREFIX = message.guild ? await getPrefix(message.guild) : "g%";
+    const PREFIX = `${bot.user.toString()} `;
     if (message.content.startsWith(PREFIX)) {
       if (internalCooldown.has(message.author.id)) return;
       //Command message code
@@ -47,14 +40,14 @@ export default async (bot, message, nolevel = false) => {
         if (message.guild) {
           const userperms = message.member.permissions;
           const userchannelperms = message.channel.permissionsFor(message.member.id);
-          const botperms = message.guild.me.permissions;
+          const botperms = message.guild.members.me.permissions;
           const botchannelperms = message.channel.permissionsFor(bot.user.id);
           if (message.author.id !== "577000793094488085") {
-            if (!userperms.has(command.permissions.user[0])) return message.channel.send("You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[0]).has(8n)) ? (new Discord.Permissions(command.permissions.user[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
-            if (!userchannelperms.has(command.permissions.user[1])) return message.channel.send("You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.user[1]).has(8n)) ? (new Discord.Permissions(command.permissions.user[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
+            if (!userperms.has(command.permissions.user[0])) return message.channel.send("You do not have the necessary permissions to run this command.\nRequired permissions:\n`" + (!(new Discord.PermissionsBitField(command.permissions.user[0]).has(8n)) ? (new Discord.PermissionsBitField(command.permissions.user[0]).toArray().join(", ") || "None") : "Administrator") + "`");
+            if (!userchannelperms.has(command.permissions.user[1])) return message.channel.send("You do not have the necessary permissions to run this command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.PermissionsBitField(command.permissions.user[1]).has(8n)) ? (new Discord.PermissionsBitField(command.permissions.user[1]).toArray().join(", ") || "None") : "Administrator") + "`");
           }
-          if (!botperms.has(command.permissions.bot[0])) return message.channel.send("Sorry, I don't have sufficient permissions to run that command.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.bot[0]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[0]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
-          if (!botchannelperms.has(command.permissions.bot[1])) return message.channel.send("Sorry, I don't have sufficient permissions to run that command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.Permissions(command.permissions.bot[1]).has(8n)) ? (new Discord.Permissions(command.permissions.bot[1]).toArray().join(", ") || "None") : "ADMINISTRATOR") + "`");
+          if (!botperms.has(command.permissions.bot[0])) return message.channel.send("Sorry, I don't have sufficient permissions to run that command.\nRequired permissions:\n`" + (!(new Discord.PermissionsBitField(command.permissions.bot[0]).has(8n)) ? (new Discord.PermissionsBitField(command.permissions.bot[0]).toArray().join(", ") || "None") : "Administrator") + "`");
+          if (!botchannelperms.has(command.permissions.bot[1])) return message.channel.send("Sorry, I don't have sufficient permissions to run that command **in this channel**.\nRequired permissions:\n`" + (!(new Discord.PermissionsBitField(command.permissions.bot[1]).has(8n)) ? (new Discord.PermissionsBitField(command.permissions.bot[1]).toArray().join(", ") || "None") : "Administrator") + "`");
         }
         try {
           internalCooldown.add(message.author.id);
@@ -80,7 +73,7 @@ export default async (bot, message, nolevel = false) => {
             for (const i in arr) {
               try {
                 const regex = new RegExp(arr[i][0], "gmi");
-                if (regex.test(message.content) && message.channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) {
+                if (regex.test(message.content) && message.channel.permissionsFor(bot.user.id).has("SendMessages")) {
                   await message.channel.send(arr[i][1]).catch(() => { });
                 }
               } finally { null; }
@@ -119,40 +112,9 @@ export default async (bot, message, nolevel = false) => {
           }
         }
 
-        //Message links system
-        const mls = await getMessageLinksConfig(message.guild);
-        if (mls && mls.enabled) {
-          const regex = /((http|https):\/\/)((www|canary|ptb)\.)?(discordapp|discord)\.com\/channels\/[0-9]{17,20}\/[0-9]{17,20}\/[0-9]{17,20}/gmi;
-          const matches = message.content.match(regex);
-          if (matches && matches.length) {
-            try {
-              const urlobj = new URL(matches[0]);
-              const [channelid, messageid] = urlobj.pathname.split("/").slice(3);
-              const channel = bot.channels.cache.get(channelid) || await bot.channels.fetch(channelid).catch(() => { });
-              //Always fetch member
-              await message.member.fetch({ cache: true }).catch(() => { });
-              if (channel && message.guild.id === channel.guild.id && channel.permissionsFor(message.author.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]) && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-                const msg = channel.messages.cache.filter(e => !e.partial).get(messageid) || (messageid ? (await channel.messages.fetch(messageid).catch(() => { })) : undefined)
-                if (msg) {
-                  const embed = new Discord.MessageEmbed()
-                    .setAuthor({ name: msg.author.tag, iconURL: msg.author.displayAvatarURL({ format: "png", dynamic: true }) })
-                    .setDescription(msg.content || "*Without content*")
-                    .addField("URL", "[Message Link](" + msg.url + ")", true)
-                    .addField("Embeds", msg.embeds.length.toString(), true)
-                    .addField("Message flags", msg.flags.toArray().join(", ") || "*Without flags*", true)
-                    .addField("Channel", msg.channel.toString())
-                    .setFooter({ text: `Mentioned by: ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ format: "png", dynamic: true }) });
-                  if (msg.attachments.first()) embed.setImage(msg.attachments.first().url);
-                  await message.channel.send({ embeds: [embed] });
-                }
-              }
-            } finally { undefined }
-          }
-        }
-
         //Autocrossposting
         const acp = await getAutoPostChannels(message.guild);
-        if (acp.includes(message.channel.id) && message.channel.type === "GUILD_NEWS") {
+        if (acp.includes(message.channel.id) && message.channel.type === 5) {
           message.crosspost().catch(() => { });
         }
       }

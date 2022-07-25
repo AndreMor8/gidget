@@ -16,7 +16,7 @@ export default class extends Command {
 
   async run(bot, message, args) {
     if (!args[1]) return message.channel.send('Please mention the user or enter their ID.')
-    const member = message.mentions.members.first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
+    const member = message.mentions.members.filter(u => u.user.id !== bot.user.id).first() || message.guild.members.cache.get(args[1]) || (args[1] ? await message.guild.members.fetch(args[1]).catch(() => { }) : undefined)
     if (!member) return message.channel.send('Invalid member!')
     const removeMemberRole = async (muteroleid, member, args) => {
       const role = message.guild.roles.cache.get(muteroleid)

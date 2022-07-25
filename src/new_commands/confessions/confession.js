@@ -1,5 +1,5 @@
 import { getConfessionConfig } from "../../extensions.js";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 export default class extends SlashCommand {
   constructor(options) {
@@ -9,13 +9,13 @@ export default class extends SlashCommand {
       {
         name: "message",
         description: "What do you want to confess?",
-        type: "STRING",
+        type: 3,
         required: true
       },
       {
         name: "anon",
         description: "Do you want me to anonymize your confession? (only available on certain servers)",
-        type: "BOOLEAN",
+        type: 5,
         required: false
       }
     ]
@@ -29,12 +29,12 @@ export default class extends SlashCommand {
     const channel = interaction.guild.channels.cache.get(data.channelID);
     if (!channel) return await interaction.reply({ content: "It seems that the channel set by the admin does not exist!\nSet the channel again with `g%confessionconfig channel <channel>`", ephemeral: true })
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle("New confession")
-      .setAuthor({ name: user_anon ? "Anonymous" : interaction.user.tag, iconURL: user_anon ? undefined : interaction.user.displayAvatarURL({ dynamic: true }) })
+      .setAuthor({ name: user_anon ? "Anonymous" : interaction.user.tag, iconURL: user_anon ? undefined : interaction.user.displayAvatarURL({  }) })
       .setDescription(interaction.options.getString("message", true))
       .setTimestamp()
-      .setColor("RANDOM");
+      .setColor("Random");
     await channel.send({ embeds: [embed] });
 
     await interaction.reply({ content: `The confession has been sent! Check it in ${channel.toString()}`, ephemeral: true })

@@ -1,6 +1,7 @@
 import MessageModel from "../../database/models/tmembers.js";
 import MessageModel2 from "../../database/models/ticket.js";
 import MessageModel3 from "../../database/models/poll.js";
+
 export default async (bot, channel) => {
   await MessageModel3.deleteMany({ channelId: channel.id });
 
@@ -10,7 +11,7 @@ export default async (bot, channel) => {
     if (msgDocument) {
       const { memberId } = msgDocument;
       const member = await channel.guild.members.fetch(memberId).catch(() => { });
-      if (member && channel.guild.me.permissions.has("VIEW_AUDIT_LOG")) {
+      if (member && channel.guild.members.me.permissions.has("ViewAuditLog")) {
         const auditlog = await channel.guild.fetchAuditLogs({
           limit: 1,
           type: 12
@@ -23,7 +24,7 @@ export default async (bot, channel) => {
       }
       MessageModel.findByIdAndDelete(msgDocument._id.toString()).lean().exec();
     }
-  } else if (channel.isText()) {
+  } else if (channel.isTextBased()) {
     await MessageModel.deleteOne({ guildId: { $eq: channel.guild.id }, channelId: { $eq: channel.id } });
   }
 }

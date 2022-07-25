@@ -1,14 +1,13 @@
-import { Util } from 'discord.js';
 import tickets from "../../database/models/tmembers.js";
 import tmembers from "../../database/models/ticket.js";
-
+import { splitMessage } from '../../extensions.js';
 export default class extends SlashCommand {
   constructor(options) {
     super(options);
     this.deployOptions.description = "Close a user ticket";
     this.deployOptions.options = [{
       name: "reason",
-      type: "STRING",
+      type: 3,
       description: "Reason for closing the ticket",
       required: false
     }]
@@ -29,14 +28,14 @@ export default class extends SlashCommand {
       try {
         await interaction.reply("Closing ticket...");
         const member = interaction.guild.members.cache.get(memberId) || await interaction.guild.members.fetch(memberId).catch(() => { });
-        await interaction.channel.delete(Util.splitMessage(`Ticket from ${member?.user.tag || memberId} closed by ${interaction.user.tag} ${reason ? `with reason: ${reason}` : ""}`, { maxLength: 500 })[0]);
-        await member?.send(Util.splitMessage(staff ? reason ? "Your ticket was closed by " + interaction.user.tag + " with reason: " + reason : "Your ticket was closed by " + interaction.user.tag : 'You have successfully closed your ticket.', { maxLength: 2000 })[0]).catch(() => { });
+        await interaction.channel.delete(splitMessage(`Ticket from ${member?.user.tag || memberId} closed by ${interaction.user.tag} ${reason ? `with reason: ${reason}` : ""}`, { maxLength: 500 })[0]);
+        await member?.send(splitMessage(staff ? reason ? "Your ticket was closed by " + interaction.user.tag + " with reason: " + reason : "Your ticket was closed by " + interaction.user.tag : 'You have successfully closed your ticket.', { maxLength: 2000 })[0]).catch(() => { });
         await tickets.findByIdAndDelete(doc2._id.toString()).lean().exec();
       } catch (err) {
         console.log(err);
       }
     }
-    if (interaction.channel.permissionsFor(interaction.user.id).has("MANAGE_CHANNELS")) {
+    if (interaction.channel.permissionsFor(interaction.user.id).has("ManageChannels")) {
       finish(true);
     } else {
       if (roles?.some(e => interaction.member.roles.cache.has(e))) {

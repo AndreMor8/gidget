@@ -1,5 +1,5 @@
 import db from '../../database/models/selectroles.js';
-import { MessageEmbed, MessageActionRow, MessageSelectMenu } from "discord.js";
+import { EmbedBuilder, ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder } from "discord.js";
 
 export default class extends SlashCommand {
   constructor(options) {
@@ -8,91 +8,91 @@ export default class extends SlashCommand {
     this.deployOptions.options = [{
       name: "add",
       description: "Add roles(options) to use in a message later",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "role",
         description: "The role to add if selected.",
-        type: "ROLE",
+        type: 8,
         required: true
       }, {
         name: "role-name",
         description: "The name that will be displayed to the user, by default current role name. (MAX 25 CHARACTERS)",
-        type: "STRING",
+        type: 3,
         required: false
       }, {
         name: "description",
         description: "A short description for the role option (MAX 50 CHARACTERS)",
-        type: "STRING",
+        type: 3,
         required: false
       }, {
         name: "emoji",
         description: "A valid emoji",
-        type: "STRING",
+        type: 3,
         required: false
       }]
     }, {
       name: "remove",
       description: "Remove roles(options)",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "role",
         description: "The role to remove from the list",
-        type: "ROLE",
+        type: 8,
         required: false
       }, {
         name: "role-name",
         description: "This is in case you removed the role. Put the name previously set to delete it from the list.",
-        type: "STRING",
+        type: 3,
         required: false
       }]
     }, {
       name: "clear",
       description: "Clear the added roles, so you can start another message with another list",
-      type: "SUB_COMMAND"
+      type: 1
     }, {
       name: "view",
       description: "Check out the roles you added",
-      type: "SUB_COMMAND",
+      type: 1,
     }, {
       name: "create-instance",
       description: "Create a message with a list of the provided roles.",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "channel",
         description: "On which channel will I send that message?",
-        type: "CHANNEL",
-        channelTypes: [0, 5, 10, 11, 12],
+        type: 7,
+        channelTypes: [0, 2, 5, 10, 11, 12],
         required: true
       }, {
         name: "content",
         description: "Default message top content (MAX 2000 CHARACTERS)",
-        type: "STRING",
+        type: 3,
         required: true
       }, {
         name: "placeholder",
         description: "Text that will appear when the user views the menu without anything selected. (MAX 100 CHARACTERS)",
-        type: "STRING",
+        type: 3,
         required: false
       }]
     }, {
       name: "add-to-instance",
       description: "Add this menu to a ready-made message from the bot. Useful when creating an embed with the command.",
-      type: "SUB_COMMAND",
+      type: 1,
       options: [{
         name: "channel",
         description: "On which channel is this message located?",
-        type: "CHANNEL",
-        channelTypes: [0, 5, 10, 11, 12],
+        type: 7,
+        channelTypes: [0, 2, 5, 10, 11, 12],
         required: true,
       }, {
         name: "message",
         description: "ID of the message to add the component to.",
-        type: "STRING",
+        type: 3,
         required: true
       }, {
         name: "placeholder",
         description: "Text that will appear when the user views the menu without anything selected. (MAX 100 CHARACTERS)",
-        type: "STRING",
+        type: 3,
         required: false
       }]
     }
@@ -156,9 +156,9 @@ export default class extends SlashCommand {
             value: `<@&${e.id}> -> ${e.description || "*no description*"} -> ${e.emoji ? (/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(e.emoji) ? e.emoji : `<${(e.emoji.startsWith("a") ? "" : ":") + e.emoji}>`) : "*no emoji*"}`
           }
         });
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
           .setTitle("Ready-to-use roles for the select menu")
-          .setColor("RANDOM")
+          .setColor("Random")
           .setTimestamp()
           .addFields(fields);
         await interaction.reply({ embeds: [embed] });
@@ -171,14 +171,14 @@ export default class extends SlashCommand {
         const verify = doc.roles.every(e => interaction.guild.roles.cache.has(e.id));
         if (!verify) return await interaction.reply("You seem to have an invalid role on the list. Fix it using `remove`.");
         const options = doc.roles.map(e => {
-          return {
+          return new SelectMenuOptionBuilder({
             label: e.name,
             value: `selectroles_f_ro_${e.id}`,
             description: e.description,
             emoji: e.emoji
-          }
+          })
         });
-        const menu = new MessageSelectMenu()
+        const menu = new SelectMenuBuilder()
           .setCustomId("selectroles_f_0")
           .setMinValues(0)
           .setMaxValues(doc.roles.length)
@@ -186,8 +186,8 @@ export default class extends SlashCommand {
         const plc = interaction.options.getString("placeholder", false);
         if (plc) menu.setPlaceholder(plc);
         const channel = interaction.options.getChannel("channel", true);
-        if (!channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return await interaction.reply("[create-instance.channel] I don't have permissions to send messages in that channel!");
-        await channel.send({ content: interaction.options.getString("content", true), components: [new MessageActionRow().addComponents([menu])] });
+        if (!channel.permissionsFor(bot.user.id).has("SendMessages")) return await interaction.reply("[create-instance.channel] I don't have permissions to send messages in that channel!");
+        await channel.send({ content: interaction.options.getString("content", true), components: [new ActionRowBuilder().addComponents([menu])] });
         await interaction.reply("Message sent. Test it ;)")
       }
         break;
@@ -197,30 +197,30 @@ export default class extends SlashCommand {
         const verify = doc.roles.every(e => interaction.guild.roles.cache.has(e.id));
         if (!verify) return await interaction.reply("You seem to have an invalid role on the list. Fix it using `remove`.");
         const options = doc.roles.map(e => {
-          return {
+          return new SelectMenuOptionBuilder({
             label: e.name,
             value: `selectroles_f_ro_${e.id}`,
             description: e.description,
             emoji: e.emoji
-          }
+          })
         });
-        const menu = new MessageSelectMenu()
+        const menu = new SelectMenuBuilder()
           .setMinValues(0)
           .setMaxValues(doc.roles.length)
           .addOptions(options);
         const plc = interaction.options.getString("placeholder", false);
         if (plc) menu.setPlaceholder(plc);
         const channel = interaction.options.getChannel("channel", true);
-        if (!channel.permissionsFor(bot.user.id).has("SEND_MESSAGES")) return await interaction.reply("[add-to-instance.channel] I don't have permissions to send messages in that channel!");
+        if (!channel.permissionsFor(bot.user.id).has("SendMessages")) return await interaction.reply("[add-to-instance.channel] I don't have permissions to send messages in that channel!");
 
-        const msg = await channel.messages.fetch(interaction.options.getString("message", true)).catch(() => { });
+        const msg = await channel.messages.fetch({ message: interaction.options.getString("message", true) }).catch(() => { });
         if (!msg) return await interaction.reply("[add-to-instance.message] Invalid message ID!");
         if (msg.author.id !== bot.user.id) return await interaction.reply("[add-to-instance.message] That message is not mine...");
         if (msg.components.length >= 5) return await interaction.reply(`[add-to-instance.message] This message already has all 5 action rows filled.
 Only up to 5 action rows are allowed in a message.
 A select menu occupies the entire action row.`);
         menu.setCustomId(`selectroles_f_${msg.components.length || 0}`)
-        await msg.edit({ components: msg.components.concat([new MessageActionRow().addComponents([menu])]) });
+        await msg.edit({ components: msg.components.concat([new ActionRowBuilder().addComponents([menu])]) });
         await interaction.reply("Message edited. Test it ;)");
       }
         break;

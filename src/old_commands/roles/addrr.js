@@ -2,6 +2,7 @@ import { MessageCollector } from 'discord.js';
 import MessageModel from '../../database/models/message.js';
 
 const msgCollectorFilter = (newMsg, originalMsg) => newMsg.author.id === originalMsg.author.id;
+//THIS WILL CHANGE TO A MORE SIMPLE LOGIC WHEN MOVED TO INTERACTIONS
 
 export default class extends Command {
 	constructor(options) {
@@ -20,14 +21,17 @@ export default class extends Command {
 		else {
 			try {
 				const allEmojis = await message.guild.emojis.fetch();
-				const fetchedMessage = await message.channel.messages.fetch(args[1]);
+				const fetchedMessage = await message.channel.messages.fetch({ message: args[1] });
 				if (fetchedMessage) {
-					await message.channel.send("Please provide all of the emoji names with the role name, one by one, separated with a comma.\ne.g: WubbzyWalk, A Wubbzy Fan, where the emoji name comes first, role name comes second.\nType `?done` when you finish.");
+					await message.channel.send(`Please, first mention the bot, after that, provide all of the emoji names with the role name, one by one, separated with a comma.\ne.g: \`@${bot.user.username} WubbzyWalk, A Wubbzy Fan\`, where the emoji name comes first, role name comes second.\nType \`@${bot.user.username} done\` when you finish.`);
 					const collector = new MessageCollector(message.channel, { filter: msgCollectorFilter.bind(null, message) });
 					const emojiRoleMappings = new Map();
 					collector.on('collect', msg => {
-						if (msg.content.toLowerCase() === '?done') return collector.stop('done command was issued.')
-						const [emojiName, roleName] = msg.content.split(/,\s+/);
+						const PREFIX = `${bot.user.toString()} `;
+						if (!msg.content.startsWith(PREFIX)) return;
+						const argsMsg = msg.content.substring(PREFIX.length).trimEnd().split(/ +/g);
+						if (argsMsg[0] === 'done') return collector.stop('done command was issued.')
+						const [emojiName, roleName] = argsMsg.join(" ").split(/,\s+/);
 						if (!emojiName) return;
 						if (!roleName) return;
 						let emoji = allEmojis.find(emoji => (emoji.toString() === emojiName) || (emoji.name.toLowerCase() === emojiName.toLowerCase()));
@@ -36,7 +40,7 @@ export default class extends Command {
 								emoji = emojiName;
 							} else {
 								return msg.channel.send("Emoji does not exist. Try again.")
-									.then(msg => setTimeout(() => { if (!msg.deleted) msg.delete() }, 2000))
+									.then(msg => setTimeout(() => { msg.delete().catch(() => { }); }, 2000))
 									.catch(err => console.log(err));
 							}
 						}
@@ -44,7 +48,7 @@ export default class extends Command {
 						if (!role) {
 							msg.channel.send("Role does not exist. Try again.")
 								.then(msg => setTimeout(() => {
-									if (!msg.deleted) msg.delete();
+									msg.delete().catch(() => { });
 								}, 2000))
 								.catch(err => console.log(err));
 							return;

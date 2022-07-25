@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 export default class extends Command {
   constructor(options) {
@@ -10,16 +10,16 @@ export default class extends Command {
     }
   }
   async run(bot, message) {
-    const person = message.mentions.users.first() || message.author;
+    const person = message.mentions.users.filter(u => u.id !== bot.user.id).first() || message.author;
     const msg = await message.channel.send("Generating... (this may take a while)");
-    const res = await fetch(`https://nekobot.xyz/api/imagegen?type=baguette&url=${person.displayAvatarURL({ format: "png", size: 1024 })}`);
+    const res = await fetch(`https://nekobot.xyz/api/imagegen?type=baguette&url=${person.displayAvatarURL({ extension: "png", size: 1024 })}`);
 
     if (!res.ok) return await message.channel.send("Something happened with the third-party API");
     const body = await res.json();
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle("Here ya go")
       .setImage(body.message)
-      .setColor("RANDOM");
+      .setColor("Random");
     await msg.edit({ embeds: [embed] });
   }
 }

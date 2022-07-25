@@ -1,5 +1,5 @@
-import { MessageAttachment } from 'discord.js';
-import { isURL } from 'distube';
+import { AttachmentBuilder } from 'discord.js';
+import { isURL } from '../../extensions.js';
 import fs from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
@@ -15,7 +15,7 @@ export default class extends SlashCommand {
     this.deployOptions.options = [
       {
         name: "video",
-        type: "STRING",
+        type: 3,
         description: "The live video you want to screenshot",
         required: true
       }
@@ -50,24 +50,24 @@ export default class extends SlashCommand {
       //Create a TS file
       const stl = execaCommand(`streamlink -o ${pathTS} ${interaction.options.getString("video", true)} best`, { reject: false })
       stl.then(async (a) => {
-        if(a.stdout.includes("error")) return await interaction.editReply("Link isn't a live stream, stream not available, or incompatible stream.");
+        if (a.stdout.includes("error")) return await interaction.editReply("Link isn't a live stream, stream not available, or incompatible stream.");
         await execa(ffmpeg, ['-i', pathTS, '-vframes', '1', pathPNG])
           //All correct.
           .then(async () => {
             //Read file
             const buf = await fs.promises.readFile(pathPNG);
             //Send to Discord
-            const att = new MessageAttachment(buf, "image.png");
+            const att = new AttachmentBuilder(buf, { name: "image.png" });
             await interaction.editReply({ files: [att] });
           })
           //Any errors here
           .catch(err => interaction.editReply(`Some error ocurred. Here's a debug: ${err}`))
       }).then(() => {
-        fs.promises.unlink(pathTS).catch(()=>{});
-        fs.promises.unlink(pathPNG).catch(()=>{});
+        fs.promises.unlink(pathTS).catch(() => { });
+        fs.promises.unlink(pathPNG).catch(() => { });
       });
       setTimeout(() => {
-        if(!stl.killed) stl.kill();
+        if (!stl.killed) stl.kill();
       }, 3500);
     } catch (err) {
       //Errors

@@ -23,19 +23,19 @@ export default class extends Command {
           text += i + ". " + selfroles.word + '\n';
           i = i + 1;
         }
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
           .setTitle("Selfroles for " + message.guild.name)
           .setDescription(text)
           .setTimestamp()
-          .setColor("RANDOM");
+          .setColor("Random");
         await message.channel.send({ embeds: [embed] });
       } else {
         return message.channel.send("This server has no selfroles assigned.");
       }
     }
-    if (!message.guild.me.permissions.has("MANAGE_ROLES")) return message.channel.send("First give me the permissions to manage roles, okay?");
+    if (!message.guild.members.me.permissions.has("ManageRoles")) return message.channel.send("First give me the permissions to manage roles, okay?");
     if (args[1] === 'add') {
-      if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
+      if (!message.member.permissions.has("Administrator")) return message.reply(`you do not have permission to execute this command.`)
       if (!args[2]) return message.channel.send('Put a name for that selfrole')
       else {
         let role = args[args.length - 1];
@@ -95,7 +95,7 @@ export default class extends Command {
       }
     }
     if (args[1] === 'remove') {
-      if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply(`you do not have permission to execute this command.`)
+      if (!message.member.permissions.has("Administrator")) return message.reply(`you do not have permission to execute this command.`)
       if (!args[2]) return await message.channel.send('Tell me that selfrole should be removed from my database.')
       const name = args.slice(2).join(" ");
       const msgDocument = await MessageModel.findOneAndDelete({ guildid: { $eq: message.guild.id }, word: { $eq: name } }).lean().exec();

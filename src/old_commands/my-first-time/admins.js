@@ -15,7 +15,7 @@ export default class extends Command {
       .get("402559343540568084")
       .members.map(m => m.user);
     const admins = fetch.join("\n");
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.EmbedBuilder()
       .setTitle("List of Admins")
       .setDescription(admins);
     await message.channel.send({ embeds: [embed] });

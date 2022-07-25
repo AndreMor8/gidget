@@ -20,7 +20,7 @@ export default class extends Command {
     const time = ms(args[1]);
     if (typeof time !== "number") return message.channel.send('Invalid time!');
     if (!args[2]) return message.channel.send('Please specify a member!');
-    const member = message.mentions.members.first() || message.guild.members.cache.get(args[2]) || message.guild.members.cache.find(m => m.displayName === args[2]) || message.guild.members.cache.find(m => m.user.username === args[2]) || (args[2] ? await message.guild.members.fetch(args[2]).catch(() => { }) : undefined)
+    const member = message.mentions.members.filter(u => u.user.id !== bot.user.id).first() || message.guild.members.cache.get(args[2]) || message.guild.members.cache.find(m => m.displayName === args[2]) || message.guild.members.cache.find(m => m.user.username === args[2]) || (args[2] ? await message.guild.members.fetch(args[2]).catch(() => { }) : undefined)
     if (!member) return message.channel.send('Invalid member!');
     const addMemberRole = async (muteroleid, member, time, args) => {
       const MsgDocument = await MessageModel2.findOne({ guildid: { $eq: message.guild.id }, memberId: { $eq: member.id } }).lean().exec();

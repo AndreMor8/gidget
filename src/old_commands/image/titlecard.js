@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 let pages;
 export default class extends Command {
   constructor(options) {
@@ -20,14 +20,14 @@ export default class extends Command {
       return to.toLowerCase() === args.slice(1).join(" ").toLowerCase() || to.replace("!", "").toLowerCase() === args.slice(1).join(" ").toLowerCase();
     });
     if (!args[1] || !page) {
-      const embed = new MessageEmbed()
+      const embed = new EmbedBuilder()
         .setDescription(pages.map(e => e.replace("(episode)", "").trimEnd()).join("\n"))
         .setTitle("List of episodes");
       return await message.channel.send({ embeds: [embed] });
     }
     const r2 = await fetch(`https://wubbzy.fandom.com/api.php?action=imageserving&format=json&wisTitle=${encodeURIComponent(page)}&formatversion=2`)
     const res2 = await r2.json();
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setImage(`${res2.image.imageserving}&format=original`)
       .setTitle(`${page.replace("(episode)", "").trimEnd()}'s title card`);
     await message.channel.send({ embeds: [embed] });

@@ -4,7 +4,7 @@ import getPremiumType from '../../utils/detectnitro.js';
 export default class extends SlashCommand {
   constructor(options) {
     super(options);
-    this.deployOptions.type = 'USER';
+    this.deployOptions.type = 2;
     this.permissions = {
       user: [0n, 0n],
       bot: [0n, 16384n]
@@ -125,9 +125,9 @@ export default class extends SlashCommand {
       }
     }
 
-    const embed = new Discord.MessageEmbed()
-      .setAuthor({ name: user.username, iconURL: user.displayAvatarURL({ dynamic: true }) })
-      .setThumbnail(user.displayAvatarURL({ dynamic: true }))
+    const embed = new Discord.EmbedBuilder()
+      .setAuthor({ name: user.username, iconURL: user.displayAvatarURL({}) })
+      .setThumbnail(user.displayAvatarURL({}))
       .setTitle(`Information about ${user.username}`)
       .setColor("#00ff00")
       .setTimestamp();
@@ -138,67 +138,66 @@ export default class extends SlashCommand {
 
         const perms = member.permissions.toArray();
         let permstext = "";
-        if (perms.indexOf("ADMINISTRATOR") === -1) {
+        if (perms.indexOf("Administrator") === -1) {
           permstext = perms.join(", ") || "Without permissions.";
         } else {
-          permstext = "ADMINISTRATOR (All permissions)";
+          permstext = "Administrator (All permissions)";
         }
         const perms2 = member.permissionsIn(interaction.channelId).toArray();
         let permstext2 = "";
-        if (perms2.indexOf("ADMINISTRATOR") === -1) {
+        if (perms2.indexOf("Administrator") === -1) {
           permstext2 = perms2.join(", ") || "Without permissions.";
         } else {
-          permstext2 = "ADMINISTRATOR (All permissions)";
+          permstext2 = "Administrator (All permissions)";
         }
 
-        embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
-          .addField("ID", user.id, true)
-          .addField("Nickname", member.nickname ? `${member.nickname}` : "None", true)
-          .addField("Bot?", user.bot ? "Yes" : "No", true);
-        if (!user.bot) embed.addField("Nitro type", finaltext, true);
+        embed.addFields([
+          { name: "Full Username", value: user.tag + "\n" + user.toString(), inline: true },
+          { name: "ID", value: user.id, inline: true },
+          { name: "Nickname", value: member.nickname ? `${member.nickname}` : "None", inline: true },
+          { name: "Bot?", value: user.bot ? "Yes" : "No", inline: true },
+        ]);
+        if (!user.bot) embed.addFields([{ name: "Nitro type", value: finaltext, inline: true }]);
         embed
           /*.addField("Status", status2, true)
             .addField("Presence", ptext, true)*/
-          .addField("Flags", `\`${flagtext}\``, true)
-          .addField("Permissions (General)", `\`${permstext}\``, true)
-          .addField("Permissions (Overwrites)", `\`${permstext2}\``, true)
-          .addField("Still being verified?", member.pending ? "**Yes**" : "No")
-        /*.addField("Last Message", user.lastMessage ? user.lastMessage.url : "Without fetch about that");*/
-        if (!user.bot) embed.addField("Boosting?", member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No");
-        embed.addField(`Joined ${interaction.guild.name} at`, bot.botIntl.format(member.joinedAt))
-          .addField("Joined Discord At", bot.botIntl.format(user.createdAt))
-          .addField("Roles", `${member.roles.cache.filter(r => r.id !== interaction.guild.id).map(roles => `${roles}`).join(" **|** ") || "No Roles"}`);
+          .addFields([
+            { name: "Flags", value: `\`${flagtext}\``, inline: true },
+            { name: "Permissions (General)", value: `\`${permstext}\``, inline: true },
+            { name: "Permissions (Overwrites)", value: `\`${permstext2}\``, inline: true },
+            { name: "Still being verified?", value: member.pending ? "**Yes**" : "No" },
+          ]);
+        if (!user.bot) embed.addFields([{ name: "Boosting?", value: member.premiumSince ? `Yes, since ${bot.botIntl.format(member.premiumSince)}` : "No" }]);
+        embed.addFields([
+          { name: `Joined ${interaction.guild.name} at`, value: bot.botIntl.format(member.joinedAt) },
+          { name: "Joined Discord At", value: bot.botIntl.format(user.createdAt) },
+          { name: "Roles", value: `${member.roles.cache.filter(r => r.id !== interaction.guild.id).map(roles => `${roles}`).join(" **|** ") || "No Roles"}` },
+        ]);
         await interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (err) {
-        embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
-          .addField("ID", user.id, true)
-          .addField("Bot?", user.bot ? "Yes" : "No", true);
-        if (!user.bot) embed.addField("Nitro type", finaltext, true);
+        embed.addFields([
+          { name: "Full Username", value: user.tag + "\n" + user.toString(), inline: true },
+          { name: "ID", value: user.id, inline: true },
+          { name: "Bot?", value: user.bot ? "Yes" : "No", inline: true },
+        ]);
+        if (!user.bot) embed.addFields([{ name: "Nitro type", value: finaltext, inline: true }]);
         embed
           /*.addField("Status", status2, true)
-            .addField("Presence", Discord.Util.splitMessage(ptext, { maxLength: 1000 })[0], true)*/
-          .addField("Flags", `\`${flagtext}\``, true)
-          /*.addField(
-            "Last Message",
-            user.lastMessage ? user.lastMessage.url : "Without fetch about that"
-          )*/
-          .addField("Joined Discord at", bot.botIntl.format(user.createdAt));
+            .addField("Presence", splitMessage(ptext, { maxLength: 1000 })[0], true)*/
+          .addFields([{ name: "Flags", value: `\`${flagtext}\``, inline: true }, { name: "Joined Discord At", value: bot.botIntl.format(user.createdAt) }])
         await interaction.reply({ embeds: [embed], ephemeral: true });
       }
     } else {
-      embed.addField("Full Username", user.tag + "\n" + user.toString(), true)
-        .addField("ID", user.id, true)
-        .addField("Bot?", user.bot ? "Yes" : "No", true);
-      if (!user.bot) embed.addField("Nitro type", finaltext, true);
+      embed.addFields([
+        { name: "Full Username", value: user.tag + "\n" + user.toString(), inline: true },
+        { name: "ID", value: user.id, inline: true },
+        { name: "Bot?", value: user.bot ? "Yes" : "No", inline: true },
+      ]);
+      if (!user.bot) embed.addFields([{ name: "Nitro type", value: finaltext, inline: true }]);
       embed
         /*.addField("Status", status2, true)
-          .addField("Presence", ptext, true)*/
-        .addField("Flags", `\`${flagtext}\``, true)
-        /*.addField(
-          "Last Message",
-          user.lastMessage ? user.lastMessage.url : "Without fetch about that"
-        )*/
-        .addField("Joined Discord at", bot.botIntl.format(user.createdAt));
+          .addField("Presence", splitMessage(ptext, { maxLength: 1000 })[0], true)*/
+        .addFields([{ name: "Flags", value: `\`${flagtext}\``, inline: true }, { name: "Joined Discord At", value: bot.botIntl.format(user.createdAt) }])
       await interaction.reply({ embeds: [embed], ephemeral: true });
     }
   }

@@ -7,13 +7,13 @@ export default class extends SlashCommand {
     this.deployOptions.description = "Take a screenshot of a web page";
     this.deployOptions.options = [{
       name: "site",
-      type: "STRING",
+      type: 3,
       description: "The web page you want to screenshot",
       required: true
     }, {
       name: "waituntil",
       description: "When will I consider the page to be 100% loaded?",
-      type: "STRING",
+      type: 3,
       choices: [
         {
           name: "[load] On 'load' event (default)",
@@ -33,19 +33,19 @@ export default class extends SlashCommand {
     }, {
       name: "delay",
       description: "Wait a little longer for the page to load (in seconds)",
-      type: "INTEGER",
+      type: 4,
       minValue: 0,
       maxValue: 60,
       required: false
     }, {
       name: "y",
       description: "Where on the page to go vertically",
-      type: "NUMBER",
+      type: 10,
       required: false
     }, {
       name: "x",
       description: "Where on the page to go horizontally",
-      type: "NUMBER",
+      type: 10,
       required: false
     }];
     this.permissions = {
@@ -92,7 +92,7 @@ async function pup(interaction, url, options) {
     });
     if (!res.ok) throw new Error(await res.text() || (res.status));
     else {
-      const att = new Discord.MessageAttachment(Buffer.from(await res.arrayBuffer()), "capture.png");
+      const att = new Discord.AttachmentBuilder(Buffer.from(await res.arrayBuffer()), { name: "capture.png" });
       const time = "Time: " + (Date.now() - (interaction.createdTimestamp)) / 1000 + "s";
       await interaction.editReply({ content: time, files: [att] });
     }

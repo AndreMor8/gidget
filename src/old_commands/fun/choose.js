@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder } from 'discord.js';
 
 export default class extends Command {
   constructor(options) {
@@ -13,17 +13,19 @@ export default class extends Command {
     const form = args.slice(1).join(" ");
     const tochoose = form.split(" | ")
     if (!tochoose[0] || !tochoose[1]) return message.channel.send('Usage: `choose <response1> | <response2> | <response(n)>`')
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Choose!')
-      .addField('To choose', tochoose.join(" - "))
-      .addField('I choose...', `**${tochoose[Math.floor(Math.random() * tochoose.length)]}**`)
-      .setColor("RANDOM")
+      .addFields([
+        { name: 'To choose', value: tochoose.join(" - ") },
+        { name: 'I choose...', value: `**${tochoose[Math.floor(Math.random() * tochoose.length)]}**` },
+      ])
+      .setColor("Random")
       .setTimestamp();
-    const but_redo = new MessageButton()
+    const but_redo = new ButtonBuilder()
       .setCustomId("choose_c_redo")
-      .setStyle("PRIMARY")
+      .setStyle("Primary")
       .setLabel("Retry");
-    const msg = await message.channel.send({ embeds: [embed], components: [new MessageActionRow().addComponents([but_redo])] });
+    const msg = await message.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents([but_redo])] });
     const filter = (button) => {
       if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%choose <response1> | <response2> | <response(n)>`", ephemeral: true });
       return button.user.id === message.author.id;
@@ -31,9 +33,9 @@ export default class extends Command {
     const col = msg.createMessageComponentCollector({ filter, idle: 15000 });
     col.on("collect", async (button) => {
       if (button.customId === "choose_c_redo") {
-        await button.update({ embeds: [embed.spliceFields(1, 1).addField("I choose...", `**${tochoose[Math.floor(Math.random() * tochoose.length)]}**`)] });
+        await button.update({ embeds: [embed.spliceFields(1, 1).addFields([{ name: "I choose...", value: `**${tochoose[Math.floor(Math.random() * tochoose.length)]}**` }])] });
       }
     });
-    col.on("end", () => msg.edit({ components: [new MessageActionRow().addComponents([but_redo.setDisabled(true)])] }));
+    col.on("end", () => msg.edit({ components: [new ActionRowBuilder().addComponents([but_redo.setDisabled(true)])] }));
   }
 }

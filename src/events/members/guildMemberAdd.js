@@ -19,9 +19,9 @@ export default async (bot, member) => {
       memberid: member.user.id
     }).lean();
     if (msgDocument) {
-      if (member.guild.me.permissions.has("MANAGE_ROLES")) {
+      if (member.guild.members.me.permissions.has("ManageRoles")) {
         const { roles } = msgDocument;
-        const col = member.guild.roles.cache.filter(role => roles.includes(role.id) && (!role.deleted && role.editable && !role.managed));
+        const col = member.guild.roles.cache.filter(role => roles.includes(role.id) && (role.editable && !role.managed));
         if (col.size >= 1) await member.roles.add(col, "Retrieving roles").catch(() => { });
       }
       MessageModel.findByIdAndDelete(msgDocument._id.toString()).lean().exec();
@@ -34,7 +34,7 @@ export default async (bot, member) => {
   if (data && (Date.now() < data.date.getTime())) {
     const guildData = await tempmuteconfig.findOne({ guildid: { $eq: member.guild.id } }).lean();
     if (guildData) {
-      if (member.guild.me.permissions.has("MANAGE_ROLES")) {
+      if (member.guild.members.me.permissions.has("ManageRoles")) {
         member.roles.add(guildData.muteroleid, "Temprestrict - Persist").catch(() => { });
       }
     }
@@ -52,7 +52,7 @@ export default async (bot, member) => {
     let inviterTag = "Unknown";
     let inviterId = "Unknown";
     try {
-      if (((/%INVITER%/gmi.test(welcome.text)) || (/%INVITER%/gmi.test(welcome.dmmessage))) && member.guild.me.permissions.has("MANAGE_GUILD")) {
+      if (((/%INVITER%/gmi.test(welcome.text)) || (/%INVITER%/gmi.test(welcome.dmmessage))) && member.guild.members.me.permissions.has("ManageGuild")) {
         const invitesBefore = member.guild.inviteCount;
         const invitesAfter = await getInviteCount(member.guild);
         for (const inviter in invitesAfter) {
@@ -72,14 +72,14 @@ export default async (bot, member) => {
       }
     } catch (err) {
       console.log(err);
-      if (member.guild.me.permissions.has("MANAGE_GUILD")) {
+      if (member.guild.members.me.permissions.has("ManageGuild")) {
         member.guild.inviteCount = await getInviteCount(member.guild).catch(console.log);
       }
     } finally {
       if (!welcome.respectms) {
         if (welcome.enabled && (welcome.channelID && welcome.text)) {
           const channel = await member.guild.channels.fetch(welcome.channelID).catch(() => { });
-          if (channel && channel.isText() && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
+          if (channel && channel.isTextBased() && channel.permissionsFor(bot.user.id).has(["ViewChannel", "SendMessages"])) {
             const finalText = welcome.text.replace(/%MEMBER%/gmi, member.toString()).replace(/%MEMBERTAG%/, member.user.tag).replace(/%MEMBERID%/, member.id).replace(/%SERVER%/gmi, member.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, member.guild.memberCount);
             await channel.send(finalText || "?", { allowedMentions: { users: [member.id] } }).catch(() => { });
           } else await setWelcome(member.guild, 1, null);
@@ -100,27 +100,17 @@ export default async (bot, member) => {
 
   //Things for Wow Wow Discord
   if (member.guild.id !== "402555684849451028") return;
-  const embed = new Discord.MessageEmbed()
+  const embed = new Discord.EmbedBuilder()
     .setTitle("Welcome to Wow Wow Discord!, " + member.user.username)
     .setColor("#FEE58D")
     .setThumbnail("https://cdn.discordapp.com/emojis/494666575773696001.png")
     .setDescription(`This server is dedicated to fans of the [Wow! Wow! Wubbzy!](https://wubbzy.fandom.com/wiki/Wow!_Wow!_Wubbzy!) show.\n\nIf you are one of them, we are happy to have you here! <:WubbzyLove:608130212076453928>`)
-    .addField(
-      "Yo soy alguien que habla español!",
-      `Bienvenido a Wow Wow Discord, la comunidad de la serie infantil [Wow! Wow! Wubbzy!](https://wubbzy.fandom.com/es/wiki/Wow!_Wow!_Wubbzy!).\nPara obtener el rol español, espera los 10 minutos, ve a <#861108000873512970> y selecciona el respectivo rol en [este mensaje](https://discord.com/channels/402555684849451028/861108000873512970/861116424935964712).\nEsperamos que disfrutes tu estancia en <#636781007189835779>`
-    )
-    .addField(
-      "Why is the verification level high?",
-      `This is to avoid raids with self-bots, and for people to read [the rules](https://discord.com/channels/402555684849451028/402556086093348874/402568434522521600) before chatting. We recommend reading the server rules to find out what is allowed and restricted. <#402556086093348874>`
-    )
-    .addField(
-      "How do I get permissions to upload images and others?",
-      `You must be chatting with us for a while before giving yourself those permissions. The level that will give you those permissions is level 2 (with me).\nYou can check your level by going to <#608560264425635850> and typing <:Gidget:610310249580331033>\`level\``
-    )
-    .addField(
-      "Remember to use common sense!",
-      `Not everything is covered by the rules. Following [Discord ToS](https://discord.com/terms) is an example of this, because everyone should know that.\n\nWe hope you have a friendly experience here! <:WubbzyHi:494666575773696001>`
-    )
+    .addFields([
+      { name: "Yo soy alguien que habla español!", value: `Bienvenido a Wow Wow Discord, la comunidad de la serie infantil [Wow! Wow! Wubbzy!](https://wubbzy.fandom.com/es/wiki/Wow!_Wow!_Wubbzy!).\nPara obtener el rol español, espera los 10 minutos, ve a <#861108000873512970> y selecciona el respectivo rol en [este mensaje](https://discord.com/channels/402555684849451028/861108000873512970/861116424935964712).\nEsperamos que disfrutes tu estancia en <#636781007189835779>` },
+      { name: "Why is the verification level high?", value: `This is to avoid raids with self-bots, and for people to read [the rules](https://discord.com/channels/402555684849451028/402556086093348874/402568434522521600) before chatting. We recommend reading the server rules to find out what is allowed and restricted. <#402556086093348874>` },
+      { name: "How do I get permissions to upload images and others?", value: `You must be chatting with us for a while before giving yourself those permissions. The level that will give you those permissions is level 2 (with me).\nYou can check your level by going to <#608560264425635850> and typing <:Gidget:610310249580331033>\`level\`` },
+      { name: "Remember to use common sense!", value: `Not everything is covered by the rules. Following [Discord ToS](https://discord.com/terms) is an example of this, because everyone should know that.\n\nWe hope you have a friendly experience here! <:WubbzyHi:494666575773696001>` }
+    ])
     .setFooter({ text: "Thanks for joining!" })
     .setTimestamp();
   await member.send({ embeds: [embed] }).catch(() => { });

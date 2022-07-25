@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { promises as dns } from 'dns';
 export default class extends Command {
   constructor(options) {
@@ -12,7 +12,7 @@ export default class extends Command {
         case "a": {
           const results = await dns.resolve4(args[2]);
           if (!results.length) return message.channel.send("No A records found...");
-          const embed = new MessageEmbed()
+          const embed = new EmbedBuilder()
             .setTitle("A records for " + args[2])
             .setDescription(results.join("\n"));
           message.channel.send({ embeds: [embed] });
@@ -21,7 +21,7 @@ export default class extends Command {
         case "aaaa": {
           const results = await dns.resolve6(args[2]);
           if (!results.length) return message.channel.send("No AAAA records found...");
-          const embed = new MessageEmbed()
+          const embed = new EmbedBuilder()
             .setTitle("AAAA records for " + args[2])
             .setDescription(results.join("\n"));
           message.channel.send({ embeds: [embed] });
@@ -34,7 +34,7 @@ export default class extends Command {
           for (const result of results) {
             text += `Exchange: ${result.exchange}, priority: ${result.priority}\n`;
           }
-          const embed = new MessageEmbed()
+          const embed = new EmbedBuilder()
             .setTitle("MX records for " + args[2])
             .setDescription(text);
           message.channel.send({ embeds: [embed] });
@@ -43,7 +43,7 @@ export default class extends Command {
         case "ns": {
           const results = await dns.resolveNs(args[2]);
           if (!results.length) return message.channel.send("No NS records found...");
-          const embed = new MessageEmbed()
+          const embed = new EmbedBuilder()
             .setTitle("NS records for " + args[2])
             .setDescription(results.join("\n"));
           message.channel.send({ embeds: [embed] });
@@ -52,7 +52,7 @@ export default class extends Command {
         case "cname": {
           const results = await dns.resolveCname(args[2]);
           if (!results.length) return message.channel.send("No CNAME records found...");
-          const embed = new MessageEmbed()
+          const embed = new EmbedBuilder()
             .setTitle("CNAME records for " + args[2])
             .setDescription(results.join("\n"));
           message.channel.send({ embeds: [embed] });
@@ -61,7 +61,7 @@ export default class extends Command {
         default: {
           const results = await dns.resolve4(args[1]);
           if (!results.length) return message.channel.send("No A records found...");
-          const embed = new MessageEmbed()
+          const embed = new EmbedBuilder()
             .setTitle("A records for " + args[1])
             .setDescription(results.join("\n"));
           message.channel.send({ embeds: [embed] });

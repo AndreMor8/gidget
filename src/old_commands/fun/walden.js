@@ -3,7 +3,7 @@ import commons from '../../utils/commons.js';
 import Discord from 'discord.js';
 import Canvas from 'canvas';
 import canvasTxt from '../../utils/canvas-txt.js';
-import { isURL } from 'distube';
+import { isURL } from '../../extensions.js';
 
 const { __dirname } = commons(import.meta.url);
 let image;
@@ -33,7 +33,7 @@ export default class extends Command {
         const ctxt = new canvasTxt({ fontSize: 27 });
         const { height } = ctxt.drawText(ctx, text, 400, 43, 271, 195);
         if (height > 182) return message.channel.send("There is a limit of 7 lines. Your text exceeded that limit.")
-        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "walden.png");
+        const attachment = new Discord.AttachmentBuilder(canvas.toBuffer(), { name: "walden.png" });
         await message.channel.send({ files: [attachment] });
         
       } else if (mode === "image") {
@@ -46,7 +46,7 @@ export default class extends Command {
         ctx.drawImage(image, 0, 0);
         const userImage = await Canvas.loadImage(ok);
         roundRectAndDraw(ctx, 402.7, 49.5, 265, 188.4, 36.5, 11, userImage);
-        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "walden.png");
+        const attachment = new Discord.AttachmentBuilder(canvas.toBuffer(), { name: "walden.png" });
         await message.channel.send({ files: [attachment] });
         
 

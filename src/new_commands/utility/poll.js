@@ -2,6 +2,7 @@ import Discord from "discord.js";
 import parser from 'twemoji-parser';
 import ms from "ms";
 import pollDb from "../../database/models/poll.js";
+import { splitMessage } from '../../extensions.js';
 
 export default class extends SlashCommand {
   constructor(options) {
@@ -11,25 +12,25 @@ export default class extends SlashCommand {
       {
         name: "time",
         description: "How long the poll will last; use 'none' or 'infinity' for no limit.",
-        type: "STRING",
+        type: 3,
         required: true
       },
       {
         name: "content",
         description: "What do you want to survey?",
-        type: "STRING",
+        type: 3,
         required: true
       },
       {
         name: "emojis",
         description: "Emojis to replace the default ones",
-        type: "STRING",
+        type: 3,
         required: false
       },
       {
         name: "embed-url",
         description: "Link to an image to put it on the embed",
-        type: "STRING",
+        type: 3,
         required: false
       }
     ]
@@ -42,7 +43,7 @@ export default class extends SlashCommand {
   // eslint-disable-next-line require-await
   async run(bot, interaction) {
     const pre_time = interaction.options.getString("time");
-    const time = ["infinite", "infinity", "none"].includes(pre_time) ? Infinity : ms(pre_time);
+    const time = ["infinite", "infinity", "none"].includes(pre_time?.toLowerCase()) ? Infinity : ms(pre_time);
     if (typeof time !== "number" || time < 60000) return await interaction.reply({ content: "Invalid time! Must be 60 seconds or more.", ephemeral: true });
     let url;
     if (interaction.options.getString("embed-url", false)) {
@@ -77,21 +78,21 @@ export default class extends SlashCommand {
     try {
       let mentions = "";
       const text = interaction.options.getString("content");
-      const embed = new Discord.MessageEmbed()
+      const embed = new Discord.EmbedBuilder()
         .setTitle("Poll")
-        .setDescription(Discord.Util.splitMessage(text, { max: "4096", char: "" })[0])
-        .setFooter({ text: "Made by: " + interaction.user.tag + (time === Infinity ? "" : ", finish date:"), iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
-        .setColor("RANDOM")
+        .setDescription(splitMessage(text, { max: "4096", char: "" })[0])
+        .setFooter({ text: "Made by: " + interaction.user.tag + (time === Infinity ? "" : ", finish date:"), iconURL: interaction.user.displayAvatarURL({  }) })
+        .setColor("Random")
         .setTimestamp(new Date(Date.now() + time));
       if (url) embed.setImage(url);
-      if (interaction.channel.permissionsFor(interaction.user.id).has("MENTION_EVERYONE") && interaction.channel.permissionsFor(bot.user.id).has("MENTION_EVERYONE")) {
+      if (interaction.channel.permissionsFor(interaction.user.id).has("MentionEveryone") && interaction.channel.permissionsFor(bot.user.id).has("MentionEveryone")) {
         if (text.includes("@everyone")) mentions += "@everyone ";
         if (text.includes("@here")) mentions += "@here ";
       }
       const poll = await interaction.channel.send({
         content: mentions || undefined,
         embeds: [embed],
-        allowedMentions: { parse: (interaction.channel.permissionsFor(interaction.user.id).has("MENTION_EVERYONE") ? ["users", "everyone", "roles"] : []) },
+        allowedMentions: { parse: (interaction.channel.permissionsFor(interaction.user.id).has("MentionEveryone") ? ["users", "everyone", "roles"] : []) },
       });
       const reactions = [];
       for (const reaction of emojis) reactions.push([reaction[0] ? reaction[1] : null, await poll.react(reaction[1])]);

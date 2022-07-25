@@ -1,10 +1,10 @@
 import parser from 'twemoji-parser';
 import svg2img_callback from 'node-svg2img';
 import { promisify } from 'util';
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import { getBuffer } from '../../extensions.js';
 const svg2img = promisify(svg2img_callback);
-const regex = /<?(a:|:)\w*:(\d{17}|\d{18})>/;
+const regex = /<?(a:|:)\w*:(\d{17,20})>/;
 
 export default class extends Command {
   constructor(options) {
@@ -20,16 +20,16 @@ export default class extends Command {
     if (matched) {
       const ext = args[1].startsWith("<a:") ? ("gif") : ("png");
       const img = `https://cdn.discordapp.com/emojis/${matched[2]}.${ext}`;
-      const att = new MessageAttachment(img, matched[2] + "." + ext);
+      const att = new AttachmentBuilder(img, { name: matched[2] + "." + ext });
       await message.channel.send({ files: [att] });
     } else if (parsed.length >= 1) {
       const number = parseInt(args[2]);
       const size = number && ((number <= 1024) && (number > 0)) ? number : 150;
-      const buf = await svg2img(await getBuffer(parsed[0].url), { format: "png", width: size, height: size });
-      const att = new MessageAttachment(buf, "twemoji.png");
+      const buf = await svg2img(await getBuffer(parsed[0].url), { extension: "png", width: size, height: size });
+      const att = new AttachmentBuilder(buf, { name: "twemoji.png" });
       await message.channel.send({ content: (number ? undefined : "In Twemoji mode you can resize the image up to 1024.\n`jumbo <emoji> [size]`"), files: [att] });
     } else if (cachedemoji) {
-      const att = new MessageAttachment(cachedemoji.url, cachedemoji.id + (cachedemoji.animated ? ".gif" : ".png"));
+      const att = new AttachmentBuilder(cachedemoji.url, { name: cachedemoji.id + (cachedemoji.animated ? ".gif" : ".png") });
       await message.channel.send({ files: [att] });
     } else await message.channel.send("Please put a valid Discord custom o Twemoji/common/Unicode emoji");
   }

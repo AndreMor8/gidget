@@ -10,7 +10,7 @@ export default async (bot, reaction, user) => {
       const role = reaction.message.guild.roles.cache.get(roleId);
       const member = reaction.message.guild.members.cache.get(user.id) || await reaction.message.guild.members.fetch(user.id).catch(() => { });
       if (role && member) {
-        if (!member.guild.me.permissions.has("MANAGE_ROLES")) return member.send("I don't have permissions, sorry :(\nContact your server administrator.")
+        if (!member.guild.members.me.permissions.has("ManageRoles")) return member.send("I don't have permissions, sorry :(\nContact your server administrator.")
         member.roles.remove(role, 'Reaction-role');
       }
     }

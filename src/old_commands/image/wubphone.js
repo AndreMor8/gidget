@@ -3,7 +3,7 @@ import commons from '../../utils/commons.js'
 const { __dirname } = commons(import.meta.url);
 import path from 'path';
 import Canvas from 'canvas';
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 let sprite;
 import { getBuffer } from '../../extensions.js';
 
@@ -18,7 +18,7 @@ export default class extends Command {
   }
   async run(bot, message, args) {
     if (!sprite) sprite = await Canvas.loadImage(path.join(__dirname + "/../../assets/wubphone.png"));
-    const mentions = message.mentions.users.first(4);
+    const mentions = message.mentions.users.filter(u => u.id !== bot.user.id).first(4);
     const source1 = mentions[0] || bot.users.cache.get(args[1]) || await bot.users.fetch(args[1]).catch(() => { }) || message.author;
     const source2 = mentions[1] || bot.users.cache.get(args[2]) || await bot.users.fetch(args[2]).catch(() => { });
     const source3 = mentions[2] || bot.users.cache.get(args[3]) || await bot.users.fetch(args[3]).catch(() => { });
@@ -26,7 +26,7 @@ export default class extends Command {
     const sources = [source1, source2, source3, source4];
     const realsources = [];
     for (const i in sources) {
-      if (sources[i] && sources[i].avatar) realsources[i] = sources[i].displayAvatarURL({ size: 64, format: "png" });
+      if (sources[i] && sources[i].avatar) realsources[i] = sources[i].displayAvatarURL({ size: 64, extension: "png" });
 
     }
     const canvasimages = [];
@@ -40,7 +40,7 @@ export default class extends Command {
       if (i == 2) ctx.setTransform(1.4, 0, 0.53, 1, 0, 0);
       ctx.drawImage(canvasimages[i], constants[i][0], constants[i][1], 62, 57.6)
     }
-    const att = new MessageAttachment(canvas.toBuffer(), "algo.png");
+    const att = new AttachmentBuilder(canvas.toBuffer(), { name: "algo.png" });
     await message.channel.send({ content: (realsources.length <= 1 ? "Usage: `wubphone [user1] [user2] [user3] [user4]`" : undefined), files: [att] });
   }
 }

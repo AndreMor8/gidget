@@ -16,7 +16,7 @@ export default async (bot, member) => {
       const msgDocument = await MessageModel.findOne({ guildid: { $eq: member.guild.id }, memberid: { $eq: member.user.id } }).lean().exec();
 
       //List roles
-      const roles = member.roles.cache.filter(r => !r.deleted && !r.managed && r.id !== member.guild.id).map(r => r.id);
+      const roles = member.roles.cache.filter(r => !r.managed && r.id !== member.guild.id).map(r => r.id);
 
       //Save to the DB
       if (roles.length) MessageModel.updateOne({ guildid: { $eq: member.guild.id }, memberid: { $eq: member.user.id } }, { $set: { roles, guildid: member.guild.id, memberid: member.user.id } }, { upsert: true }).exec();
@@ -30,7 +30,7 @@ export default async (bot, member) => {
   if (welcome && (welcome.leaveenabled && (welcome.leavechannelID && welcome.leavetext))) {
     if ((!member.pending) || (!welcome.respectms)) {
       const channel = await member.guild.channels.fetch(welcome.leavechannelID).catch(() => { });
-      if (channel && channel.isText() && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
+      if (channel && channel.isTextBased() && channel.permissionsFor(bot.user.id).has(["ViewChannel", "SendMessages"])) {
         const memberTag = member.user.tag || await bot.users.fetch(member.id).then(e => e.tag).catch(() => { }) || "Unknown";
         const finalText = welcome.leavetext.replace(/%MEMBER%/gmi, member.toString()).replace(/%SERVER%/gmi, member.guild.name).replace(/%MEMBERTAG%/gmi, memberTag).replace(/%MEMBERCOUNT%/, member.guild.memberCount).replace(/%MEMBERID%/, member.id);
         await channel.send(finalText || "?").catch(() => { });

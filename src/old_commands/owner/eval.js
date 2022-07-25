@@ -1,4 +1,5 @@
 import commons from '../../utils/commons.js';
+import { splitMessage } from '../../extensions.js';
 // eslint-disable-next-line no-unused-vars
 const { require, __dirname, __filename } = commons(import.meta.url);
 import Discord from "discord.js";
@@ -20,23 +21,23 @@ export default class extends Command {
         evaluated.then((async e => {
           let evaluated = e;
           if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
-          const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
+          const arr = splitMessage(evaluated, { maxLength: 1950, char: "" });
           (await m).edit(Discord.Formatters.codeBlock("js", arr[0]));
         })).catch((async e => {
           let evaluated = e;
           if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
-          const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
+          const arr = splitMessage(evaluated, { maxLength: 1950, char: "" });
           (await m).edit(Discord.Formatters.codeBlock("js", arr[0]));
         }));
       } else {
         if (typeof evaluated !== "string") evaluated = util.inspect(evaluated, { depth: 0 });
-        const arr = Discord.Util.splitMessage(evaluated, { maxLength: 1950, char: "" });
+        const arr = splitMessage(evaluated, { maxLength: 1950, char: "" });
         await message.channel.send(Discord.Formatters.codeBlock("js", arr[0]));
       }
     } catch (err) {
       let algo = err;
       if (typeof algo !== "string") algo = util.inspect(algo, { depth: 0 });
-      const arr = Discord.Util.splitMessage(algo, { maxLength: 1950, char: "" });
+      const arr = splitMessage(algo, { maxLength: 1950, char: "" });
       await message.channel.send(Discord.Formatters.codeBlock("js", arr[0]));
     }
   }

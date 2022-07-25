@@ -1,12 +1,6 @@
 export default async (_self, bot) => {
   const presences = [
-    [{ name: "Wubbzy's songs", type: "LISTENING" }],
-    [{ name: "Wubbzy's episodes", type: "WATCHING" }],
-    [{ name: "Wubbzy's games", type: "PLAYING" }],
-    [{ name: "with Wubbzy", type: "PLAYING" }],
-    [{ name: "with Widget", type: "PLAYING" }],
-    [{ name: "with Walden", type: "PLAYING" }],
-    [{ name: "with Daizy", type: "PLAYING" }],
+    [{ name: `@${bot.user.username} help`, type: 0 }],
   ];
 
   await bot.user.setPresence({

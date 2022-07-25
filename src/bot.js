@@ -11,10 +11,6 @@ import b from "./utils/badwords.js";
 //Discord import
 import Discord from 'discord.js';
 
-import DisTube from 'distube';
-import { SoundCloudPlugin } from '@distube/soundcloud';
-import { SpotifyPlugin } from '@distube/spotify';
-import { YtDlpPlugin } from '@distube/yt-dlp';
 import { inspect } from 'util';
 
 const sweepInterval = 1800;
@@ -23,7 +19,7 @@ const sweepInterval = 1800;
 const bot = new Discord.Client({
   ws: {
     properties: {
-      $browser: "Discord Android"
+      browser: "Discord Android"
     }
   },
   makeCache: Discord.Options.cacheWithLimits({
@@ -31,19 +27,14 @@ const bot = new Discord.Client({
     ApplicationCommandManager: 0,
     BaseGuildEmojiManager: 0,
     GuildEmojiManager: 0,
-    ChannelManager: Infinity,
-    GuildChannelManager: Infinity,
     GuildBanManager: 0,
     GuildInviteManager: 0,
-    GuildManager: Infinity,
     GuildMemberManager: Infinity,
     GuildStickerManager: 0,
     MessageManager: 20,
-    PermissionOverwriteManager: Infinity,
     PresenceManager: 0,
     ReactionManager: Infinity,
     ReactionUserManager: Infinity,
-    RoleManager: Infinity,
     StageInstanceManager: Infinity,
     ThreadManager: Infinity,
     ThreadMemberManager: 0,
@@ -57,7 +48,7 @@ const bot = new Discord.Client({
     status: "dnd",
     activities: [{
       name: "Ready event (Loading...)",
-      type: "LISTENING"
+      type: 2
     }]
   },
   sweepers: {
@@ -65,7 +56,7 @@ const bot = new Discord.Client({
       interval: sweepInterval,
       filter: () => (member) => {
         if (member.id === bot.user.id) return false;
-        if (member.voice.channelId && bot.distube.voices.collection.some(e => e.channel.id === member.voice.channelId)) return false;
+        if (member.voice.channelId) return false;
         if (member.pending) return false;
         return true;
       }
@@ -79,14 +70,13 @@ const bot = new Discord.Client({
       }
     }
   },
-  restGlobalRateLimit: 50,
-  intents: 32511,
-  partials: ["MESSAGE", "REACTION", "CHANNEL", "GUILD_MEMBER", "USER", "GUILD_SCHEDULED_EVENT"]
+  intents: 14027,
+  partials: [0, 1, 2, 3, 4, 5, 6]
 });
 
 bot.badwords = (new b()).setOptions({ whitelist: ["crap", "butt", "bum", "balls", "lesbian"] });
 bot.botIntl = Intl.DateTimeFormat("en", { weekday: "long", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "America/New_York", hour12: true, timeZoneName: "short" });
-bot.botVersion = "2.40";
+bot.botVersion = "3.0.0";
 bot.records = new Map();
 bot.savedInvites = new Map();
 
@@ -94,56 +84,26 @@ bot.savedInvites = new Map();
 bot.cachedMessageReactions = new Discord.Collection();
 bot.rrcache = new Discord.Collection();
 bot.doneBanners = new Discord.Collection();
-bot.distube = new DisTube.default(bot, {
-  emitNewSongOnly: true,
-  leaveOnFinish: true,
-  savePreviousSongs: true,
-  youtubeCookie: process.env.COOKIETEXT,
-  youtubeIdentityToken: process.env.YT_IDENTITY,
-  youtubeDL: false,
-  plugins: [new SoundCloudPlugin(), new YtDlpPlugin(), new SpotifyPlugin(process.env.SPOTIFY_SECRET ? { api: { clientId: process.env.SPOTIFY_ID, clientSecret: process.env.SPOTIFY_SECRET } } : {})]
-});
 bot.memberVotes = new Discord.Collection();
 
-//DisTube events
-bot.distube
-  .on("playSong", async (queue, song) => {
-    if (queue.voiceChannel.type === "GUILD_STAGE_VOICE") {
-      if (queue.voiceChannel.guild.me.voice.suppress) {
-        if (queue.voiceChannel.permissionsFor(bot.user.id).has("MUTE_MEMBERS")) await queue.voiceChannel.guild.me.voice.setSuppressed(false).catch(() => { });
-        else if (queue.voiceChannel.permissionsFor(bot.user.id).has("REQUEST_TO_SPEAK")) await queue.voiceChannel.guild.me.voice.setRequestToSpeak(true).catch(() => { });
-        if (queue.voiceChannel.guild.me.voice.suppress) await queue.textChannel.send(`I need to be a speaker on the channel to play music!\nYou can do it now by going to the stage, right click on me, "Invite to Speak"`);
-      }
-    }
-    await queue.textChannel.send(`<:JukeboxRobot:610310184484732959> Now playing: **${song.name}**`);
-  })
-  .on("addSong", (queue, song) => song.metadata.interaction.editReply(`**${song.name}** has been added to the queue!`))
-  .on("addList", (queue, playlist) => playlist.metadata.interaction.editReply(`Playlist: **${playlist.name}** has been added to the queue! (check /queue for results)`))
-  .on("empty", queue => queue.textChannel?.send("Queue deleted"))
-  .on("finishSong", (queue) => bot.memberVotes.delete(queue.voiceChannel?.guild?.id))
-  .on("initQueue", (queue) => queue.setVolume(100))
-  .on("error", (channel, e) => channel?.send(`Some error ocurred. Here's a debug: ${e}`));
-
-(async () => {
+//Registers
+await registerCommands(bot, "../old_commands");
+await registerEvents(bot, "../events");
+await registerApplicationCommands(bot, "../new_commands");
+if (process.argv[2] !== "ci") {
   //Database
-  if (process.argv[2] !== "ci") await database();
-  //Registers
-  await registerCommands(bot, "../old_commands");
-  await registerEvents(bot, "../events");
-  await registerApplicationCommands(bot, "../new_commands");
+  await database();
   //Login with Discord
-  if (process.argv[2] !== "ci") {
-    await bot.login();
-    if (global.gc) setTimeout(() => global.gc(), 60000);
-  } else process.exit();
-})().catch(err => {
-  console.log(err);
-  process.exit(1);
-});
+  await bot.login();
+  //Garbage collector
+  if (global.gc) setTimeout(() => global.gc(), 60000);
+} else process.exit();
+
+
 process.on("unhandledRejection", error => {
   console.error("Unhandled promise rejection:", error);
   //This will be useful to finding unknown errors sometimes
-  if (error.requestData?.json) console.error(inspect(error.requestData.json, { depth: 5 }));
+  if (error.requestBody?.json) console.error(inspect(error.requestBody.json, { depth: 5 }));
 });
 
 process.on("uncaughtException", err => {

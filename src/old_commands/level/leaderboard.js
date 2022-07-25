@@ -25,11 +25,11 @@ export default class extends Command {
     const pages = Math.ceil(leaderboard.length / 10);
     if(page > pages) return message.channel.send("Invalid number!");
     const lb = leaderboard.slice((page * 10) - 10, page * 10).map(e => `${(leaderboard.findIndex(i => i.guildID === e.guildID && i.userID === e.userID) + 1)}. ${"<@!" + e.userID + ">"} => **Level:** ${e.level} **XP:** ${e.xp.toLocaleString()}\n`).join("\n");
-    const embed = new Discord.MessageEmbed()
+    const embed = new Discord.EmbedBuilder()
       .setTitle('Leaderboard for ' + message.guild.name)
       .setDescription(lb)
-      .setColor("RANDOM")
-      .setThumbnail(message.guild.iconURL({ dynamic: true }))
+      .setColor("Random")
+      .setThumbnail(message.guild.iconURL({  }))
       .setTimestamp()
       .setFooter({ text: `Page ${page}/${pages}` });
     await message.channel.send({embeds: [embed]});

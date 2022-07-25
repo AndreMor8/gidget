@@ -1,8 +1,8 @@
 {
   "name": "gidget",
-  "version": "2.4.0",
+  "version": "3.0.0",
   "engines": {
-    "node": ">=16.6.0"
+    "node": ">=18.6.0"
   },
   "description": "A Discord Bot, for Wow Wow Discord",
   "main": "./src/index.js",
@@ -21,10 +21,6 @@
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.11.0",
-    "@distube/soundcloud": "^1.2.1",
-    "@distube/spotify": "^1.3.2",
-    "@distube/yt-dlp": "^1.1.3",
-    "@distube/ytdl-core": "^4.11.3",
     "@sindresorhus/to-milliseconds": "^2.0.0",
     "badwords.js": "^0.1.6",
     "bombsweeper.js": "^1.0.1",
@@ -33,8 +29,7 @@
     "cpu-stat": "2.0.1",
     "croner": "^4.3.15",
     "crypto-js": "^4.1.1",
-    "discord.js": "^13.9.1",
-    "distube": "^3.3.4",
+    "discord.js": "^14.0.3",
     "dotenv": "^16.0.1",
     "execa": "^6.1.0",
     "express": "^4.18.1",

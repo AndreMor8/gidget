@@ -2,7 +2,7 @@ import path from 'path';
 import commons from '../../utils/commons.js';
 import Canvas from 'canvas';
 import canvasTxt from '../../utils/canvas-txt.js';
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 const { __dirname } = commons(import.meta.url);
 let image;
 
@@ -28,7 +28,7 @@ export default class extends Command {
     const { height } = ctxt.drawText(ctx, args.slice(1).join(" "), 673, 218, 240, 194);
     ctx.restore();
     if (height > 192) return message.channel.send("There is a limit of 8 lines. Your text exceeded that limit.")
-    const attachment = new MessageAttachment(canvas.toBuffer(), "trump.png");
+    const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: "trump.png" });
     await message.channel.send({ files: [attachment] });
     
   }

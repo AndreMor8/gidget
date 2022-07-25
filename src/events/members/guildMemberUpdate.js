@@ -7,7 +7,7 @@ export default async (bot, oldMember, newMember) => {
                 const { inviterMention, inviterTag, inviterId } = bot.savedInvites.get(newMember.id) || { inviterMention: "Unknown", inviterTag: "Unknown", inviterId: "Unknown" };
                 if (welcome.enabled && (welcome.channelID && welcome.text)) {
                     const channel = await newMember.guild.channels.fetch(welcome.channelID).catch(() => { });
-                    if (channel && channel.isText() && channel.permissionsFor(bot.user.id).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
+                    if (channel && channel.isTextBased() && channel.permissionsFor(bot.user.id).has(["ViewChannel", "SendMessages"])) {
                         const finalText = welcome.text.replace(/%MEMBER%/gmi, newMember.toString()).replace(/%MEMBERTAG%/, newMember.user.tag).replace(/%MEMBERID%/, newMember.id).replace(/%SERVER%/gmi, newMember.guild.name).replace(/%INVITER%/gmi, inviterMention).replace(/%INVITERTAG%/gmi, inviterTag).replace(/%INVITERID%/gmi, inviterId).replace(/%MEMBERCOUNT%/, newMember.guild.memberCount);
                         await channel.send(finalText || "?", { allowedMentions: { users: [newMember.id] } }).catch(() => { });
                     } else await setWelcome(newMember.guild, 1, null);

@@ -11,8 +11,8 @@ export default class extends Command {
     };
   }
   async run(bot, message) {
-    if (!message.member.permissions.has("MANAGE_ROLES")) return message.channel.send("You don't have permission to modify that.")
-    if (!message.guild.me.permissions.has("MANAGE_ROLES")) return message.channel.send("I don't have the `MANAGE_ROLES` permission.")
+    if (!message.member.permissions.has("ManageRoles")) return message.channel.send("You don't have permission to modify that.")
+    if (!message.guild.members.me.permissions.has("ManageRoles")) return message.channel.send("I don't have the `ManageRoles` permission.")
     const msgDocument = await MessageModel.findOne({ guildId: message.guild.id });
     if (!msgDocument) {
       await MessageModel.create({
