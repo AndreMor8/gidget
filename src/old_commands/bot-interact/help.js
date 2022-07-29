@@ -7,7 +7,7 @@ new Discord.ButtonBuilder().setLabel("Source code").setStyle("Link").setURL("htt
 new Discord.ButtonBuilder().setLabel("AndreMor's page").setStyle("Link").setURL("https://andremor.dev"),
 new Discord.ButtonBuilder().setLabel("Discord.js documentation").setStyle("Link").setURL("https://discord.js.org/#/docs/")];
 const action = Discord.ActionRowBuilder.prototype.addComponents.apply(new Discord.ActionRowBuilder(), buttons)
-const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | [top.gg](https://top.gg/bot/694306281736896573) | [DiscordBotList](https://discordbotlist.com/bots/gidget) | [Discord Boats](https://discord.boats/bot/694306281736896573)`;
+const botlists = `[MyBOT List](https://portalmybot.com/mybotlist/bot/694306281736896573) | [top.gg](https://top.gg/bot/694306281736896573) | [DiscordBotList](https://discordbotlist.com/bots/gidget)`;
 
 export default class extends Command {
   constructor(options) {

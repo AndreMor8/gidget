@@ -32,7 +32,7 @@ export default class extends SlashCommand {
         const channelId = interaction.member.voice.channelId;
         if (!channelId) return interaction.reply("You need to be in a voice channel to record your voice!");
         const channel = interaction.member.voice.channel || await interaction.guild.channels.fetch(channelId).catch(() => { });
-        if (!channel?.joinable) return interaction.reply("I don't have permissions to connect in your channel!");
+        if (channel && !channel.permissionsFor(bot.user.id).has(["Connect", "Speak"])) return await interaction.reply("I don't have permissions to connect and speak on your channel");
         await interaction.deferReply();
         const nopublic = interaction.options.getBoolean("private");
 
@@ -42,12 +42,13 @@ export default class extends SlashCommand {
             selfDeaf: false,
             adapterCreator: interaction.guild.voiceAdapterCreator
         });
-        
+
         await entersState(dc, VoiceConnectionStatus.Ready, 20e3);
         //Silence frames
         dc.playOpusPacket(Buffer.from([0xf8, 0xff, 0xfe]));
         //Start receiving voice packets
         const pre_stream = dc.receiver.subscribe(interaction.user.id, { end: { behavior: 1, duration: 15000 } });
+
         //For global use across the bot code
         bot.records.set(interaction.guild.id, { user_id: interaction.user.id, stream: new OpusDecodingStream({}, new opus.OpusEncoder(48000, 2)) });
         const { stream } = bot.records.get(interaction.guild.id);
@@ -74,7 +75,7 @@ export default class extends SlashCommand {
                     // Encoding finished
                     const mp3 = encoder.getBuffer();
                     const att = new AttachmentBuilder(mp3, { name: "record.mp3" });
-                    if (interaction.guild.members.me.voice.channelId) await interaction.guild.members.me.voice.disconnect();
+                    if (interaction.guild.members.me.voice.channelId) dc.disconnect();
                     if (nopublic) {
                         await interaction.editReply("Recording done :)");
                         await interaction.followUp({ ephemeral: true, content: "Here's your recording:", files: [att] });
@@ -83,18 +84,12 @@ export default class extends SlashCommand {
                 })
                 .catch(async (error) => await interaction.editReply(error.toString()))
                 .finally(() => {
+                    pre_stream.destroy();
+                    dc.receiver.subscriptions.delete(interaction.user.id);
                     bot.records.delete(interaction.guild.id);
                 });
         });
         await interaction.editReply("Start talking. Use the /stoprecord command to stop recording.\nRecording will auto-stop when you (or I) leave the voice channel or when there is no activity for 15 seconds.");
-        let edited = 0;
-        dc.receiver.speaking.on("start", (user_id) => {
-            if (user_id === interaction.user.id) {
-                if (!edited) {
-                    edited++;
-                    interaction.editReply("Recording...");
-                }
-            }
-        });
+        dc.receiver.speaking.once("start", async () => await interaction.editReply("Recording...").catch(() => { }));
     }
 }

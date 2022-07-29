@@ -26,6 +26,10 @@ export default class extends SlashCommand {
         required: false
       }
     ];
+    this.permissions = {
+      user: [0n, 0n],
+      bot: [0n, 3072n]
+    }
   }
   async run(bot, interaction) {
     const authorButton = new ActionRowBuilder().addComponents([new ButtonBuilder()

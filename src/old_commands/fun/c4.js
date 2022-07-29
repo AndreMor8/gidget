@@ -43,9 +43,9 @@ export default class extends Command {
       .setCustomId("c4_c_hardmode")
       .setLabel("Hard");
     if (!args[1]) {
-      const msg = await message.channel.send({ content: `How to play Connect4 on Discord?\n\n1. Do \`g%c4 <someone>\`. It can be me or someone else.\n2. If you selected someone else, the person will be asked if they want to play. If you selected me then the game starts immediately. You can also make it difficult to play with me (easy, medium, hard).\n3. Within the game, they have to mark the column to add a token to it. The winner is the one with 4 tokens aligned together on the table.\n4. If someone no longer wants to play, they can say \`terminate\` to log out.\n5. If no one answers in less than 60 seconds the game is over.\n\nHappy playing! Credits to Lil MARCROCK22#2718 for the logic code and sprites :)`, components: [new ActionRowBuilder().addComponents([easy_but, medium_but, hard_but])] });
+      const msg = await message.channel.send({ content: `How to play Connect4 on Discord?\n\n1. Do \`${bot.user.username}c4 <someone>\`. It can be me or someone else.\n2. If you selected someone else, the person will be asked if they want to play. If you selected me then the game starts immediately. You can also make it difficult to play with me (easy, medium, hard).\n3. Within the game, they have to mark the column to add a token to it. The winner is the one with 4 tokens aligned together on the table.\n4. If someone no longer wants to play, they can say \`terminate\` to log out.\n5. If no one answers in less than 60 seconds the game is over.\n\nHappy playing! Credits to Lil MARCROCK22#2718 for the logic code and sprites :)`, components: [new ActionRowBuilder().addComponents([easy_but, medium_but, hard_but])] });
       const filter = (button) => {
-        if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%c4`", ephemeral: true });
+        if (button.user.id !== message.author.id) button.reply({ content: `Use your own instance by using \`${bot.user.username} c4\``, ephemeral: true });
         return button.user.id === message.author.id;
       };
       const col = msg.createMessageComponentCollector({ filter, time: 20000 });

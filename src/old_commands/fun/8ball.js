@@ -40,7 +40,7 @@ export default class extends Command {
 
     const msg = await message.channel.send({ embeds: [ballembed], components: [new Discord.ActionRowBuilder().addComponents([but_redo])] });
     const filter = (button) => {
-      if (button.user.id !== message.author.id) button.reply({ content: "Use your own instance by using `g%8ball <question>`", ephemeral: true });
+      if (button.user.id !== message.author.id) button.reply({ content: `Use your own instance by using \`@${bot.user.username} 8ball <question>\``, ephemeral: true });
       return button.user.id === message.author.id;
     };
     const col = msg.createMessageComponentCollector({ filter, idle: 15000 });

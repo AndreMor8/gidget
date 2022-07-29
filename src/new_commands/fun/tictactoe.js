@@ -71,7 +71,7 @@ export default class extends SlashCommand {
       });
       const col2 = finalMsg.createMessageComponentCollector({
         filter: async button => {
-          if (![interaction.user.id].includes(button.user.id)) await button.reply({ content: "Use your own instance by using `g%ttt`", ephemeral: true });
+          if (![interaction.user.id].includes(button.user.id)) await button.reply({ content: "Use your own instance by using `/tictactoe`", ephemeral: true });
           const seeTurn = Boolean(button.channel.tttgame.availablePositionCount() % 2);
           const turn = randomturn ? (seeTurn ? bot.user.id : interaction.user.id) : (seeTurn ? interaction.user.id : bot.user.id);
           if (turn !== button.user.id && !button.replied) await button.reply({ content: "It's not your turn yet!", ephemeral: true });
@@ -190,7 +190,7 @@ export default class extends SlashCommand {
           });
           const col2 = finalMsg.createMessageComponentCollector({
             filter: async button => {
-              if (![interaction.user.id, user.id].includes(button.user.id)) await button.reply({ content: "Use your own instance by using `g%ttt`", ephemeral: true });
+              if (![interaction.user.id, user.id].includes(button.user.id)) await button.reply({ content: "Use your own instance by using `/tictactoe`", ephemeral: true });
               const turn = button.channel.tttgame.currentMark() === "X" ? interaction.user.id : user.id;
               if (turn !== button.user.id && button.customId !== "ttt_g_terminate" && !button.replied) await button.reply({ content: "It's not your turn yet!", ephemeral: true });
               return ([interaction.user.id, user.id].includes(button.user.id) && (button.customId === "ttt_g_terminate" || turn === button.user.id));
