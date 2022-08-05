@@ -81,9 +81,9 @@ export default class extends SlashCommand {
       const embed = new Discord.EmbedBuilder()
         .setTitle("Poll")
         .setDescription(splitMessage(text, { max: "4096", char: "" })[0])
-        .setFooter({ text: "Made by: " + interaction.user.tag + (time === Infinity ? "" : ", finish date:"), iconURL: interaction.user.displayAvatarURL({  }) })
-        .setColor("Random")
-        .setTimestamp(new Date(Date.now() + time));
+        .setFooter({ text: "Made by: " + interaction.user.tag + (time === Infinity ? "" : ", finish date:"), iconURL: interaction.user.displayAvatarURL({}) })
+        .setColor("Random");
+      if (time !== Infinity) embed.setTimestamp(new Date(Date.now() + time));
       if (url) embed.setImage(url);
       if (interaction.channel.permissionsFor(interaction.user.id).has("MentionEveryone") && interaction.channel.permissionsFor(bot.user.id).has("MentionEveryone")) {
         if (text.includes("@everyone")) mentions += "@everyone ";
