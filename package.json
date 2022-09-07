@@ -52,7 +52,7 @@
     "node-svg2img": "^1.1.0",
     "qr": "^0.2.4",
     "safe-regex": "^2.1.1",
-    "sharp": "^0.30.7",
+    "sharp": "^0.31.0",
     "sodium-native": "^3.3.0",
     "tictactoe-complex-ai": "^1.0.1",
     "twemoji-parser": "^14.0.0"
