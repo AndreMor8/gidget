@@ -8,7 +8,7 @@ RUN npm install -g node-prune
 COPY package.json .
 RUN npm i
 # Free space
-RUN /usr/local/bin/node-prune
+RUN node-prune
 RUN apk del git build-base autoconf automake libtool make gcc g++ curl bash \
     && rm -rf /usr/include \
     && rm -rf /var/cache/apk/* /usr/share/man /tmp/*
