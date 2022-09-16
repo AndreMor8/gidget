@@ -3,8 +3,7 @@ WORKDIR /home/gidget
 ENV NODE_ENV="production"
 # Install system dependencies
 RUN apk add --no-cache curl bash git libqrencode build-base g++ autoconf automake libtool libpng libpng-dev jpeg-dev pango-dev cairo-dev giflib-dev gifsicle
-# Making free space
-RUN curl -sfL https://raw.githubusercontent.com/goreleaser/goinstall/master/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
+RUN npm install -g node-prune
 # Installing project dependencies
 COPY package.json .
 RUN npm i
