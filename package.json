@@ -19,6 +19,7 @@
   "homepage": "https://gidget.andremor.dev/",
   "license": "Apache-2.0",
   "dependencies": {
+    "@discordjs/node-pre-gyp": "0.4.4",
     "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.11.0",
     "@sindresorhus/to-milliseconds": "^2.0.0",
