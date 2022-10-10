@@ -21,7 +21,7 @@
   "dependencies": {
     "@discordjs/node-pre-gyp": "0.4.4",
     "@discordjs/opus": "^0.8.0",
-    "@discordjs/voice": "^0.11.0",
+    "@discordjs/voice": "^0.13.0",
     "@sindresorhus/to-milliseconds": "^2.0.0",
     "badwords.js": "^0.1.6",
     "bombsweeper.js": "^1.0.1",
