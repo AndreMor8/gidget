@@ -23,7 +23,7 @@ export default class extends SlashCommand {
       .addComponents(new ActionRowBuilder().addComponents(text_form));
     const ckc = new ButtonBuilder()
       .setCustomId("mine_ckc")
-      .setLabel("Ckeck/flag cell")
+      .setLabel("Check/flag cell")
       .setStyle("Primary");
     const stop = new ButtonBuilder()
       .setCustomId("mine_stop")
