@@ -57,6 +57,6 @@ export default function (sharder) {
       }
       return guildNoCache(c.guilds.cache.get(g));
     }, { context: { g: guildID } });
-    return res.some(Boolean);
+    return res.some(x => x);
   }
 }
