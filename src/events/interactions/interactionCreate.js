@@ -128,11 +128,11 @@ export default async (bot, interaction) => {
     if (interaction.customId.startsWith("ww_hb")) {
       const [, , mode, id] = interaction.customId.split("_");
       if (mode === "publish") {
-        const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/publish`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
+        const res = await fetch(`${process.env.WUBBURL}birthday-cards/${id}/publish`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
         if (!res.ok) await interaction.reply({ content: `Error: ${await res.text()}` });
         else await interaction.update({ embeds: [Discord.EmbedBuilder.from(interaction.message.embeds[0]).setColor("Green").setFooter({ text: "Approved on" }).setTimestamp(new Date())], components: [] });
       } else if (mode === "reject") {
-        const res = await fetch(`https://wubbworld.xyz/api/birthday-cards/${id}/reject`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
+        const res = await fetch(`${process.env.WUBBURL}birthday-cards/${id}/reject`, { method: "PUT", headers: { "authorization": process.env.VERYS } });
         if (!res.ok) await interaction.reply({ content: `Error: ${await res.text()}` });
         else await interaction.update({ embeds: [Discord.EmbedBuilder.from(interaction.message.embeds[0]).setColor("Red").setFooter({ text: "Rejected on" }).setTimestamp(new Date())], components: [] });
       }

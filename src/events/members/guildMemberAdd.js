@@ -61,7 +61,7 @@ export default async (bot, member) => {
             inviterId = inviter;
             if (inviter !== member.guild.id) {
               const t = bot.users.cache.get(inviter) || await bot.users.fetch(inviter).catch(() => { });
-              if (t) inviterTag = t;
+              if (t) inviterTag = t.tag;
             } else {
               inviterTag = "System";
             }
